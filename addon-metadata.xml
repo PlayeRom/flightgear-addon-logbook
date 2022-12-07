@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+#
+# Logbook - Add-on for FlightGear
+#
+# Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
+#
+# Copyright (C) 2022 Roman Ludwicki
+#
+# Logbook is an Open Source project and it is licensed
+# under the GNU Public License v3 (GPLv3)
+#
+-->
+
+<PropertyList>
+    <meta>
+        <file-type type="string">FlightGear add-on metadata</file-type>
+        <format-version type="int">1</format-version>
+    </meta>
+
+    <addon>
+        <identifier type="string">org.flightgear.addons.logbook</identifier>
+        <name type="string">Logbook</name>
+        <version type="string">1.0.0</version>
+
+        <authors>
+            <author>
+                <name type="string">Roman Ludwicki</name>
+                <email type="string">kontakt@flightgear.org.pl</email>
+                <url type="string">https://flightgear.org.pl</url>
+            </author>
+        </authors>
+
+        <maintainers>
+            <maintainer>
+                <name type="string">Roman Ludwicki</name>
+                <url type="string">
+                    https://github.com/PlayeRom/flightgear-addon-logbook
+                </url>
+            </maintainer>
+        </maintainers>
+
+        <short-description type="string">
+            Automatic flight logging
+        </short-description>
+
+        <long-description type="string">
+            Each flight will be automatically logged with date, plane, airports, various statistics.
+        </long-description>
+
+        <localized>
+            <pl>
+                <short-description type="string">
+                    Automatyczne logowanie lotów
+                </short-description>
+
+                <long-description type="string">
+                    Każdy lot zostanie automatycznie zapisany do dziennika wraz z datą, samolotem, lotniskami, różnymi statystykami.
+                </long-description>
+            </pl>
+        </localized>
+
+        <license>
+            <designation type="string">GNU GPL version 3 or later</designation>
+
+            <file type="string">
+                <!-- Use a relative, slash-separated path to a file under the add-on
+                    base directory that contains the add-on license text. -->
+                LICENSE
+            </file>
+
+            <url type="string">https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+
+        <min-FG-version type="string">2020.1.0</min-FG-version>
+        <max-FG-version type="string">none</max-FG-version>
+
+        <urls>
+            <home-page type="string">
+                https://github.com/PlayeRom/flightgear-addon-logbook
+            </home-page>
+
+            <download type="string">
+                https://github.com/PlayeRom/flightgear-addon-logbook/releases/latest
+            </download>
+
+            <support type="string">
+                https://github.com/PlayeRom/flightgear-addon-logbook
+            </support>
+
+            <code-repository type="string">
+                https://github.com/PlayeRom/flightgear-addon-logbook
+            </code-repository>
+        </urls>
+
+        <tags>
+            <tag type="string">logbook</tag>
+        </tags>
+    </addon>
+</PropertyList>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+#
+# Logbook - Add-on for FlightGear
+#
+# Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
+#
+# Copyright (C) 2022 Roman Ludwicki
+#
+# Logbook is an Open Source project and it is licensed
+# under the GNU Public License v3 (GPLv3)
+#
+-->
+
+<PropertyList>
+    <addons>
+        <by-id>
+            <org.flightgear.addons.logbook>
+                <addon-devel>
+                    <help-text type="string">
+You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook.csv` directory.
+
+The following information is logged into the file:
+
+1. Date - aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
+2. Time - aircraft take-off time. As for Date this is the time taken from the OS.
+3. Aircraft - the code name of the aircraft.
+4. Callsign - your callsign set for multiplayer.
+5. From - the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
+6. To - the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
+7. Landings - number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+8. Day - the number of hours spent flying during the day.
+9. Night - number of hours spent flying during the night.
+10. Instrument - the number of hours flown during the IMC (Instrument Meteorological Conditions).
+11. Duration - total duration of the flight in hours, as the sum of Day and Night. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
+12. Distance - total distance flown from take-off to landing, in nautical miles.
+13. Fuel - total fuel burned, in US gallons.
+14. Max Alt - maximum altitude, in feet, reached during flight.
+15. Note - notes, by default the full name of the aircraft.
+                    </help-text>
+                </addon-devel>
+            </org.flightgear.addons.logbook>
+        </by-id>
+    </addons>
+</PropertyList>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+#
+# Logbook - Add-on for FlightGear
+#
+# Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
+#
+# Copyright (C) 2022 Roman Ludwicki
+#
+# Logbook is an Open Source project and it is licensed
+# under the GNU Public License v3 (GPLv3)
+#
+-->
+
+<PropertyList>
+    <meta>
+        <file-type type="string">FlightGear add-on menu bar items</file-type>
+        <format-version type="int">1</format-version>
+    </meta>
+    <menubar-items>
+        <menu>
+            <label>Logbook</label>
+            <enabled type="bool">true</enabled>
+
+            <item>
+                <label>Logbook</label>
+                <binding>
+                    <command>dialog-show</command>
+                    <dialog-name>addon-sample-dialog</dialog-name>
+                </binding>
+            </item>
+
+            <item>
+                <label>---------------------</label>
+                <enabled>false</enabled>
+            </item>
+            <item>
+                <label>Help</label>
+                <binding>
+                    <command>dialog-show</command>
+                    <dialog-name>help-logbook</dialog-name>
+                </binding>
+            </item>
+            <item>
+                <label>About</label>
+                <binding>
+                    <command>dialog-show</command>
+                    <dialog-name>about-logbook</dialog-name>
+                </binding>
+            </item>
+
+            <!--
+            FOR DEVELOPMENT ONLY!
+            trigger reload of addon-main.nas
+            1) This item should be REMOVED for release versions.
+            2) Ensure the label is unique
+            3) replace addon ID  to match your addon
+            -->
+            <!-- for compatibility with FG Versions pre 2020.1
+            <item>
+                <label>Reload Skeleton</label>
+                <binding>
+                    <command>property-toggle</command>
+                    <property>/addons/by-id/org.flightgear.addons.logbook/reload</property>
+                </binding>
+            </item>
+            -->
+            <!-- for FG Version >= 2020.1 use the fgcommand -->
+            <item>
+                <label>Dev Reload</label>
+                <binding>
+                    <command>addon-reload</command>
+                    <id>org.flightgear.addons.logbook</id>
+                </binding>
+            </item>
+
+        </menu>
+    </menubar-items>
+</PropertyList>
