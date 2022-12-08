@@ -16,15 +16,27 @@ var File = {
     #
     # Constants
     #
-    LOGBOOK_FILE : "logbook.csv",
+    LOGBOOK_FILE   : "logbook-v%s.csv",
+    LANDINGS_INDEX : 6,
+    FUEL_INDEX     : 13,
+    MAX_ALT_INDEX  : 14,
 
     #
     # Constructor
     #
+    # addons.Addon addon
+    #
     new: func (addon) {
         var me = { parents: [File] };
 
-        me.filePath = addon.storagePath ~ "/" ~ File.LOGBOOK_FILE;
+        me.filePath = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
+        me.loadedData = [];
+
+        # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
+        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        # Total lines in CSV file (without headers)
+        me.totalLines = -1;
 
         me.saveHeaders();
 
@@ -37,27 +49,28 @@ var File = {
     saveHeaders: func() {
         if (!me.exists(me.filePath)) {
             var file = io.open(me.filePath, "a");
-            io.write(file,
-                'Date,' ~
-                'Time,' ~
-                'Aircraft,' ~
-                'Callsign,' ~
-                'From,' ~
-                'To,' ~
-                'Landings,' ~
-                'Crash,' ~
-                'Day,' ~
-                'Night,' ~
-                'Instrument,' ~
-                'Duration,' ~
-                'Distance,' ~
-                'Fuel,' ~
-                '"Max Alt",' ~
-                'Note' ~
-                "\n"
-            );
+            io.write(file, me.getHeaderLine() ~ "\n");
             io.close(file);
         }
+    },
+
+    getHeaderLine: func() {
+        return 'Date,' ~
+               'Time,' ~
+               'Aircraft,' ~
+               'Callsign,' ~
+               'From,' ~
+               'To,' ~
+               'Landings,' ~
+               'Crash,' ~
+               'Day,' ~
+               'Night,' ~
+               'Instrument,' ~
+               'Duration,' ~
+               'Distance,' ~
+               'Fuel,' ~
+               '"Max Alt",' ~
+               'Note';
     },
 
     #
@@ -78,7 +91,7 @@ var File = {
     saveData: func(logData) {
         var file = io.open(me.filePath, "a");
         io.write(file, sprintf(
-            "%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\"%s\"\n",
+            "%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,
@@ -97,5 +110,85 @@ var File = {
             logData.note
         ));
         io.close(file);
+    },
+
+    #
+    # int start - Start index counting from 0 as a first row of data
+    # int count - How many rows should be returned
+    # return vector
+    #
+    loadData: func(start, count) {
+        me.loadedData = [];
+        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        # Always add headres as first line
+        append(me.loadedData, split(",", me.removeQuotes(me.getHeaderLine())));
+
+        var file = io.open(me.filePath, "r");
+
+        me.totalLines = -1;
+        var counter = 0;
+        var line = nil;
+        while ((line = io.readln(file)) != nil) {
+            if (me.totalLines > -1 and line != "" and line != nil) { # skip headers and empty row
+                var items = split(",", me.removeQuotes(line));
+                me.countTotals(items);
+
+                if (me.totalLines >= start and counter < count) {
+                    append(me.loadedData, items);
+                    counter += 1;
+                }
+            }
+
+            me.totalLines += 1;
+        }
+
+        io.close(file);
+
+        return me.loadedData;
+    },
+
+    #
+    # string text
+    # return string
+    #
+    removeQuotes: func(text) {
+        return string.replace(text, '"', '');
+    },
+
+    #
+    # vector items
+    #
+    countTotals: func(items) {
+        var index = 0;
+        foreach (var text; items) {
+            if (index >= File.LANDINGS_INDEX and
+                index <= File.FUEL_INDEX
+            ) {
+                me.totals[index - File.LANDINGS_INDEX] += (text == "" ? 0 : text);
+            }
+
+            if (index == File.MAX_ALT_INDEX) {
+                if (text > me.totals[index - File.LANDINGS_INDEX]) {
+                    me.totals[index - File.LANDINGS_INDEX] = text;
+                }
+            }
+
+            index += 1;
+        }
+    },
+
+    #
+    # return vector
+    #
+    getTotalsData: func() {
+        return me.totals;
+    },
+
+    #
+    # return int
+    #
+    getTotalLines: func() {
+        me.totalLines;
     },
 };

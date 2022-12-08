@@ -26,8 +26,8 @@
             <item>
                 <label>Logbook</label>
                 <binding>
-                    <command>dialog-show</command>
-                    <dialog-name>addon-sample-dialog</dialog-name>
+                    <command>nasal</command>
+                    <script>logbook.g_Logbook.showDialog();</script>
                 </binding>
             </item>
 

@@ -32,6 +32,7 @@ var main = func(addon) {
 #
 var loadExtraNasalFiles = func (addon) {
     var modules = [
+        "nasal/Dialog",
         "nasal/Airport",
         "nasal/CrashDetector",
         "nasal/SpaceShuttle",
