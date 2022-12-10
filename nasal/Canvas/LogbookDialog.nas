@@ -64,15 +64,14 @@ var LogbookDialog = {
 
         me.startIndex = 0;
 
-        me.file                 = file;
-        me.data                 = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
-        me.totals               = me.file.getTotalsData();
-        me.style                = me.getStyle().light;
-        me.rowTotal             = nil;
-        me.scrollHeaders        = nil;
-        me.scrollHeadersContent = nil;
-        me.scrollData           = nil;
-        me.scrollDataContent    = nil;
+        me.file                = file;
+        me.data                = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.totals              = me.file.getTotalsData();
+        me.style               = me.getStyle().light;
+        me.rowTotal            = nil;
+        me.groupHeadersContent = nil;
+        me.scrollData          = nil;
+        me.scrollDataContent   = nil;
 
         me.detailsDialog = DetailsDialog.new(me.style, file);
 
@@ -143,14 +142,8 @@ var LogbookDialog = {
     # Draw headers row
     #
     drawHeaders: func() {
-        me.scrollHeaders = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        me.scrollHeaders.setColorBackground(me.style.CANVAS_BG);
-        me.scrollHeaders.setContentsMargins(5 + (LogbookDialog.PADDING * 2), 10, 0, 0); # left, top, right, bottom
-        me.scrollHeaders.setFixedSize(LogbookDialog.WINDOW_WIDTH, 12);
-        me.vbox.addItem(me.scrollHeaders);
-
-        me.scrollHeadersContent = me.scrollHeaders.getContent();
-        me.scrollHeadersContent
+        me.groupHeadersContent = me.group.createChild("group");
+        me.groupHeadersContent
             .set("font", LogbookDialog.FONT_NAME)
             .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
@@ -162,10 +155,10 @@ var LogbookDialog = {
     # Draw headers row
     #
     reDrawHeadersContent: func() {
-        me.scrollHeadersContent.removeAllChildren();
+        me.groupHeadersContent.removeAllChildren();
 
         var y = LogbookDialog.PADDING * 3;
-        var x = LogbookDialog.PADDING * 2;
+        var x = LogbookDialog.PADDING * 2 + 5;
         var column = 0;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
@@ -174,7 +167,7 @@ var LogbookDialog = {
                 break;
             }
 
-            me.drawText(me.scrollHeadersContent, x, 0, me.getReplaceHeaderText(text));
+            me.drawText(me.groupHeadersContent, x, 20, me.getReplaceHeaderText(text));
             x += me.getX(column);
             column += 1;
         }
@@ -187,6 +180,7 @@ var LogbookDialog = {
         me.scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
         me.scrollData.setContentsMargins(5, 0, 0, 0); # left, top, right, bottom
+        me.vbox.addSpacing(30);
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
         me.scrollDataContent = me.scrollData.getContent();
         me.scrollDataContent
@@ -389,7 +383,6 @@ var LogbookDialog = {
             : me.getStyle().dark;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.scrollHeaders.setColorBackground(me.style.CANVAS_BG);
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
 
         me.btnStyle.setText(me.getOppositeStyleName());
