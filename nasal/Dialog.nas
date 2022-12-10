@@ -68,7 +68,11 @@ var Dialog = {
         me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
         me.style  = me.getStyle().light;
-        me.rowTotal = nil;
+        me.rowTotal      = nil;
+        me.scrollHeaders = nil;
+        me.scrollHeadersContent = nil;
+        me.scrollData        = nil;
+        me.scrollDataContent = nil;
 
         me.window = me.crateCanvasWindow();
 
@@ -78,10 +82,10 @@ var Dialog = {
         me.canvas.setLayout(me.vbox);
 
         me.drawHeaders();
-        me.drawScrollGrid();
-        me.reDrawGrid();
+        me.drawData();
 
         me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+        me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me.drawBottomBar();
 
         return me;
@@ -137,23 +141,32 @@ var Dialog = {
     # Draw headers row
     #
     drawHeaders: func() {
-        var scrollHeaders = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        scrollHeaders.setColorBackground(me.style.CANVAS_BG);
-        scrollHeaders.setContentsMargins(5 + (Dialog.PADDING * 2), 10, 0, 0); # left, top, right, bottom
-        scrollHeaders.setFixedSize(Dialog.WINDOW_WIDTH, 12);
-        me.vbox.addItem(scrollHeaders);
+        me.scrollHeaders = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
+        me.scrollHeaders.setColorBackground(me.style.CANVAS_BG);
+        me.scrollHeaders.setContentsMargins(5 + (Dialog.PADDING * 2), 10, 0, 0); # left, top, right, bottom
+        me.scrollHeaders.setFixedSize(Dialog.WINDOW_WIDTH, 12);
+        me.vbox.addItem(me.scrollHeaders);
 
-        var scrollHeadersContent = scrollHeaders.getContent();
-        scrollHeadersContent
+        me.scrollHeadersContent = me.scrollHeaders.getContent();
+        me.scrollHeadersContent
             .set("font", Dialog.FONT_NAME)
             .set("character-size", Dialog.FONT_SIZE)
             .set("alignment", "left-baseline");
+
+        me.reDrawHeadersContent();
+    },
+
+    #
+    # Draw headers row
+    #
+    reDrawHeadersContent: func() {
+        me.scrollHeadersContent.removeAllChildren();
 
         var y = Dialog.PADDING * 3;
         var x = Dialog.PADDING * 2;
         var column = 0;
         foreach (var text; me.file.getHeadersData()) {
-            me.drawText(scrollHeadersContent, x, 0, me.getReplaceHeaderText(text));
+            me.drawText(me.scrollHeadersContent, x, 0, me.getReplaceHeaderText(text));
             x += me.getX(column);
             column += 1;
         }
@@ -162,24 +175,25 @@ var Dialog = {
     #
     # Draw scrollArea for logbook data
     #
-    drawScrollGrid: func() {
-        var scroll = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        scroll.setColorBackground(me.style.CANVAS_BG);
-        scroll.setContentsMargins(5, 0, 0, 0); # left, top, right, bottom
-        me.vbox.addItem(scroll, 1); # 2nd param = stretch
-        me.scrollContent = scroll.getContent();
-        me.scrollContent
+    drawData: func() {
+        me.scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
+        me.scrollData.setColorBackground(me.style.CANVAS_BG);
+        me.scrollData.setContentsMargins(5, 0, 0, 0); # left, top, right, bottom
+        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
+        me.scrollDataContent = me.scrollData.getContent();
+        me.scrollDataContent
             .set("font", Dialog.FONT_NAME)
             .set("character-size", Dialog.FONT_SIZE)
             .set("alignment", "left-baseline");
+
+        me.reDrawDataContent();
     },
 
     #
     # Draw grid with logbook data
     #
-    reDrawGrid: func() {
-        # me.scrollContent.setColorFill(me.style.CANVAS_BG); # color of canvas.draw.rectangle
-        me.scrollContent.removeAllChildren();
+    reDrawDataContent: func() {
+        me.scrollDataContent.removeAllChildren();
 
         var y = Dialog.PADDING * 3;
         var index = 0;
@@ -187,7 +201,7 @@ var Dialog = {
             var x = Dialog.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(me.scrollContent, y);
+            var rowGroup = me.drawHoverBox(me.scrollDataContent, y);
 
             foreach (var text; row) {
                 me.drawText(rowGroup, x, 16, text);
@@ -198,7 +212,7 @@ var Dialog = {
 
             # Draw horizontal line
             # var hr = canvas.draw.rectangle(
-            #     me.scrollContent,
+            #     me.scrollDataContent,
             #     Dialog.WINDOW_WIDTH - (Dialog.PADDING * 2), # width
             #     1,                                          # height
             #     Dialog.PADDING,                             # x
@@ -210,10 +224,10 @@ var Dialog = {
             index += 1;
         }
 
-        me.rowTotal = me.drawHoverBox(me.scrollContent, y);
+        me.rowTotal = me.drawHoverBox(me.scrollDataContent, y);
         me.drawTotalsRow(me.rowTotal);
 
-        me.scrollContent.update();
+        me.scrollDataContent.update();
     },
 
     drawHoverBox: func(cgroup, y) {
@@ -279,7 +293,12 @@ var Dialog = {
             .setFixedSize(75, 26)
             .listen("clicked", func { me.last(); });
 
-        buttonBox.addStretch(1);
+        me.btnStyle
+            .setText(me.getOppositeStyleName())
+            .setFixedSize(75, 26)
+            .listen("clicked", func { me.toggleStyle(); });
+
+        buttonBox.addStretch(4);
         buttonBox.addItem(btnFirst);
         buttonBox.addItem(btnPrev);
         buttonBox.addStretch(1);
@@ -287,6 +306,8 @@ var Dialog = {
         buttonBox.addStretch(1);
         buttonBox.addItem(btnNext);
         buttonBox.addItem(btnLast);
+        buttonBox.addStretch(2);
+        buttonBox.addItem(me.btnStyle);
         buttonBox.addStretch(1);
 
         # me.vbox.addStretch(1);
@@ -330,18 +351,46 @@ var Dialog = {
     getStyle: func() {
         return {
             "dark": {
+                NAME       : "dark",
                 CANVAS_BG  : "#000000EE",
                 # GROUP_BG   : [0.3, 0.3, 0.3],
                 TEXT_COLOR : [0.8, 0.8, 0.8],
                 HOVER_BG   : [0.2, 0.0, 0.0, 1.0],
             },
             "light": {
+                NAME       : "light",
                 CANVAS_BG  : canvas.style.getColor("bg_color"),
                 # GROUP_BG   : [0.7, 0.7, 0.7],
                 TEXT_COLOR : [0.3, 0.3, 0.3],
                 HOVER_BG   : [1.0, 1.0, 0.5, 1.0],
             },
         };
+    },
+
+    #
+    # Toggle style from light to dark and vice versa.
+    #
+    toggleStyle: func() {
+        me.style = me.style.NAME == "dark"
+            ? me.getStyle().light
+            : me.getStyle().dark;
+
+        me.canvas.set("background", me.style.CANVAS_BG);
+        me.scrollHeaders.setColorBackground(me.style.CANVAS_BG);
+        me.scrollData.setColorBackground(me.style.CANVAS_BG);
+
+        me.btnStyle.setText(me.getOppositeStyleName());
+
+        me.reloadData();
+    },
+
+    #
+    # return string
+    #
+    getOppositeStyleName: func() {
+        return me.style.NAME == "dark"
+            ? me.getStyle().light.NAME
+            : me.getStyle().dark.NAME;
     },
 
     #
@@ -409,15 +458,14 @@ var Dialog = {
         me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
-        # TODO: reload headers
-
-        me.reDrawGrid();
+        me.reDrawHeadersContent();
+        me.reDrawDataContent();
         me.setPaging();
     },
 
     setPaging: func() {
         var curPage = (me.startIndex / Dialog.MAX_DATA_ITEMS) + 1;
-        var maxPages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS);
+        var maxPages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS) or 1;
         me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.file.getTotalLines()));
     },
 };
