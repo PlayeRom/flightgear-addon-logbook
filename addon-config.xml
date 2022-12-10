@@ -18,7 +18,7 @@
             <org.flightgear.addons.logbook>
                 <addon-devel>
                     <help-text type="string">
-You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook.csv` directory.
+You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.0.csv` directory.
 
 The following information is logged into the file:
 
