@@ -33,7 +33,8 @@ var main = func(addon) {
 var loadExtraNasalFiles = func (addon) {
     var modules = [
         "nasal/MouseHover",
-        "nasal/Dialog",
+        "nasal/Canvas/DetailsDialog",
+        "nasal/Canvas/LogbookDialog",
         "nasal/Airport",
         "nasal/CrashDetector",
         "nasal/SpaceShuttle",

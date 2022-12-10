@@ -16,16 +16,21 @@ var MouseHover = {
     #
     # Constructor
     #
-    # hash element - The element that will listen to the event
+    # hash detailsDialog
     # hash style - My style structure from Dialog
+    # hash element - The element that will listen to the event
     # hash target - The element on which the event will be executed. If nil then `element` will be use as `target`.
+    # vector dataRow - Logbook one row data to display after click
     #
-    new: func (element, style, target = nil) {
+    new: func (detailsDialog, style, element, target = nil, dataRow = nil) {
         var me = { parents: [MouseHover] };
 
+        me.style = style;
         me.element = element;
         me.style = style;
         me.target = target == nil ? element : target;
+        me.dataRow = dataRow;
+        me.detailsDialog = detailsDialog;
 
         return me;
     },
@@ -38,5 +43,11 @@ var MouseHover = {
         me.element.addEventListener("mouseleave", func {
             me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
         });
+
+        if (me.dataRow != nil) {
+            me.element.addEventListener("click", func {
+                me.detailsDialog.show(me.dataRow);
+            });
+        }
     },
 };

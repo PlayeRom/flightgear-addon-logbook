@@ -31,7 +31,7 @@ var File = {
 
         me.filePath = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
         me.loadedData = [];
-        me.headersData = "";
+        me.headersData = [];
 
         # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
         me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];

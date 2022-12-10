@@ -48,7 +48,7 @@ var Logbook = {
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
-        me.dialog        = Dialog.new(me.file);
+        me.dialog        = LogbookDialog.new(me.file);
 
         me.initStartAirport();
 

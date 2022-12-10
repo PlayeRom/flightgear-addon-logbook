@@ -10,9 +10,9 @@
 #
 
 #
-# Dialog class to display logbook
+# LogbookDialog class to display logbook
 #
-var Dialog = {
+var LogbookDialog = {
     #
     # Constants
     #
@@ -60,25 +60,26 @@ var Dialog = {
     # File file
     #
     new: func(file) {
-        var me = { parents: [Dialog] };
+        var me = { parents: [LogbookDialog] };
 
         me.startIndex = 0;
 
-        me.file   = file;
-        me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
-        me.totals = me.file.getTotalsData();
-        me.style  = me.getStyle().light;
-        me.rowTotal      = nil;
-        me.scrollHeaders = nil;
+        me.file                 = file;
+        me.data                 = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.totals               = me.file.getTotalsData();
+        me.style                = me.getStyle().light;
+        me.rowTotal             = nil;
+        me.scrollHeaders        = nil;
         me.scrollHeadersContent = nil;
-        me.scrollData        = nil;
-        me.scrollDataContent = nil;
+        me.scrollData           = nil;
+        me.scrollDataContent    = nil;
 
-        me.window = me.crateCanvasWindow();
+        me.detailsDialog = DetailsDialog.new(me.style, file);
 
+        me.window = me.createCanvasWindow();
         me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
-        me.group = me.canvas.createGroup();
-        me.vbox = canvas.VBoxLayout.new();
+        me.group  = me.canvas.createGroup();
+        me.vbox   = canvas.VBoxLayout.new();
         me.canvas.setLayout(me.vbox);
 
         me.drawHeaders();
@@ -91,8 +92,8 @@ var Dialog = {
         return me;
     },
 
-    crateCanvasWindow: func() {
-        var window = canvas.Window.new([Dialog.WINDOW_WIDTH, Dialog.WINDOW_HEIGHT], "dialog")
+    createCanvasWindow: func() {
+        var window = canvas.Window.new([LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT], "dialog")
             .set("title", "Logbook")
             .setBool("resize", true);
 
@@ -120,6 +121,7 @@ var Dialog = {
     #
     del: func() {
         me.window.destroy();
+        me.detailsDialog.del();
     },
 
     #
@@ -143,14 +145,14 @@ var Dialog = {
     drawHeaders: func() {
         me.scrollHeaders = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
         me.scrollHeaders.setColorBackground(me.style.CANVAS_BG);
-        me.scrollHeaders.setContentsMargins(5 + (Dialog.PADDING * 2), 10, 0, 0); # left, top, right, bottom
-        me.scrollHeaders.setFixedSize(Dialog.WINDOW_WIDTH, 12);
+        me.scrollHeaders.setContentsMargins(5 + (LogbookDialog.PADDING * 2), 10, 0, 0); # left, top, right, bottom
+        me.scrollHeaders.setFixedSize(LogbookDialog.WINDOW_WIDTH, 12);
         me.vbox.addItem(me.scrollHeaders);
 
         me.scrollHeadersContent = me.scrollHeaders.getContent();
         me.scrollHeadersContent
-            .set("font", Dialog.FONT_NAME)
-            .set("character-size", Dialog.FONT_SIZE)
+            .set("font", LogbookDialog.FONT_NAME)
+            .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
 
         me.reDrawHeadersContent();
@@ -162,8 +164,8 @@ var Dialog = {
     reDrawHeadersContent: func() {
         me.scrollHeadersContent.removeAllChildren();
 
-        var y = Dialog.PADDING * 3;
-        var x = Dialog.PADDING * 2;
+        var y = LogbookDialog.PADDING * 3;
+        var x = LogbookDialog.PADDING * 2;
         var column = 0;
         foreach (var text; me.file.getHeadersData()) {
             me.drawText(me.scrollHeadersContent, x, 0, me.getReplaceHeaderText(text));
@@ -182,8 +184,8 @@ var Dialog = {
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
         me.scrollDataContent = me.scrollData.getContent();
         me.scrollDataContent
-            .set("font", Dialog.FONT_NAME)
-            .set("character-size", Dialog.FONT_SIZE)
+            .set("font", LogbookDialog.FONT_NAME)
+            .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
 
         me.reDrawDataContent();
@@ -195,13 +197,13 @@ var Dialog = {
     reDrawDataContent: func() {
         me.scrollDataContent.removeAllChildren();
 
-        var y = Dialog.PADDING * 3;
+        var y = LogbookDialog.PADDING * 3;
         var index = 0;
         foreach (var row; me.data) {
-            var x = Dialog.PADDING * 2;
+            var x = LogbookDialog.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(me.scrollDataContent, y);
+            var rowGroup = me.drawHoverBox(me.scrollDataContent, y, row);
 
             foreach (var text; row) {
                 me.drawText(rowGroup, x, 16, text);
@@ -213,14 +215,14 @@ var Dialog = {
             # Draw horizontal line
             # var hr = canvas.draw.rectangle(
             #     me.scrollDataContent,
-            #     Dialog.WINDOW_WIDTH - (Dialog.PADDING * 2), # width
+            #     LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 2), # width
             #     1,                                          # height
-            #     Dialog.PADDING,                             # x
+            #     LogbookDialog.PADDING,                             # x
             #     y + 10                                      # y
             # );
             # hr.setColor(me.style.GROUP_BG);
 
-            y += Dialog.SHIFT_Y;
+            y += LogbookDialog.SHIFT_Y;
             index += 1;
         }
 
@@ -230,16 +232,17 @@ var Dialog = {
         me.scrollDataContent.update();
     },
 
-    drawHoverBox: func(cgroup, y) {
+    drawHoverBox: func(cgroup, y, dataRow = nil) {
         var rowGroup = cgroup.createChild("group");
-        rowGroup.setTranslation(Dialog.PADDING, y - Dialog.SHIFT_Y + 11);
+        rowGroup.setTranslation(LogbookDialog.PADDING, y - LogbookDialog.SHIFT_Y + 11);
 
         # Create rect because setColorFill on rowGroup doesn't work
         # TODO: Keep the rectangle not too wide, because then you get artifacts in drawing the sliders of ScrollArea.
-        var rect = rowGroup.rect(0, 0, Dialog.WINDOW_WIDTH - (Dialog.PADDING * 3), Dialog.SHIFT_Y);
+        var rect = rowGroup.rect(0, 0, LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 3), LogbookDialog.SHIFT_Y);
         rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-        MouseHover.new(rowGroup, me.style, rect).addEvents();
+        var mouseHover = MouseHover.new(me.detailsDialog, me.style, rowGroup, rect, dataRow);
+        mouseHover.addEvents();
 
         return rowGroup;
     },
@@ -251,17 +254,17 @@ var Dialog = {
     #
     drawTotalsRow: func(cgroup) {
         var y = 16;
-        var x = Dialog.PADDING * 2 +  me.getX(0) + me.getX(1) + me.getX(2) + me.getX(3) + me.getX(4);
+        var x = LogbookDialog.PADDING * 2 +  me.getX(0) + me.getX(1) + me.getX(2) + me.getX(3) + me.getX(4);
         me.drawText(cgroup, x, y, "Totals:");
 
         for (var i = 0; i < size(me.totals); i += 1) {
             var total = me.totals[i];
             x += me.getX(i + 5);
-            me.drawText(cgroup, x, y, sprintf(Dialog.TOTAL_FORMATS[i], total));
+            me.drawText(cgroup, x, y, sprintf(LogbookDialog.TOTAL_FORMATS[i], total));
         }
 
         # Extra bottom margin
-        y += Dialog.SHIFT_Y;
+        y += LogbookDialog.SHIFT_Y;
         me.drawText(cgroup, x, y, " ");
     },
 
@@ -340,7 +343,7 @@ var Dialog = {
     # return int
     #
     getX: func(index) {
-        return Dialog.COLUMNS_WIDTH[index];
+        return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
@@ -382,6 +385,8 @@ var Dialog = {
         me.btnStyle.setText(me.getOppositeStyleName());
 
         me.reloadData();
+
+        me.detailsDialog.setStyle(me.style);
     },
 
     #
@@ -404,7 +409,7 @@ var Dialog = {
         return cgroup.createChild("text")
             .setTranslation(x, y)
             .setColor(me.style.TEXT_COLOR)
-            .setDrawMode(canvas.Text.TEXT)
+            # .setDrawMode(canvas.Text.TEXT)
             .setText(text);
     },
 
@@ -422,8 +427,8 @@ var Dialog = {
     # Go to previous logbook items
     #
     prev: func() {
-        if (me.startIndex - Dialog.MAX_DATA_ITEMS >= 0) {
-            me.startIndex -= Dialog.MAX_DATA_ITEMS;
+        if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
+            me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
             me.reloadData();
         }
     },
@@ -432,8 +437,8 @@ var Dialog = {
     # Go to next logbook items
     #
     next: func() {
-        if (me.startIndex + Dialog.MAX_DATA_ITEMS <= me.file.getTotalLines()) {
-            me.startIndex += Dialog.MAX_DATA_ITEMS;
+        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS <= me.file.getTotalLines()) {
+            me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
             me.reloadData();
         }
     },
@@ -443,8 +448,8 @@ var Dialog = {
     #
     last: func() {
         var old = me.startIndex;
-        var pages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS);
-        me.startIndex = (pages * Dialog.MAX_DATA_ITEMS) - Dialog.MAX_DATA_ITEMS;
+        var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+        me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
             me.reloadData();
@@ -455,7 +460,7 @@ var Dialog = {
     # Reload logbook data
     #
     reloadData: func() {
-        me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
+        me.data   = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
         me.reDrawHeadersContent();
@@ -464,8 +469,8 @@ var Dialog = {
     },
 
     setPaging: func() {
-        var curPage = (me.startIndex / Dialog.MAX_DATA_ITEMS) + 1;
-        var maxPages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS) or 1;
+        var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
+        var maxPages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
         me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.file.getTotalLines()));
     },
 };
