@@ -31,6 +31,7 @@ var File = {
 
         me.filePath = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
         me.loadedData = [];
+        me.headersData = "";
 
         # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
         me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -121,22 +122,26 @@ var File = {
         me.loadedData = [];
         me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        # Always add headres as first line
-        append(me.loadedData, split(",", me.removeQuotes(me.getHeaderLine())));
-
         var file = io.open(me.filePath, "r");
 
-        me.totalLines = -1;
+        me.totalLines = -1; # don't count the headers
         var counter = 0;
         var line = nil;
         while ((line = io.readln(file)) != nil) {
-            if (me.totalLines > -1 and line != "" and line != nil) { # skip headers and empty row
-                var items = split(",", me.removeQuotes(line));
-                me.countTotals(items);
+            if (line != "" and line != nil) { # skip empty row
+                if (me.totalLines == -1) {
+                    # headers
+                    me.headersData = split(",", me.removeQuotes(line));
+                }
+                else {
+                    # data
+                    var items = split(",", me.removeQuotes(line));
+                    me.countTotals(items);
 
-                if (me.totalLines >= start and counter < count) {
-                    append(me.loadedData, items);
-                    counter += 1;
+                    if (me.totalLines >= start and counter < count) {
+                        append(me.loadedData, items);
+                        counter += 1;
+                    }
                 }
             }
 
@@ -191,4 +196,11 @@ var File = {
     getTotalLines: func() {
         me.totalLines;
     },
+
+    #
+    # return vector
+    #
+    getHeadersData: func() {
+        me.headersData;
+    }
 };
