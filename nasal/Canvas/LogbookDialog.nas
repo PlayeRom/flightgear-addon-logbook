@@ -16,8 +16,8 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1366,
-    WINDOW_HEIGHT        : 670,
+    WINDOW_WIDTH         : 1040,
+    WINDOW_HEIGHT        : 680,
     PADDING              : 10,
     TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
@@ -167,7 +167,13 @@ var LogbookDialog = {
         var y = LogbookDialog.PADDING * 3;
         var x = LogbookDialog.PADDING * 2;
         var column = 0;
-        foreach (var text; me.file.getHeadersData()) {
+        var headers = me.file.getHeadersData();
+        foreach (var text; headers) {
+            if (column == size(headers) - 1) {
+                # Don't show Note column
+                break;
+            }
+
             me.drawText(me.scrollHeadersContent, x, 0, me.getReplaceHeaderText(text));
             x += me.getX(column);
             column += 1;
@@ -206,6 +212,10 @@ var LogbookDialog = {
             var rowGroup = me.drawHoverBox(me.scrollDataContent, y, row);
 
             foreach (var text; row) {
+                if (column == size(row) - 1) {
+                    # Don't show Note column
+                    break;
+                }
                 me.drawText(rowGroup, x, 16, text);
 
                 x += me.getX(column);
