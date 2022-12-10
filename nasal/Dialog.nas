@@ -68,8 +68,7 @@ var Dialog = {
         me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
         me.style  = me.getStyle().light;
-        me.canvasTexts = [];
-        me.canvasTextsTotals = [];
+        me.rowTotal = nil;
 
         me.window = me.crateCanvasWindow();
 
@@ -79,12 +78,11 @@ var Dialog = {
         me.canvas.setLayout(me.vbox);
 
         me.drawHeaders();
-        me.drawGrid();
+        me.drawScrollGrid();
+        me.reDrawGrid();
 
         me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
         me.drawBottomBar();
-
-        me.scrollContent.update();
 
         return me;
     },
@@ -92,15 +90,20 @@ var Dialog = {
     crateCanvasWindow: func() {
         var window = canvas.Window.new([Dialog.WINDOW_WIDTH, Dialog.WINDOW_HEIGHT], "dialog")
             .set("title", "Logbook")
-            .set("resize", true);
+            .setBool("resize", true);
 
         window.hide();
 
         window.del = func() {
-            # Click on (X) button in canvas top bar, we only hide the window
+            # This method will be call after click on (X) button in canvas top
+            # bar and here we want hide the window only.
+            # FG next version provide destroy_on_close, but for 2020.3.x it's
+            # unavailable, so we are handling it manually by this trick.
             call(me.hide, [], me);
         };
 
+        # Because window.del only hide the window, we have to add extra method
+        # to really delete the window.
         window.destroy = func() {
             call(canvas.Window.del, [], me);
         };
@@ -157,9 +160,9 @@ var Dialog = {
     },
 
     #
-    # Draw grid with logbook
+    # Draw scrollArea for logbook data
     #
-    drawGrid: func() {
+    drawScrollGrid: func() {
         var scroll = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
         scroll.setColorBackground(me.style.CANVAS_BG);
         scroll.setContentsMargins(5, 0, 0, 0); # left, top, right, bottom
@@ -169,21 +172,25 @@ var Dialog = {
             .set("font", Dialog.FONT_NAME)
             .set("character-size", Dialog.FONT_SIZE)
             .set("alignment", "left-baseline");
+    },
 
+    #
+    # Draw grid with logbook data
+    #
+    reDrawGrid: func() {
         # me.scrollContent.setColorFill(me.style.CANVAS_BG); # color of canvas.draw.rectangle
+        me.scrollContent.removeAllChildren();
 
         var y = Dialog.PADDING * 3;
         var index = 0;
         foreach (var row; me.data) {
-            var textCell = [];
-
             var x = Dialog.PADDING * 2;
             var column = 0;
 
             var rowGroup = me.drawHoverBox(me.scrollContent, y);
 
             foreach (var text; row) {
-                append(textCell, me.drawText(rowGroup, x, 16, text));
+                me.drawText(rowGroup, x, 16, text);
 
                 x += me.getX(column);
                 column += 1;
@@ -200,15 +207,13 @@ var Dialog = {
             # hr.setColor(me.style.GROUP_BG);
 
             y += Dialog.SHIFT_Y;
-
-            append(me.canvasTexts, textCell);
-
             index += 1;
         }
 
-        var rowTotal = me.drawHoverBox(me.scrollContent, y);
+        me.rowTotal = me.drawHoverBox(me.scrollContent, y);
+        me.drawTotalsRow(me.rowTotal);
 
-        me.drawTotalsRow(rowTotal);
+        me.scrollContent.update();
     },
 
     drawHoverBox: func(cgroup, y) {
@@ -228,19 +233,17 @@ var Dialog = {
     #
     # Draw row with totals summary
     #
-    # int y - initial Y position of texts
+    # hash cgroup - Parent canvas group
     #
     drawTotalsRow: func(cgroup) {
         var y = 16;
         var x = Dialog.PADDING * 2 +  me.getX(0) + me.getX(1) + me.getX(2) + me.getX(3) + me.getX(4);
         me.drawText(cgroup, x, y, "Totals:");
 
-        me.canvasTextsTotals = [];
-
         for (var i = 0; i < size(me.totals); i += 1) {
             var total = me.totals[i];
             x += me.getX(i + 5);
-            append(me.canvasTextsTotals, me.drawText(cgroup, x, y, sprintf(Dialog.TOTAL_FORMATS[i], total)));
+            me.drawText(cgroup, x, y, sprintf(Dialog.TOTAL_FORMATS[i], total));
         }
 
         # Extra bottom margin
@@ -294,7 +297,7 @@ var Dialog = {
     #
     # Replace some too long header text
     #
-    # string test
+    # string text
     # return string
     #
     getReplaceHeaderText: func(text) {
@@ -328,13 +331,13 @@ var Dialog = {
         return {
             "dark": {
                 CANVAS_BG  : "#000000EE",
-                GROUP_BG   : [0.3, 0.3, 0.3],
+                # GROUP_BG   : [0.3, 0.3, 0.3],
                 TEXT_COLOR : [0.8, 0.8, 0.8],
                 HOVER_BG   : [0.2, 0.0, 0.0, 1.0],
             },
             "light": {
                 CANVAS_BG  : canvas.style.getColor("bg_color"),
-                GROUP_BG   : [0.7, 0.7, 0.7],
+                # GROUP_BG   : [0.7, 0.7, 0.7],
                 TEXT_COLOR : [0.3, 0.3, 0.3],
                 HOVER_BG   : [1.0, 1.0, 0.5, 1.0],
             },
@@ -370,13 +373,8 @@ var Dialog = {
     # Go to previous logbook items
     #
     prev: func() {
-        var old = me.startIndex;
-        me.startIndex -= Dialog.MAX_DATA_ITEMS;
-        if (me.startIndex < 0) {
-            me.startIndex = 0;
-        }
-
-        if (old != me.startIndex) {
+        if (me.startIndex - Dialog.MAX_DATA_ITEMS >= 0) {
+            me.startIndex -= Dialog.MAX_DATA_ITEMS;
             me.reloadData();
         }
     },
@@ -396,9 +394,8 @@ var Dialog = {
     #
     last: func() {
         var old = me.startIndex;
-        for (var i = old; i < me.file.getTotalLines() - Dialog.MAX_DATA_ITEMS; i += Dialog.MAX_DATA_ITEMS) {
-            me.startIndex += Dialog.MAX_DATA_ITEMS;
-        }
+        var pages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS);
+        me.startIndex = (pages * Dialog.MAX_DATA_ITEMS) - Dialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
             me.reloadData();
@@ -409,49 +406,18 @@ var Dialog = {
     # Reload logbook data
     #
     reloadData: func() {
-        me.clearData();
+        me.data   = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
+        me.totals = me.file.getTotalsData();
 
         # TODO: reload headers
 
-        me.data = me.file.loadData(me.startIndex, Dialog.MAX_DATA_ITEMS);
-        for (var i = 0; i < size(me.data); i += 1) {
-            var row = me.data[i];
-            for (var j = 0; j < size(row); j += 1) {
-                if (i == 0) {
-                    row[j] = me.getReplaceHeaderText(row[j]);
-                }
-
-                me.canvasTexts[i][j].setText(row[j]);
-            }
-        }
-
+        me.reDrawGrid();
         me.setPaging();
-
-        me.totals = me.file.getTotalsData();
-        for (var i = 0; i < size(me.totals); i += 1) {
-            var total = me.totals[i];
-            me.canvasTextsTotals[i].setText(sprintf(Dialog.TOTAL_FORMATS[i], total));
-        }
-
-        me.scrollContent.update();
-    },
-
-    #
-    # Clear logbook data from the window
-    #
-    clearData: func() {
-        for (var i = 0; i < size(me.canvasTexts); i += 1) {
-            var row = me.canvasTexts[i];
-            for (var j = 0; j < size(row); j += 1) {
-                me.canvasTexts[i][j].setText("");
-            }
-        }
     },
 
     setPaging: func() {
         var curPage = (me.startIndex / Dialog.MAX_DATA_ITEMS) + 1;
         var maxPages = math.ceil(me.file.getTotalLines() / Dialog.MAX_DATA_ITEMS);
-        me.labelPaging.setText(sprintf("%d / %d", curPage, maxPages));
+        me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.file.getTotalLines()));
     },
 };
-
