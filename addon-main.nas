@@ -37,6 +37,7 @@ var loadExtraNasalFiles = func (addon) {
         "nasal/Canvas/DetailsDialog",
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/LogbookDialog",
+        "nasal/Settings",
         "nasal/MouseHover",
         "nasal/Airport",
         "nasal/CrashDetector",

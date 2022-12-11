@@ -20,7 +20,12 @@ var Dialog = {
         var me = { parents: [Dialog] };
 
         me.addon  = addons.getAddon("org.flightgear.addons.logbook");
-        me.style  = me.getStyle().light;
+
+        me.settings = Settings.new(me.addon);
+
+        me.style = me.settings.isDarkStyle()
+            ? me.getStyle().dark
+            : me.getStyle().light;
 
         me.window = me.createCanvasWindow(width, height, title, resize);
         me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));

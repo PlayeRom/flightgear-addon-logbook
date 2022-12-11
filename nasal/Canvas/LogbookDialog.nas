@@ -329,6 +329,9 @@ var LogbookDialog = {
             ? me.getStyle().light
             : me.getStyle().dark;
 
+        me.settings.setDarkMode(me.style.NAME == "dark");
+        me.settings.save();
+
         me.canvas.set("background", me.style.CANVAS_BG);
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
 
