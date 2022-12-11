@@ -29,8 +29,9 @@ var File = {
     new: func (addon) {
         var me = { parents: [File] };
 
-        me.filePath = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
-        me.loadedData = [];
+        me.addon       = addon;
+        me.filePath    = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
+        me.loadedData  = [];
         me.headersData = [];
 
         # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
@@ -45,13 +46,48 @@ var File = {
     },
 
     #
+    # return bool - Return true if migration was done
+    #
+    migrateVersion: func() {
+        var olderReleases = [
+            # Keep the order from the newest to oldest
+            "1.0.0",
+        ];
+
+        foreach (var oldVersion; olderReleases) {
+            var oldFile = me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, oldVersion);
+            if (me.exists(oldFile)) {
+                me.copyFile(oldFile);
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    #
+    # Copy file from older version to the newest
+    #
+    # string oldFile
+    #
+    copyFile: func(oldFile) {
+        var content = io.readfile(oldFile);
+
+        var file = io.open(me.filePath, "w");
+        io.write(file, content);
+        io.close(file);
+    },
+
+    #
     # If logbook file doesn't exist then create it with headers
     #
     saveHeaders: func() {
         if (!me.exists(me.filePath)) {
-            var file = io.open(me.filePath, "a");
-            io.write(file, me.getHeaderLine() ~ "\n");
-            io.close(file);
+            if (!me.migrateVersion()) {
+                var file = io.open(me.filePath, "a");
+                io.write(file, me.getHeaderLine() ~ "\n");
+                io.close(file);
+            }
         }
     },
 
