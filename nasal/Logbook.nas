@@ -48,7 +48,7 @@ var Logbook = {
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
-        me.dialog        = LogbookDialog.new(me.file);
+        me.logbookDialog = LogbookDialog.new(addon, me.file);
 
         me.initStartAirport();
 
@@ -80,7 +80,7 @@ var Logbook = {
     #
     del: func() {
         me.mainTimer.stop();
-        me.dialog.del();
+        me.logbookDialog.del();
     },
 
     #
@@ -282,7 +282,14 @@ var Logbook = {
     #
     # Show logbook canvas dialog
     #
-    showDialog: func() {
-        me.dialog.show();
+    showLogbookDialog: func() {
+        me.logbookDialog.show();
+    },
+
+    #
+    # Show help canvas dialog
+    #
+    showHelpDialog: func() {
+        me.logbookDialog.helpDialog.show();
     },
 };

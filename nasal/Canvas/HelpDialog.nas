@@ -10,9 +10,9 @@
 #
 
 #
-# DetailsDialog class to display one row details
+# HelpDialog class to display help text
 #
-var DetailsDialog = {
+var HelpDialog = {
     #
     # Constants
     #
@@ -23,14 +23,14 @@ var DetailsDialog = {
     #
     # Constructor
     #
+    # hash addon - addons.Addon object
     # hash style
-    # hash file - File object
     #
-    new: func(style, file) {
-        var me = { parents: [DetailsDialog] };
+    new: func(addon, style) {
+        var me = { parents: [HelpDialog] };
 
+        me.addon = addon;
         me.style = style;
-        me.file = file;
 
         me.window = me.createCanvasWindow();
         me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
@@ -45,14 +45,7 @@ var DetailsDialog = {
 
         me.scrollDataContent = me.getScrollAreaContent();
 
-        me.textHeaders = me.drawText(0, 0);
-
-        var offsetX = 110;
-        me.textData = me.drawText(
-            offsetX,
-            0,
-            DetailsDialog.WINDOW_WIDTH - (DetailsDialog.PADDING * 2) - offsetX
-        );
+        me.textHelp = me.drawText(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
 
         var buttonBox = me.drawBottomBar();
 
@@ -66,8 +59,8 @@ var DetailsDialog = {
     # return hash
     #
     createCanvasWindow: func() {
-        var window = canvas.Window.new([DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook Details")
+        var window = canvas.Window.new([HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT], "dialog")
+            .set("title", "Logbook Help")
             .setBool("resize", true);
 
         window.hide();
@@ -95,7 +88,7 @@ var DetailsDialog = {
     createScrollArea: func() {
         var scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
         scrollData.setColorBackground(me.style.CANVAS_BG);
-        scrollData.setContentsMargins(DetailsDialog.PADDING, DetailsDialog.PADDING, 0, 0); # left, top, right, bottom
+        scrollData.setContentsMargins(HelpDialog.PADDING, HelpDialog.PADDING, 0, 0); # left, top, right, bottom
 
         return scrollData;
     },
@@ -106,8 +99,8 @@ var DetailsDialog = {
     getScrollAreaContent: func() {
         var scrollDataContent = me.scrollData.getContent();
         scrollDataContent
-            .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
-            .set("character-size", 16)
+            .set("font", "LiberationFonts/LiberationSans-Regular.ttf")
+            .set("character-size", 14)
             .set("alignment", "left-baseline");
 
         return scrollDataContent;
@@ -166,18 +159,14 @@ var DetailsDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
-        me.textHeaders.setColor(me.style.TEXT_COLOR);
-        me.textData.setColor(me.style.TEXT_COLOR);
+        me.textHelp.setColor(me.style.TEXT_COLOR);
     },
 
     #
     # Show canvas dialog
     #
-    # vector dataRow
-    #
-    show: func(dataRow) {
-        me.textHeaders.setText(me.getTextHeaders(dataRow));
-        me.textData.setText(me.getTextData(dataRow));
+    show: func() {
+        me.textHelp.setText(me.getText());
         me.window.raise();
         me.window.show();
     },
@@ -190,62 +179,9 @@ var DetailsDialog = {
     },
 
     #
-    # vector dataRow
     # return string
     #
-    getTextHeaders: func(dataRow) {
-        var text = "";
-        var headers = me.file.getHeadersData();
-        for (var i = 0; i < size(headers); i += 1) {
-            var header = headers[i];
-            text ~= sprintf("%10s:\n", headers[i]);
-        }
-
-        return text;
+    getText: func() {
+        return getprop(me.addon.node.getPath() ~ "/addon-devel/help-text");
     },
-
-    #
-    # vector dataRow
-    # return string
-    #
-    getTextData: func(dataRow) {
-        var text = "";
-        var headers = me.file.getHeadersData();
-        for (var i = 0; i < size(headers); i += 1) {
-            if (i < size(dataRow)) {
-                var data = dataRow[i] == "" ? "-" : dataRow[i];
-                text ~= sprintf("%s %s\n", data, me.getExtraText(i, dataRow[i]));
-            }
-        }
-
-        return text;
-    },
-
-    #
-    # int column
-    # string data
-    # return string
-    #
-    getExtraText: func(column, data) {
-        if ((column == 4 or column == 5) and data != "") { # From and To
-            var airport = airportinfo(data);
-            if (airport != nil) {
-                return "(" ~ airport.name ~ ")";
-            }
-        }
-        else if (column >= 8 and column <= 11) {
-            return "hours";
-        }
-        else if (column == 12) {
-            return "nm"
-        }
-        else if (column == 13) {
-            return "US gallons"
-        }
-        else if (column == 14) {
-            return "ft MSL"
-        }
-
-        return "";
-    }
 };

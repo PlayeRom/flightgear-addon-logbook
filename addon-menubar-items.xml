@@ -27,7 +27,7 @@
                 <label>Logbook</label>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.showDialog();</script>
+                    <script>logbook.g_Logbook.showLogbookDialog();</script>
                 </binding>
             </item>
 
@@ -38,8 +38,8 @@
             <item>
                 <label>Help</label>
                 <binding>
-                    <command>dialog-show</command>
-                    <dialog-name>help-logbook</dialog-name>
+                    <command>nasal</command>
+                    <script>logbook.g_Logbook.showHelpDialog();</script>
                 </binding>
             </item>
             <item>

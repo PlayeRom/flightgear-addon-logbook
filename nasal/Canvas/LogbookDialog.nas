@@ -57,9 +57,10 @@ var LogbookDialog = {
     #
     # Constructor
     #
-    # File file
+    # hash addon - addons.Addon object
+    # hash file - File object
     #
-    new: func(file) {
+    new: func(addon, file) {
         var me = { parents: [LogbookDialog] };
 
         me.startIndex = 0;
@@ -74,6 +75,7 @@ var LogbookDialog = {
         me.scrollDataContent   = nil;
 
         me.detailsDialog = DetailsDialog.new(me.style, file);
+        me.helpDialog    = HelpDialog.new(addon, me.style);
 
         me.window = me.createCanvasWindow();
         me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
@@ -121,6 +123,7 @@ var LogbookDialog = {
     del: func() {
         me.window.destroy();
         me.detailsDialog.del();
+        me.helpDialog.del();
     },
 
     #
@@ -305,6 +308,11 @@ var LogbookDialog = {
             .setFixedSize(75, 26)
             .listen("clicked", func { me.toggleStyle(); });
 
+        var btnHelp = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("?")
+            .setFixedSize(26, 26)
+            .listen("clicked", func { me.helpDialog.show(); });
+
         buttonBox.addStretch(4);
         buttonBox.addItem(btnFirst);
         buttonBox.addItem(btnPrev);
@@ -315,6 +323,7 @@ var LogbookDialog = {
         buttonBox.addItem(btnLast);
         buttonBox.addStretch(2);
         buttonBox.addItem(me.btnStyle);
+        buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 
         # me.vbox.addStretch(1);
@@ -390,6 +399,7 @@ var LogbookDialog = {
         me.reloadData();
 
         me.detailsDialog.setStyle(me.style);
+        me.helpDialog.setStyle(me.style);
     },
 
     #
