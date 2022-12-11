@@ -16,7 +16,7 @@ var DetailsDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 340,
+    WINDOW_WIDTH         : 600,
     WINDOW_HEIGHT        : 360,
     PADDING              : 10,
 
@@ -24,6 +24,7 @@ var DetailsDialog = {
     # Constructor
     #
     # hash style
+    # hash file - File object
     #
     new: func(style, file) {
         var me = { parents: [DetailsDialog] };
@@ -34,50 +35,40 @@ var DetailsDialog = {
         me.window = me.createCanvasWindow();
         me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
         me.group  = me.canvas.createGroup();
+
         me.vbox   = canvas.VBoxLayout.new();
         me.canvas.setLayout(me.vbox);
 
-        me.scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        me.scrollData.setColorBackground(me.style.CANVAS_BG);
-        me.scrollData.setContentsMargins(DetailsDialog.PADDING, DetailsDialog.PADDING, 0, 0); # left, top, right, bottom
+        me.scrollData = me.createScrollArea();
+
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
-        me.scrollDataContent = me.scrollData.getContent();
-        me.scrollDataContent
-            .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
-            .set("character-size", 16)
-            .set("alignment", "left-baseline");
 
-        me.textHeaders = me.scrollDataContent.createChild("text")
-            .setTranslation(0, 0)
-            .setColor(me.style.TEXT_COLOR)
-            .setAlignment("left-top");
+        me.scrollDataContent = me.getScrollAreaContent();
 
-        me.textData = me.scrollDataContent.createChild("text")
-            .setTranslation(110, 0)
-            .setColor(me.style.TEXT_COLOR)
-            .setAlignment("left-top")
-            .setMaxWidth(DetailsDialog.WINDOW_WIDTH - (DetailsDialog.PADDING * 2) - 110);
+        me.textHeaders = me.drawText(0, 0);
 
-        var buttonBox = canvas.HBoxLayout.new();
+        var offsetX = 110;
+        me.textData = me.drawText(
+            offsetX,
+            0,
+            DetailsDialog.WINDOW_WIDTH - (DetailsDialog.PADDING * 2) - offsetX
+        );
 
-        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Close")
-            .setFixedSize(75, 26);
+        var buttonBox = me.drawBottomBar();
 
-        btnClose.listen("clicked", func {
-            me.window.hide();
-        });
-
-        buttonBox.addItem(btnClose);
         me.vbox.addItem(buttonBox);
         me.vbox.addSpacing(10);
 
         return me;
     },
 
+    #
+    # return hash
+    #
     createCanvasWindow: func() {
         var window = canvas.Window.new([DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook details");
+            .set("title", "Logbook details")
+            .setBool("resize", true);
 
         window.hide();
 
@@ -99,12 +90,77 @@ var DetailsDialog = {
     },
 
     #
+    # return hash - gui.widgets.ScrollArea object
+    #
+    createScrollArea: func() {
+        var scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
+        scrollData.setColorBackground(me.style.CANVAS_BG);
+        scrollData.setContentsMargins(DetailsDialog.PADDING, DetailsDialog.PADDING, 0, 0); # left, top, right, bottom
+
+        return scrollData;
+    },
+
+    #
+    # return hash - content group of ScrollArea
+    #
+    getScrollAreaContent: func() {
+        var scrollDataContent = me.scrollData.getContent();
+        scrollDataContent
+            .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
+            .set("character-size", 16)
+            .set("alignment", "left-baseline");
+
+        return scrollDataContent;
+    },
+
+    #
+    # int x
+    # int y
+    # int|nil maxWidth
+    # return hash - canvas text object
+    #
+    drawText: func(x, y, maxWidth = nil) {
+        var text = me.scrollDataContent.createChild("text")
+            .setTranslation(x, y)
+            .setColor(me.style.TEXT_COLOR)
+            .setAlignment("left-top");
+
+        if (maxWidth != nil) {
+            text.setMaxWidth(maxWidth);
+        }
+
+        return text;
+    },
+
+    #
+    # return hash - HBoxLayout object with button
+    #
+    drawBottomBar: func() {
+        var buttonBox = canvas.HBoxLayout.new();
+
+        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Close")
+            .setFixedSize(75, 26);
+
+        btnClose.listen("clicked", func {
+            me.window.hide();
+        });
+
+        buttonBox.addItem(btnClose);
+
+        return buttonBox;
+    },
+
+    #
     # Destructor
     #
     del: func() {
         me.window.destroy();
     },
 
+    #
+    # hash style
+    #
     setStyle: func(style) {
         me.style = style;
 
@@ -115,7 +171,9 @@ var DetailsDialog = {
     },
 
     #
-    # vector data
+    # Show canvas dialog
+    #
+    # vector dataRow
     #
     show: func(dataRow) {
         me.textHeaders.setText(me.getTextHeaders(dataRow));
@@ -124,10 +182,17 @@ var DetailsDialog = {
         me.window.show();
     },
 
+    #
+    # Hide canvas dialog
+    #
     hide: func() {
         me.window.hide();
     },
 
+    #
+    # vector dataRow
+    # return string
+    #
     getTextHeaders: func(dataRow) {
         var text = "";
         var headers = me.file.getHeadersData();
@@ -139,21 +204,36 @@ var DetailsDialog = {
         return text;
     },
 
+    #
+    # vector dataRow
+    # return string
+    #
     getTextData: func(dataRow) {
         var text = "";
         var headers = me.file.getHeadersData();
         for (var i = 0; i < size(headers); i += 1) {
             if (i < size(dataRow)) {
                 var data = dataRow[i] == "" ? "-" : dataRow[i];
-                text ~= sprintf("%s %s\n", data, me.getUnits(i));
+                text ~= sprintf("%s %s\n", data, me.getExtraText(i, dataRow[i]));
             }
         }
 
         return text;
     },
 
-    getUnits: func(column) {
-        if (column >= 8 and column <= 11) {
+    #
+    # int column
+    # string data
+    # return string
+    #
+    getExtraText: func(column, data) {
+        if ((column == 4 or column == 5) and data != "") { # From and To
+            var airport = airportinfo(data);
+            if (airport != nil) {
+                return "(" ~ airport.name ~ ")";
+            }
+        }
+        else if (column >= 8 and column <= 11) {
             return "hours";
         }
         else if (column == 12) {
