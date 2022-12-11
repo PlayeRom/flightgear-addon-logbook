@@ -4,7 +4,7 @@ FlightGear Logbook Add-on
 
 # =============== EN ===============
 
-This add-on automatically keeps a log of our flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
+This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
 
 ## Installation
 
@@ -15,9 +15,9 @@ Installation is standard:
 
 ## How it's working?
 
-The add-on tries to automatically detect if an aircraft has taken off by checking the Weight of Wheels. Then the add-on starts collecting information about the flight. This means that if we are parked, taxiing, etc., it is not yet included in the flight log. If we are in the air, the add-on tries to detect if we have landed also by testing Weight of Wheels. Thus, logging takes place from the moment the aircraft is lifted off the ground until it is put back on the ground.
+The add-on tries to automatically detect if an aircraft has taken off by checking the Weight of Wheels. Then the add-on starts collecting information about the flight. This means that if you are parked, taxiing, etc., it is not yet included in the flight log. If you are in the air, the add-on tries to detect if you have landed also by testing Weight of Wheels. Thus, logging takes place from the moment the aircraft is lifted off the ground until it is put back on the ground.
 
-If the aircraft has no wheels, only the floats, then the add-on will also try to recognize if the floats are resisting the water (if the plane uses JSBSim), thus recognizing whether we are in the air or not.
+If the aircraft has no wheels, only the floats, then the add-on will also try to recognize if the floats are resisting the water (if the plane uses JSBSim), thus recognizing whether you are in the air or not.
 
 The add-on also recognizes the moment of launch of the Space Shuttle from the starting position, which required a separate consideration due to the different launch.
 
