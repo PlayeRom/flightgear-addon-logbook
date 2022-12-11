@@ -78,7 +78,7 @@ var File = {
     },
 
     #
-    # Check taht file already exists.
+    # Check that file already exists.
     # From FG 2020.4 (next) we have io.exists() but for older versions we have to write it ourselves.
     #
     # return bool

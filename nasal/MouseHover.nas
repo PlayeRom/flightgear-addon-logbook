@@ -36,7 +36,7 @@ var MouseHover = {
     },
 
     #
-    # Add mouse evnets to the logbook row
+    # Add mouse events to the logbook row
     #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {

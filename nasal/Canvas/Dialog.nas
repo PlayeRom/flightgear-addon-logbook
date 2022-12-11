@@ -16,10 +16,10 @@ var Dialog = {
     #
     # Constructor
     #
-    # int width
-    # int height
-    # string title
-    # bool resize
+    # int width - Initial width of window
+    # int height - Initial height of window
+    # string title - Title of window in the top bar
+    # bool resize - If true then user will be possible to resize the window
     # return me
     #
     new: func(width, height, title, resize = 0) {
@@ -95,7 +95,7 @@ var Dialog = {
 
     #
     # vector|nil bgColor
-    # hash|nil margins - Margins object or nil
+    # hash|nil margins - Margins hash or nil
     # return hash - gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
@@ -110,6 +110,10 @@ var Dialog = {
     },
 
     #
+    # hash cgroup - Pareent object as ScrollArea widget
+    # string|nil font - Font file name
+    # int|nil - Font size
+    # string|nil alignment - Content alignment value
     # return hash - content group of ScrollArea
     #
     getScrollAreaContent: func(cgroup, font = nil, fontSize = nil, alignment = nil) {
