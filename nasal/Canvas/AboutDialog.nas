@@ -55,6 +55,13 @@ var AboutDialog = {
     },
 
     #
+    # Destructor
+    #
+    del: func() {
+        me.parents[1].del();
+    },
+
+    #
     # Draw content for scrollable area
     #
     drawScrollable: func() {
@@ -111,12 +118,5 @@ var AboutDialog = {
         buttonBox.addStretch(1);
 
         return buttonBox;
-    },
-
-    #
-    # Destructor
-    #
-    del: func() {
-        me.parents[1].del();
     },
 };

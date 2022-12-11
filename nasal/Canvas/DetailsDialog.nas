@@ -65,6 +65,13 @@ var DetailsDialog = {
     },
 
     #
+    # Destructor
+    #
+    del: func() {
+        me.parents[1].del();
+    },
+
+    #
     # int x
     # int y
     # int|nil maxWidth
@@ -100,13 +107,6 @@ var DetailsDialog = {
         buttonBox.addItem(btnClose);
 
         return buttonBox;
-    },
-
-    #
-    # Destructor
-    #
-    del: func() {
-        me.parents[1].del();
     },
 
     #

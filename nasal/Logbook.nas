@@ -14,7 +14,7 @@
 #
 var Logbook = {
     #
-    # Consts
+    # Constants
     #
     ALT_AGL_FT_THRESHOLD : 100,
 

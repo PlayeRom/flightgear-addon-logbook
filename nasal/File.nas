@@ -55,6 +55,9 @@ var File = {
         }
     },
 
+    #
+    # return string
+    #
     getHeaderLine: func() {
         return 'Date,' ~
                'Time,' ~
@@ -202,5 +205,5 @@ var File = {
     #
     getHeadersData: func() {
         me.headersData;
-    }
+    },
 };

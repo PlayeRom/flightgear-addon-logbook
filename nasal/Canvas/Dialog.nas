@@ -16,6 +16,12 @@ var Dialog = {
     #
     # Constructor
     #
+    # int width
+    # int height
+    # string title
+    # bool resize
+    # return me
+    #
     new: func(width, height, title, resize = 0) {
         var me = { parents: [Dialog] };
 
@@ -37,6 +43,17 @@ var Dialog = {
     },
 
     #
+    # Destructor
+    #
+    del: func() {
+        me.window.destroy();
+    },
+
+    #
+    # int width
+    # int height
+    # string title
+    # bool resize
     # return hash
     #
     createCanvasWindow: func(width, height, title, resize = 0) {
@@ -111,13 +128,6 @@ var Dialog = {
         }
 
         return scrollContent;
-    },
-
-    #
-    # Destructor
-    #
-    del: func() {
-        me.window.destroy();
     },
 
     #

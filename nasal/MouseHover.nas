@@ -35,6 +35,9 @@ var MouseHover = {
         return me;
     },
 
+    #
+    # Add mouse evnets to the logbook row
+    #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {
             me.target.setColorFill(me.style.HOVER_BG);

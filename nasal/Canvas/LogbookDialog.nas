@@ -201,6 +201,11 @@ var LogbookDialog = {
         me.scrollDataContent.update();
     },
 
+    #
+    # hash cgroup - Parent canvas group
+    # int y
+    # vector|nil dataRow
+    #
     drawHoverBox: func(cgroup, y, dataRow = nil) {
         var rowGroup = cgroup.createChild("group");
         rowGroup.setTranslation(LogbookDialog.PADDING, y - LogbookDialog.SHIFT_Y + 11);
@@ -355,7 +360,7 @@ var LogbookDialog = {
     #
     # Draw text
     #
-    # hash cgroup - Canvas group
+    # hash cgroup - Parent canvas group
     # int x, y - Position of text
     # string text - Text to draw
     #
@@ -421,6 +426,9 @@ var LogbookDialog = {
         me.setPaging();
     },
 
+    #
+    # Set paging information
+    #
     setPaging: func() {
         var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
         var maxPages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
