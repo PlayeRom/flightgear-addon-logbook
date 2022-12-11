@@ -23,7 +23,7 @@ The add-on also recognizes the moment of launch of the Space Shuttle from the st
 
 ## Logbook file
 
-You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.0.csv`, where `$FG_HOME` on Windows is:
+You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.1.csv`, where `$FG_HOME` on Windows is:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
@@ -95,7 +95,7 @@ Dodatek rozpoznaje także moment startu Wahadłowca Kosmicznego z pozycji starto
 
 ## Plik logbooka
 
-Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.0.csv`, gdzie `$FG_HOME` pod Windows to:
+Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.1.csv`, gdzie `$FG_HOME` pod Windows to:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
