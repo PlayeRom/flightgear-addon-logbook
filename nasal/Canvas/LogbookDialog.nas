@@ -57,32 +57,30 @@ var LogbookDialog = {
     #
     # Constructor
     #
-    # hash addon - addons.Addon object
     # hash file - File object
     #
-    new: func(addon, file) {
-        var me = { parents: [LogbookDialog] };
+    new: func(file) {
+        var me = {
+            parents: [
+                LogbookDialog,
+                Dialog.new(LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook", true),
+            ],
+        };
 
         me.startIndex = 0;
 
         me.file                = file;
         me.data                = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals              = me.file.getTotalsData();
-        me.style               = me.getStyle().light;
         me.rowTotal            = nil;
         me.groupHeadersContent = nil;
         me.scrollData          = nil;
         me.scrollDataContent   = nil;
 
-        me.detailsDialog = DetailsDialog.new(me.style, file);
-        me.helpDialog    = HelpDialog.new(addon, me.style);
-        me.aboutDialog   = AboutDialog.new(addon);
-
-        me.window = me.createCanvasWindow();
-        me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
-        me.group  = me.canvas.createGroup();
-        me.vbox   = canvas.VBoxLayout.new();
-        me.canvas.setLayout(me.vbox);
+        me.canvas.set("background", me.style.CANVAS_BG);
+        me.detailsDialog = DetailsDialog.new(file);
+        me.helpDialog    = HelpDialog.new();
+        me.aboutDialog   = AboutDialog.new();
 
         me.drawHeaders();
         me.drawData();
@@ -94,53 +92,14 @@ var LogbookDialog = {
         return me;
     },
 
-    createCanvasWindow: func() {
-        var window = canvas.Window.new([LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook")
-            .setBool("resize", true);
-
-        window.hide();
-
-        window.del = func() {
-            # This method will be call after click on (X) button in canvas top
-            # bar and here we want hide the window only.
-            # FG next version provide destroy_on_close, but for 2020.3.x it's
-            # unavailable, so we are handling it manually by this trick.
-            call(me.hide, [], me);
-        };
-
-        # Because window.del only hide the window, we have to add extra method
-        # to really delete the window.
-        window.destroy = func() {
-            call(canvas.Window.del, [], me);
-        };
-
-        return window;
-    },
-
     #
     # Destructor
     #
     del: func() {
-        me.window.destroy();
+        me.parents[1].del();
         me.detailsDialog.del();
         me.helpDialog.del();
         me.aboutDialog.del();
-    },
-
-    #
-    # Show canvas dialog
-    #
-    show: func() {
-        me.reloadData();
-        me.window.show();
-    },
-
-    #
-    # Hide canvas dialog
-    #
-    hide: func() {
-        me.window.hide();
     },
 
     #
@@ -182,16 +141,17 @@ var LogbookDialog = {
     # Draw scrollArea for logbook data
     #
     drawData: func() {
-        me.scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        me.scrollData.setColorBackground(me.style.CANVAS_BG);
-        me.scrollData.setContentsMargins(5, 0, 0, 0); # left, top, right, bottom
+        me.scrollData = me.createScrollArea(me.style.CANVAS_BG, {"left": 5, "top": 0, "right": 0, "bottom": 0});
+
         me.vbox.addSpacing(30);
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
-        me.scrollDataContent = me.scrollData.getContent();
-        me.scrollDataContent
-            .set("font", LogbookDialog.FONT_NAME)
-            .set("character-size", LogbookDialog.FONT_SIZE)
-            .set("alignment", "left-baseline");
+
+        me.scrollDataContent = me.getScrollAreaContent(
+            me.scrollData,
+            LogbookDialog.FONT_NAME,
+            LogbookDialog.FONT_SIZE,
+            "left-baseline"
+        );
 
         me.reDrawDataContent();
     },
@@ -362,30 +322,6 @@ var LogbookDialog = {
     },
 
     #
-    # Get hash with dialog styles
-    #
-    # return hash
-    #
-    getStyle: func() {
-        return {
-            "dark": {
-                NAME       : "dark",
-                CANVAS_BG  : "#000000EE",
-                # GROUP_BG   : [0.3, 0.3, 0.3],
-                TEXT_COLOR : [0.8, 0.8, 0.8],
-                HOVER_BG   : [0.2, 0.0, 0.0, 1.0],
-            },
-            "light": {
-                NAME       : "light",
-                CANVAS_BG  : canvas.style.getColor("bg_color"),
-                # GROUP_BG   : [0.7, 0.7, 0.7],
-                TEXT_COLOR : [0.3, 0.3, 0.3],
-                HOVER_BG   : [1.0, 1.0, 0.5, 1.0],
-            },
-        };
-    },
-
-    #
     # Toggle style from light to dark and vice versa.
     #
     toggleStyle: func() {
@@ -424,7 +360,6 @@ var LogbookDialog = {
         return cgroup.createChild("text")
             .setTranslation(x, y)
             .setColor(me.style.TEXT_COLOR)
-            # .setDrawMode(canvas.Text.TEXT)
             .setText(text);
     },
 

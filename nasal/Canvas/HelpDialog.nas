@@ -23,27 +23,27 @@ var HelpDialog = {
     #
     # Constructor
     #
-    # hash addon - addons.Addon object
-    # hash style
-    #
-    new: func(addon, style) {
-        var me = { parents: [HelpDialog] };
+    new: func() {
+        var me = { parents: [
+            HelpDialog,
+            Dialog.new(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT, "Logbook Help", true),
+        ] };
 
-        me.addon = addon;
-        me.style = style;
+        me.setPositionOnCenter(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT);
 
-        me.window = me.createCanvasWindow();
-        me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
-        me.group  = me.canvas.createGroup();
+        me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.vbox   = canvas.VBoxLayout.new();
-        me.canvas.setLayout(me.vbox);
-
-        me.scrollData = me.createScrollArea();
+        var margins = {"left": HelpDialog.PADDING, "top": HelpDialog.PADDING, "right": 0, "bottom": 0};
+        me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent();
+        me.scrollDataContent = me.getScrollAreaContent(
+            me.scrollData,
+            "LiberationFonts/LiberationSans-Regular.ttf",
+            14,
+            "left-baseline"
+        );
 
         me.textHelp = me.drawText(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
 
@@ -53,66 +53,6 @@ var HelpDialog = {
         me.vbox.addSpacing(10);
 
         return me;
-    },
-
-    #
-    # return hash
-    #
-    createCanvasWindow: func() {
-        var window = canvas.Window.new([HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook Help")
-            .setBool("resize", true);
-
-        window.hide();
-
-        window.del = func() {
-            # This method will be call after click on (X) button in canvas top
-            # bar and here we want hide the window only.
-            # FG next version provide destroy_on_close, but for 2020.3.x it's
-            # unavailable, so we are handling it manually by this trick.
-            call(me.hide, [], me);
-        };
-
-        # Because window.del only hide the window, we have to add extra method
-        # to really delete the window.
-        window.destroy = func() {
-            call(canvas.Window.del, [], me);
-        };
-
-        # Set position on center of screen
-        var screenW = getprop("/sim/gui/canvas/size[0]");
-        var screenH = getprop("/sim/gui/canvas/size[1]");
-
-        window.setPosition(
-            screenW / 2 - HelpDialog.WINDOW_WIDTH / 2,
-            screenH / 2 - HelpDialog.WINDOW_HEIGHT / 2
-        );
-
-        return window;
-    },
-
-    #
-    # return hash - gui.widgets.ScrollArea object
-    #
-    createScrollArea: func() {
-        var scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        scrollData.setColorBackground(me.style.CANVAS_BG);
-        scrollData.setContentsMargins(HelpDialog.PADDING, HelpDialog.PADDING, 0, 0); # left, top, right, bottom
-
-        return scrollData;
-    },
-
-    #
-    # return hash - content group of ScrollArea
-    #
-    getScrollAreaContent: func() {
-        var scrollDataContent = me.scrollData.getContent();
-        scrollDataContent
-            .set("font", "LiberationFonts/LiberationSans-Regular.ttf")
-            .set("character-size", 14)
-            .set("alignment", "left-baseline");
-
-        return scrollDataContent;
     },
 
     #
@@ -158,7 +98,7 @@ var HelpDialog = {
     # Destructor
     #
     del: func() {
-        me.window.destroy();
+        me.parents[1].del();
     },
 
     #
@@ -170,21 +110,6 @@ var HelpDialog = {
         me.canvas.set("background", me.style.CANVAS_BG);
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
         me.textHelp.setColor(me.style.TEXT_COLOR);
-    },
-
-    #
-    # Show canvas dialog
-    #
-    show: func() {
-        me.window.raise();
-        me.window.show();
-    },
-
-    #
-    # Hide canvas dialog
-    #
-    hide: func() {
-        me.window.hide();
     },
 
     #

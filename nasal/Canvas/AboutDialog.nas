@@ -16,32 +16,27 @@ var AboutDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 320,
-    WINDOW_HEIGHT        : 180,
-    PADDING              : 10,
+    WINDOW_WIDTH  : 320,
+    WINDOW_HEIGHT : 180,
+    PADDING       : 10,
 
     #
     # Constructor
     #
-    # hash addon - addons.Addon object
-    #
-    new: func(addon) {
-        var me = { parents: [AboutDialog] };
+    new: func() {
+        var me = { parents: [
+            AboutDialog,
+            Dialog.new(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
+        ] };
 
-        me.addon = addon;
+        me.setPositionOnCenter(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT);
 
-        me.window = me.createCanvasWindow();
-        me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
-        me.group  = me.canvas.createGroup();
-
-        me.vbox   = canvas.VBoxLayout.new();
-        me.canvas.setLayout(me.vbox);
-
-        me.scrollData = me.createScrollArea();
+        var margins = {"left": AboutDialog.PADDING, "top": AboutDialog.PADDING, "right": 0, "bottom": 0};
+        me.scrollData = me.createScrollArea(nil, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent();
+        me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
 
         var aboutText = me.drawScrollable();
 
@@ -60,65 +55,8 @@ var AboutDialog = {
     },
 
     #
-    # return hash
+    # Draw content for scrollable area
     #
-    createCanvasWindow: func() {
-        var window = canvas.Window.new([AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook Help");
-            # .setBool("resize", true);
-
-        window.hide();
-
-        window.del = func() {
-            # This method will be call after click on (X) button in canvas top
-            # bar and here we want hide the window only.
-            # FG next version provide destroy_on_close, but for 2020.3.x it's
-            # unavailable, so we are handling it manually by this trick.
-            call(me.hide, [], me);
-        };
-
-        # Because window.del only hide the window, we have to add extra method
-        # to really delete the window.
-        window.destroy = func() {
-            call(canvas.Window.del, [], me);
-        };
-
-        # Set position on center of screen
-        var screenW = getprop("/sim/gui/canvas/size[0]");
-        var screenH = getprop("/sim/gui/canvas/size[1]");
-
-        window.setPosition(
-            screenW / 2 - AboutDialog.WINDOW_WIDTH / 2,
-            screenH / 2 - AboutDialog.WINDOW_HEIGHT / 2
-        );
-
-        return window;
-    },
-
-    #
-    # return hash - gui.widgets.ScrollArea object
-    #
-    createScrollArea: func() {
-        var scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        scrollData.setColorBackground(canvas.style.getColor("bg_color"));
-        scrollData.setContentsMargins(AboutDialog.PADDING, AboutDialog.PADDING, 0, 0); # left, top, right, bottom
-
-        return scrollData;
-    },
-
-    #
-    # return hash - content group of ScrollArea
-    #
-    getScrollAreaContent: func() {
-        var scrollDataContent = me.scrollData.getContent();
-        # scrollDataContent
-        #     .set("font", "LiberationFonts/LiberationSans-Regular.ttf")
-        #     .set("character-size", 14)
-        #     .set("alignment", "center-top");
-
-        return scrollDataContent;
-    },
-
     drawScrollable: func() {
         var radioList = canvas.VBoxLayout.new();
 
@@ -179,21 +117,6 @@ var AboutDialog = {
     # Destructor
     #
     del: func() {
-        me.window.destroy();
-    },
-
-    #
-    # Show canvas dialog
-    #
-    show: func() {
-        me.window.raise();
-        me.window.show();
-    },
-
-    #
-    # Hide canvas dialog
-    #
-    hide: func() {
-        me.window.hide();
+        me.parents[1].del();
     },
 };

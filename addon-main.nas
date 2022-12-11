@@ -32,11 +32,12 @@ var main = func(addon) {
 #
 var loadExtraNasalFiles = func (addon) {
     var modules = [
-        "nasal/MouseHover",
+        "nasal/Canvas/Dialog",
         "nasal/Canvas/AboutDialog",
         "nasal/Canvas/DetailsDialog",
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/LogbookDialog",
+        "nasal/MouseHover",
         "nasal/Airport",
         "nasal/CrashDetector",
         "nasal/SpaceShuttle",

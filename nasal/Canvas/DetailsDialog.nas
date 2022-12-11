@@ -16,34 +16,36 @@ var DetailsDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 600,
-    WINDOW_HEIGHT        : 360,
-    PADDING              : 10,
+    WINDOW_WIDTH  : 600,
+    WINDOW_HEIGHT : 360,
+    PADDING       : 10,
 
     #
     # Constructor
     #
-    # hash style
     # hash file - File object
     #
-    new: func(style, file) {
-        var me = { parents: [DetailsDialog] };
+    new: func(file) {
+        var me = { parents: [
+            DetailsDialog,
+            Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details", true),
+        ] };
 
-        me.style = style;
         me.file = file;
 
-        me.window = me.createCanvasWindow();
-        me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
-        me.group  = me.canvas.createGroup();
+        me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.vbox   = canvas.VBoxLayout.new();
-        me.canvas.setLayout(me.vbox);
-
-        me.scrollData = me.createScrollArea();
+        var margins = {"left": DetailsDialog.PADDING, "top": DetailsDialog.PADDING, "right": 0, "bottom": 0};
+        me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent();
+        me.scrollDataContent = me.getScrollAreaContent(
+            me.scrollData,
+            "LiberationFonts/LiberationMono-Bold.ttf",
+            16,
+            "left-baseline"
+        );
 
         me.textHeaders = me.drawText(0, 0);
 
@@ -60,57 +62,6 @@ var DetailsDialog = {
         me.vbox.addSpacing(10);
 
         return me;
-    },
-
-    #
-    # return hash
-    #
-    createCanvasWindow: func() {
-        var window = canvas.Window.new([DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT], "dialog")
-            .set("title", "Logbook Details")
-            .setBool("resize", true);
-
-        window.hide();
-
-        window.del = func() {
-            # This method will be call after click on (X) button in canvas top
-            # bar and here we want hide the window only.
-            # FG next version provide destroy_on_close, but for 2020.3.x it's
-            # unavailable, so we are handling it manually by this trick.
-            call(me.hide, [], me);
-        };
-
-        # Because window.del only hide the window, we have to add extra method
-        # to really delete the window.
-        window.destroy = func() {
-            call(canvas.Window.del, [], me);
-        };
-
-        return window;
-    },
-
-    #
-    # return hash - gui.widgets.ScrollArea object
-    #
-    createScrollArea: func() {
-        var scrollData = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
-        scrollData.setColorBackground(me.style.CANVAS_BG);
-        scrollData.setContentsMargins(DetailsDialog.PADDING, DetailsDialog.PADDING, 0, 0); # left, top, right, bottom
-
-        return scrollData;
-    },
-
-    #
-    # return hash - content group of ScrollArea
-    #
-    getScrollAreaContent: func() {
-        var scrollDataContent = me.scrollData.getContent();
-        scrollDataContent
-            .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
-            .set("character-size", 16)
-            .set("alignment", "left-baseline");
-
-        return scrollDataContent;
     },
 
     #
@@ -155,7 +106,7 @@ var DetailsDialog = {
     # Destructor
     #
     del: func() {
-        me.window.destroy();
+        me.parents[1].del();
     },
 
     #
@@ -178,15 +129,8 @@ var DetailsDialog = {
     show: func(dataRow) {
         me.textHeaders.setText(me.getTextHeaders(dataRow));
         me.textData.setText(me.getTextData(dataRow));
-        me.window.raise();
-        me.window.show();
-    },
 
-    #
-    # Hide canvas dialog
-    #
-    hide: func() {
-        me.window.hide();
+        me.parents[1].show();
     },
 
     #
@@ -247,5 +191,5 @@ var DetailsDialog = {
         }
 
         return "";
-    }
+    },
 };
