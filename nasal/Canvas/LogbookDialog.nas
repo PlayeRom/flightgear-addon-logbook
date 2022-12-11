@@ -103,6 +103,14 @@ var LogbookDialog = {
     },
 
     #
+    # Show canvas dialog
+    #
+    show: func() {
+        me.reloadData();
+        me.parents[1].show();
+    },
+
+    #
     # Draw headers row
     #
     drawHeaders: func() {
