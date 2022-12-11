@@ -63,6 +63,8 @@ NOTE
 8. The add-on supports the Space Shuttle.
 9. Flights with UFO will not be logged.
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
+11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the Fuel column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
+12. Supported FG versions from 2020.1.
                     </help-text>
                 </addon-devel>
             </org.flightgear.addons.logbook>
