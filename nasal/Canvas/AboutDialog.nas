@@ -65,9 +65,9 @@ var AboutDialog = {
     # Draw content for scrollable area
     #
     drawScrollable: func() {
-        var radioList = canvas.VBoxLayout.new();
+        var vBoxLayout = canvas.VBoxLayout.new();
 
-        radioList.addItem(me.getLabel(
+        vBoxLayout.addItem(me.getLabel(
             sprintf(
                 "%s version %s - 6th December 2022",
                 me.addon.name,
@@ -75,10 +75,10 @@ var AboutDialog = {
             )
         ));
 
-        radioList.addItem(me.getLabel("Written by:"));
+        vBoxLayout.addItem(me.getLabel("Written by:"));
 
         foreach (var author; me.addon.authors) {
-            radioList.addItem(me.getLabel(sprintf("%s", author.name)));
+            vBoxLayout.addItem(me.getLabel(sprintf("%s", author.name)));
         }
 
         var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
@@ -88,9 +88,9 @@ var AboutDialog = {
                 fgcommand("open-browser", props.Node.new({"url" : me.addon.codeRepositoryUrl}));
             });
 
-        radioList.addItem(btnRepo);
+        vBoxLayout.addItem(btnRepo);
 
-        me.scrollData.setLayout(radioList);
+        me.scrollData.setLayout(vBoxLayout);
     },
 
     #
