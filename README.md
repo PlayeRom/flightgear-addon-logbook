@@ -17,7 +17,7 @@ Installation is standard:
 
 The add-on tries to automatically detect if an aircraft has taken off by checking the Weight of Wheels. Then the add-on starts collecting information about the flight. This means that if you are parked, taxiing, etc., it is not yet included in the flight log. If you are in the air, the add-on tries to detect if you have landed also by testing Weight of Wheels. Thus, logging takes place from the moment the aircraft is lifted off the ground until it is put back on the ground.
 
-If the aircraft has no wheels, only the floats, then the add-on will also try to recognize if the floats are resisting the water (if the plane uses JSBSim), thus recognizing whether you are in the air or not.
+If the aircraft has no wheels, only the floats, then the add-on will also try to recognize if the floats are resisting the water (if the aircraft uses JSBSim), thus recognizing whether you are in the air or not.
 
 The add-on also recognizes the moment of launch of the Space Shuttle from the starting position, which required a separate consideration due to the different launch.
 
@@ -63,7 +63,8 @@ The following information is logged into the file:
 8. The add-on supports the Space Shuttle.
 9. Flights with UFO will not be logged.
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
-11. Supported FG versions from 2020.1.
+11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
+12. Supported FG versions from 2020.1.
 
 ## Authors
 
@@ -134,7 +135,8 @@ Do pliku logowane są następujące informacje:
 8. Dodatek wspiera Wahadłowiec Kosmiczny.
 9. Loty UFO nie będą logowane.
 10. Zapauzowanie symulacji lub włączenie trybu powtórki, zatrzymuje naliczanie statystyk lotu do dziennika.
-11. Wspierane wersje FG od 2020.1.
+11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
+12. Wspierane wersje FG od 2020.1.
 
 ## Autorzy
 
