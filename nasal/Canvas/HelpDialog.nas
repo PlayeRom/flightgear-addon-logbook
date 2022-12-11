@@ -79,6 +79,15 @@ var HelpDialog = {
             call(canvas.Window.del, [], me);
         };
 
+        # Set position on center of screen
+        var screenW = getprop("/sim/gui/canvas/size[0]");
+        var screenH = getprop("/sim/gui/canvas/size[1]");
+
+        window.setPosition(
+            screenW / 2 - HelpDialog.WINDOW_WIDTH / 2,
+            screenH / 2 - HelpDialog.WINDOW_HEIGHT / 2
+        );
+
         return window;
     },
 
@@ -114,6 +123,7 @@ var HelpDialog = {
     #
     drawText: func(x, y, maxWidth = nil) {
         var text = me.scrollDataContent.createChild("text")
+            .setText(me.getHelpText())
             .setTranslation(x, y)
             .setColor(me.style.TEXT_COLOR)
             .setAlignment("left-top");
@@ -166,7 +176,6 @@ var HelpDialog = {
     # Show canvas dialog
     #
     show: func() {
-        me.textHelp.setText(me.getText());
         me.window.raise();
         me.window.show();
     },
@@ -181,7 +190,7 @@ var HelpDialog = {
     #
     # return string
     #
-    getText: func() {
+    getHelpText: func() {
         return getprop(me.addon.node.getPath() ~ "/addon-devel/help-text");
     },
 };
