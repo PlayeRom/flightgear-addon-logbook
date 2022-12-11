@@ -23,7 +23,15 @@
                         </settings>
                     </save>
                     <help-text type="string">
-You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.0.csv` directory.
+This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
+
+You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v%s.csv` directory, where `$FG_HOME` on Windows is:
+
+`C:\Users\{user name}\AppData\Roaming\flightgear.org\`
+
+and on Linux/MacOS:
+
+`/home/{user name}/.fgfs/`
 
 The following information is logged into the file:
 
@@ -42,6 +50,19 @@ The following information is logged into the file:
 13. Fuel - total fuel burned, in US gallons.
 14. Max Alt - maximum altitude, in feet, reached during flight.
 15. Note - notes, by default the full name of the aircraft.
+
+NOTE
+
+1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the flight status will lost.
+3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
+4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
+5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
+6. Helicopters should also be supported, although I have not tested all of them.
+7. The add-on supports JSBSim-based watercraft, although I have not tested all of them.
+8. The add-on supports the Space Shuttle.
+9. Flights with UFO will not be logged.
+10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
                     </help-text>
                 </addon-devel>
             </org.flightgear.addons.logbook>

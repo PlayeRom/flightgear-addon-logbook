@@ -16,9 +16,9 @@ var HelpDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 600,
-    WINDOW_HEIGHT        : 360,
-    PADDING              : 10,
+    WINDOW_WIDTH  : 600,
+    WINDOW_HEIGHT : 360,
+    PADDING       : 10,
 
     #
     # Constructor
@@ -116,6 +116,6 @@ var HelpDialog = {
     # return string
     #
     getHelpText: func() {
-        return getprop(me.addon.node.getPath() ~ "/addon-devel/help-text");
+        return sprintf(getprop(me.addon.node.getPath() ~ "/addon-devel/help-text"), me.addon.version.str());
     },
 };
