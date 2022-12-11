@@ -280,16 +280,23 @@ var Logbook = {
     },
 
     #
-    # Show logbook canvas dialog
+    # Show Logbook canvas dialog
     #
     showLogbookDialog: func() {
         me.logbookDialog.show();
     },
 
     #
-    # Show help canvas dialog
+    # Show Help canvas dialog
     #
     showHelpDialog: func() {
         me.logbookDialog.helpDialog.show();
+    },
+
+    #
+    # Show About canvas dialog
+    #
+    showAboutDialog: func() {
+        me.logbookDialog.aboutDialog.show();
     },
 };

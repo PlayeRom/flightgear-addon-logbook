@@ -76,6 +76,7 @@ var LogbookDialog = {
 
         me.detailsDialog = DetailsDialog.new(me.style, file);
         me.helpDialog    = HelpDialog.new(addon, me.style);
+        me.aboutDialog   = AboutDialog.new(addon);
 
         me.window = me.createCanvasWindow();
         me.canvas = me.window.createCanvas().set("background", me.style.CANVAS_BG);
@@ -124,6 +125,7 @@ var LogbookDialog = {
         me.window.destroy();
         me.detailsDialog.del();
         me.helpDialog.del();
+        me.aboutDialog.del();
     },
 
     #

@@ -45,8 +45,8 @@
             <item>
                 <label>About</label>
                 <binding>
-                    <command>dialog-show</command>
-                    <dialog-name>about-logbook</dialog-name>
+                    <command>nasal</command>
+                    <script>logbook.g_Logbook.showAboutDialog();</script>
                 </binding>
             </item>
 
