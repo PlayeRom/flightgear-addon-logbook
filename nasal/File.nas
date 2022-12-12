@@ -64,6 +64,11 @@ var File = {
         # Total lines in CSV file (without headers)
         me.totalLines  = -1;
 
+        me.start = 0;
+        me.count = 0;
+        me.obj = nil;
+        me.callback = nil;
+
         me.saveHeaders();
 
         return me;
@@ -221,6 +226,13 @@ var File = {
     # return void
     #
     loadAllData: func() {
+        thread.newthread(func { me.loadAllDataThread(); });
+    },
+
+    #
+    # return void
+    #
+    loadAllDataThread: func() {
         me.allData.clear();
         me.cachedData.clear();
         me.filters.clear();
@@ -267,7 +279,6 @@ var File = {
         me.loadedData = [];
 
         var counter = 0;
-
         if (!me.filters.dirty and me.cachedData.size() > 0) {
             # Use a faster loop because we know that nothing has changed in the data
 
@@ -320,6 +331,15 @@ var File = {
 
         me.filters.dirty = false;
 
+        # print(timestamp.elapsedMSec(), " ms elapsed <------------------------------------------- ");
+
+        call(me.callback, [me.loadedData, me.totals], me.obj);
+    },
+
+    #
+    # return vector
+    #
+    getLoadedData: func() {
         return me.loadedData;
     },
 
