@@ -547,6 +547,8 @@ var LogbookDialog = {
 
         me.redraw(withHeaders);
         me.setPaging();
+
+        me.isPending = false;
     },
 
     #
