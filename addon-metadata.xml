@@ -49,6 +49,16 @@
         </long-description>
 
         <localized>
+            <fr>
+                <short-description type="string">
+                    Carnet de vol
+                </short-description>
+
+                <long-description type="string">
+                    Chaque vol sera automatiquement inscrit dans le carnet de vol, ceci incluant la date, l'aéronef utilisé, les aérodromes et quelques autres données.
+                </long-description>
+            </fr>
+
             <pl>
                 <short-description type="string">
                     Automatyczne logowanie lotów
