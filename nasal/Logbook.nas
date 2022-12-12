@@ -241,7 +241,7 @@ var Logbook = {
         # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional orientation check
         var isOrientationOk = me.crashDetector.isOrientationOK();
         if ((landed and !isOrientationOk) or me.spaceShuttle.isCrashed()) {
-            crashed = 1; # corce crash state
+            crashed = 1; # force crash state
         }
 
         var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
