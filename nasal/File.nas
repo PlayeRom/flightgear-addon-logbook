@@ -17,6 +17,7 @@ var File = {
     # Constants
     #
     LOGBOOK_FILE   : "logbook-v%s.csv",
+    FILE_VERSION   : "1.0.1",
     LANDINGS_INDEX : 6,
     FUEL_INDEX     : 13,
     MAX_ALT_INDEX  : 14,
@@ -30,7 +31,7 @@ var File = {
         var me = { parents: [File] };
 
         me.addon       = addon;
-        me.filePath    = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, addon.version.str());
+        me.filePath    = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, File.FILE_VERSION);
         me.loadedData  = [];
         me.headersData = [];
 

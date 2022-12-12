@@ -16,7 +16,8 @@ var Settings = {
     #
     # Constants
     #
-    SAVE_FILE : "settings-v%s.xml",
+    SAVE_FILE    : "settings-v%s.xml",
+    FILE_VERSION : "1.0.1",
 
     #
     # Constructor
@@ -26,7 +27,7 @@ var Settings = {
     new: func (addon) {
         var me = { parents: [Settings] };
 
-        me.file = addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, addon.version.str());
+        me.file = addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
         me.propToSave = addon.node.getPath() ~ "/addon-devel/save";
 
         me.load();

@@ -116,6 +116,6 @@ var HelpDialog = {
     # return string
     #
     getHelpText: func() {
-        return sprintf(getprop(me.addon.node.getPath() ~ "/addon-devel/help-text"), me.addon.version.str());
+        return sprintf(getprop(me.addon.node.getPath() ~ "/addon-devel/help-text"), File.FILE_VERSION);
     },
 };
