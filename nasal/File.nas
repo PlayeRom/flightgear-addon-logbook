@@ -18,9 +18,10 @@ var File = {
     #
     LOGBOOK_FILE   : "logbook-v%s.csv",
     FILE_VERSION   : "1.0.1",
-    LANDINGS_INDEX : 6,
-    FUEL_INDEX     : 13,
-    MAX_ALT_INDEX  : 14,
+    INDEX_LANDINGS : 6,
+    INDEX_FUEL     : 13,
+    INDEX_MAX_ALT  : 14,
+    INDEX_NOTE     : 15,
 
     #
     # Constructor
@@ -168,20 +169,23 @@ var File = {
         var counter = 0;
         var line = nil;
         while ((line = io.readln(file)) != nil) {
-            if (line != "" and line != nil) { # skip empty row
-                if (me.totalLines == -1) {
-                    # headers
-                    me.headersData = split(",", me.removeQuotes(line));
-                }
-                else {
-                    # data
-                    var items = split(",", me.removeQuotes(line));
-                    me.countTotals(items);
+            if (line == "" or line == nil) { # skip empty row
+                continue;
+            }
 
-                    if (me.totalLines >= start and counter < count) {
-                        append(me.loadedData, items);
-                        counter += 1;
-                    }
+            if (me.totalLines == -1) { # headers
+                me.headersData = split(",", me.removeQuotes(line));
+            }
+            else { # data
+                var items = split(",", line);
+                me.countTotals(items);
+
+                if (me.totalLines >= start and counter < count) {
+                    # remove quotes from note column
+                    items[File.INDEX_NOTE] = me.removeQuotes(items[File.INDEX_NOTE]);
+
+                    append(me.loadedData, items);
+                    counter += 1;
                 }
             }
 
@@ -207,15 +211,14 @@ var File = {
     countTotals: func(items) {
         var index = 0;
         foreach (var text; items) {
-            if (index >= File.LANDINGS_INDEX and
-                index <= File.FUEL_INDEX
+            if (index >= File.INDEX_LANDINGS and
+                index <= File.INDEX_FUEL
             ) {
-                me.totals[index - File.LANDINGS_INDEX] += (text == "" ? 0 : text);
+                me.totals[index - File.INDEX_LANDINGS] += (text == "" ? 0 : text);
             }
-
-            if (index == File.MAX_ALT_INDEX) {
-                if (text > me.totals[index - File.LANDINGS_INDEX]) {
-                    me.totals[index - File.LANDINGS_INDEX] = text;
+            else if (index == File.INDEX_MAX_ALT) {
+                if (text > me.totals[index - File.INDEX_LANDINGS]) {
+                    me.totals[index - File.INDEX_LANDINGS] = text;
                 }
             }
 
