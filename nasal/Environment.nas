@@ -167,7 +167,7 @@ var Environment = {
     },
 
     #
-    # Set replay mode flag. If true then sim in in replay mode and the counters should not be updated.
+    # Set replay mode flag. If true then sim is in replay mode and the counters should not be updated.
     # The problem is that elapsed-sec in reply mode is continuing counting, so we have to handle it manually.
     #
     # bool isReplayMode

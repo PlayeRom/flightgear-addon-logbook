@@ -41,7 +41,7 @@ var SpaceShuttle = {
     },
 
     #
-    # Is Shuttle on the lounch position
+    # Is Shuttle on the launch position
     #
     # return bool
     #
