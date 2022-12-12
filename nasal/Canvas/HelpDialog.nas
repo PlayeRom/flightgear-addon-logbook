@@ -49,6 +49,7 @@ var HelpDialog = {
 
         var buttonBox = me.drawBottomBar();
 
+        me.vbox.addSpacing(10);
         me.vbox.addItem(buttonBox);
         me.vbox.addSpacing(10);
 
