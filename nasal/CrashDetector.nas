@@ -104,7 +104,7 @@ var CrashDetector = {
     # return bool
     #
     isOrientationOK: func() {
-        return math.abs(getprop("/orientation/roll-deg")) < 30 or
+        return math.abs(getprop("/orientation/roll-deg"))  < 30 and
                math.abs(getprop("/orientation/pitch-deg")) < 30;
     },
 };
