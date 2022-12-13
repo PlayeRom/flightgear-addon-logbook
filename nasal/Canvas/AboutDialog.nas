@@ -38,7 +38,7 @@ var AboutDialog = {
 
         me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
 
-        var aboutText = me.drawScrollable();
+        me.drawScrollable();
 
         # var buttonBoxRepo = me.drawBottomBar("Open the repository website...", func() {
         #     fgcommand("open-browser", props.Node.new({"url" : addon.codeRepositoryUrl}));
