@@ -116,12 +116,18 @@ var InputDialog = {
     # Save action
     #
     actionSave: func() {
-        me.window.hide();
-
         var value = me.lineEdit.text();
         if (value == nil) {
             value = "";
         }
+
+        if (!me.validate(value)) {
+            gui.popupTip("Please do not use `,` and `\"` as these are special characters for the CSV file.");
+            return;
+        }
+
+        me.window.hide();
+
 
         if (me.file.editData(me.rowIndexToEdit, me.header, value)) {
             gui.popupTip("The change has been saved!");
@@ -133,5 +139,15 @@ var InputDialog = {
     #
     actionCancel: func() {
         me.window.hide();
+    },
+
+    validate: func(value) {
+        for (var i = 0; i < size(value); i += 1) {
+            if (value[i] == `,` or value[i] == `"`) {
+                return false;
+            }
+        }
+
+        return true;
     },
 };
