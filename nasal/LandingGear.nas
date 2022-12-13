@@ -122,6 +122,12 @@ var LandingGear = {
                 getprop("/gear/gear[" ~ index ~ "]/wow")
                     ? (counters.onGroundGearCounter += 1)
                     : (counters.inAirGearCounter += 1);
+
+                if (me.isMD11CenterGearUp() and counters.expectedCount == 4) {
+                    # Reduce expectedCount because we taken off with 4 wheels,
+                    # but now center gear is up, so we will use 3 wheels.
+                    counters.expectedCount -= 1;
+                }
             }
         }
 
@@ -207,5 +213,14 @@ var LandingGear = {
                 callback(gear.getIndex());
             }
         }
-    }
+    },
+
+    #
+    # MD-11 is take off on 4 gears but can landing on 3 gears when `center-gear-up` is enabled.
+    #
+    # return bool - Return true when center gear up is blocked and we will land on 3 gears.
+    #
+    isMD11CenterGearUp: func() {
+        return getprop("/controls/gear/center-gear-up") or false;
+    },
 };
