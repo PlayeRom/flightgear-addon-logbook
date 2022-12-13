@@ -44,6 +44,9 @@ var ListView = {
         me.dataRows       = [];
         me.headres        = nil;
 
+        # If ListView is using in DetailsDialog
+        me.detailRowIndex = nil;
+
         me.dataContent = cGroup.createChild("group");
         me.dataContent
             .set("font", me.font)
@@ -117,10 +120,10 @@ var ListView = {
 
     #
     # int y
-    # vector|nil dataRow
+    # vector|nil dataToPass - data to pass to MouseHover
     # return hash - canvas group
     #
-    drawHoverBox: func(y, dataRow = nil) {
+    drawHoverBox: func(y, dataToPass = nil) {
         var rowGroup = me.dataContent.createChild("group");
         rowGroup.setTranslation(ListView.PADDING, y - ListView.SHIFT_Y + 11);
 
@@ -128,7 +131,7 @@ var ListView = {
         var rect = rowGroup.rect(0, 0, me.windowWidth - (ListView.PADDING * 2), ListView.SHIFT_Y);
         rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-        var mouseHover = MouseHover.new(me.clickDialog, me.style, rowGroup, rect, dataRow);
+        var mouseHover = MouseHover.new(me.clickDialog, me.style, rowGroup, rect, dataToPass);
         mouseHover.addEvents();
 
         return rowGroup;
@@ -202,7 +205,7 @@ var ListView = {
             var x = ListView.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, dataRow);
+            var rowGroup = me.drawHoverBox(y, [index, dataRow]);
 
             foreach (var text; dataRow) {
                 if (column == size(dataRow) - 1) {
@@ -234,7 +237,7 @@ var ListView = {
             var x = ListView.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, dataText);
+            var rowGroup = me.drawHoverBox(y, [me.detailRowIndex, headers[index], dataText]);
 
             # column 1 - header
             me.drawText(rowGroup, x, sprintf("%10s:\n", headers[index]));

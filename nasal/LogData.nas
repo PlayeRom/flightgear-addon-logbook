@@ -34,7 +34,7 @@ var LogData = {
         me.distance   = 0.0;   # The distance traveled during the flight in nautical miles
         me.fuel       = 0.0;   # Amount of fuel used in US gallons
         me.maxAlt     = 0.0;   # The maximum altitude reached during the flight in feets
-        me.note       = "";    # Full aircraft anme as default
+        me.note       = "";    # Full aircraft name as default
 
         return me;
     },
@@ -264,5 +264,57 @@ var LogData = {
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", note);
 
         return me;
+    },
+
+    #
+    # Convert hash to vector
+    #
+    # return vector
+    #
+    toVector: func() {
+        var vector = [];
+        append(vector, me.date);
+        append(vector, me.time);
+        append(vector, me.aircraft);
+        append(vector, me.callsign);
+        append(vector, me.from);
+        append(vector, me.to);
+        append(vector, me.landings);
+        append(vector, me.printCrash());
+        append(vector, sprintf("%.02f", me.day));
+        append(vector, sprintf("%.02f", me.night));
+        append(vector, sprintf("%.02f", me.instrument));
+        append(vector, sprintf("%.02f", me.duration));
+        append(vector, sprintf("%.02f", me.distance));
+        append(vector, sprintf("%.02f", me.fuel));
+        append(vector, sprintf("%.0f", me.maxAlt));
+        append(vector, me.note);
+
+        return vector;
+    },
+
+    #
+    # Apply given vector to this object
+    #
+    # vector items
+    # return void
+    #
+    fromVector: func(items) {
+        me.date       = items[0];
+        me.time       = items[1];
+        me.aircraft   = items[2];
+        me.callsign   = items[3];
+        me.from       = items[4];
+        me.to         = items[5];
+        me.landings   = items[6];
+        me.crash      = items[7] == "" ? false : true;
+        me.day        = items[8];
+        me.night      = items[9];
+        me.instrument = items[10];
+        me.duration   = items[11];
+        me.distance   = items[12];
+        me.fuel       = items[13];
+        me.maxAlt     = items[14];
+        me.note       = items[15];
     },
 };

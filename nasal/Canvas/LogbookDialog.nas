@@ -67,8 +67,10 @@ var LogbookDialog = {
 
         me.startIndex = 0;
 
+        file.loadAllData();
+
         me.file           = file;
-        me.data           = [];#me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.data           = [];
         me.totals         = me.file.getTotalsData();
         me.rowTotal       = nil;
         me.headersContent = nil;
@@ -353,7 +355,7 @@ var LogbookDialog = {
     # Reload logbook data
     #
     reloadData: func() {
-        me.data   = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
         me.listView.setDataToDraw(me.data);

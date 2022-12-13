@@ -36,8 +36,9 @@ var DetailsDialog = {
             Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
-        me.dataRow = nil;
-        me.file    = file;
+        me.dataRow     = nil;
+        me.file        = file;
+        me.inputDialog = InputDialog.new(file);
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
@@ -51,10 +52,13 @@ var DetailsDialog = {
         );
         me.listView.setStyle(me.style);
         me.listView.setFont(DetailsDialog.FONT_NAME, DetailsDialog.FONT_SIZE);
+        me.listView.setClickDialog(me.inputDialog);
 
         var buttonBox = me.drawBottomBar();
 
         me.vbox.addItem(buttonBox);
+
+        me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT);
 
         return me;
     },
@@ -63,6 +67,7 @@ var DetailsDialog = {
     # Destructor
     #
     del: func() {
+        me.inputDialog.del();
         me.parents[1].del();
     },
 
@@ -107,10 +112,17 @@ var DetailsDialog = {
     #
     # Show canvas dialog
     #
-    # vector dataRows
+    # vector data
+    #   data[0] = int - index of row in CSV file
+    #   data[1] = vector of single row data
+    # return void
     #
-    show: func(dataRows) {
-        me.listView.setDataToDraw(dataRows, me.file.getHeadersData());
+    show: func(data) {
+        me.inputDialog.hide();
+
+        me.listView.detailRowIndex = data[0];
+        me.listView.setDataToDraw(data[1], me.file.getHeadersData());
+
         me.reDrawDataContent();
 
         me.parents[1].show();

@@ -36,15 +36,22 @@ var File = {
         me.loadedData  = [];
         me.headersData = [];
 
-        # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
-        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        me.allData     = [];
+
+        me.totals      = [];
+        me.resetTotals();
 
         # Total lines in CSV file (without headers)
-        me.totalLines = -1;
+        me.totalLines  = -1;
 
         me.saveHeaders();
 
         return me;
+    },
+
+    resetTotals: func() {
+        # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
+        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     },
 
     #
@@ -59,7 +66,7 @@ var File = {
         foreach (var oldVersion; olderReleases) {
             var oldFile = me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, oldVersion);
             if (me.exists(oldFile)) {
-                me.copyFile(oldFile);
+                me.copyFile(oldFile, me.filePath);
                 return true;
             }
         }
@@ -72,10 +79,10 @@ var File = {
     #
     # string oldFile
     #
-    copyFile: func(oldFile) {
+    copyFile: func(oldFile, newFile) {
         var content = io.readfile(oldFile);
 
-        var file = io.open(me.filePath, "w");
+        var file = io.open(newFile, "w");
         io.write(file, content);
         io.close(file);
     },
@@ -128,10 +135,25 @@ var File = {
     #
     # Store log data to logbook file
     #
-    # LogData logData - LogData object
+    # hash logData - LogData object
+    # return void
     #
     saveData: func(logData) {
         var file = io.open(me.filePath, "a");
+        me.saveItem(file, logData);
+        io.close(file);
+
+        append(me.allData, logData);
+        me.totalLines += 1;
+        me.countTotals(logData.toVector());
+    },
+
+    #
+    # hash file - file handler
+    # hash logData - LogData object
+    # return void
+    #
+    saveItem: func(file, logData) {
         io.write(file, sprintf(
             "%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
@@ -151,22 +173,18 @@ var File = {
             logData.maxAlt,
             logData.note
         ));
-        io.close(file);
     },
 
     #
-    # int start - Start index counting from 0 as a first row of data
-    # int count - How many rows should be returned
-    # return vector
+    # return void
     #
-    loadData: func(start, count) {
-        me.loadedData = [];
-        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    loadAllData: func() {
+        me.allData = [];
+        me.resetTotals();
 
         var file = io.open(me.filePath, "r");
 
         me.totalLines = -1; # don't count the headers
-        var counter = 0;
         var line = nil;
         while ((line = io.readln(file)) != nil) {
             if (line == "" or line == nil) { # skip empty row
@@ -177,24 +195,125 @@ var File = {
                 me.headersData = split(",", me.removeQuotes(line));
             }
             else { # data
-                var items = split(",", line);
+                var items = split(",", me.removeQuotes(line));
+
+                var logData = LogData.new();
+                logData.fromVector(items);
+
                 me.countTotals(items);
 
-                if (me.totalLines >= start and counter < count) {
-                    # remove quotes from note column
-                    items[File.INDEX_NOTE] = me.removeQuotes(items[File.INDEX_NOTE]);
-
-                    append(me.loadedData, items);
-                    counter += 1;
-                }
+                append(me.allData, logData);
             }
 
             me.totalLines += 1;
         }
 
         io.close(file);
+    },
+
+    #
+    # int start - Start index counting from 0 as a first row of data
+    # int count - How many rows should be returned
+    # return vector
+    #
+    loadDataRange: func(start, count) {
+        me.loadedData = [];
+
+        if (size(me.allData) > 0) {
+            var counter = 0;
+            foreach (var logData; me.allData[start:]) {
+                if (counter < count) {
+                    append(me.loadedData, logData.toVector());
+                    counter += 1;
+                }
+                else {
+                    break;
+                }
+            }
+        }
 
         return me.loadedData;
+    },
+
+    #
+    # int rowIndex - where 0 = first data row, now header row
+    # string header
+    # string value
+    # return bool - Return true of successful
+    #
+    editData: func(rowIndex, header, value) {
+        if (rowIndex == nil or header == nil or value == nil) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
+            return false;
+        }
+
+        if (rowIndex >= size(me.allData)) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, index out of range");
+            return false;
+        }
+
+        var headerIndex = me.getHeaderIndex(header, me.headersData);
+        if (headerIndex == nil) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
+            return false;
+        }
+
+        var items = me.allData[rowIndex].toVector();
+        items[headerIndex] = value;
+        me.allData[rowIndex].fromVector(items);
+
+        var recalcTotals = headerIndex >= File.INDEX_LANDINGS and headerIndex <= File.INDEX_MAX_ALT;
+        me.saveAllData(recalcTotals);
+
+        return true;
+    },
+
+    #
+    # bool recalcTotals
+    # return void
+    #
+    saveAllData: func(recalcTotals) {
+        # Do backup
+        me.copyFile(me.filePath, me.filePath ~ ".bak");
+
+        var file = io.open(me.filePath, "w");
+
+        # Save headers
+        io.write(file, me.getHeaderLine() ~ "\n");
+
+        # Save data
+        if (recalcTotals) {
+            me.resetTotals();
+        }
+
+        foreach (var logData; me.allData) {
+            me.saveItem(file, logData);
+
+            # Recalculate totals, because data can changed
+            if (recalcTotals) {
+                me.countTotals(logData.toVector());
+            }
+        }
+
+        io.close(file);
+    },
+
+    #
+    # string headerText
+    # vector headersData
+    # return int|nil
+    #
+    getHeaderIndex: func(headerText, headersData) {
+        var index = 0;
+        foreach (var text; headersData) {
+            if (text == headerText) {
+                return index;
+            }
+
+            index += 1;
+        }
+
+        return nil
     },
 
     #

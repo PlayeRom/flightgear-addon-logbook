@@ -20,16 +20,16 @@ var MouseHover = {
     # hash style - My style structure from Dialog
     # hash element - The element that will listen to the event
     # hash target - The element on which the event will be executed. If nil then `element` will be used as `target`.
-    # vector dataRow - Logbook one row data to display after click. If nil then click event is not handling.
+    # vector dataToPass - Logbook one row data to display after click. If nil then click event is not handling.
     #
-    new: func (clickDialog, style, element, target = nil, dataRow = nil) {
+    new: func (clickDialog, style, element, target = nil, dataToPass = nil) {
         var me = { parents: [MouseHover] };
 
         me.style = style;
         me.element = element;
         me.style = style;
         me.target = target == nil ? element : target;
-        me.dataRow = dataRow;
+        me.dataToPass = dataToPass;
         me.clickDialog = clickDialog;
 
         return me;
@@ -47,9 +47,9 @@ var MouseHover = {
             me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
         });
 
-        if (me.clickDialog != nil and me.dataRow != nil) {
+        if (me.clickDialog != nil and me.dataToPass != nil) {
             me.element.addEventListener("click", func {
-                me.clickDialog.show(me.dataRow);
+                me.clickDialog.show(me.dataToPass);
             });
         }
     },
