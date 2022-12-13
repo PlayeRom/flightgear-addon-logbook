@@ -358,7 +358,7 @@ var LogbookDialog = {
         me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
-        me.listView.setDataToDraw(me.data);
+        me.listView.setDataToDraw(me.data, me.startIndex);
 
         me.reDrawHeadersContent();
         me.reDrawDataContent();

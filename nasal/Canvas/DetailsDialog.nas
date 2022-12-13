@@ -121,7 +121,7 @@ var DetailsDialog = {
         me.inputDialog.hide();
 
         me.listView.detailRowIndex = data[0];
-        me.listView.setDataToDraw(data[1], me.file.getHeadersData());
+        me.listView.setDataToDraw(data[1], 0, me.file.getHeadersData());
 
         me.reDrawDataContent();
 

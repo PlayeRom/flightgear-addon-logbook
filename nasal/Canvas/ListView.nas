@@ -43,6 +43,7 @@ var ListView = {
         me.clickDialog    = nil;
         me.dataRows       = [];
         me.headres        = nil;
+        me.startIndex     = 0;
 
         # If ListView is using in DetailsDialog
         me.detailRowIndex = nil;
@@ -94,10 +95,12 @@ var ListView = {
 
     #
     # vector dataRows
+    # int startIndex - start index of dataRows
     # vector|nil headers - required for LAYOUT_V
     #
-    setDataToDraw: func(dataRows, headers = nil) {
+    setDataToDraw: func(dataRows, startIndex, headers = nil) {
         me.dataRows = dataRows;
+        me.startIndex = startIndex;
         me.headers = headers;
     },
 
@@ -205,7 +208,7 @@ var ListView = {
             var x = ListView.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, [index, dataRow]);
+            var rowGroup = me.drawHoverBox(y, [index + me.startIndex, dataRow]);
 
             foreach (var text; dataRow) {
                 if (column == size(dataRow) - 1) {
