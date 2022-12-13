@@ -18,10 +18,8 @@ var LogbookDialog = {
     #
     WINDOW_WIDTH         : 1040,
     WINDOW_HEIGHT        : 680,
-    PADDING              : 10,
     TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
-    SHIFT_Y              : 28,
     COLUMNS_WIDTH        : [
          85, #  0 - date
          50, #  1 - time
@@ -70,7 +68,7 @@ var LogbookDialog = {
         me.startIndex = 0;
 
         me.file           = file;
-        me.data           = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.data           = [];#me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals         = me.file.getTotalsData();
         me.rowTotal       = nil;
         me.headersContent = nil;
@@ -81,8 +79,20 @@ var LogbookDialog = {
         me.helpDialog    = HelpDialog.new();
         me.aboutDialog   = AboutDialog.new();
 
+        me.listView = ListView.new(
+            me.group,
+            me.vbox,
+            ListView.SHIFT_Y * 22, # 22 = 20 items + 1 headers + 1 totals
+            LogbookDialog.WINDOW_WIDTH,
+            LogbookDialog.COLUMNS_WIDTH,
+            ListView.LAYOUT_H
+        );
+        me.listView.setTranslation(0, 20);
+        me.listView.setClickDialog(me.detailsDialog);
+        me.listView.setStyle(me.style);
+        me.listView.setFont(LogbookDialog.FONT_NAME, LogbookDialog.FONT_SIZE);
+
         me.drawHeaders();
-        me.drawData();
 
         me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
@@ -129,8 +139,8 @@ var LogbookDialog = {
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
 
-        var y = LogbookDialog.PADDING * 3;
-        var x = LogbookDialog.PADDING * 3;
+        var y = ListView.PADDING * 3;
+        var x = ListView.PADDING * 3;
         var column = 0;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
@@ -140,108 +150,76 @@ var LogbookDialog = {
             }
 
             me.drawText(me.headersContent, x, 20, me.getReplaceHeaderText(text));
-            x += me.getX(column);
+            x += me.listView.getX(column);
             column += 1;
         }
     },
 
     #
-    # Draw scrollArea for logbook data
+    # Replace some too long header text
     #
-    drawData: func() {
-        me.dataContent = me.group.createChild("group");
-        me.dataContent.setTranslation(0, 20);
-        me.dataContent
-            .set("font", LogbookDialog.FONT_NAME)
-            .set("character-size", LogbookDialog.FONT_SIZE)
-            .set("alignment", "left-baseline");
+    # string text
+    # return string
+    #
+    getReplaceHeaderText: func(text) {
+        if (text == "Landings") {
+            return "Land.";
+        }
 
-        me.reDrawDataContent();
+        if (text == "Instrument") {
+            return "Instr.";
+        }
+
+        return text;
+    },
+
+    #
+    # Draw text
+    #
+    # hash cGroup - Parent canvas group
+    # int x, y - Position of text
+    # string text - Text to draw
+    #
+    drawText: func(cGroup, x, y, text) {
+        return cGroup.createChild("text")
+            .setTranslation(x, y)
+            .setColor(me.style.TEXT_COLOR)
+            .setText(text);
     },
 
     #
     # Draw grid with logbook data
     #
     reDrawDataContent: func() {
-        me.dataContent.removeAllChildren();
+        var y = me.listView.reDrawDataContent();
 
-        var y = LogbookDialog.PADDING * 3;
-        var index = 0;
-        foreach (var row; me.data) {
-            var x = LogbookDialog.PADDING * 2;
-            var column = 0;
-
-            var rowGroup = me.drawHoverBox(me.dataContent, y, row);
-
-            foreach (var text; row) {
-                if (column == size(row) - 1) {
-                    # Don't show Note column
-                    break;
-                }
-                me.drawText(rowGroup, x, 16, text);
-
-                x += me.getX(column);
-                column += 1;
-            }
-
-            # Draw horizontal line
-            # var hr = canvas.draw.rectangle(
-            #     me.dataContent,
-            #     LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 2), # width
-            #     1,                                          # height
-            #     LogbookDialog.PADDING,                             # x
-            #     y + 10                                      # y
-            # );
-            # hr.setColor(me.style.GROUP_BG);
-
-            y += LogbookDialog.SHIFT_Y;
-            index += 1;
-        }
-
-        me.rowTotal = me.drawHoverBox(me.dataContent, y);
+        # Continue drawing totals row
+        me.rowTotal = me.listView.drawHoverBox(y);
         me.drawTotalsRow(me.rowTotal);
 
-        me.dataContent.update();
-    },
-
-    #
-    # hash cgroup - Parent canvas group
-    # int y
-    # vector|nil dataRow
-    #
-    drawHoverBox: func(cgroup, y, dataRow = nil) {
-        var rowGroup = cgroup.createChild("group");
-        rowGroup.setTranslation(LogbookDialog.PADDING, y - LogbookDialog.SHIFT_Y + 11);
-
-        # Create rect because setColorFill on rowGroup doesn't work
-        var rect = rowGroup.rect(0, 0, LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 2), LogbookDialog.SHIFT_Y);
-        rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
-
-        var mouseHover = MouseHover.new(me.detailsDialog, me.style, rowGroup, rect, dataRow);
-        mouseHover.addEvents();
-
-        return rowGroup;
+        me.listView.dataContent.update();
     },
 
     #
     # Draw row with totals summary
     #
-    # hash cgroup - Parent canvas group
+    # hash cGroup - Parent canvas group
     #
-    drawTotalsRow: func(cgroup) {
-        var y = 16;
-        var x = LogbookDialog.PADDING * 2 +  me.getX(0) + me.getX(1) + me.getX(2) + me.getX(3) + me.getX(4);
-        me.drawText(cgroup, x, y, "Totals:");
+    drawTotalsRow: func(cGroup) {
+        var x = ListView.PADDING * 2 +
+            me.listView.getX(0) +
+            me.listView.getX(1) +
+            me.listView.getX(2) +
+            me.listView.getX(3) +
+            me.listView.getX(4);
+
+        me.listView.drawText(cGroup, x, "Totals:");
 
         for (var i = 0; i < size(me.totals); i += 1) {
             var total = me.totals[i];
-            x += me.getX(i + 5);
-            me.drawText(cgroup, x, y, sprintf(LogbookDialog.TOTAL_FORMATS[i], total));
+            x += me.listView.getX(i + 5);
+            me.listView.drawText(cGroup, x, sprintf(LogbookDialog.TOTAL_FORMATS[i], total));
         }
-
-        # Extra bottom margin
-        y += LogbookDialog.SHIFT_Y;
-        me.drawText(cgroup, x, y, " ");
     },
 
     #
@@ -295,36 +273,7 @@ var LogbookDialog = {
         buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 
-        me.vbox.addSpacing(LogbookDialog.SHIFT_Y * 22); # 22 = 20 items + 1 headers + 1 totals
         me.vbox.addItem(buttonBox);
-    },
-
-    #
-    # Replace some too long header text
-    #
-    # string text
-    # return string
-    #
-    getReplaceHeaderText: func(text) {
-        if (text == "Landings") {
-            return "Land.";
-        }
-
-        if (text == "Instrument") {
-            return "Instr.";
-        }
-
-        return text;
-    },
-
-    #
-    # Get width of column for given index
-    #
-    # int index
-    # return int
-    #
-    getX: func(index) {
-        return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
@@ -340,6 +289,7 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.btnStyle.setText(me.getOppositeStyleName());
+        me.listView.setStyle(me.style);
 
         me.reloadData();
 
@@ -354,20 +304,6 @@ var LogbookDialog = {
         return me.style.NAME == "dark"
             ? me.getStyle().light.NAME
             : me.getStyle().dark.NAME;
-    },
-
-    #
-    # Draw text
-    #
-    # hash cgroup - Parent canvas group
-    # int x, y - Position of text
-    # string text - Text to draw
-    #
-    drawText: func(cgroup, x, y, text) {
-        return cgroup.createChild("text")
-            .setTranslation(x, y)
-            .setColor(me.style.TEXT_COLOR)
-            .setText(text);
     },
 
     #
@@ -419,6 +355,8 @@ var LogbookDialog = {
     reloadData: func() {
         me.data   = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
+
+        me.listView.setDataToDraw(me.data);
 
         me.reDrawHeadersContent();
         me.reDrawDataContent();
