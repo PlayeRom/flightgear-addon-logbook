@@ -63,19 +63,18 @@ var LogbookDialog = {
         var me = {
             parents: [
                 LogbookDialog,
-                Dialog.new(LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook", true),
+                Dialog.new(LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook"),
             ],
         };
 
         me.startIndex = 0;
 
-        me.file                = file;
-        me.data                = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
-        me.totals              = me.file.getTotalsData();
-        me.rowTotal            = nil;
-        me.groupHeadersContent = nil;
-        me.scrollData          = nil;
-        me.scrollDataContent   = nil;
+        me.file           = file;
+        me.data           = me.file.loadData(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
+        me.totals         = me.file.getTotalsData();
+        me.rowTotal       = nil;
+        me.headersContent = nil;
+        me.dataContent    = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.detailsDialog = DetailsDialog.new(file);
@@ -114,8 +113,9 @@ var LogbookDialog = {
     # Draw headers row
     #
     drawHeaders: func() {
-        me.groupHeadersContent = me.group.createChild("group");
-        me.groupHeadersContent
+        me.headersContent = me.group.createChild("group");
+        me.headersContent.setTranslation(0, 0);
+        me.headersContent
             .set("font", LogbookDialog.FONT_NAME)
             .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
@@ -127,10 +127,10 @@ var LogbookDialog = {
     # Draw headers row
     #
     reDrawHeadersContent: func() {
-        me.groupHeadersContent.removeAllChildren();
+        me.headersContent.removeAllChildren();
 
         var y = LogbookDialog.PADDING * 3;
-        var x = LogbookDialog.PADDING * 2 + 5;
+        var x = LogbookDialog.PADDING * 3;
         var column = 0;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
@@ -139,7 +139,7 @@ var LogbookDialog = {
                 break;
             }
 
-            me.drawText(me.groupHeadersContent, x, 20, me.getReplaceHeaderText(text));
+            me.drawText(me.headersContent, x, 20, me.getReplaceHeaderText(text));
             x += me.getX(column);
             column += 1;
         }
@@ -149,17 +149,12 @@ var LogbookDialog = {
     # Draw scrollArea for logbook data
     #
     drawData: func() {
-        me.scrollData = me.createScrollArea(me.style.CANVAS_BG, {"left": 5, "top": 0, "right": 0, "bottom": 0});
-
-        me.vbox.addSpacing(30);
-        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
-
-        me.scrollDataContent = me.getScrollAreaContent(
-            me.scrollData,
-            LogbookDialog.FONT_NAME,
-            LogbookDialog.FONT_SIZE,
-            "left-baseline"
-        );
+        me.dataContent = me.group.createChild("group");
+        me.dataContent.setTranslation(0, 20);
+        me.dataContent
+            .set("font", LogbookDialog.FONT_NAME)
+            .set("character-size", LogbookDialog.FONT_SIZE)
+            .set("alignment", "left-baseline");
 
         me.reDrawDataContent();
     },
@@ -168,7 +163,7 @@ var LogbookDialog = {
     # Draw grid with logbook data
     #
     reDrawDataContent: func() {
-        me.scrollDataContent.removeAllChildren();
+        me.dataContent.removeAllChildren();
 
         var y = LogbookDialog.PADDING * 3;
         var index = 0;
@@ -176,7 +171,7 @@ var LogbookDialog = {
             var x = LogbookDialog.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(me.scrollDataContent, y, row);
+            var rowGroup = me.drawHoverBox(me.dataContent, y, row);
 
             foreach (var text; row) {
                 if (column == size(row) - 1) {
@@ -191,7 +186,7 @@ var LogbookDialog = {
 
             # Draw horizontal line
             # var hr = canvas.draw.rectangle(
-            #     me.scrollDataContent,
+            #     me.dataContent,
             #     LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 2), # width
             #     1,                                          # height
             #     LogbookDialog.PADDING,                             # x
@@ -203,10 +198,10 @@ var LogbookDialog = {
             index += 1;
         }
 
-        me.rowTotal = me.drawHoverBox(me.scrollDataContent, y);
+        me.rowTotal = me.drawHoverBox(me.dataContent, y);
         me.drawTotalsRow(me.rowTotal);
 
-        me.scrollDataContent.update();
+        me.dataContent.update();
     },
 
     #
@@ -219,8 +214,7 @@ var LogbookDialog = {
         rowGroup.setTranslation(LogbookDialog.PADDING, y - LogbookDialog.SHIFT_Y + 11);
 
         # Create rect because setColorFill on rowGroup doesn't work
-        # TODO: Keep the rectangle not too wide, because then you get artifacts in drawing the sliders of ScrollArea.
-        var rect = rowGroup.rect(0, 0, LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 3), LogbookDialog.SHIFT_Y);
+        var rect = rowGroup.rect(0, 0, LogbookDialog.WINDOW_WIDTH - (LogbookDialog.PADDING * 2), LogbookDialog.SHIFT_Y);
         rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
         var mouseHover = MouseHover.new(me.detailsDialog, me.style, rowGroup, rect, dataRow);
@@ -301,9 +295,8 @@ var LogbookDialog = {
         buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 
-        # me.vbox.addStretch(1);
+        me.vbox.addSpacing(LogbookDialog.SHIFT_Y * 22); # 22 = 20 items + 1 headers + 1 totals
         me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(10);
     },
 
     #
@@ -346,8 +339,6 @@ var LogbookDialog = {
         me.settings.save();
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.scrollData.setColorBackground(me.style.CANVAS_BG);
-
         me.btnStyle.setText(me.getOppositeStyleName());
 
         me.reloadData();
