@@ -42,7 +42,7 @@ var ListView = {
         me.style          = nil;
         me.clickDialog    = nil;
         me.dataRows       = [];
-        me.headres        = nil;
+        me.headers        = nil;
         me.startIndex     = 0;
 
         # If ListView is using in DetailsDialog
