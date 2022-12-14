@@ -44,18 +44,19 @@ The following information is logged into the file:
 5. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
 6. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
 7. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
-8. **Day** – the number of hours spent flying during the day.
-9. **Night** – number of hours spent flying during the night.
-10. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-11. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
-12. **Distance** – total distance flown from take-off to landing, in nautical miles.
-13. **Fuel** – total fuel burned, in US gallons.
-14. **Max Alt** – maximum altitude, in feet, reached during flight.
-15. **Note** – notes, by default the full name of the aircraft.
+8. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
+9. **Day** – the number of hours spent flying during the day.
+10. **Night** – number of hours spent flying during the night.
+11. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
+12. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
+13. **Distance** – total distance flown from take-off to landing, in nautical miles.
+14. **Fuel** – total fuel burned, in US gallons.
+15. **Max Alt** – maximum altitude, in feet, reached during flight.
+16. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
-The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page.
+The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which we do not have the sum of all altitudes, but the highest one.
 
 At the very bottom we have a row of buttons, mainly for moving through the log pages. The `|<<` button means moving to the first page, `<` moving to the previous page, `>` moving to the next page, `>>|` moving to the last page. In the middle we have text information in the format `{on which page we are} / {number of all pages} (number of entries in the log)`. On the right we have a `dark`/`light` button to switch between window styles. The `?` button opens a window with help (the same as from the "Logbook" -> "Help" menu).
 
@@ -73,7 +74,7 @@ At the bottom of the details window there is a `Delete` button, with which you c
 
 ### Backup
 
-Before each saving of a single change, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name.
+Before each saving of a single change, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name. Remember, you only have a copy of one recent file operation.
 
 ## NOTE
 
@@ -141,18 +142,19 @@ Do pliku logowane są następujące informacje:
 5. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
 6. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
 7. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
-8. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
-9. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
-10. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-11. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc.
-12. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
-13. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
-14. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
-15. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
+8. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
+9. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
+10. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
+11. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
+12. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc.
+13. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
+14. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
+15. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
+16. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
 ## Przeglądanie dziennika
 
-Dodatek udostępnia także możliwość przeglądania całego dziennika lotów z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem w postaci tabelarycznej. Ostatni rząd podpisany "Totals", zawiera podsumowanie, nie tylko widocznych wpisów na danej stronie, ale całego dziennika. Rząd "Totals" widoczny jest na każdej stronie.
+Dodatek udostępnia także możliwość przeglądania całego dziennika lotów z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem w postaci tabelarycznej. Ostatni rząd podpisany "Totals", zawiera podsumowanie, nie tylko widocznych wpisów na danej stronie, ale całego dziennika. Rząd "Totals" widoczny jest na każdej stronie. Wyjątkiem dla "Totals" jest kolumna `Max Alt`, w której nie mamy sumy wszystkich wysokości, tylko tę najwyższą.
 
 Na samym dole mamy rząd przycisków, głównie do przemieszczania się po stronach dziennika. Przycisk `|<<` oznacza przejście do pierwszej strony, `<` przejście do poprzedniej strony, `>` przejście do następnej strony, `>>|` przejście do ostatniej strony. Na środku mamy informację tekstową w formacie `{na której jesteśmy stronie} / {ilość wszystkich stron} (ilość wpisów w dzienniku)`. Po prawej mamy przycisk `dark`/`light` do przełączania się między stylami okna. Przycisk `?` otwiera okno z pomocą (to samo co z menu "Logbook" -> "Help").
 
@@ -170,7 +172,7 @@ Na dole okna szczegółów znajduje się przycisk `Delete`, za pomocą którego 
 
 ### Kopia zapasowa
 
-Przed każdym zapisem pojedynczej zmian, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`.
+Przed każdym zapisem pojedynczej zmian, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`. Pamiętaj, że masz tylko jedną kopię ostatniej operacji na pliku.
 
 ## Uwagi
 
