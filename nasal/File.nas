@@ -365,4 +365,12 @@ var File = {
     getHeadersData: func() {
         me.headersData;
     },
+
+    #
+    # int index
+    # return vector
+    #
+    getLogData: func(index) {
+        return me.allData[index].toVector();
+    },
 };

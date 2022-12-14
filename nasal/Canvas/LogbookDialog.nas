@@ -100,6 +100,16 @@ var LogbookDialog = {
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me.drawBottomBar();
 
+        setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
+                me.reloadData();
+                me.detailsDialog.reload();
+            }
+        });
+
         return me;
     },
 

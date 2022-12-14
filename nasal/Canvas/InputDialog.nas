@@ -129,6 +129,8 @@ var InputDialog = {
 
         if (me.file.editData(me.rowIndexToEdit, me.header, value)) {
             gui.popupTip("The change has been saved!");
+
+            setprop(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", true);
         }
     },
 

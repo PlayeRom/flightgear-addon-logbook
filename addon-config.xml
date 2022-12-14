@@ -22,6 +22,10 @@
                             <dark-style type="bool">0</dark-style>
                         </settings>
                     </save>
+
+                    <!-- This flag is set on true after edit logbook. Then listener is triggered and reload the logbook data.-->
+                    <reload-logbook type="bool">false</reload-logbook>
+
                     <help-text type="string">
 This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
 

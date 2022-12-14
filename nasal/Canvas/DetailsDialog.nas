@@ -127,4 +127,17 @@ var DetailsDialog = {
 
         me.parents[1].show();
     },
+
+    #
+    # Reload current log
+    #
+    # return void
+    #
+    reload: func() {
+        if (me.listView.detailRowIndex != nil) {
+            var data = me.file.getLogData(me.listView.detailRowIndex);
+            me.listView.setDataToDraw(data, 0, me.file.getHeadersData());
+            me.reDrawDataContent();
+        }
+    },
 };
