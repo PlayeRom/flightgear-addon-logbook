@@ -50,10 +50,23 @@ var Logbook = {
         me.airport       = Airport.new();
         me.logbookDialog = LogbookDialog.new(me.file);
 
-        me.initStartAirport();
+        setlistener("/sim/presets/airport-id", func(node) {
+            me.initStartAirport();
+        }, true);
 
-        me.isInitialized = false;
-        me.fdmInit = me.fdmInitialized();
+        setlistener("/sim/presets/onground", func(node) {
+            var oldOnGround = me.onGround;
+            me.onGround = node.getValue(); # 1 - on ground, 0 - in air
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
+
+            # User probably used the "Location" -> "in air" or change airport even during a flight
+            if (!oldOnGround and me.onGround) {
+                # I was in the air, now I'm in the ground, try to stop logging
+                me.stopLogging(false);
+            }
+
+            me.initLogbook();
+        });
 
         setlistener("/sim/freeze/master", func(node) {
             me.isSimPaused = node.getValue();
@@ -71,6 +84,9 @@ var Logbook = {
                 me.stopLogging(false);
             }
         });
+
+        me.isInitialized = false;
+        me.fdmInit = me.fdmInitialized();
 
         return me;
     },
@@ -105,21 +121,23 @@ var Logbook = {
 
     initStartAirport: func() {
         me.startAirportIcao = getprop("/sim/presets/airport-id");
-        # logprint(MY_LOG_LEVEL, "Logbook Add-on - init startAirportIcao = ", me.startAirportIcao);
 
         # Note: when user will use --lat, --lon then startAirportIcao is an empty string,
-        # try to get nearest airport for space suttle only
+        # try to get nearest airport for space shuttle only
         if (me.spaceShuttle.isPreLaunch() and (me.startAirportIcao == nil or me.startAirportIcao == "")) {
             # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
             me.startAirportIcao = me.airport.getNearestIcao(9000);
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - init startAirportIcao changed to nearest = ", me.startAirportIcao);
         }
+
+        # logprint(MY_LOG_LEVEL, "Logbook Add-on - init startAirportIcao = ", me.startAirportIcao);
     },
 
     #
     # Recognition that the aircraft has taken off
     #
     initLogbook: func() {
+        # logprint(MY_LOG_LEVEL, "Logbook Add-on - initLogbook <------------------------------------------");
         me.landingGear.recognizeGears(me.onGround);
 
         me.initAltAglThreshold();
