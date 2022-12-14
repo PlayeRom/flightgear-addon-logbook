@@ -107,7 +107,7 @@ var InputDialog = {
         me.header = data[1];
 
         me.label.setText(data[1]);
-        me.lineEdit.setText(data[2]);
+        me.lineEdit.setText(sprintf("%s", data[2]));
         me.lineEdit.setFocus();
         me.parents[1].show();
     },
