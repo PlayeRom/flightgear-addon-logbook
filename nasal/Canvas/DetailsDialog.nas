@@ -29,6 +29,7 @@ var DetailsDialog = {
     # Constructor
     #
     # hash file - File object
+    # return me
     #
     new: func(file) {
         var me = { parents: [
@@ -78,6 +79,8 @@ var DetailsDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.inputDialog.del();
         me.deleteDialog.del();
@@ -86,6 +89,8 @@ var DetailsDialog = {
 
     #
     # Draw grid with logbook details
+    #
+    # return void
     #
     reDrawDataContent: func() {
         me.listView.reDrawDataContent();
@@ -112,6 +117,7 @@ var DetailsDialog = {
 
     #
     # hash style
+    # return void
     #
     setStyle: func(style) {
         me.style = style;

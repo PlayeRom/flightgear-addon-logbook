@@ -18,6 +18,8 @@ var SpaceShuttle = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func () {
         var me = { parents: [SpaceShuttle] };
 
@@ -63,12 +65,16 @@ var SpaceShuttle = {
     },
 
     #
+    # Return true if Shuttle lifted off
+    #
     # return bool
     #
     isLaunched: func() {
         return me.launched;
     },
 
+    #
+    # Return true if the Shuttle carshed or any gear is broken.
     #
     # return bool
     #

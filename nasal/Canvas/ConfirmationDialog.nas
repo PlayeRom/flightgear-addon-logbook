@@ -67,6 +67,8 @@ var ConfirmationDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.parents[1].del();
     },
@@ -94,6 +96,8 @@ var ConfirmationDialog = {
     #
     # Positive button action
     #
+    # return void
+    #
     actionPositive: func() {
         me.window.hide();
 
@@ -107,6 +111,8 @@ var ConfirmationDialog = {
 
     #
     # Negative button action
+    #
+    # return void
     #
     actionNegative: func() {
         me.window.hide();

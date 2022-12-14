@@ -28,8 +28,9 @@ var ListView = {
     # hash vBox - Layout object
     # int vBoxSpacing - The value of the space by how much to move down the vbox
     # int windowWidth
-    # vector columnsWidth - Array of width of each column
-    # string layout - Layout of ListView can be "horizontal" or "vertical"
+    # vector columnsWidth - Array with widths of each column
+    # string layout - Layout of ListView, it can be "horizontal" or "vertical"
+    # return me
     #
     new: func(cGroup, vBox, vBoxSpacing, windowWidth, columnsWidth, layout = "horizontal") {
         var me = { parents: [ListView] };
@@ -63,12 +64,15 @@ var ListView = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
     },
 
     #
     # string font
     # int fontSize
+    # return void
     #
     setFont: func(font, fontSize) {
         me.font     = font;
@@ -81,13 +85,17 @@ var ListView = {
 
     #
     # int x, y
+    # return void
     #
     setTranslation: func(x, y) {
         me.dataContent.setTranslation(x, y);
     },
 
     #
+    # Set dialog object which will be opened after click on the row
+    #
     # hash dialog
+    # return void
     #
     setClickDialog: func(dialog) {
         me.clickDialog = dialog;
@@ -97,6 +105,7 @@ var ListView = {
     # vector dataRows
     # int startIndex - start index of dataRows
     # vector|nil headers - required for LAYOUT_V
+    # return void
     #
     setDataToDraw: func(dataRows, startIndex, headers = nil) {
         me.dataRows = dataRows;
@@ -106,6 +115,7 @@ var ListView = {
 
     #
     # hash style
+    # return void
     #
     setStyle: func(style) {
         me.style = style;
@@ -195,7 +205,7 @@ var ListView = {
     },
 
     #
-    # Draw list with
+    # Draw list view
     #
     # return int - Y offset
     #

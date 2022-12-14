@@ -23,6 +23,8 @@ var HelpDialog = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func() {
         var me = { parents: [
             HelpDialog,
@@ -98,12 +100,15 @@ var HelpDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.parents[1].del();
     },
 
     #
     # hash style
+    # return void
     #
     setStyle: func(style) {
         me.style = style;

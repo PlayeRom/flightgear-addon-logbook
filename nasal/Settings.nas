@@ -23,6 +23,7 @@ var Settings = {
     # Constructor
     #
     # addons.Addon addon
+    # return me
     #
     new: func (addon) {
         var me = { parents: [Settings] };
@@ -45,6 +46,8 @@ var Settings = {
     #
     # Load settings properties tree
     #
+    # return void
+    #
     load: func() {
         if (io.read_properties(me.file, me.getSaveNode()) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Load settings failed");
@@ -53,6 +56,8 @@ var Settings = {
 
     #
     # Save settings properties tree
+    #
+    # return void
     #
     save: func() {
         if (io.write_properties(me.file, me.getSaveNode()) == nil) {
@@ -69,6 +74,7 @@ var Settings = {
 
     #
     # bool value
+    # return void
     #
     setDarkMode: func(value) {
         setprop(me.propToSave ~ "/settings/dark-style", value);

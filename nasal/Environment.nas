@@ -22,6 +22,8 @@ var Environment = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func () {
         var me = { parents: [Environment] };
 
@@ -65,6 +67,8 @@ var Environment = {
     #
     # Reset all environment counters
     #
+    # return void
+    #
     resetCounters: func() {
         me.dayCounter        = 0;
         me.nightCounter      = 0;
@@ -75,6 +79,8 @@ var Environment = {
 
     #
     # Update all environment counters
+    #
+    # return void
     #
     update: func () {
         var currentElapsedSec = me.getElapsedSec();
@@ -171,6 +177,7 @@ var Environment = {
     # The problem is that elapsed-sec in reply mode is continuing counting, so we have to handle it manually.
     #
     # bool isReplayMode
+    # return void
     #
     setReplayMode: func(isReplayMode) {
         me.isReplayMode = isReplayMode;

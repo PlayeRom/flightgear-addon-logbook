@@ -26,7 +26,8 @@ var File = {
     #
     # Constructor
     #
-    # addons.Addon addon
+    # hash addon - addons.Addon object
+    # return me
     #
     new: func (addon) {
         var me = { parents: [File] };
@@ -49,6 +50,9 @@ var File = {
         return me;
     },
 
+    #
+    # return void
+    #
     resetTotals: func() {
         # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
         me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -78,6 +82,7 @@ var File = {
     # Copy file from older version to the newest
     #
     # string oldFile
+    # return void
     #
     copyFile: func(oldFile, newFile) {
         var content = io.readfile(oldFile);
@@ -89,6 +94,8 @@ var File = {
 
     #
     # If logbook file doesn't exist then create it with headers
+    #
+    # return void
     #
     saveHeaders: func() {
         if (!me.exists(me.filePath)) {
@@ -126,6 +133,7 @@ var File = {
     # Check that file already exists.
     # From FG 2020.4 (next) we have io.exists() but for older versions we have to write it ourselves.
     #
+    # string path
     # return bool
     #
     exists: func(path) {
@@ -239,7 +247,7 @@ var File = {
     # int rowIndex - where 0 = first data row, now header row
     # string header
     # string value
-    # return bool - Return true of successful
+    # return bool - Return true if successful
     #
     editData: func(rowIndex, header, value) {
         if (rowIndex == nil or header == nil or value == nil) {
@@ -299,6 +307,8 @@ var File = {
     },
 
     #
+    # Search header by text in given vector and return index of it
+    #
     # string headerText
     # vector headersData
     # return int|nil
@@ -317,6 +327,8 @@ var File = {
     },
 
     #
+    # Remove all quotes from given text and return a new text without quotes
+    #
     # string text
     # return string
     #
@@ -325,7 +337,10 @@ var File = {
     },
 
     #
+    # Increase values in me.totals vector with given items data
+    #
     # vector items
+    # return void
     #
     countTotals: func(items) {
         var index = 0;
@@ -346,12 +361,16 @@ var File = {
     },
 
     #
+    # Get vector with totals data
+    #
     # return vector
     #
     getTotalsData: func() {
         return me.totals;
     },
 
+    #
+    # Get total number of rows in CSV file (excluded headers row)
     #
     # return int
     #
@@ -360,12 +379,16 @@ var File = {
     },
 
     #
+    # Get vector with headers names
+    #
     # return vector
     #
     getHeadersData: func() {
         me.headersData;
     },
 
+    #
+    # Get vector of data row by given index of row
     #
     # int index
     # return vector

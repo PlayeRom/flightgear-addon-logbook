@@ -56,6 +56,7 @@ var LogbookDialog = {
     # Constructor
     #
     # hash file - File object
+    # return me
     #
     new: func(file) {
         var me = {
@@ -144,6 +145,8 @@ var LogbookDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.parents[1].del();
         me.detailsDialog.del();
@@ -154,6 +157,8 @@ var LogbookDialog = {
     #
     # Show canvas dialog
     #
+    # return void
+    #
     show: func() {
         me.reloadData(false);
         me.parents[1].show();
@@ -161,6 +166,8 @@ var LogbookDialog = {
 
     #
     # Draw headers row
+    #
+    # return void
     #
     drawHeaders: func() {
         me.headersContent = me.group.createChild("group");
@@ -175,6 +182,8 @@ var LogbookDialog = {
 
     #
     # Draw headers row
+    #
+    # return void
     #
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
@@ -219,6 +228,7 @@ var LogbookDialog = {
     # hash cGroup - Parent canvas group
     # int x, y - Position of text
     # string text - Text to draw
+    # return void
     #
     drawText: func(cGroup, x, y, text) {
         return cGroup.createChild("text")
@@ -229,6 +239,8 @@ var LogbookDialog = {
 
     #
     # Draw grid with logbook data
+    #
+    # return void
     #
     reDrawDataContent: func() {
         var y = me.listView.reDrawDataContent();
@@ -244,6 +256,7 @@ var LogbookDialog = {
     # Draw row with totals summary
     #
     # hash cGroup - Parent canvas group
+    # return void
     #
     drawTotalsRow: func(cGroup) {
         var x = ListView.PADDING * 2 +
@@ -264,6 +277,8 @@ var LogbookDialog = {
 
     #
     # Draw bottom bar with buttons
+    #
+    # return void
     #
     drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -319,6 +334,8 @@ var LogbookDialog = {
     #
     # Toggle style from light to dark and vice versa.
     #
+    # return void
+    #
     toggleStyle: func() {
         me.style = me.style.NAME == "dark"
             ? me.getStyle().light
@@ -349,6 +366,8 @@ var LogbookDialog = {
     #
     # Go to first logbook items
     #
+    # return void
+    #
     first: func() {
         if (me.startIndex != 0) {
             me.startIndex = 0;
@@ -358,6 +377,8 @@ var LogbookDialog = {
 
     #
     # Go to previous logbook items
+    #
+    # return void
     #
     prev: func() {
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
@@ -369,6 +390,8 @@ var LogbookDialog = {
     #
     # Go to next logbook items
     #
+    # return void
+    #
     next: func() {
         if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
@@ -378,6 +401,8 @@ var LogbookDialog = {
 
     #
     # Go to last logbook items
+    #
+    # return void
     #
     last: func() {
         var old = me.startIndex;
@@ -420,6 +445,8 @@ var LogbookDialog = {
 
     #
     # Set paging information
+    #
+    # return void
     #
     setPaging: func() {
         var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;

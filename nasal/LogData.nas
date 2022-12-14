@@ -16,6 +16,8 @@ var LogData = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func () {
         var me = { parents: [LogData] };
 
@@ -43,6 +45,7 @@ var LogData = {
     # Set the take-off date
     #
     # string date - Take-off date
+    # return me
     #
     setDate: func (date) {
         me.date = date;
@@ -55,6 +58,7 @@ var LogData = {
     # Set the take-off time
     #
     # string time - Take-off time
+    # return me
     #
     setTime: func (time) {
         me.time = time;
@@ -66,7 +70,8 @@ var LogData = {
     #
     # Set the aircraft ID
     #
-    # string id - Aircraft ID
+    # string aircraft - Aircraft ID
+    # return me
     #
     setAircraft: func (aircraft) {
         me.aircraft = me.removeHangarName(aircraft);
@@ -111,6 +116,7 @@ var LogData = {
     # Set the callsign
     #
     # string callsign
+    # return me
     #
     setCallsign: func(callsign) {
         me.callsign = callsign;
@@ -123,6 +129,7 @@ var LogData = {
     # Set the ICAO departure airport
     #
     # string from - ICAO departure airport
+    # return me
     #
     setFrom: func(from) {
         me.from = from;
@@ -135,6 +142,7 @@ var LogData = {
     # Set the ICAO destination airport
     #
     # string to - ICAO destination airport
+    # return me
     #
     setTo: func(to) {
         me.to = to;
@@ -146,6 +154,8 @@ var LogData = {
     #
     # Set flag that aircraft landed
     #
+    # return me
+    #
     setLanding: func() {
         me.landings = 1;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setLanding = 1");
@@ -155,6 +165,8 @@ var LogData = {
 
     #
     # Set flag that aircraft crashed
+    #
+    # return me
     #
     setCrash: func() {
         me.crash = true;
@@ -166,6 +178,8 @@ var LogData = {
     #
     # Get crash flag state as a value to save to the file
     #
+    # return string
+    #
     printCrash: func() {
         return me.crash ? "1" : "";
     },
@@ -174,6 +188,7 @@ var LogData = {
     # Set the total flight time during the day (in h)
     #
     # double day - Total flight time during the day (in h)
+    # return me
     #
     setDay: func(day) {
         me.day = day;
@@ -187,6 +202,7 @@ var LogData = {
     # Set the total flight time during the night (in h)
     #
     # double night - Total flight time during the night (in h)
+    # return me
     #
     setNight: func(night) {
         me.night = night;
@@ -200,6 +216,7 @@ var LogData = {
     # Set the total flight time during the IMC (in h)
     #
     # double instrument - Total flight time during the IMC (in h)
+    # return me
     #
     setInstrument: func(instrument) {
         me.instrument = instrument;
@@ -210,6 +227,7 @@ var LogData = {
 
     #
     # Set the total flight time as sum of day and night
+    # return me
     #
     setDuration: func() {
         me.duration = me.day + me.night;
@@ -222,6 +240,7 @@ var LogData = {
     # Set the distance traveled during the flight in nautical miles
     #
     # double distance - distance traveled during the flight in nautical miles
+    # return me
     #
     setDistance: func (distance) {
         me.distance = distance;
@@ -234,6 +253,7 @@ var LogData = {
     # Set the amount of fuel used
     #
     # double fuel - amount of fuel used
+    # return me
     #
     setFuel: func (fuel) {
         me.fuel = fuel;
@@ -246,6 +266,7 @@ var LogData = {
     # Set the max altitude
     #
     # double maxAlt - max altitude in feets
+    # return me
     #
     setMaxAlt: func (maxAlt) {
         me.maxAlt = maxAlt;
@@ -258,6 +279,7 @@ var LogData = {
     # Set the note
     #
     # string note - note
+    # return me
     #
     setNote: func (note) {
         me.note = note;

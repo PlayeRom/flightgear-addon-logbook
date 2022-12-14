@@ -23,6 +23,8 @@ var AboutDialog = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func() {
         var me = { parents: [
             AboutDialog,
@@ -57,12 +59,16 @@ var AboutDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.parents[1].del();
     },
 
     #
     # Draw content for scrollable area
+    #
+    # return void
     #
     drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
@@ -94,7 +100,7 @@ var AboutDialog = {
     },
 
     #
-    # string text
+    # string text - Label text
     # return hash - Label widget
     #
     getLabel: func(text) {
@@ -103,6 +109,8 @@ var AboutDialog = {
     },
 
     #
+    # string label - Label of button
+    # func callback - function which will be executed after click the button
     # return hash - HBoxLayout object with button
     #
     drawBottomBar: func(label, callback) {

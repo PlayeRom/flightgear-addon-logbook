@@ -16,7 +16,7 @@ var MouseHover = {
     #
     # Constructor
     #
-    # hash|nil clickDialog - DetailsDialog object
+    # hash|nil clickDialog - The dialog which will be opened after click the row
     # hash style - My style structure from Dialog
     # hash element - The element that will listen to the event
     # hash target - The element on which the event will be executed. If nil then `element` will be used as `target`.
@@ -36,6 +36,8 @@ var MouseHover = {
 
     #
     # Add mouse events to the logbook row
+    #
+    # return void
     #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {
@@ -64,10 +66,11 @@ var MouseHover = {
     },
 
     #
+    # Check if the "next" dialog (clickDialog) is visible and is related to the current row.
+    #
     # return bool
     #
     isBlocked: func() {
-        # We assume that the next dialog is visible, block the color
         return me.clickDialog != nil and
             me.dataToPass != nil and
             me.clickDialog.isWindowVisible() and

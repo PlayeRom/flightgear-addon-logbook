@@ -21,7 +21,8 @@ var Logbook = {
     #
     # Constructor
     #
-    # addon - Addon object
+    # hash addon - addons.Addon object
+    # return me
     #
     new: func(addon) {
         var me = { parents: [Logbook] };
@@ -94,6 +95,8 @@ var Logbook = {
     #
     # Uninitialize Logbook module
     #
+    # return void
+    #
     del: func() {
         me.mainTimer.stop();
         me.logbookDialog.del();
@@ -101,6 +104,8 @@ var Logbook = {
 
     #
     # Initialize logbook after FDM initialized
+    #
+    # return void
     #
     fdmInitialized: func() {
         return setlistener(
@@ -119,6 +124,9 @@ var Logbook = {
         );
     },
 
+    #
+    # return void
+    #
     initStartAirport: func() {
         me.startAirportIcao = getprop("/sim/presets/airport-id");
 
@@ -135,6 +143,8 @@ var Logbook = {
 
     #
     # Recognition that the aircraft has taken off
+    #
+    # return void
     #
     initLogbook: func() {
         # logprint(MY_LOG_LEVEL, "Logbook Add-on - initLogbook <------------------------------------------");
@@ -157,6 +167,8 @@ var Logbook = {
     #
     # Initialize alitutde AGL threshold
     #
+    # return void
+    #
     initAltAglThreshold: func() {
         me.initAltAglFt = me.onGround
             ? (getprop("/position/altitude-agl-ft") + Logbook.ALT_AGL_FT_THRESHOLD)
@@ -165,6 +177,8 @@ var Logbook = {
 
     #
     # Main timer callback for recognize takeoff, landing and crash
+    #
+    # return void
     #
     update: func() {
         if (me.isSimPaused or me.isReplayMode) {
@@ -219,6 +233,8 @@ var Logbook = {
     #
     # Call when aircraft is in the air
     #
+    # return void
+    #
     startLogging: func() {
         if (me.logData != nil) {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - startLogging: invalid state, it's trying to run start again without stop.");
@@ -249,6 +265,7 @@ var Logbook = {
     #
     # bool landed - If true then aircraft landed, otherwise the flight aborted mid-air
     # bool crashed - Set true when aircraft crashed
+    # return void
     #
     stopLogging: func(landed, crashed = 0) {
         if (me.logData == nil) {
@@ -300,6 +317,8 @@ var Logbook = {
     #
     # Show Logbook canvas dialog
     #
+    # return void
+    #
     showLogbookDialog: func() {
         me.logbookDialog.show();
     },
@@ -307,12 +326,16 @@ var Logbook = {
     #
     # Show Help canvas dialog
     #
+    # return void
+    #
     showHelpDialog: func() {
         me.logbookDialog.helpDialog.show();
     },
 
     #
     # Show About canvas dialog
+    #
+    # return void
     #
     showAboutDialog: func() {
         me.logbookDialog.aboutDialog.show();

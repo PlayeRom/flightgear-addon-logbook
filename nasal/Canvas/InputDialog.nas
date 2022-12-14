@@ -72,6 +72,8 @@ var InputDialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.parents[1].del();
     },
@@ -118,6 +120,8 @@ var InputDialog = {
     #
     # Save action
     #
+    # return void
+    #
     actionSave: func() {
         var value = me.lineEdit.text();
         if (value == nil) {
@@ -139,6 +143,8 @@ var InputDialog = {
 
     #
     # Cancel action
+    #
+    # return void
     #
     actionCancel: func() {
         me.window.hide();

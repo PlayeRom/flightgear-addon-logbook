@@ -21,6 +21,8 @@ var LandingGear = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func () {
         var me = { parents: [LandingGear] };
 
@@ -196,6 +198,9 @@ var LandingGear = {
         return fdragLbs != nil and fdragLbs > 0;
     },
 
+    #
+    # return void
+    #
     resetLandingWithNoGearRecognized: func() {
         me.landingAmount = 0;
         me.landingCountSec = 0;
@@ -204,7 +209,8 @@ var LandingGear = {
     #
     # Loop through all gears properties
     #
-    # callback - Function that will be called with the gear index of which WoW is true.
+    # func callback - Function that will be called with the gear index of which WoW is true.
+    # return void
     #
     loopThroughGears: func(callback) {
         foreach (var gear; props.globals.getNode("/gear").getChildren("gear")) {

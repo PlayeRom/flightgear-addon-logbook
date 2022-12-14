@@ -26,6 +26,7 @@ var Dialog = {
     #
     # Constructor
     #
+    # int id - ID of the Dialog as one of constants ID_LOGBOOK, ID_DETAILS, etc.
     # int width - Initial width of window
     # int height - Initial height of window
     # string title - Title of window in the top bar
@@ -56,6 +57,8 @@ var Dialog = {
     #
     # Destructor
     #
+    # return void
+    #
     del: func() {
         me.window.destroy();
     },
@@ -66,7 +69,7 @@ var Dialog = {
     # int height
     # string title
     # bool resize
-    # return hash
+    # return hash - canvas Window object
     #
     createCanvasWindow: func(id, width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
@@ -108,6 +111,8 @@ var Dialog = {
     #
     # Set position on center of screen
     #
+    # return void
+    #
     setPositionOnCenter: func(width, height) {
         var screenW = getprop("/sim/gui/canvas/size[0]");
         var screenH = getprop("/sim/gui/canvas/size[1]");
@@ -135,14 +140,14 @@ var Dialog = {
     },
 
     #
-    # hash cgroup - Pareent object as ScrollArea widget
+    # hash cGroup - Pareent object as ScrollArea widget
     # string|nil font - Font file name
     # int|nil - Font size
     # string|nil alignment - Content alignment value
     # return hash - content group of ScrollArea
     #
-    getScrollAreaContent: func(cgroup, font = nil, fontSize = nil, alignment = nil) {
-        var scrollContent = cgroup.getContent();
+    getScrollAreaContent: func(cGroup, font = nil, fontSize = nil, alignment = nil) {
+        var scrollContent = cGroup.getContent();
 
         if (font != nil) {
             scrollContent.set("font", font);
@@ -162,6 +167,8 @@ var Dialog = {
     #
     # Show canvas dialog
     #
+    # return void
+    #
     show: func() {
         me.window.raise();
         me.window.show();
@@ -170,10 +177,14 @@ var Dialog = {
     #
     # Hide canvas dialog
     #
+    # return void
+    #
     hide: func() {
         me.window.hide();
     },
 
+    #
+    # Return true if window is showing
     #
     # return bool
     #
@@ -189,7 +200,7 @@ var Dialog = {
     },
 
     #
-    # Get hash with dialog styles
+    # Get hash with dialog styles/themes
     #
     # return hash
     #

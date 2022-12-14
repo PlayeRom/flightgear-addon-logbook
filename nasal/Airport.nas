@@ -16,6 +16,8 @@ var Airport = {
     #
     # Constructor
     #
+    # return me
+    #
     new: func () {
         return { parents: [Airport] };
     },

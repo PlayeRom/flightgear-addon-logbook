@@ -16,7 +16,8 @@ var CrashDetector = {
     #
     # Constructor
     #
-    # SpaceShuttle spaceShuttle
+    # hash spaceShuttle - SpaceShuttle object
+    # return me
     #
     new: func (spaceShuttle) {
         var me = { parents: [CrashDetector] };
