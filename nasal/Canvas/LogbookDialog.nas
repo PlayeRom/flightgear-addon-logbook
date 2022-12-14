@@ -105,8 +105,27 @@ var LogbookDialog = {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                me.reloadData();
-                me.detailsDialog.reload();
+                if (getprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted") == true) {
+                    setprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted", false);
+
+                    # Check index of last page
+                    var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+                    var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+                    if (me.startIndex > newIndex) {
+                        # We exceed the maximum index, so set a new one
+                        me.startIndex = newIndex;
+                    }
+
+                    me.reloadData(false);
+
+                    # User deleted entry, hide details window
+                    me.detailsDialog.hide();
+                }
+                else {
+                    # For edit data
+                    me.reloadData(false);
+                    me.detailsDialog.reload();
+                }
             }
         });
 
@@ -127,7 +146,7 @@ var LogbookDialog = {
     # Show canvas dialog
     #
     show: func() {
-        me.reloadData();
+        me.reloadData(false);
         me.parents[1].show();
     },
 
@@ -324,7 +343,7 @@ var LogbookDialog = {
     first: func() {
         if (me.startIndex != 0) {
             me.startIndex = 0;
-            me.reloadData();
+            me.reloadData(false);
         }
     },
 
@@ -334,7 +353,7 @@ var LogbookDialog = {
     prev: func() {
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
             me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
-            me.reloadData();
+            me.reloadData(false);
         }
     },
 
@@ -342,9 +361,9 @@ var LogbookDialog = {
     # Go to next logbook items
     #
     next: func() {
-        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS <= me.file.getTotalLines()) {
+        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
-            me.reloadData();
+            me.reloadData(false);
         }
     },
 
@@ -357,20 +376,25 @@ var LogbookDialog = {
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
-            me.reloadData();
+            me.reloadData(false);
         }
     },
 
     #
     # Reload logbook data
     #
-    reloadData: func() {
+    # bool withHeaders - Set true when color must be change too.
+    # return void
+    #
+    reloadData: func(withHeaders = 1) {
         me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
         me.listView.setDataToDraw(me.data, me.startIndex);
 
-        me.reDrawHeadersContent();
+        if (withHeaders) {
+            me.reDrawHeadersContent();
+        }
         me.reDrawDataContent();
         me.setPaging();
     },

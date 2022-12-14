@@ -373,4 +373,33 @@ var File = {
     getLogData: func(index) {
         return me.allData[index].toVector();
     },
+
+    #
+    # int index - Index to delete
+    # return bool
+    #
+    deleteLog: func(index) {
+        var isDeleted = false;
+
+        var tmp = me.allData;
+        me.allData = [];
+        var count = 0;
+        foreach (var item; tmp) {
+            if (count == index) {
+                isDeleted = true;
+            }
+            else {
+                append(me.allData, item);
+            }
+
+            count += 1;
+        }
+
+        if (isDeleted) {
+            me.totalLines -= 1;
+            me.saveAllData(true);
+        }
+
+        return isDeleted;
+    },
 };

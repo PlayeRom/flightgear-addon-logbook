@@ -36,9 +36,11 @@ var DetailsDialog = {
             Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
-        me.dataRow     = nil;
-        me.file        = file;
-        me.inputDialog = InputDialog.new(file);
+        me.dataRow      = nil;
+        me.file         = file;
+        me.inputDialog  = InputDialog.new(file);
+        me.deleteDialog = ConfirmationDialog.new(file, "Delete entry log");
+        me.deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
@@ -68,6 +70,7 @@ var DetailsDialog = {
     #
     del: func() {
         me.inputDialog.del();
+        me.deleteDialog.del();
         me.parents[1].del();
     },
 
@@ -85,11 +88,11 @@ var DetailsDialog = {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Close")
+            .setText("Delete")
             .setFixedSize(75, 26);
 
         btnClose.listen("clicked", func {
-            me.window.hide();
+            me.deleteDialog.show(me.listView.detailRowIndex);
         });
 
         buttonBox.addItem(btnClose);
