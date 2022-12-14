@@ -27,22 +27,6 @@ var CrashDetector = {
         me.lastAircraftAltAgl = nil;
         me.crashCounter = 0;
 
-        # me.isAircraftBroken = false;
-
-        # if (getprop("/fdm/jsbsim/wing-damage/left-wing") != nil) {
-        #     setlistener("/fdm/jsbsim/wing-damage/left-wing", func(node) {
-        #         if (node.getValue() >= 1.0) {
-        #             me.isAircraftBroken = true;
-        #         }
-        #     });
-
-        #     setlistener("/fdm/jsbsim/wing-damage/right-wing", func(node) {
-        #         if (node.getValue() >= 1.0) {
-        #             me.isAircraftBroken = true;
-        #         }
-        #     });
-        # }
-
         return me;
     },
 
@@ -79,6 +63,10 @@ var CrashDetector = {
             return false;
         }
 
+        if (me.isC172PBrokenGear() or me.isC172PBrokenWing()) {
+            return true;
+        }
+
         var aircraftCoord = geo.aircraft_position();
 
         if (me.lastAircraftCoord != nil and
@@ -101,10 +89,42 @@ var CrashDetector = {
     },
 
     #
+    # Return true if roll and pitch is less than 30 degrees
+    #
     # return bool
     #
     isOrientationOK: func() {
         return math.abs(getprop("/orientation/roll-deg"))  < 30 and
                math.abs(getprop("/orientation/pitch-deg")) < 30;
+    },
+
+    #
+    # Return true if any gear is broken for Cessna 172P.
+    #
+    # return bool
+    #
+    isC172PBrokenGear: func() {
+        var node = props.globals.getNode("/fdm/jsbsim/gear");
+        if (node != nil) {
+            foreach (var gear; node.getChildren("unit")) {
+                var broken = gear.getChild("broken");
+                if (broken != nil and broken.getValue()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    },
+
+    #
+    # Return true if any wing is broken for Cessna 172P.
+    #
+    # return bool
+    #
+    isC172PBrokenWing: func() {
+        return
+            (getprop("/fdm/jsbsim/wing-damage/left-wing")  or 0.0) >= 1.0 or
+            (getprop("/fdm/jsbsim/wing-damage/right-wing") or 0.0) >= 1.0;
     },
 };
