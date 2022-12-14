@@ -31,6 +31,8 @@ and on Linux/MacOS:
 
 `/home/{user name}/.fgfs/`
 
+You can always open it and edit by any Spreadsheet program like LibreOffice Calc, MS Excel, etc. However please don't put the characters `,` in the cells, because the Logbook parser will recognize them as a column separator, which will cause errors in the operation of the add-on. It is safer to edit the log data through the GUI in the simulator.
+
 ## Logbook file structure
 
 The following information is logged into the file:
@@ -51,6 +53,26 @@ The following information is logged into the file:
 14. **Max Alt** – maximum altitude, in feet, reached during flight.
 15. **Note** – notes, by default the full name of the aircraft.
 
+## Viewing the logbook
+
+The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page.
+
+At the very bottom we have a row of buttons, mainly for moving through the log pages. The `|<<` button means moving to the first page, `<` moving to the previous page, `>` moving to the next page, `>>|` moving to the last page. In the middle we have text information in the format `{on which page we are} / {number of all pages} (number of entries in the log)`. On the right we have a `dark`/`light` button to switch between window styles. The `?` button opens a window with help (the same as from the "Logbook" -> "Help" menu).
+
+Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, we have the same information here as in the main window, except:
+
+1. ICAO airport codes include their names in parentheses.
+2. With numerical data, we have given the units in which these values are presented.
+3. At the very bottom we have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
+
+## Editing data
+
+Each logbook entry can be edited from the simulator. You need to select "Logbook" -> "Logbook" from the menu. The main window with the entire logbook will open. Here you can search for the entry you want to edit and click on it. The details window for the entry will open. Now you can click on the specific entry you want to edit. Another window with a text field will open. Just enter the new value and confirm with the "Save" button. The change will immediately be saved to a file.
+
+### Backup
+
+Before each save, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name.
+
 ## NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
@@ -65,6 +87,7 @@ The following information is logged into the file:
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
 11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
 12. Supported FG versions from 2020.1.
+13. A CSV file with more than 100,000 entries will take much longer to load. On my powerful hardware about 2-3 seconds. This file is always loaded when the add-on loads. Thus, large files will cause a temporary but noticeable stuttering of the entire simulator. I'm considering moving the loading to a separate thread, as long as I also get good stability of this solution.
 
 ## Authors
 
@@ -103,6 +126,8 @@ pod Linuxem/MacOS-em:
 
 `/home/{user name}/.fgfs/`
 
+Zawsze możesz otworzyć ten plik w dowolnym programie typu arkusz kalkulacyjny, jak LibreOffice Calc, MS Excel itp. Proszę jednak nie umieszczać tam w komórce znaków `,`, ponieważ parser Logbooka rozpozna przecinki jako separator kolumn, co spowoduje błędy w działaniu dodatku. Bezpieczniej jest edytować dane w dzienniku poprzez GUI w symulatorze.
+
 ## Struktura pliku logbooka
 
 Do pliku logowane są następujące informacje:
@@ -123,6 +148,26 @@ Do pliku logowane są następujące informacje:
 14. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
 15. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
+## Przeglądanie dziennika
+
+Dodatek udostępnia także możliwość przeglądania całego dziennika lotów z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem w postaci tabelarycznej. Ostatni rząd podpisany "Totals", zawiera podsumowanie, nie tylko widocznych wpisów na danej stronie, ale całego dziennika. Rząd "Totals" widoczny jest na każdej stronie.
+
+Na samym dole mamy rząd przycisków, głównie do przemieszczania się po stronach dziennika. Przycisk `|<<` oznacza przejście do pierwszej strony, `<` przejście do poprzedniej strony, `>` przejście do następnej strony, `>>|` przejście do ostatniej strony. Na środku mamy informację tekstową w formacie `{na której jesteśmy stronie} / {ilość wszystkich stron} (ilość wpisów w dzienniku)`. Po prawej mamy przycisk `dark`/`light` do przełączania się między stylami okna. Przycisk `?` otwiera okno z pomocą (to samo co z menu "Logbook" -> "Help").
+
+Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy się dodatkowe okno prezentujące szczegóły danego wpisu. Ogólnie mamy tutaj to samo co w oknie głównym, poza tym:
+
+1. Przy kodach ICAO lotnisk mamy w nawiasie podane ich nazwy.
+2. Przy danych liczbowych mamy podane jednostki w jakich prezentowane są te wartości.
+3. Na samym dole mamy dodatkowe pole `Note`, które nie jest wyświetlane w oknie głównym, ze względu na możliwość umieszczenia tutaj, dowolnie długiego tekstu.
+
+## Edycja danych
+
+Każdy wpis w dzienniku można edytować z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem. Możesz tu wyszukać wpisu, który chcesz edytować i kliknąć na niego. Otworzy się okno szczegółów dla danego wpisu. Teraz możesz kliknąć na konkretną pozycję, którą chcesz edytować. Otworzy się kolejne okienko z polem tekstowym. Wystarczy wprowadzić nową wartość i potwierdzić przyciskiem "Save". Zmiana od razu zostanie zapisana do pliku.
+
+### Kopia zapasowa
+
+Przed każdym zapisem, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`.
+
 ## Uwagi
 
 1. Jeśli podczas lotu prawidłowo zamkniesz symulator ("Plik" -> "Zamknij"), aktualny stan lotu zostanie zapisany do dziennika (oczywiście bez informacji o lądowaniu).
@@ -137,6 +182,7 @@ Do pliku logowane są następujące informacje:
 10. Zapauzowanie symulacji lub włączenie trybu powtórki, zatrzymuje naliczanie statystyk lotu do dziennika.
 11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
 12. Wspierane wersje FG od 2020.1.
+13. Plik CSV zawierający ponad 100 000 wpisów, będzie znacznie dłużej się wczytywał. Na moim wydajnym sprzęcie około 2-3 sekundy. Plik ten zawsze jest wczytywany podczas wczytywania się dodatku. Zatem duże pliki spowodują chwilowe lecz zauważalne przycięcie się całego symulatora. Rozważam przenieść wczytywanie do osobnego wątku, o ile uzyskam też dobrą stabilność takiego rozwiązania.
 
 ## Autorzy
 
