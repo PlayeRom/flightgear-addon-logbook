@@ -122,12 +122,10 @@ var InputDialog = {
         }
 
         if (!me.validate(value)) {
-            gui.popupTip("Please do not use `,` and `\"` as these are special characters for the CSV file.");
             return;
         }
 
         me.window.hide();
-
 
         if (me.file.editData(me.rowIndexToEdit, me.header, value)) {
             gui.popupTip("The change has been saved!");
@@ -141,9 +139,142 @@ var InputDialog = {
         me.window.hide();
     },
 
+    #
+    # Validate the value according to header
+    #
+    # return bool - Return true if value is correct
+    #
     validate: func(value) {
         for (var i = 0; i < size(value); i += 1) {
             if (value[i] == `,` or value[i] == `"`) {
+                gui.popupTip("Please do not use `,` and `\"` as these are special characters for the CSV file.");
+                return false;
+            }
+        }
+
+        if (me.header == "Date") {
+            if (!me.validateDate(value)) {
+                gui.popupTip("Incorrect date");
+                return false;
+            }
+        }
+        else if (me.header == "Time") {
+            if (!me.validateTime(value)) {
+                gui.popupTip("Incorrect time");
+                return false;
+            }
+        }
+        else if (me.header == "Aircraft") {
+            if (!me.validateAircraft(value)) {
+                gui.popupTip("Incorrect Aircraft ID");
+                return false;
+            }
+        }
+        else if (me.header == "Landings") {
+            if (!me.validateDigit(value)) {
+                gui.popupTip("The allowed value is a digit.");
+                return false;
+            }
+        }
+        else if (me.header == "Crash") {
+            if (!me.validateCrash(value)) {
+                gui.popupTip("The allowed value are 1 or 0 (or empty).");
+                return false;
+            }
+        }
+        else if (me.header == "Day" or
+                 me.header == "Night" or
+                 me.header == "Instrument" or
+                 me.header == "Duration" or
+                 me.header == "Distance" or
+                 me.header == "Fuel"
+        ) {
+            if (!me.validateDecimal(value)) {
+                gui.popupTip("The allowed value is decimal number.");
+                return false;
+            }
+        }
+        else if (me.header == "Max Alt") {
+            if (!me.validateNumber(value)) {
+                gui.popupTip("The allowed value is a number.");
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateDate: func(value) {
+        return string.match(value, "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]");
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateTime: func(value) {
+        return string.match(value, "[0-9][0-9]:[0-9][0-9]");
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateAircraft: func(value) {
+        for (var i = 0; i < size(value); i += 1) {
+            if (value[i] == `.` or value[i] == ` `) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateDigit: func(value) {
+        return string.match(value, "[0-9]");
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateCrash: func(value) {
+        if (value == "1" or value == "0" or value == "") {
+            return true;
+        }
+
+        return false;
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateDecimal: func(value) {
+        for (var i = 0; i < size(value); i += 1) {
+            if (!string.isdigit(value[i]) and value[i] != `.`) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateNumber: func(value) {
+        for (var i = 0; i < size(value); i += 1) {
+            if (!string.isdigit(value[i])) {
                 return false;
             }
         }

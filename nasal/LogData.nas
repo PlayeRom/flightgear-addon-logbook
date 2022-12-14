@@ -307,7 +307,7 @@ var LogData = {
         me.from       = items[4];
         me.to         = items[5];
         me.landings   = items[6];
-        me.crash      = items[7] == "" ? false : true;
+        me.crash      = items[7] == "1" or items[7] == true ? true : false;
         me.day        = items[8];
         me.night      = items[9];
         me.instrument = items[10];
