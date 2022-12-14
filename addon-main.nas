@@ -33,6 +33,7 @@ var main = func(addon) {
 var loadExtraNasalFiles = func (addon) {
     var modules = [
         "nasal/Canvas/InputDialog",
+        "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/ListView",
         "nasal/Canvas/Dialog",
         "nasal/Canvas/AboutDialog",
