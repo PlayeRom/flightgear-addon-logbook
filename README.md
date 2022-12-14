@@ -65,13 +65,15 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 2. With numerical data, we have given the units in which these values are presented.
 3. At the very bottom we have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
 
-## Editing data
+## Editing and deleting data
 
 Each logbook entry can be edited from the simulator. You need to select "Logbook" -> "Logbook" from the menu. The main window with the entire logbook will open. Here you can search for the entry you want to edit and click on it. The details window for the entry will open. Now you can click on the specific entry you want to edit. Another window with a text field will open. Just enter the new value and confirm with the "Save" button. The change will immediately be saved to a file.
 
+At the bottom of the details window there is a `Delete` button, with which you can completely delete the selected entry.
+
 ### Backup
 
-Before each save, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name.
+Before each saving of a single change, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name.
 
 ## NOTE
 
@@ -160,13 +162,15 @@ Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy s
 2. Przy danych liczbowych mamy podane jednostki w jakich prezentowane są te wartości.
 3. Na samym dole mamy dodatkowe pole `Note`, które nie jest wyświetlane w oknie głównym, ze względu na możliwość umieszczenia tutaj, dowolnie długiego tekstu.
 
-## Edycja danych
+## Edycja i usuwanie danych
 
 Każdy wpis w dzienniku można edytować z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem. Możesz tu wyszukać wpisu, który chcesz edytować i kliknąć na niego. Otworzy się okno szczegółów dla danego wpisu. Teraz możesz kliknąć na konkretną pozycję, którą chcesz edytować. Otworzy się kolejne okienko z polem tekstowym. Wystarczy wprowadzić nową wartość i potwierdzić przyciskiem "Save". Zmiana od razu zostanie zapisana do pliku.
 
+Na dole okna szczegółów znajduje się przycisk `Delete`, za pomocą którego możesz całkowicie usunąć wybrany wpis.
+
 ### Kopia zapasowa
 
-Przed każdym zapisem, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`.
+Przed każdym zapisem pojedynczej zmian, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`.
 
 ## Uwagi
 
