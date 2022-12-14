@@ -25,12 +25,11 @@ var MouseHover = {
     new: func (clickDialog, style, element, target = nil, dataToPass = nil) {
         var me = { parents: [MouseHover] };
 
+        me.clickDialog = clickDialog;
         me.style = style;
         me.element = element;
-        me.style = style;
         me.target = target == nil ? element : target;
         me.dataToPass = dataToPass;
-        me.clickDialog = clickDialog;
 
         return me;
     },
@@ -40,11 +39,21 @@ var MouseHover = {
     #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {
-            me.target.setColorFill(me.style.HOVER_BG);
+            if (me.isBlocked()) {
+                me.target.setColorFill(me.style.SELECTED_BAR);
+            }
+            else {
+                me.target.setColorFill(me.style.HOVER_BG);
+            }
         });
 
         me.element.addEventListener("mouseleave", func {
-            me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            if (me.isBlocked()) {
+                me.target.setColorFill(me.style.SELECTED_BAR);
+            }
+            else {
+                me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            }
         });
 
         if (me.clickDialog != nil and me.dataToPass != nil) {
@@ -52,5 +61,16 @@ var MouseHover = {
                 me.clickDialog.show(me.dataToPass);
             });
         }
+    },
+
+    #
+    # return bool
+    #
+    isBlocked: func() {
+        # We assume that the next dialog is visible, block the color
+        return me.clickDialog != nil and
+            me.dataToPass != nil and
+            me.clickDialog.isWindowVisible() and
+            me.dataToPass[0] == me.clickDialog.parentDataIndex;
     },
 };

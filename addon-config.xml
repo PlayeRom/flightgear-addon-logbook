@@ -26,6 +26,9 @@
                     <!-- This flag is set on true after edit logbook. Then listener is triggered and reload the logbook data.-->
                     <reload-logbook type="bool">false</reload-logbook>
 
+                    <redraw-logbook type="bool">false</redraw-logbook>
+                    <redraw-details type="bool">false</redraw-details>
+
                     <!-- This flag indicate that user removed entry log -->
                     <logbook-entry-deleted type="bool">false</logbook-entry-deleted>
 

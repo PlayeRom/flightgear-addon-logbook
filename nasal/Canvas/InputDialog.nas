@@ -28,12 +28,13 @@ var InputDialog = {
     new: func(file) {
         var me = { parents: [
             InputDialog,
-            Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
+            Dialog.new(Dialog.ID_INPUT, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
         ] };
 
-        me.file           = file;
-        me.rowIndexToEdit = nil;
-        me.header         = nil;
+        me.file            = file;
+        me.logIndex        = nil; # index of log entry in whole CSV file
+        me.parentDataIndex = nil; # index of column in single row
+        me.header          = nil; # header name
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
@@ -97,17 +98,19 @@ var InputDialog = {
 
     #
     # vector data
-    #   data[0] - index of row in CSV file
-    #   data[1] - label text (header)
-    #   data[2] - text to edit
+    #   data[0] - index of header
+    #   data[1] - index of row in CSV file
+    #   data[2] - label text (header)
+    #   data[3] - text to edit
     # return void
     #
     show: func(data) {
-        me.rowIndexToEdit = data[0];
-        me.header = data[1];
+        me.parentDataIndex = data[0];
+        me.logIndex = data[1];
+        me.header = data[2];
 
-        me.label.setText(data[1]);
-        me.lineEdit.setText(sprintf("%s", data[2]));
+        me.label.setText(data[2]);
+        me.lineEdit.setText(sprintf("%s", data[3]));
         me.lineEdit.setFocus();
         me.parents[1].show();
     },
@@ -127,7 +130,7 @@ var InputDialog = {
 
         me.window.hide();
 
-        if (me.file.editData(me.rowIndexToEdit, me.header, value)) {
+        if (me.file.editData(me.logIndex, me.header, value)) {
             gui.popupTip("The change has been saved!");
 
             setprop(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", true);
@@ -139,6 +142,9 @@ var InputDialog = {
     #
     actionCancel: func() {
         me.window.hide();
+
+        # Set property redraw-details for remove selected bar
+        setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-details", true);
     },
 
     #

@@ -29,7 +29,7 @@ var ConfirmationDialog = {
     new: func(file, title) {
         var me = { parents: [
             ConfirmationDialog,
-            Dialog.new(ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT, title)
+            Dialog.new(Dialog.ID_DELETE, ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT, title)
         ] };
 
         me.file     = file;

@@ -22,6 +22,8 @@ var false = 0;
 #
 var MY_LOG_LEVEL = LOG_INFO;
 
+var ADDON_ID = "org.flightgear.addons.logbook";
+
 #
 # Global object of Logbook
 #

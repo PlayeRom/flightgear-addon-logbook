@@ -46,7 +46,7 @@ var ListView = {
         me.startIndex     = 0;
 
         # If ListView is using in DetailsDialog
-        me.detailRowIndex = nil;
+        me.parentDataIndex = nil;
 
         me.dataContent = cGroup.createChild("group");
         me.dataContent
@@ -132,12 +132,31 @@ var ListView = {
 
         # Create rect because setColorFill on rowGroup doesn't work
         var rect = rowGroup.rect(0, 0, me.windowWidth - (ListView.PADDING * 2), ListView.SHIFT_Y);
-        rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+
+        if (me.isDetailsWindowOpenForSelectedRow(dataToPass)) {
+            # This row was cliced and details window is opened
+            rect.setColorFill(me.style.SELECTED_BAR);
+        }
+        else {
+            rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+        }
 
         var mouseHover = MouseHover.new(me.clickDialog, me.style, rowGroup, rect, dataToPass);
         mouseHover.addEvents();
 
         return rowGroup;
+    },
+
+    #
+    # vector|nil dataToPass
+    # return bool
+    #
+    isDetailsWindowOpenForSelectedRow: func(dataToPass) {
+        return me.clickDialog != nil and
+            dataToPass != nil and
+            me.clickDialog.getDialogId() == Dialog.ID_DETAILS and
+            me.clickDialog.isWindowVisible() and
+            me.clickDialog.parentDataIndex == dataToPass[0];
     },
 
     #
@@ -240,7 +259,7 @@ var ListView = {
             var x = ListView.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, [me.detailRowIndex, headers[index], dataText]);
+            var rowGroup = me.drawHoverBox(y, [index, me.parentDataIndex, headers[index], dataText]);
 
             # column 1 - header
             me.drawText(rowGroup, x, sprintf("%10s:\n", headers[index]));

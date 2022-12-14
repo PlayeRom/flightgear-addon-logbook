@@ -26,7 +26,7 @@ var HelpDialog = {
     new: func() {
         var me = { parents: [
             HelpDialog,
-            Dialog.new(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT, "Logbook Help", true),
+            Dialog.new(Dialog.ID_HELP, HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT, "Logbook Help", true),
         ] };
 
         me.setPositionOnCenter(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT);

@@ -33,13 +33,14 @@ var DetailsDialog = {
     new: func(file) {
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
-        me.dataRow      = nil;
-        me.file         = file;
-        me.inputDialog  = InputDialog.new(file);
-        me.deleteDialog = ConfirmationDialog.new(file, "Delete entry log");
+        me.dataRow         = nil;
+        me.parentDataIndex = nil;
+        me.file            = file;
+        me.inputDialog     = InputDialog.new(file);
+        me.deleteDialog    = ConfirmationDialog.new(file, "Delete entry log");
         me.deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
@@ -61,6 +62,15 @@ var DetailsDialog = {
         me.vbox.addItem(buttonBox);
 
         me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT);
+
+        setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
+                me.reload();
+            }
+        });
 
         return me;
     },
@@ -92,7 +102,7 @@ var DetailsDialog = {
             .setFixedSize(75, 26);
 
         btnClose.listen("clicked", func {
-            me.deleteDialog.show(me.listView.detailRowIndex);
+            me.deleteDialog.show(me.listView.parentDataIndex);
         });
 
         buttonBox.addItem(btnClose);
@@ -123,7 +133,8 @@ var DetailsDialog = {
     show: func(data) {
         me.inputDialog.hide();
 
-        me.listView.detailRowIndex = data[0];
+        me.parentDataIndex = data[0];
+        me.listView.parentDataIndex = me.parentDataIndex;
         me.listView.setDataToDraw(data[1], 0, me.file.getHeadersData());
 
         me.reDrawDataContent();
@@ -137,8 +148,8 @@ var DetailsDialog = {
     # return void
     #
     reload: func() {
-        if (me.listView.detailRowIndex != nil) {
-            var data = me.file.getLogData(me.listView.detailRowIndex);
+        if (me.listView.parentDataIndex != nil) {
+            var data = me.file.getLogData(me.listView.parentDataIndex);
             me.listView.setDataToDraw(data, 0, me.file.getHeadersData());
             me.reDrawDataContent();
         }

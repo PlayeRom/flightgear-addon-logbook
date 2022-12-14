@@ -61,7 +61,7 @@ var LogbookDialog = {
         var me = {
             parents: [
                 LogbookDialog,
-                Dialog.new(LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook"),
+                Dialog.new(Dialog.ID_LOGBOOK, LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook"),
             ],
         };
 
@@ -126,6 +126,15 @@ var LogbookDialog = {
                     me.reloadData(false);
                     me.detailsDialog.reload();
                 }
+            }
+        });
+
+        setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
+                me.redraw(false);
             }
         });
 
@@ -392,11 +401,21 @@ var LogbookDialog = {
 
         me.listView.setDataToDraw(me.data, me.startIndex);
 
+        me.redraw(withHeaders);
+        me.setPaging();
+    },
+
+    #
+    # Redraw windows
+    #
+    # bool withHeaders - Set true when color must be change too.
+    # return void
+    #
+    redraw: func(withHeaders) {
         if (withHeaders) {
             me.reDrawHeadersContent();
         }
         me.reDrawDataContent();
-        me.setPaging();
     },
 
     #

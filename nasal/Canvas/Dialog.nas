@@ -14,6 +14,16 @@
 #
 var Dialog = {
     #
+    # Constants
+    #
+    ID_LOGBOOK : 1,
+    ID_DETAILS : 2,
+    ID_INPUT   : 3,
+    ID_DELETE  : 4,
+    ID_ABOUT   : 5,
+    ID_HELP    : 6,
+
+    #
     # Constructor
     #
     # int width - Initial width of window
@@ -22,10 +32,11 @@ var Dialog = {
     # bool resize - If true then user will be possible to resize the window
     # return me
     #
-    new: func(width, height, title, resize = 0) {
+    new: func(id, width, height, title, resize = 0) {
         var me = { parents: [Dialog] };
 
-        me.addon  = addons.getAddon("org.flightgear.addons.logbook");
+        me.addon  = addons.getAddon(ADDON_ID);
+        me.dialogId = id;
 
         me.settings = Settings.new(me.addon);
 
@@ -33,7 +44,7 @@ var Dialog = {
             ? me.getStyle().dark
             : me.getStyle().light;
 
-        me.window = me.createCanvasWindow(width, height, title, resize);
+        me.window = me.createCanvasWindow(id, width, height, title, resize);
         me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
         me.group  = me.canvas.createGroup();
         me.vbox   = canvas.VBoxLayout.new();
@@ -50,13 +61,14 @@ var Dialog = {
     },
 
     #
+    # int id
     # int width
     # int height
     # string title
     # bool resize
     # return hash
     #
-    createCanvasWindow: func(width, height, title, resize = 0) {
+    createCanvasWindow: func(id, width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
             .set("title", title)
             .setBool("resize", resize);
@@ -68,7 +80,20 @@ var Dialog = {
             # bar and here we want hide the window only.
             # FG next version provide destroy_on_close, but for 2020.3.x it's
             # unavailable, so we are handling it manually by this trick.
+
+            # WARNING!! me.hide it's not the same hide method presented below in line ~150,
+            # me = window, not my Dialog.nas
             call(me.hide, [], me);
+
+            if (id == Dialog.ID_DETAILS) {
+                # Set property redraw-logbook for remove selected bar
+                setprop(addons.getAddon(ADDON_ID).node.getPath() ~ "/addon-devel/redraw-logbook", true);
+            }
+
+            if (id == Dialog.ID_INPUT) {
+                # Set property redraw-details for remove selected bar
+                setprop(addons.getAddon(ADDON_ID).node.getPath() ~ "/addon-devel/redraw-details", true);
+            }
         };
 
         # Because window.del only hide the window, we have to add extra method
@@ -150,6 +175,20 @@ var Dialog = {
     },
 
     #
+    # return bool
+    #
+    isWindowVisible: func() {
+        return me.window.isVisible();
+    },
+
+    #
+    # return int
+    #
+    getDialogId: func() {
+        return me.dialogId;
+    },
+
+    #
     # Get hash with dialog styles
     #
     # return hash
@@ -157,18 +196,20 @@ var Dialog = {
     getStyle: func() {
         return {
             "dark": {
-                NAME       : "dark",
-                CANVAS_BG  : "#000000EE",
-                # GROUP_BG   : [0.3, 0.3, 0.3],
-                TEXT_COLOR : [0.8, 0.8, 0.8],
-                HOVER_BG   : [0.2, 0.0, 0.0, 1.0],
+                NAME         : "dark",
+                CANVAS_BG    : "#000000EE",
+                # GROUP_BG     : [0.3, 0.3, 0.3],
+                TEXT_COLOR   : [0.8, 0.8, 0.8],
+                HOVER_BG     : [0.2, 0.0, 0.0, 1.0],
+                SELECTED_BAR : [0.0, 0.4, 0.0, 1.0],
             },
             "light": {
-                NAME       : "light",
-                CANVAS_BG  : canvas.style.getColor("bg_color"),
-                # GROUP_BG   : [0.7, 0.7, 0.7],
-                TEXT_COLOR : [0.3, 0.3, 0.3],
-                HOVER_BG   : [1.0, 1.0, 0.5, 1.0],
+                NAME         : "light",
+                CANVAS_BG    : canvas.style.getColor("bg_color"),
+                # GROUP_BG    : [0.7, 0.7, 0.7],
+                TEXT_COLOR   : [0.3, 0.3, 0.3],
+                HOVER_BG     : [1.0, 1.0, 0.5, 1.0],
+                SELECTED_BAR : [0.5, 1.0, 0.5, 1.0],
             },
         };
     },
