@@ -324,7 +324,7 @@ var ListView = {
             return sprintf("nm (%.02f km)", data * globals.NM2M / 1000);
         }
         else if (column == File.INDEX_FUEL) {
-            return "US gallons"
+            return sprintf("US gallons (%.02f l)", data * globals.GAL2L);
         }
         else if (column == File.INDEX_MAX_ALT) {
             return "ft MSL"
