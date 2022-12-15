@@ -48,7 +48,19 @@ The following information is logged into the file:
 1. Date - aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
 2. Time - aircraft take-off time. As for Date this is the time taken from the OS.
 3. Aircraft - the code name of the aircraft.
-4. Type - aircraft type as a one of following value: "heli" (helicopter), "balloon" (also airship), "space" (space ship), "seaplane", "military", "glider", "turboprop", "bizjet", "airliner", "ga-single" (small piston single-engine general aviation), "ga-multi" (small piston multi-engine general aviation), "others" (undefined or not recognized).
+4. Type - aircraft type as a one of following value:
+    - "heli" (helicopter),
+    - "balloon" (also airship),
+    - "space" (space ship),
+    - "seaplane" (also amphibious),
+    - "military",
+    - "glider",
+    - "turboprop",
+    - "bizjet",
+    - "airliner",
+    - "ga-single" (small piston single-engine general aviation),
+    - "ga-multi" (small piston multi-engine general aviation),
+    - "others" (undefined or not recognized).
 5. Callsign - your callsign set for multiplayer.
 6. From - the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
 7. To - the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
