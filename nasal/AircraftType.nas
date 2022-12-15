@@ -141,6 +141,13 @@ var AircraftType = {
             me.searchTag({"or" : [], "and" : ["propeller", "single-engine"]}) or
             me.searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
         ) {
+            var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft-id"));
+            if (string.match(aircraftId, "*-float") or # for c172p
+                string.match(aircraftId, "*-amphibious")
+            ) {
+                return AircraftType.SEAPLANE;
+            }
+
             return AircraftType.GA_SINGLE;
         }
 
