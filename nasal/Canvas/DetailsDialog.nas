@@ -17,7 +17,6 @@ var DetailsDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 600,
-    WINDOW_HEIGHT : 600,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     FONT_SIZE     : 16,
     COLUMNS_WIDTH : [
@@ -32,9 +31,12 @@ var DetailsDialog = {
     # return me
     #
     new: func(file) {
+        var VBOX_SPACING = ListView.SHIFT_Y * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
+        var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space and paddings
+
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
         me.dataRow         = nil;
@@ -49,7 +51,7 @@ var DetailsDialog = {
         me.listView = ListView.new(
             me.group,
             me.vbox,
-            ListView.SHIFT_Y * 19,
+            VBOX_SPACING,
             DetailsDialog.WINDOW_WIDTH,
             DetailsDialog.COLUMNS_WIDTH,
             ListView.LAYOUT_V
@@ -62,7 +64,7 @@ var DetailsDialog = {
 
         me.vbox.addItem(buttonBox);
 
-        me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT);
+        me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT);
 
         setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
             if (node.getValue()) {

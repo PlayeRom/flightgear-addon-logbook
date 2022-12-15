@@ -51,6 +51,9 @@ var Logbook = {
         me.airport       = Airport.new();
         me.logbookDialog = LogbookDialog.new(me.file);
 
+        me.aircraftType = AircraftType.new().getType();
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
+
         setlistener("/sim/presets/airport-id", func(node) {
             me.initStartAirport();
         }, true);
@@ -245,6 +248,7 @@ var Logbook = {
         me.logData.setDate(me.environment.getDateString());
         me.logData.setTime(me.environment.getTimeString());
         me.logData.setAircraft(getprop("/sim/aircraft-id"));
+        me.logData.setAircraftType(me.aircraftType);
         me.logData.setNote(getprop("/sim/description"));
         me.logData.setCallsign(getprop("/sim/multiplay/callsign"));
 

@@ -17,11 +17,11 @@ var File = {
     # Constants
     #
     LOGBOOK_FILE   : "logbook-v%s.csv",
-    FILE_VERSION   : "1.0.1",
-    INDEX_LANDINGS : 6,
-    INDEX_FUEL     : 13,
-    INDEX_MAX_ALT  : 14,
-    INDEX_NOTE     : 15,
+    FILE_VERSION   : "2",
+    INDEX_LANDINGS : 7,
+    INDEX_FUEL     : 14,
+    INDEX_MAX_ALT  : 15,
+    INDEX_NOTE     : 16,
 
     #
     # Constructor
@@ -64,18 +64,77 @@ var File = {
     migrateVersion: func() {
         var olderReleases = [
             # Keep the order from the newest to oldest
+            "1.0.1",
             "1.0.0",
         ];
 
         foreach (var oldVersion; olderReleases) {
             var oldFile = me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, oldVersion);
             if (me.exists(oldFile)) {
-                me.copyFile(oldFile, me.filePath);
+                if (File.FILE_VERSION == "2") {
+                    me.migrateToFileVersion_2(oldFile, me.filePath);
+                }
+                else {
+                    # Nothing changed, just copy whole file
+                    me.copyFile(oldFile, me.filePath);
+                }
+
                 return true;
             }
         }
 
         return false;
+    },
+
+    #
+    # string oldFilePath
+    # string newFilePath
+    # retrun void
+    #
+    migrateToFileVersion_2: func(oldFilePath, newFilePath) {
+        # Add extra column "Type" (as aircraft type) after "Aircraft" column
+        var fileOld = io.open(oldFilePath, "r");
+        var fileNew = io.open(newFilePath, "w");
+        var line = nil;
+        var linesCounter = -1;
+        while ((line = io.readln(fileOld)) != nil) {
+            if (line == "" or line == nil) { # skip empty row
+                continue;
+            }
+
+            if (linesCounter == -1) { # headers
+                # save new headers
+                io.write(fileNew, me.getHeaderLine() ~ "\n");
+            }
+            else { # data
+                var items = split(",", me.removeQuotes(line));
+                io.write(fileNew, sprintf(
+                    "%s,%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+                    items[0],            # date
+                    items[1],            # time
+                    items[2],            # aircraft
+                    AircraftType.OTHERS, # aircraftType - we dont know the type, so set "others"
+                    items[3],            # callsign
+                    items[4],            # from
+                    items[5],            # to
+                    items[6],            # landings
+                    items[7],            # crash
+                    items[8],            # day
+                    items[9],            # night
+                    items[10],           # instrument
+                    items[11],           # duration
+                    items[12],           # distance
+                    items[13],           # fuel
+                    items[14],           # maxAlt
+                    items[15]            # note
+                ));
+            }
+
+            linesCounter += 1;
+        }
+
+        io.close(fileOld);
+        io.close(fileNew);
     },
 
     #
@@ -114,6 +173,7 @@ var File = {
         return 'Date,' ~
                'Time,' ~
                'Aircraft,' ~
+               'Type,' ~
                'Callsign,' ~
                'From,' ~
                'To,' ~
@@ -163,10 +223,11 @@ var File = {
     #
     saveItem: func(file, logData) {
         io.write(file, sprintf(
-            "%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+            "%s,%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,
+            logData.aircraftType,
             logData.callsign,
             logData.from,
             logData.to,

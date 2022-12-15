@@ -21,22 +21,23 @@ var LogData = {
     new: func () {
         var me = { parents: [LogData] };
 
-        me.date       = "";    # Take-off date (real)
-        me.time       = "";    # Take-off time (real)
-        me.aircraft   = "";    # Aircraft ID
-        me.callsign   = "";    # Pilot callsign
-        me.from       = "";    # ICAO departure airport (if take-off from the ground)
-        me.to         = "";    # ICAO destination airport (if landed)
-        me.landings   = 0;     # Number of landings
-        me.crash      = false; # 1 means that aircraft crashed
-        me.day        = 0.0;   # Total flight time during the day (hours)
-        me.night      = 0.0;   # Total flight time during the night (hours)
-        me.instrument = 0.0;   # Total flight time during the IMC (hours)
-        me.duration   = 0.0;   # Total flight time as sum of day and night (hours)
-        me.distance   = 0.0;   # The distance traveled during the flight in nautical miles
-        me.fuel       = 0.0;   # Amount of fuel used in US gallons
-        me.maxAlt     = 0.0;   # The maximum altitude reached during the flight in feets
-        me.note       = "";    # Full aircraft name as default
+        me.date         = "";    # Take-off date (real)
+        me.time         = "";    # Take-off time (real)
+        me.aircraft     = "";    # Aircraft ID
+        me.aircraftType = "";    # Aircraft type
+        me.callsign     = "";    # Pilot callsign
+        me.from         = "";    # ICAO departure airport (if take-off from the ground)
+        me.to           = "";    # ICAO destination airport (if landed)
+        me.landings     = 0;     # Number of landings
+        me.crash        = false; # 1 means that aircraft crashed
+        me.day          = 0.0;   # Total flight time during the day (hours)
+        me.night        = 0.0;   # Total flight time during the night (hours)
+        me.instrument   = 0.0;   # Total flight time during the IMC (hours)
+        me.duration     = 0.0;   # Total flight time as sum of day and night (hours)
+        me.distance     = 0.0;   # The distance traveled during the flight in nautical miles
+        me.fuel         = 0.0;   # Amount of fuel used in US gallons
+        me.maxAlt       = 0.0;   # The maximum altitude reached during the flight in feets
+        me.note         = "";    # Full aircraft name as default
 
         return me;
     },
@@ -76,6 +77,19 @@ var LogData = {
     setAircraft: func (aircraft) {
         me.aircraft = me.removeHangarName(aircraft);
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
+
+        return me;
+    },
+
+    #
+    # Set the aircraft type
+    #
+    # string type
+    # return me
+    #
+    setAircraftType: func (type) {
+        me.aircraftType = type;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraftType);
 
         return me;
     },
@@ -298,6 +312,7 @@ var LogData = {
         append(vector, me.date);
         append(vector, me.time);
         append(vector, me.aircraft);
+        append(vector, me.aircraftType);
         append(vector, me.callsign);
         append(vector, me.from);
         append(vector, me.to);
@@ -322,21 +337,22 @@ var LogData = {
     # return void
     #
     fromVector: func(items) {
-        me.date       = items[0];
-        me.time       = items[1];
-        me.aircraft   = items[2];
-        me.callsign   = items[3];
-        me.from       = items[4];
-        me.to         = items[5];
-        me.landings   = items[6];
-        me.crash      = items[7] == "1" or items[7] == true ? true : false;
-        me.day        = items[8];
-        me.night      = items[9];
-        me.instrument = items[10];
-        me.duration   = items[11];
-        me.distance   = items[12];
-        me.fuel       = items[13];
-        me.maxAlt     = items[14];
-        me.note       = items[15];
+        me.date         = items[0];
+        me.time         = items[1];
+        me.aircraft     = items[2];
+        me.aircraftType = items[3];
+        me.callsign     = items[4];
+        me.from         = items[5];
+        me.to           = items[6];
+        me.landings     = items[7];
+        me.crash        = items[8] == "1" or items[8] == true ? true : false;
+        me.day          = items[9];
+        me.night        = items[10];
+        me.instrument   = items[11];
+        me.duration     = items[12];
+        me.distance     = items[13];
+        me.fuel         = items[14];
+        me.maxAlt       = items[15];
+        me.note         = items[16];
     },
 };

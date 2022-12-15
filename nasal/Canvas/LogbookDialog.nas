@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1040,
+    WINDOW_WIDTH         : 1120,
     WINDOW_HEIGHT        : 680,
     TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
@@ -24,19 +24,20 @@ var LogbookDialog = {
          85, #  0 - date
          50, #  1 - time
         150, #  2 - aircraft
-         80, #  3 - callsign
-         55, #  4 - from
-         55, #  5 - to
-         50, #  6 - landings
-         50, #  7 - crash
-         50, #  8 - day
-         50, #  9 - night
-         50, # 10 - instrument
-         65, # 11 - duration
-         65, # 12 - distance
-         80, # 13 - fuel
-         70, # 14 - max alt
-        100, # 15 - note
+         80, #  3 - aircraft type
+         80, #  4 - callsign
+         55, #  5 - from
+         55, #  6 - to
+         50, #  7 - landings
+         50, #  8 - crash
+         50, #  9 - day
+         50, # 10 - night
+         50, # 11 - instrument
+         65, # 12 - duration
+         65, # 13 - distance
+         80, # 14 - fuel
+         70, # 15 - max alt
+        100, # 16 - note
     ],
     TOTAL_FORMATS        : [
         "%d",   # landings
@@ -49,6 +50,7 @@ var LogbookDialog = {
         "%.0f", # fuel
         "%.0f", # max alt
     ],
+    TOTALS_COLUMNS_SHIFT : 6,
     FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
     FONT_SIZE            : 12,
 
@@ -259,18 +261,16 @@ var LogbookDialog = {
     # return void
     #
     drawTotalsRow: func(cGroup) {
-        var x = ListView.PADDING * 2 +
-            me.listView.getX(0) +
-            me.listView.getX(1) +
-            me.listView.getX(2) +
-            me.listView.getX(3) +
-            me.listView.getX(4);
+        var x = ListView.PADDING * 2;
+        for (var i = 0; i < LogbookDialog.TOTALS_COLUMNS_SHIFT; i += 1) {
+            x += me.listView.getX(i);
+        }
 
         me.listView.drawText(cGroup, x, "Totals:");
 
         for (var i = 0; i < size(me.totals); i += 1) {
             var total = me.totals[i];
-            x += me.listView.getX(i + 5);
+            x += me.listView.getX(i + LogbookDialog.TOTALS_COLUMNS_SHIFT);
             me.listView.drawText(cGroup, x, sprintf(LogbookDialog.TOTAL_FORMATS[i], total));
         }
     },

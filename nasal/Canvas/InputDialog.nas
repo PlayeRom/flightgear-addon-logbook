@@ -184,6 +184,20 @@ var InputDialog = {
                 return false;
             }
         }
+        else if (me.header == "Type") {
+            if (!me.validateAircraftType(value)) {
+                var msg = "Incorrect Aircraft Type. Allowed values are:\n";
+                var types = "";
+                foreach (var type; AircraftType.getVector()) {
+                    if (types != "") {
+                        types ~= ", ";
+                    }
+                    types ~= type;
+                }
+                gui.popupTip(msg ~ types);
+                return false;
+            }
+        }
         else if (me.header == "Landings") {
             if (!me.validateDigit(value)) {
                 gui.popupTip("The allowed value is a digit.");
@@ -246,6 +260,20 @@ var InputDialog = {
         }
 
         return true;
+    },
+
+    #
+    # string value
+    # return bool
+    #
+    validateAircraftType: func(value) {
+        foreach (var type; AircraftType.getVector()) {
+            if (type == value) {
+                return true;
+            }
+        }
+
+        return false;
     },
 
     #

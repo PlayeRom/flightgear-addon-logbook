@@ -40,19 +40,20 @@ The following information is logged into the file:
 1. **Date** – aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
 2. **Time** – aircraft take-off time. As for **Date** this is the time taken from the OS.
 3. **Aircraft** – the code name of the aircraft.
-4. **Callsign** – your callsign set for multiplayer.
-5. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
-6. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
-7. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
-8. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
-9. **Day** – the number of hours spent flying during the day.
-10. **Night** – number of hours spent flying during the night.
-11. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-12. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
-13. **Distance** – total distance flown from take-off to landing, in nautical miles.
-14. **Fuel** – total fuel burned, in US gallons.
-15. **Max Alt** – maximum altitude, in feet, reached during flight.
-16. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
+4. **Type** - aircraft type as a one of following value: "heli" (helicopter), "balloon" (also airship), "space" (space ship), "seaplane" (also amphibious), "military", "glider", "turboprop", "bizjet", "airliner", "ga-single" (small piston single-engine general aviation), "ga-multi" (small piston multi-engine general aviation), "others" (undefined or not recognized).
+5. **Callsign** – your callsign set for multiplayer.
+6. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
+7. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
+8. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+9. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
+10. **Day** – the number of hours spent flying during the day.
+11. **Night** – number of hours spent flying during the night.
+12. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
+13. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
+14. **Distance** – total distance flown from take-off to landing, in nautical miles.
+15. **Fuel** – total fuel burned, in US gallons.
+16. **Max Alt** – maximum altitude, in feet, reached during flight.
+17. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
@@ -138,19 +139,20 @@ Do pliku logowane są następujące informacje:
 1. **Date** – data startu statku powietrznego. Jest to data pobierana z twojego systemu operacyjnego, a nie data w symulatorze. Uznałem, że wolę wiedzieć, kiedy odbyłem lot we własnej strefie czasowej, przed własnym komputerem, niż to jaki był czas UTC czy lokalny w symulacji, co wg mnie było by mało wartościową informacją. Jeśli masz inne zdanie i sensowne argumenty, daj mi znać.
 2. **Time** ‒ czas startu statku powietrznego. Podobnie jak dla **Date** jest to czas pobrany z systemu operacyjnego.
 3. **Aircraft** ‒ nazwa kodowa statku powietrznego.
-4. **Callsign** ‒ Twój callsign ustawiony dla multiplayer.
-5. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
-6. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
-7. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
-8. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
-9. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
-10. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
-11. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-12. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc.
-13. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
-14. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
-15. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
-16. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
+4. **Type** ‒ typ statku powietrznego jako jeden z następujących wartości: "heli" (śmigłowiec), "balloon" (także sterowiec), "space" (statek kosmiczny), "seaplane" (wodnosamolot), "military" (wojskowy), "glider" (szybowiec), "turboprop" (turbo śmigłowy), "bizjet" (odrzutowiec biznesowy), "airliner" (liniowiec), "ga-single" (mały śmigłowy, jednosilnikowy, lotnictwa ogólnego), "ga-multi" (mały śmigłowy, wielosilnikowy, lotnictwa ogólnego), "others" (inne niezdefiniowane lub  nierozpoznane).
+5. **Callsign** ‒ Twój callsign ustawiony dla multiplayer.
+6. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
+7. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
+8. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
+9. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
+10. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
+11. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
+12. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
+13. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc.
+14. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
+15. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
+16. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
+17. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
 ## Przeglądanie dziennika
 
