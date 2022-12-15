@@ -103,7 +103,9 @@ var LogbookDialog = {
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me.drawBottomBar();
 
-        setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
+        me.listeners = [];
+
+        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
             if (node.getValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
@@ -130,16 +132,16 @@ var LogbookDialog = {
                     me.detailsDialog.reload();
                 }
             }
-        });
+        }));
 
-        setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", func(node) {
+        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", func(node) {
             if (node.getValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
                 me.redraw(false);
             }
-        });
+        }));
 
         return me;
     },
@@ -150,6 +152,10 @@ var LogbookDialog = {
     # return void
     #
     del: func() {
+        foreach (var listener; me.listeners) {
+            removelistener(listener);
+        }
+
         me.parents[1].del();
         me.detailsDialog.del();
         me.helpDialog.del();

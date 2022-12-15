@@ -66,14 +66,16 @@ var DetailsDialog = {
 
         me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
+        me.listeners = [];
+
+        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
             if (node.getValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
                 me.reload();
             }
-        });
+        }));
 
         return me;
     },
@@ -84,6 +86,10 @@ var DetailsDialog = {
     # return void
     #
     del: func() {
+        foreach (var listener; me.listeners) {
+            removelistener(listener);
+        }
+
         me.inputDialog.del();
         me.deleteDialog.del();
         me.parents[1].del();
