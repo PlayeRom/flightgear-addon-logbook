@@ -31,9 +31,10 @@ var Dialog = {
     # int height - Initial height of window
     # string title - Title of window in the top bar
     # bool resize - If true then user will be possible to resize the window
+    # func onResizeWidth - callback call when width of window was changed
     # return me
     #
-    new: func(id, width, height, title, resize = 0) {
+    new: func(id, width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
         me.addon  = addons.getAddon(ADDON_ID);
@@ -50,6 +51,16 @@ var Dialog = {
         me.group  = me.canvas.createGroup();
         me.vbox   = canvas.VBoxLayout.new();
         me.canvas.setLayout(me.vbox);
+
+        if (resize and onResizeWidth != nil) {
+            me.windowPropIndex = me.getWindowPropertyIndex(title);
+            if (me.windowPropIndex > -1) {
+                # Set listener for resize width of window
+                setlistener("/sim/gui/canvas/window[" ~ me.windowPropIndex ~ "]/content-size[0]", func(node) {
+                    onResizeWidth(node.getValue());
+                });
+            }
+        }
 
         return me;
     },
@@ -223,5 +234,23 @@ var Dialog = {
                 SELECTED_BAR : [0.5, 1.0, 0.5, 1.0],
             },
         };
+    },
+
+    #
+    # string title
+    # return int - return index of window in property tree or -1 if not found.
+    #
+    getWindowPropertyIndex: func(title) {
+        var highest = -1; # We are looking for the highest index for support dev reload the add-on
+        foreach (var window; props.globals.getNode("/sim/gui/canvas").getChildren("window")) {
+            var propTitle = window.getChild("title");
+            if (propTitle != nil and title == propTitle.getValue()) {
+                if (window.getIndex() > highest) {
+                    highest = window.getIndex();
+                }
+            }
+        }
+
+        return highest;
     },
 };

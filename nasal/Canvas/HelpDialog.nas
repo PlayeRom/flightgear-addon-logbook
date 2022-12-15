@@ -16,9 +16,10 @@ var HelpDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 600,
-    WINDOW_HEIGHT : 360,
+    WINDOW_WIDTH  : 700,
+    WINDOW_HEIGHT : 420,
     PADDING       : 10,
+    TITLE         : "Logbook Help",
 
     #
     # Constructor
@@ -28,7 +29,14 @@ var HelpDialog = {
     new: func() {
         var me = { parents: [
             HelpDialog,
-            Dialog.new(Dialog.ID_HELP, HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT, "Logbook Help", true),
+            Dialog.new(
+                Dialog.ID_HELP,
+                HelpDialog.WINDOW_WIDTH,
+                HelpDialog.WINDOW_HEIGHT,
+                HelpDialog.TITLE,
+                true,
+                func(width) { me.onResizeWidth(width); }
+            ),
         ] };
 
         me.setPositionOnCenter(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT);
@@ -43,7 +51,7 @@ var HelpDialog = {
         me.scrollDataContent = me.getScrollAreaContent(
             me.scrollData,
             "LiberationFonts/LiberationSans-Regular.ttf",
-            14,
+            16,
             "left-baseline"
         );
 
@@ -56,6 +64,16 @@ var HelpDialog = {
         me.vbox.addSpacing(10);
 
         return me;
+    },
+
+    #
+    # Reszie collback from parent Dialog
+    #
+    # int width
+    # return void
+    #
+    onResizeWidth: func(width) {
+        me.textHelp.setMaxWidth(width - (HelpDialog.PADDING * 2));
     },
 
     #
