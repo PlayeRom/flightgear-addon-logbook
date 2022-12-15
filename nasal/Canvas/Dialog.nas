@@ -16,12 +16,13 @@ var Dialog = {
     #
     # Constants
     #
-    ID_LOGBOOK : 1,
-    ID_DETAILS : 2,
-    ID_INPUT   : 3,
-    ID_DELETE  : 4,
-    ID_ABOUT   : 5,
-    ID_HELP    : 6,
+    ID_LOGBOOK         : 1,
+    ID_DETAILS         : 2,
+    ID_INPUT           : 3,
+    ID_DELETE          : 4,
+    ID_ABOUT           : 5,
+    ID_HELP            : 6,
+    ID_FILTER_SELECTOR : 7,
 
     #
     # Constructor

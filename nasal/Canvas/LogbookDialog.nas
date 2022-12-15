@@ -80,9 +80,10 @@ var LogbookDialog = {
         me.dataContent    = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.detailsDialog = DetailsDialog.new(file);
-        me.helpDialog    = HelpDialog.new();
-        me.aboutDialog   = AboutDialog.new();
+        me.detailsDialog  = DetailsDialog.new(file);
+        me.helpDialog     = HelpDialog.new();
+        me.aboutDialog    = AboutDialog.new();
+        me.filterSelector = FilterSelector.new();
 
         me.listView = ListView.new(
             me.group,
@@ -156,10 +157,11 @@ var LogbookDialog = {
             removelistener(listener);
         }
 
-        me.parents[1].del();
         me.detailsDialog.del();
         me.helpDialog.del();
         me.aboutDialog.del();
+        me.filterSelector.del();
+        call(Dialog.del, [], me);
     },
 
     #
@@ -169,7 +171,7 @@ var LogbookDialog = {
     #
     show: func() {
         me.reloadData(false);
-        me.parents[1].show();
+        call(Dialog.show, [], me);
     },
 
     #
@@ -206,10 +208,64 @@ var LogbookDialog = {
                 break;
             }
 
-            me.drawText(me.headersContent, x, 20, me.getReplaceHeaderText(text));
+            var rowGroup = me.headersContent.createChild("group");
+            rowGroup.setTranslation(x, 0);
+            var rect = rowGroup.rect(0, 0, me.listView.getX(column), ListView.SHIFT_Y);
+            rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+
+            me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(text));
+
+            if (column == File.INDEX_AIRCRAFT) {
+                me.setMouseHoverHeadersListener(
+                    rowGroup,
+                    rect,
+                    me.file.getAircraftsFilter(),
+                    "Aircraft filter",
+                    FilterSelector.ID_AC
+                );
+            }
+            else if (column == File.INDEX_AIRCRAFT_TYPE) {
+                me.setMouseHoverHeadersListener(
+                    rowGroup,
+                    rect,
+                    me.file.getAircraftTypesFilter(),
+                    "Aircraft type filter",
+                    FilterSelector.ID_AC_TYPE
+                );
+            }
+
             x += me.listView.getX(column);
             column += 1;
         }
+    },
+
+    #
+    # hash rowGroup - canvas group
+    # hash rect - rectangle canvas object
+    # vector items - Items for FilterSelector
+    # string title - FilterSelector title dialog
+    # int id - FilterSelector ID
+    # return void
+    #
+    setMouseHoverHeadersListener: func(rowGroup, rect, items, title, id) {
+        rowGroup.addEventListener("mouseenter", func {
+            rect.setColorFill(me.style.HOVER_BG);
+        });
+
+        rowGroup.addEventListener("mouseleave", func {
+            rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+        });
+
+        rowGroup.addEventListener("click", func(event) {
+            me.filterSelector.setItems(items);
+            me.filterSelector.setId(id);
+            me.filterSelector.setPosition(event.screenX, event.screenY);
+            me.filterSelector.setTitle(title);
+            me.filterSelector.setCallback(func(id, selected) {
+                gui.popupTip("Filter " ~ id ~ " " ~ selected);
+            });
+            me.filterSelector.show();
+        });
     },
 
     #
@@ -353,6 +409,7 @@ var LogbookDialog = {
         me.canvas.set("background", me.style.CANVAS_BG);
         me.btnStyle.setText(me.getOppositeStyleName());
         me.listView.setStyle(me.style);
+        me.filterSelector.setStyle(me.style);
 
         me.reloadData();
 

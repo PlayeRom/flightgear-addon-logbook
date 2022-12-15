@@ -16,17 +16,19 @@ var File = {
     #
     # Constants
     #
-    LOGBOOK_FILE   : "logbook-v%s.csv",
-    FILE_VERSION   : "2",
-    INDEX_FROM     : 5,
-    INDEX_TO       : 6,
-    INDEX_LANDINGS : 7,
-    INDEX_DAY      : 9,
-    INDEX_DURATION : 12,
-    INDEX_DISTANCE : 13,
-    INDEX_FUEL     : 14,
-    INDEX_MAX_ALT  : 15,
-    INDEX_NOTE     : 16,
+    LOGBOOK_FILE        : "logbook-v%s.csv",
+    FILE_VERSION        : "2",
+    INDEX_AIRCRAFT      : 2,
+    INDEX_AIRCRAFT_TYPE : 3,
+    INDEX_FROM          : 5,
+    INDEX_TO            : 6,
+    INDEX_LANDINGS      : 7,
+    INDEX_DAY           : 9,
+    INDEX_DURATION      : 12,
+    INDEX_DISTANCE      : 13,
+    INDEX_FUEL          : 14,
+    INDEX_MAX_ALT       : 15,
+    INDEX_NOTE          : 16,
 
     #
     # Constructor
@@ -49,6 +51,8 @@ var File = {
 
         # Total lines in CSV file (without headers)
         me.totalLines  = -1;
+
+        me.filters = Filters.new();
 
         me.saveHeaders();
 
@@ -203,6 +207,7 @@ var File = {
     #
     loadAllData: func() {
         me.allData = [];
+        me.filters.clear();
         me.resetTotals();
 
         var file = io.open(me.filePath, "r");
@@ -224,6 +229,8 @@ var File = {
                 logData.fromVector(items);
 
                 me.countTotals(items);
+
+                me.filters.append(logData);
 
                 append(me.allData, logData);
             }
@@ -439,5 +446,13 @@ var File = {
         }
 
         return isDeleted;
+    },
+
+    getAircraftsFilter: func() {
+        me.filters.aircrafts.vector;
+    },
+
+    getAircraftTypesFilter: func() {
+        me.filters.aircraftTypes.vector;
     },
 };
