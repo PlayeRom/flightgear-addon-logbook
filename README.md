@@ -64,7 +64,7 @@ At the very bottom we have a row of buttons, mainly for moving through the log p
 Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, we have the same information here as in the main window, except:
 
 1. ICAO airport codes include their names in parentheses.
-2. With numerical data, we have given the units in which these values are presented.
+2. With numerical data, we have given the units in which these values are presented with conversions to other units.
 3. At the very bottom we have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
 
 ## Editing and deleting data
@@ -163,7 +163,7 @@ Na samym dole mamy rząd przycisków, głównie do przemieszczania się po stron
 Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy się dodatkowe okno prezentujące szczegóły danego wpisu. Ogólnie mamy tutaj to samo co w oknie głównym, poza tym:
 
 1. Przy kodach ICAO lotnisk mamy w nawiasie podane ich nazwy.
-2. Przy danych liczbowych mamy podane jednostki w jakich prezentowane są te wartości.
+2. Przy danych liczbowych mamy podane jednostki w jakich prezentowane są te wartości oraz przeliczniki na inne jednostki.
 3. Na samym dole mamy dodatkowe pole `Note`, które nie jest wyświetlane w oknie głównym, ze względu na możliwość umieszczenia tutaj, dowolnie długiego tekstu.
 
 ## Edycja i usuwanie danych
