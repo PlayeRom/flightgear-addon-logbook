@@ -289,11 +289,7 @@ var InputDialog = {
     # return bool
     #
     validateCrash: func(value) {
-        if (value == "1" or value == "0" or value == "") {
-            return true;
-        }
-
-        return false;
+        return value == "1" or value == "0" or value == "";
     },
 
     #
