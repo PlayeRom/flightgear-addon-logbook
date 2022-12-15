@@ -321,7 +321,7 @@ var ListView = {
             return "hours";
         }
         else if (column == File.INDEX_DISTANCE) {
-            return "nm"
+            return sprintf("nm (%.02f km)", data * globals.NM2M / 1000);
         }
         else if (column == File.INDEX_FUEL) {
             return "US gallons"
