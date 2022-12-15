@@ -50,6 +50,7 @@ var loadExtraNasalFiles = func (addon) {
         "nasal/LandingGear",
         "nasal/LogData",
         "nasal/File",
+        "nasal/FileMigration",
         "nasal/Logbook",
         "Logbook",
     ];
