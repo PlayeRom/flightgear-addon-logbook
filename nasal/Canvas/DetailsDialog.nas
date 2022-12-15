@@ -92,7 +92,7 @@ var DetailsDialog = {
 
         me.inputDialog.del();
         me.deleteDialog.del();
-        me.parents[1].del();
+        call(Dialog.del, [], me);
     },
 
     #
@@ -153,7 +153,7 @@ var DetailsDialog = {
 
         me.reDrawDataContent();
 
-        me.parents[1].show();
+        call(Dialog.show, [], me);
     },
 
     #

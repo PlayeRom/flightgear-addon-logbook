@@ -103,7 +103,7 @@ var HelpDialog = {
     # return void
     #
     del: func() {
-        me.parents[1].del();
+        call(Dialog.del, [], me);
     },
 
     #

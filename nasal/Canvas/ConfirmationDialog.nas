@@ -70,7 +70,7 @@ var ConfirmationDialog = {
     # return void
     #
     del: func() {
-        me.parents[1].del();
+        call(Dialog.del, [], me);
     },
 
     #
@@ -90,7 +90,7 @@ var ConfirmationDialog = {
     show: func(logIndex) {
         me.logIndex = logIndex;
 
-        me.parents[1].show();
+        call(Dialog.show, [], me);
     },
 
     #

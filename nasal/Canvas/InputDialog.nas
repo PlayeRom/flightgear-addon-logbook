@@ -75,7 +75,7 @@ var InputDialog = {
     # return void
     #
     del: func() {
-        me.parents[1].del();
+        call(Dialog.del, [], me);
     },
 
     #
@@ -114,7 +114,7 @@ var InputDialog = {
         me.label.setText(data[2]);
         me.lineEdit.setText(sprintf("%s", data[3]));
         me.lineEdit.setFocus();
-        me.parents[1].show();
+        call(Dialog.show, [], me);
     },
 
     #
