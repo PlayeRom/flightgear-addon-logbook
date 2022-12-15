@@ -311,22 +311,22 @@ var ListView = {
     # return string
     #
     getExtraText: func(column, data) {
-        if ((column == 4 or column == 5) and data != "") { # From and To
+        if ((column == File.INDEX_FROM or column == File.INDEX_TO) and data != "") { # From and To
             var airport = airportinfo(data);
             if (airport != nil) {
                 return "(" ~ airport.name ~ ")";
             }
         }
-        else if (column >= 8 and column <= 11) {
+        else if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
             return "hours";
         }
-        else if (column == 12) {
+        else if (column == File.INDEX_DISTANCE) {
             return "nm"
         }
-        else if (column == 13) {
+        else if (column == File.INDEX_FUEL) {
             return "US gallons"
         }
-        else if (column == 14) {
+        else if (column == File.INDEX_MAX_ALT) {
             return "ft MSL"
         }
 

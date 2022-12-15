@@ -18,7 +18,12 @@ var File = {
     #
     LOGBOOK_FILE   : "logbook-v%s.csv",
     FILE_VERSION   : "2",
+    INDEX_FROM     : 5,
+    INDEX_TO       : 6,
     INDEX_LANDINGS : 7,
+    INDEX_DAY      : 9,
+    INDEX_DURATION : 12,
+    INDEX_DISTANCE : 13,
     INDEX_FUEL     : 14,
     INDEX_MAX_ALT  : 15,
     INDEX_NOTE     : 16,
