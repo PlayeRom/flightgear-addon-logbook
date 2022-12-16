@@ -256,18 +256,18 @@ var File = {
         var allDataIndex = 0;
         var counter = 0;
         foreach (var logData; me.allData) {
-            var vectorlogData = logData.toVector();
+            var vectorLogData = logData.toVector();
             if (me.filters.isAllowedByFilter(logData)) {
                 if (me.totalLines >= start and counter < count) {
                     append(me.loadedData, {
                         "allDataIndex" : allDataIndex,
-                        "data" : vectorlogData
+                        "data" : vectorLogData,
                     });
                     counter += 1;
                 }
 
                 me.totalLines += 1;
-                me.countTotals(vectorlogData);
+                me.countTotals(vectorLogData);
             }
 
             allDataIndex += 1;
