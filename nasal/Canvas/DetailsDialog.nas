@@ -64,7 +64,7 @@ var DetailsDialog = {
 
         me.vbox.addItem(buttonBox);
 
-        me.setPositionOnCenter(DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT);
+        me.setPositionOnCenter();
 
         me.listeners = [];
 

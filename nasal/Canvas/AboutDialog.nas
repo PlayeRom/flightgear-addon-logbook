@@ -33,7 +33,7 @@ var AboutDialog = {
 
         me.bgImage.hide();
 
-        me.setPositionOnCenter(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT);
+        me.setPositionOnCenter();
 
         var margins = {"left": AboutDialog.PADDING, "top": AboutDialog.PADDING, "right": 0, "bottom": 0};
         me.scrollData = me.createScrollArea(nil, margins);

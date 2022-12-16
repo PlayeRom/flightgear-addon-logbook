@@ -41,7 +41,7 @@ var HelpDialog = {
 
         me.bgImage.hide();
 
-        me.setPositionOnCenter(HelpDialog.WINDOW_WIDTH, HelpDialog.WINDOW_HEIGHT);
+        me.setPositionOnCenter();
 
         me.canvas.set("background", me.style.CANVAS_BG);
 

@@ -60,7 +60,7 @@ var ConfirmationDialog = {
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
 
-        me.setPositionOnCenter(ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT);
+        me.setPositionOnCenter();
         me.window.hide();
 
         return me;

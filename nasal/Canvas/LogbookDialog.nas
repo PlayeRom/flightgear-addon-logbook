@@ -68,6 +68,8 @@ var LogbookDialog = {
             ],
         };
 
+        me.setPositionOnCenter();
+
         # Override window del method for close FilterSelector
         var self = me;
         me.window.del = func() {

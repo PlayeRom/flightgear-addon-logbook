@@ -65,7 +65,7 @@ var InputDialog = {
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
 
-        me.setPositionOnCenter(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT);
+        me.setPositionOnCenter();
         me.window.hide();
 
         return me;

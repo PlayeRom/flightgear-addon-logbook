@@ -38,8 +38,10 @@ var Dialog = {
     new: func(id, width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
-        me.addon  = addons.getAddon(ADDON_ID);
+        me.addon    = addons.getAddon(ADDON_ID);
         me.dialogId = id;
+        me.width    = width;
+        me.height   = height;
 
         me.settings = Settings.new(me.addon);
 
@@ -57,7 +59,7 @@ var Dialog = {
             .setFile("Textures/paper.png")
             .setTranslation(0, 0)
             # paper.png has 1360x1024 px
-            .setSize(LogbookDialog.WINDOW_WIDTH, (1024/1360) * LogbookDialog.WINDOW_WIDTH)
+            .setSize(LogbookDialog.WINDOW_WIDTH, (1024 / 1360) * LogbookDialog.WINDOW_WIDTH);
         me.toggleBgImage();
 
         if (resize and onResizeWidth != nil) {
@@ -118,15 +120,19 @@ var Dialog = {
     #
     # Set position on center of screen
     #
+    # int|nil width, height - Dimension of window. If nil, the values provided by the constructor will be used.
     # return void
     #
-    setPositionOnCenter: func(width, height) {
+    setPositionOnCenter: func(width = nil, height = nil) {
         var screenW = getprop("/sim/gui/canvas/size[0]");
         var screenH = getprop("/sim/gui/canvas/size[1]");
 
+        var w = width  == nil ? me.width  : width;
+        var h = height == nil ? me.height : height;
+
         me.window.setPosition(
-            screenW / 2 - width / 2,
-            screenH / 2 - height / 2
+            screenW / 2 - w / 2,
+            screenH / 2 - h / 2
         );
     },
 
