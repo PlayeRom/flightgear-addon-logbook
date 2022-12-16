@@ -47,7 +47,7 @@ var Dialog = {
             ? me.getStyle().dark
             : me.getStyle().light;
 
-        me.window = me.createCanvasWindow(id, width, height, title, resize);
+        me.window = me.createCanvasWindow(width, height, title, resize);
         me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
         me.group  = me.canvas.createGroup();
         me.vbox   = canvas.VBoxLayout.new();
@@ -67,48 +67,27 @@ var Dialog = {
     },
 
     #
-    # Destructor
-    #
-    # return void
-    #
-    del: func() {
-        me.window.destroy();
-    },
-
-    #
-    # int id
     # int width
     # int height
     # string title
     # bool resize
     # return hash - canvas Window object
     #
-    createCanvasWindow: func(id, width, height, title, resize) {
+    createCanvasWindow: func(width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
             .set("title", title)
             .setBool("resize", resize);
 
         window.hide();
 
+        var self = me;
+
         window.del = func() {
             # This method will be call after click on (X) button in canvas top
             # bar and here we want hide the window only.
             # FG next version provide destroy_on_close, but for 2020.3.x it's
             # unavailable, so we are handling it manually by this trick.
-
-            # WARNING!! me.hide it's not the same hide method presented below in line ~150,
-            # me = window, not my Dialog.nas
-            call(me.hide, [], me);
-
-            if (id == Dialog.ID_DETAILS) {
-                # Set property redraw-logbook for remove selected bar
-                setprop(addons.getAddon(ADDON_ID).node.getPath() ~ "/addon-devel/redraw-logbook", true);
-            }
-
-            if (id == Dialog.ID_INPUT) {
-                # Set property redraw-details for remove selected bar
-                setprop(addons.getAddon(ADDON_ID).node.getPath() ~ "/addon-devel/redraw-details", true);
-            }
+            call(Dialog.hide, [], self);
         };
 
         # Because window.del only hide the window, we have to add extra method
@@ -118,6 +97,15 @@ var Dialog = {
         };
 
         return window;
+    },
+
+    #
+    # Destructor
+    #
+    # return void
+    #
+    del: func() {
+        me.window.destroy();
     },
 
     #
@@ -193,6 +181,15 @@ var Dialog = {
     #
     hide: func() {
         me.window.hide();
+
+        if (me.dialogId == Dialog.ID_DETAILS) {
+            # Set property redraw-logbook for remove selected bar
+            setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", true);
+        }
+        else if (me.dialogId == Dialog.ID_INPUT) {
+            # Set property redraw-details for remove selected bar
+            setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-details", true);
+        }
     },
 
     #
