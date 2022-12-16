@@ -67,6 +67,12 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 2. With numerical data, we have given the units in which these values are presented with conversions to other units.
 3. At the very bottom we have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
 
+### Data filtering
+
+The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Aircraft" and "Type" columns. To use filtering, hover the mouse cursor over a given column (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types that you have flown before. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown.
+
+After using the filter, the "Totals" row will also be updated with the filtered data. In this way, he can see statistics for a specific aircraft or types of aircraft.
+
 ## Editing and deleting data
 
 Each logbook entry can be edited from the simulator. You need to select "Logbook" -> "Logbook" from the menu. The main window with the entire logbook will open. Here you can search for the entry you want to edit and click on it. The details window for the entry will open. Now you can click on the specific entry you want to edit. Another window with a text field will open. Just enter the new value and confirm with the "Save" button. The change will immediately be saved to a file.
@@ -165,6 +171,12 @@ Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy s
 1. Przy kodach ICAO lotnisk mamy w nawiasie podane ich nazwy.
 2. Przy danych liczbowych mamy podane jednostki w jakich prezentowane są te wartości oraz przeliczniki na inne jednostki.
 3. Na samym dole mamy dodatkowe pole `Note`, które nie jest wyświetlane w oknie głównym, ze względu na możliwość umieszczenia tutaj, dowolnie długiego tekstu.
+
+### Filtrowanie danych
+
+Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Aircraft" i "Type". Aby użyć filtrowania należy najechać kursorem myszy na daną kolumnę (podświetli się) i kliknąć ją. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych, którymi już wcześniej latałeś. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje.
+
+Po użyciu filtra rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób może zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
 
 ## Edycja i usuwanie danych
 
