@@ -188,7 +188,7 @@ var InputDialog = {
         }
         else if (me.header == "Type") {
             if (!me.validateAircraftType(value)) {
-                var msg = "Incorrect Aircraft Type. Allowed values are:\n";
+                var msg = "Incorrect Aircraft Type. Allowed values are: ";
                 var types = "";
                 foreach (var type; AircraftType.getVector()) {
                     if (types != "") {
@@ -196,7 +196,7 @@ var InputDialog = {
                     }
                     types ~= type;
                 }
-                gui.popupTip(msg ~ types);
+                gui.popupTip(msg ~ types ~ ".");
                 return false;
             }
         }

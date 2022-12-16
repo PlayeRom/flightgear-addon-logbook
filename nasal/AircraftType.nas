@@ -59,7 +59,8 @@ var AircraftType = {
         if (substr(aircraftId, 0, 5) == "ask21" or # ask21, ask21mi, ask21-jsb, ask21mi-jsb
             aircraftId == "Perlan2" or
             aircraftId == "horsa" or
-            aircraftId == "bocian"
+            aircraftId == "bocian" or
+            aircraftId == "sportster"
         ) {
             return AircraftType.GLIDER;
         }
@@ -106,6 +107,12 @@ var AircraftType = {
                     string.match(desc, "*Skis")
                 ) {
                     return AircraftType.TURBOPROP;
+                }
+            }
+            else if (aircraftId == "dhc2W") {
+                var desc = getprop("/sim/description");
+                if (string.match(desc, "*Wheels")) {
+                    return AircraftType.GA_SINGLE;
                 }
             }
 
@@ -196,17 +203,17 @@ var AircraftType = {
     #
     getVector: func() {
         return [
-            AircraftType.HELICOPTER,
+            AircraftType.AIRLINER,
             AircraftType.BALLOON,
-            AircraftType.SPACE,
+            AircraftType.BIZJET,
+            AircraftType.GLIDER,
+            AircraftType.GA_MULTI,
+            AircraftType.GA_SINGLE,
+            AircraftType.HELICOPTER,
             AircraftType.MILITARY,
             AircraftType.SEAPLANE,
-            AircraftType.GLIDER,
+            AircraftType.SPACE,
             AircraftType.TURBOPROP,
-            AircraftType.BIZJET,
-            AircraftType.AIRLINER,
-            AircraftType.GA_SINGLE,
-            AircraftType.GA_MULTI,
             AircraftType.OTHERS,
         ];
     },
