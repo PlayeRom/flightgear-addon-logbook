@@ -61,6 +61,15 @@ var FilterSelector = {
     },
 
     #
+    # Hide canvas dialog
+    #
+    # return void
+    #
+    hide: func() {
+        call(Dialog.hide, [], me);
+    },
+
+    #
     # int x, y
     # return void
     #

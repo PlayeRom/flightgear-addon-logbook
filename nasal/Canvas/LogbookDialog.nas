@@ -68,6 +68,12 @@ var LogbookDialog = {
             ],
         };
 
+        # Override window del method for close FilterSelector
+        var self = me;
+        me.window.del = func() {
+            call(LogbookDialog.hide, [], self);
+        };
+
         me.startIndex = 0;
 
         file.loadAllData();
@@ -174,6 +180,16 @@ var LogbookDialog = {
     show: func() {
         me.reloadData(false);
         call(Dialog.show, [], me);
+    },
+
+    #
+    # Hide canvas dialog
+    #
+    # return void
+    #
+    hide: func() {
+        me.filterSelector.hide();
+        call(Dialog.hide, [], me);
     },
 
     #
