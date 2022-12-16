@@ -32,7 +32,6 @@ var main = func(addon) {
 #
 var loadExtraNasalFiles = func (addon) {
     var modules = [
-        "nasal/Canvas/FilterSelector",
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/ListView",
@@ -41,6 +40,7 @@ var loadExtraNasalFiles = func (addon) {
         "nasal/Canvas/DetailsDialog",
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/LogbookDialog",
+        "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
         "nasal/AircraftType",
         "nasal/Filters",
         "nasal/Settings",
