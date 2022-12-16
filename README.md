@@ -73,7 +73,7 @@ The addon allows you to filter some columns in the main log window. At the momen
 
 After using the filter, the "Totals" row will also be updated with the filtered data. In this way, he can see statistics for a specific aircraft or types of aircraft.
 
-## Editing and deleting data
+### Editing and deleting data
 
 Each logbook entry can be edited from the simulator. You need to select "Logbook" -> "Logbook" from the menu. The main window with the entire logbook will open. Here you can search for the entry you want to edit and click on it. The details window for the entry will open. Now you can click on the specific entry you want to edit. Another window with a text field will open. Just enter the new value and confirm with the "Save" button. The change will immediately be saved to a file.
 
@@ -178,7 +178,7 @@ Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W
 
 Po użyciu filtra rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób może zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
 
-## Edycja i usuwanie danych
+### Edycja i usuwanie danych
 
 Każdy wpis w dzienniku można edytować z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem. Możesz tu wyszukać wpisu, który chcesz edytować i kliknąć na niego. Otworzy się okno szczegółów dla danego wpisu. Teraz możesz kliknąć na konkretną pozycję, którą chcesz edytować. Otworzy się kolejne okienko z polem tekstowym. Wystarczy wprowadzić nową wartość i potwierdzić przyciskiem "Save". Zmiana od razu zostanie zapisana do pliku.
 
