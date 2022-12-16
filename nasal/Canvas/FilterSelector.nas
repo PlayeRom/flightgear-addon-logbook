@@ -16,11 +16,12 @@ var FilterSelector = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 250,
-    WINDOW_HEIGHT : 300,
-    PADDING       : 10,
-    ID_AC         : 1,
-    ID_AC_TYPE    : 2,
+    WINDOW_WIDTH       : 250,
+    WINDOW_HEIGHT      : 300,
+    PADDING            : 10,
+    ID_AC              : "Aircraft",
+    ID_AC_TYPE         : "Type",
+    CLEAR_FILTER_VALUE : "All",
 
     #
     # Constructor
@@ -40,6 +41,7 @@ var FilterSelector = {
         me.scrollData = nil;
         me.scrollDataContent = nil;
         me.callback = nil;
+        me.objCallback = nil;
         me.id = nil;
 
         return me;
@@ -84,7 +86,8 @@ var FilterSelector = {
         me.id = id;
     },
 
-    setCallback: func(callback) {
+    setCallback: func(objCallback, callback) {
+        me.objCallback = objCallback;
         me.callback = callback;
     },
 
@@ -131,7 +134,7 @@ var FilterSelector = {
             .setText("Default All")
             .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), 26)
             .listen("clicked", func {
-                me.callback(me.id, "All");
+                call(me.callback, [me.id, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
                 me.window.hide();
             });
 
@@ -147,7 +150,7 @@ var FilterSelector = {
                     .setText(text)
                     .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), 26)
                     .listen("clicked", func {
-                        me.callback(me.id, text);
+                        call(me.callback, [me.id, text], me.objCallback);
                         me.window.hide();
                     });
 

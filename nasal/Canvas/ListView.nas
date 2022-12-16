@@ -44,7 +44,6 @@ var ListView = {
         me.clickDialog    = nil;
         me.dataRows       = [];
         me.headers        = nil;
-        me.startIndex     = 0;
 
         # If ListView is using in DetailsDialog
         me.parentDataIndex = nil;
@@ -102,14 +101,13 @@ var ListView = {
     },
 
     #
-    # vector dataRows
-    # int startIndex - start index of dataRows
+    # vector|hash dataRows - If called from LogbookDialog it's vector of hashes {"allDataIndex": index, "data": row data}
+    #                        If called from DetailsDialog it's single hash {"allDataIndex": index, "data": row data}
     # vector|nil headers - required for LAYOUT_V
     # return void
     #
-    setDataToDraw: func(dataRows, startIndex, headers = nil) {
+    setDataToDraw: func(dataRows, headers = nil) {
         me.dataRows = dataRows;
-        me.startIndex = startIndex;
         me.headers = headers;
     },
 
@@ -227,20 +225,20 @@ var ListView = {
     },
 
     #
-    # vector dataRows
+    # vector dataRows - vector of hashes {"allDataIndex": index, "data": row data}
     # return int - Y offset
     #
     reDrawHorizontal: func(dataRows) {
         var y = ListView.PADDING * 3;
         var index = 0;
-        foreach (var dataRow; dataRows) {
+        foreach (var dataRowHash; dataRows) {
             var x = ListView.PADDING * 2;
             var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, [index + me.startIndex, dataRow]);
+            var rowGroup = me.drawHoverBox(y, [dataRowHash["allDataIndex"], dataRowHash]);
 
-            foreach (var text; dataRow) {
-                if (column == size(dataRow) - 1) {
+            foreach (var text; dataRowHash["data"]) {
+                if (column == size(dataRowHash["data"]) - 1) {
                     # Don't show Note column
                     break;
                 }
@@ -258,14 +256,14 @@ var ListView = {
     },
 
     #
-    # vector dataRows
+    # hash dataRows - {"allDataIndex": index, "data": row data}
     # vector headers
     # return int - Y offset
     #
     reDrawVertical: func(dataRows, headers) {
         var y = ListView.PADDING * 3;
         var index = 0;
-        foreach (var dataText; dataRows) {
+        foreach (var dataText; dataRows["data"]) {
             var x = ListView.PADDING * 2;
             var column = 0;
 

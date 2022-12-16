@@ -261,11 +261,14 @@ var LogbookDialog = {
             me.filterSelector.setId(id);
             me.filterSelector.setPosition(event.screenX, event.screenY);
             me.filterSelector.setTitle(title);
-            me.filterSelector.setCallback(func(id, selected) {
-                gui.popupTip("Filter " ~ id ~ " " ~ selected);
-            });
+            me.filterSelector.setCallback(me, me.filterSelectorCallback);
             me.filterSelector.show();
         });
+    },
+
+    filterSelectorCallback: func(filterId, value) {
+        # gui.popupTip("Filter " ~ filterId ~ " " ~ value);
+        me.reloadData(true, {"id": filterId, "value": value});
     },
 
     #
@@ -275,6 +278,14 @@ var LogbookDialog = {
     # return string
     #
     getReplaceHeaderText: func(text) {
+        if (text == "Aircraft" and me.file.filters.isAppliedAircraft()) {
+            return "Aircraft (!)";
+        }
+
+        if (text == "Type" and me.file.filters.isAppliedAircraftType()) {
+            return "Type (!)";
+        }
+
         if (text == "Landings") {
             return "Land.";
         }
@@ -481,13 +492,20 @@ var LogbookDialog = {
     # Reload logbook data
     #
     # bool withHeaders - Set true when color must be change too.
+    # hash filter - {"id": filterId, "value": "text"}
     # return void
     #
-    reloadData: func(withHeaders = 1) {
+    reloadData: func(withHeaders = 1, filter = nil) {
+        if (filter != nil) {
+            # Reset range
+            me.startIndex = 0;
+            me.file.applyFilter(filter);
+        }
+
         me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
         me.totals = me.file.getTotalsData();
 
-        me.listView.setDataToDraw(me.data, me.startIndex);
+        me.listView.setDataToDraw(me.data);
 
         me.redraw(withHeaders);
         me.setPaging();

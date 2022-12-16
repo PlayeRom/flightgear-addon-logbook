@@ -32,7 +32,7 @@ var InputDialog = {
         ] };
 
         me.file            = file;
-        me.logIndex        = nil; # index of log entry in whole CSV file
+        me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.parentDataIndex = nil; # index of column in single row
         me.header          = nil; # header name
 
@@ -108,8 +108,8 @@ var InputDialog = {
     #
     show: func(data) {
         me.parentDataIndex = data[0];
-        me.logIndex = data[1];
-        me.header = data[2];
+        me.allDataIndex    = data[1];
+        me.header          = data[2];
 
         me.label.setText(data[2]);
         me.lineEdit.setText(sprintf("%s", data[3]));
@@ -134,7 +134,7 @@ var InputDialog = {
 
         me.window.hide();
 
-        if (me.file.editData(me.logIndex, me.header, value)) {
+        if (me.file.editData(me.allDataIndex, me.header, value)) {
             gui.popupTip("The change has been saved!");
 
             setprop(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", true);

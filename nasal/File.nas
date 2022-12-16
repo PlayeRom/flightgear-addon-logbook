@@ -249,17 +249,27 @@ var File = {
     loadDataRange: func(start, count) {
         me.loadedData = [];
 
-        if (size(me.allData) > 0) {
-            var counter = 0;
-            foreach (var logData; me.allData[start:]) {
-                if (counter < count) {
-                    append(me.loadedData, logData.toVector());
+        me.resetTotals();
+        me.totalLines = 0;
+
+        var allDataIndex = 0;
+        var counter = 0;
+        foreach (var logData; me.allData) {
+            var vectorlogData = logData.toVector();
+            if (me.filters.isAllowedByFilter(logData)) {
+                if (me.totalLines >= start and counter < count) {
+                    append(me.loadedData, {
+                        "allDataIndex" : allDataIndex,
+                        "data" : vectorlogData
+                    });
                     counter += 1;
                 }
-                else {
-                    break;
-                }
+
+                me.totalLines += 1;
+                me.countTotals(vectorlogData);
             }
+
+            allDataIndex += 1;
         }
 
         return me.loadedData;
@@ -413,10 +423,13 @@ var File = {
     # Get vector of data row by given index of row
     #
     # int index
-    # return vector
+    # return hash
     #
     getLogData: func(index) {
-        return me.allData[index].toVector();
+        return {
+            "allDataIndex" : index,
+            "data" : me.allData[index].toVector()
+        };
     },
 
     #
@@ -454,5 +467,13 @@ var File = {
 
     getAircraftTypesFilter: func() {
         me.filters.aircraftTypes.vector;
+    },
+
+    #
+    # hash filter - {"id": filterId, "value": "text"}
+    # return void
+    #
+    applyFilter: func(filter) {
+        me.filters.applyFilter(filter);
     },
 };

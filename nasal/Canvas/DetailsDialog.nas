@@ -141,15 +141,15 @@ var DetailsDialog = {
     #
     # vector data
     #   data[0] = int - index of row in CSV file
-    #   data[1] = vector of single row data
+    #   data[1] = vector of hashes {"allDataIndex": index, "data": row data}
     # return void
     #
     show: func(data) {
         me.inputDialog.hide();
 
-        me.parentDataIndex = data[0];
+        me.parentDataIndex = data[1]["allDataIndex"];
         me.listView.parentDataIndex = me.parentDataIndex;
-        me.listView.setDataToDraw(data[1], 0, me.file.getHeadersData());
+        me.listView.setDataToDraw(data[1], me.file.getHeadersData());
 
         me.reDrawDataContent();
 
@@ -164,7 +164,7 @@ var DetailsDialog = {
     reload: func() {
         if (me.listView.parentDataIndex != nil) {
             var data = me.file.getLogData(me.listView.parentDataIndex);
-            me.listView.setDataToDraw(data, 0, me.file.getHeadersData());
+            me.listView.setDataToDraw(data, me.file.getHeadersData());
             me.reDrawDataContent();
         }
     },
