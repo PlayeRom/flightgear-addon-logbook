@@ -171,6 +171,7 @@ var File = {
 
         append(me.allData, logData);
         me.filters.append(logData);
+        me.filters.sort();
         me.totalLines += 1;
         me.countTotals(logData.toVector());
     },
@@ -240,6 +241,8 @@ var File = {
         }
 
         io.close(file);
+
+        me.filters.sort();
     },
 
     #

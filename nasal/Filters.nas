@@ -53,6 +53,22 @@ var Filters = {
         # Add unique aircraft types
         if (!me.aircraftTypes.contains(logData.aircraftType)) {
             me.aircraftTypes.append(logData.aircraftType);
+
+        }
+    },
+
+    #
+    # Sorting all filters
+    #
+    # return void
+    #
+    sort: func() {
+        if (me.aircrafts.size() > 1) {
+            me.aircrafts.vector = sort(me.aircrafts.vector, string.icmp);
+        }
+
+        if (me.aircraftTypes.size() > 1) {
+            me.aircraftTypes.vector = sort(me.aircraftTypes.vector, string.icmp);
         }
     },
 
