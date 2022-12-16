@@ -111,14 +111,27 @@ var DetailsDialog = {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Close")
+            .setFixedSize(75, 26)
+            .listen("clicked", func {
+                call(Dialog.hide, [], me);
+            }
+        );
+
+        var btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
-            .setFixedSize(75, 26);
+            .setFixedSize(75, 26)
+            .listen("clicked", func {
+                me.deleteDialog.show(me.listView.parentDataIndex);
+            }
+        );
 
-        btnClose.listen("clicked", func {
-            me.deleteDialog.show(me.listView.parentDataIndex);
-        });
-
+        buttonBox.addStretch(3);
         buttonBox.addItem(btnClose);
+        buttonBox.addStretch(1);
+        buttonBox.addItem(btnDelete);
+        buttonBox.addStretch(1);
+
 
         return buttonBox;
     },
