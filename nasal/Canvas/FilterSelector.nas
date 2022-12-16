@@ -18,7 +18,9 @@ var FilterSelector = {
     #
     WINDOW_WIDTH       : 250,
     WINDOW_HEIGHT      : 300,
+    MAX_WINDOW_HEIGHT  : LogbookDialog.WINDOW_HEIGHT,
     PADDING            : 10,
+    BUTTON_HEIGHT      : 26,
     ID_AC              : "Aircraft",
     ID_AC_TYPE         : "Type",
     CLEAR_FILTER_VALUE : "All",
@@ -92,18 +94,49 @@ var FilterSelector = {
     setItems: func(items) {
         me.items = items;
 
+        me.recalculateWindowHeight();
         me.reDrawContent();
     },
 
+    #
+    # return void
+    #
+    recalculateWindowHeight: func() {
+        var count = size(me.items) + 1; # +1 for "Default All"
+        var windowHeight = count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * 3); # 5 = spacing between buttons
+        if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
+            windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
+        }
+
+        me.window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
+    },
+
+    #
+    # Set ID of filter: ID_AC, ID_AC_TYPE, etc.
+    #
+    # int id
+    # return void
+    #
     setId: func(id) {
         me.id = id;
     },
 
+    #
+    # Set callback function (with object) which will be call to apply filter
+    #
+    # hash objCallback - The class object which contains the callback function
+    # func callback
+    # return void
+    #
     setCallback: func(objCallback, callback) {
         me.objCallback = objCallback;
         me.callback = callback;
     },
 
+    #
+    # hash style
+    # return void
+    #
     setStyle: func(style) {
         me.style = style;
 
@@ -127,11 +160,6 @@ var FilterSelector = {
         me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
 
         me.drawScrollable();
-
-        # var buttonBoxClose = me.drawBottomBar("Cancel", func() { me.window.hide(); });
-        # me.vbox.addSpacing(10);
-        # me.vbox.addItem(buttonBoxClose);
-        # me.vbox.addSpacing(10);
     },
 
     #
@@ -145,7 +173,7 @@ var FilterSelector = {
         # Add "All" item to reset filter
         var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
             .setText("Default All")
-            .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), 26)
+            .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
             .listen("clicked", func {
                 call(me.callback, [me.id, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
                 me.window.hide();
@@ -161,7 +189,7 @@ var FilterSelector = {
                 var text = item;
                 var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
                     .setText(text)
-                    .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), 26)
+                    .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
                     .listen("clicked", func {
                         call(me.callback, [me.id, text], me.objCallback);
                         me.window.hide();
@@ -182,24 +210,4 @@ var FilterSelector = {
         return canvas.gui.widgets.Label.new(me.scrollDataContent, canvas.style, {})
             .setText(text);
     },
-
-    #
-    # string label - Label of button
-    # func callback - function which will be executed after click the button
-    # return hash - HBoxLayout object with button
-    #
-    # drawBottomBar: func(label, callback) {
-    #     var buttonBox = canvas.HBoxLayout.new();
-
-    #     var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-    #         .setText(label)
-    #         .setFixedSize(75, 26)
-    #         .listen("clicked", callback);
-
-    #     buttonBox.addStretch(1);
-    #     buttonBox.addItem(btnClose);
-    #     buttonBox.addStretch(1);
-
-    #     return buttonBox;
-    # },
 };
