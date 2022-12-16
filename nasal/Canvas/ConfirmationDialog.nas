@@ -32,6 +32,8 @@ var ConfirmationDialog = {
             Dialog.new(Dialog.ID_DELETE, ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT, title)
         ] };
 
+        me.bgImage.hide();
+
         me.file     = file;
         me.logIndex = nil;
 

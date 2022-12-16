@@ -31,6 +31,8 @@ var AboutDialog = {
             Dialog.new(Dialog.ID_ABOUT, AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
+        me.bgImage.hide();
+
         me.setPositionOnCenter(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT);
 
         var margins = {"left": AboutDialog.PADDING, "top": AboutDialog.PADDING, "right": 0, "bottom": 0};

@@ -147,6 +147,7 @@ var DetailsDialog = {
         me.listView.setStyle(style);
 
         me.reDrawDataContent();
+        me.toggleBgImage();
     },
 
     #

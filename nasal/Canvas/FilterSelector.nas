@@ -34,6 +34,8 @@ var FilterSelector = {
             Dialog.new(Dialog.ID_FILTER_SELECTOR, FilterSelector.WINDOW_WIDTH, FilterSelector.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
+        me.bgImage.hide();
+
         me.canvas.set("background", me.style.CANVAS_BG);
 
         me.items = [];

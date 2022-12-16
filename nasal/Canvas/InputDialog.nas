@@ -31,6 +31,8 @@ var InputDialog = {
             Dialog.new(Dialog.ID_INPUT, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
         ] };
 
+        me.bgImage.hide();
+
         me.file            = file;
         me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.parentDataIndex = nil; # index of column in single row

@@ -53,6 +53,12 @@ var Dialog = {
         me.vbox   = canvas.VBoxLayout.new();
         me.canvas.setLayout(me.vbox);
 
+        me.bgImage = me.group.createChild("image", "bgImage")
+            .setFile("Textures/paper.png")
+            .setTranslation(0, 0)
+            .setSize(LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT);
+        me.toggleBgImage();
+
         if (resize and onResizeWidth != nil) {
             me.windowPropIndex = me.getWindowPropertyIndex(title);
             if (me.windowPropIndex > -1) {
@@ -250,5 +256,11 @@ var Dialog = {
         }
 
         return highest;
+    },
+
+    toggleBgImage: func() {
+        me.style.NAME == "dark"
+            ? me.bgImage.hide()
+            : me.bgImage.show();
     },
 };

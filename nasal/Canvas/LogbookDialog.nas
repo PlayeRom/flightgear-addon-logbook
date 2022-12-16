@@ -417,6 +417,8 @@ var LogbookDialog = {
         me.settings.setDarkMode(me.style.NAME == "dark");
         me.settings.save();
 
+        me.toggleBgImage();
+
         me.canvas.set("background", me.style.CANVAS_BG);
         me.btnStyle.setText(me.getOppositeStyleName());
         me.listView.setStyle(me.style);
