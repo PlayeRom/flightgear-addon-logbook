@@ -126,9 +126,11 @@ var LogbookDialog = {
 
                     # User deleted entry, hide details window
                     me.detailsDialog.hide();
+                    me.detailsDialog.parentDataIndex = nil;
+                    me.detailsDialog.listView.parentDataIndex = nil;
                 }
                 else {
-                    # For edit data
+                    # Reload after edit data
                     me.reloadData(false);
                     me.detailsDialog.reload();
                 }
@@ -425,6 +427,15 @@ var LogbookDialog = {
         me.filterSelector.setStyle(me.style);
 
         me.reloadData();
+
+        # TODO: Additional data setting due to crash "non-numeric string in numeric context: 'data'"
+        # by dataRows["data"] in ListView, but is it really needed? Will the index still be up to date?
+        # if (me.detailsDialog.parentDataIndex != nil) {
+        #     me.detailsDialog.listView.setDataToDraw(
+        #         me.file.getLogData(me.detailsDialog.parentDataIndex),
+        #         me.file.getHeadersData()
+        #     );
+        # }
 
         me.detailsDialog.setStyle(me.style);
         me.helpDialog.setStyle(me.style);

@@ -225,7 +225,7 @@ var ListView = {
     },
 
     #
-    # vector dataRows - vector of hashes {"allDataIndex": index, "data": row data}
+    # vector dataRows - vector of hashes {"allDataIndex": index, "data": vector}
     # return int - Y offset
     #
     reDrawHorizontal: func(dataRows) {
@@ -256,33 +256,35 @@ var ListView = {
     },
 
     #
-    # hash dataRows - {"allDataIndex": index, "data": row data}
+    # hash dataRows - {"allDataIndex": index, "data": vector}
     # vector headers
     # return int - Y offset
     #
     reDrawVertical: func(dataRows, headers) {
         var y = ListView.PADDING * 3;
         var index = 0;
-        foreach (var dataText; dataRows["data"]) {
-            var x = ListView.PADDING * 2;
-            var column = 0;
+        if (me.parentDataIndex != nil) {
+            foreach (var dataText; dataRows["data"]) {
+                var x = ListView.PADDING * 2;
+                var column = 0;
 
-            var rowGroup = me.drawHoverBox(y, [index, me.parentDataIndex, headers[index], dataText]);
+                var rowGroup = me.drawHoverBox(y, [index, me.parentDataIndex, headers[index], dataText]);
 
-            # column 1 - header
-            me.drawText(rowGroup, x, sprintf("%10s:\n", headers[index]));
+                # column 1 - header
+                me.drawText(rowGroup, x, sprintf("%10s:\n", headers[index]));
 
-            # column 2 - data
-            x += me.getX(column);
-            column += 1;
+                # column 2 - data
+                x += me.getX(column);
+                column += 1;
 
-            var text = dataText == "" ? "-" : dataText;
-            text = sprintf("%s %s\n", text, me.getExtraText(index, dataText));
-            var maxWidth = index == File.INDEX_NOTE ? me.getX(column) : nil;
-            me.drawText(rowGroup, x, text, maxWidth);
+                var text = dataText == "" ? "-" : dataText;
+                text = sprintf("%s %s\n", text, me.getExtraText(index, dataText));
+                var maxWidth = index == File.INDEX_NOTE ? me.getX(column) : nil;
+                me.drawText(rowGroup, x, text, maxWidth);
 
-            y += ListView.SHIFT_Y;
-            index += 1;
+                y += ListView.SHIFT_Y;
+                index += 1;
+            }
         }
 
         return y;
