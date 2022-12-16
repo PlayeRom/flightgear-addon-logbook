@@ -77,7 +77,7 @@ var AboutDialog = {
 
         vBoxLayout.addItem(me.getLabel(
             sprintf(
-                "%s version %s - 14th December 2022",
+                "%s version %s - 16th December 2022",
                 me.addon.name,
                 me.addon.version.str()
             )
