@@ -170,6 +170,7 @@ var File = {
         io.close(file);
 
         append(me.allData, logData);
+        me.filters.append(logData);
         me.totalLines += 1;
         me.countTotals(logData.toVector());
     },
