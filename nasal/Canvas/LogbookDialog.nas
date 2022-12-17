@@ -251,7 +251,7 @@ var LogbookDialog = {
             var rect = rowGroup.rect(0, 0, me.listView.getX(column), ListView.SHIFT_Y);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-            me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(text));
+            me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(column, text));
 
             me.setMouseHoverHeadersListener(
                 rowGroup,
@@ -308,37 +308,27 @@ var LogbookDialog = {
     },
 
     #
-    # Replace some too long header text
+    # Replace some too long header text or set "filtered" marker
     #
+    # index column
     # string text
     # return string
     #
-    getReplaceHeaderText: func(text) {
-        if (text == "Date" and me.filters.isAppliedDate()) {
-            return "Date (!)";
+    getReplaceHeaderText: func(column, text) {
+        if ((column == File.INDEX_DATE     and me.filters.isApplied(column)) or
+            (column == File.INDEX_AIRCRAFT and me.filters.isApplied(column)) or
+            (column == File.INDEX_TYPE     and me.filters.isApplied(column)) or
+            (column == File.INDEX_FROM     and me.filters.isApplied(column)) or
+            (column == File.INDEX_TO       and me.filters.isApplied(column))
+        ) {
+            return text ~ " (!)";
         }
 
-        if (text == "Aircraft" and me.filters.isAppliedAircraft()) {
-            return "Aircraft (!)";
-        }
-
-        if (text == "Type" and me.filters.isAppliedAircraftType()) {
-            return "Type (!)";
-        }
-
-        if (text == "From" and me.filters.isAppliedAirportFrom()) {
-            return "From (!)";
-        }
-
-        if (text == "To" and me.filters.isAppliedAirportTo()) {
-            return "To (!)";
-        }
-
-        if (text == "Landings") {
+        if (column == File.INDEX_LANDINGS) {
             return "Land.";
         }
 
-        if (text == "Instrument") {
+        if (column == File.INDEX_INSTRUMENT) {
             return "Instr.";
         }
 

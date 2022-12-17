@@ -364,4 +364,37 @@ var LogData = {
         me.maxAlt       = items[15];
         me.note         = items[16];
     },
+
+    #
+    # int index - Column index
+    # return string|nil
+    #
+    getFilterValueByIndex: func(index) {
+        if (index == File.INDEX_DATE) {
+            return me.getYear();
+        }
+        else if (index == File.INDEX_AIRCRAFT) {
+            return me.aircraft;
+        }
+        else if (index == File.INDEX_TYPE) {
+            return me.aircraftType;
+        }
+        else if (index == File.INDEX_CALLSIGN) {
+            return me.callsign;
+        }
+        else if (index == File.INDEX_FROM) {
+            return me.from;
+        }
+        else if (index == File.INDEX_TO) {
+            return me.to;
+        }
+        else if (index == File.INDEX_LANDINGS) {
+            return me.landings;
+        }
+        else if (index == File.INDEX_CRASH) {
+            return me.printCrash();
+        }
+
+        return nil;
+    },
 };
