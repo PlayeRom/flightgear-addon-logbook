@@ -18,6 +18,7 @@ var File = {
     #
     LOGBOOK_FILE        : "logbook-v%s.csv",
     FILE_VERSION        : "2",
+    INDEX_DATE          : 0,
     INDEX_AIRCRAFT      : 2,
     INDEX_AIRCRAFT_TYPE : 3,
     INDEX_FROM          : 5,

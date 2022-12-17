@@ -21,6 +21,7 @@ var FilterSelector = {
     MAX_WINDOW_HEIGHT  : LogbookDialog.WINDOW_HEIGHT,
     PADDING            : 10,
     BUTTON_HEIGHT      : 26,
+    ID_DATE            : "Date",
     ID_AC              : "Aircraft",
     ID_AC_TYPE         : "Type",
     ID_AIRPORT_FROM    : "From",

@@ -313,6 +313,10 @@ var LogbookDialog = {
     # return string
     #
     getReplaceHeaderText: func(text) {
+        if (text == "Date" and me.filters.isAppliedDate()) {
+            return "Date (!)";
+        }
+
         if (text == "Aircraft" and me.filters.isAppliedAircraft()) {
             return "Aircraft (!)";
         }

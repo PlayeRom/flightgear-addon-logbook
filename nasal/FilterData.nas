@@ -30,7 +30,7 @@ var FilterData = {
 
     #
     # hash filterHash
-    # int id
+    # int id - FilterSelector ID
     # string value
     # return bool
     #

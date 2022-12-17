@@ -56,6 +56,15 @@ var LogData = {
     },
 
     #
+    # Get only year from date
+    #
+    # return string
+    #
+    getYear: func() {
+        return substr(me.date, 0, 4);
+    },
+
+    #
     # Set the take-off time
     #
     # string time - Take-off time

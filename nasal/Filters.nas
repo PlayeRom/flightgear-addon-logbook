@@ -21,6 +21,7 @@ var Filters = {
     new: func () {
         var me = { parents: [Filters] };
 
+        me.date           = std.Vector.new();
         me.aircrafts      = std.Vector.new();
         me.aircraftTypes  = std.Vector.new();
         me.airportsFrom   = std.Vector.new();
@@ -38,6 +39,7 @@ var Filters = {
     # return void
     #
     clear: func() {
+        me.date.clear();
         me.aircrafts.clear();
         me.aircraftTypes.clear();
         me.airportsFrom.clear();
@@ -51,6 +53,12 @@ var Filters = {
     # return void
     #
     append: func(logData) {
+        # Add unique year
+        var year = logData.getYear();
+        if (!me.date.contains(year)) {
+            me.date.append(year);
+        }
+
         # Add unique aircraft IDs
         if (!me.aircrafts.contains(logData.aircraft)) {
             me.aircrafts.append(logData.aircraft);
@@ -78,6 +86,10 @@ var Filters = {
     # return void
     #
     sort: func() {
+        if (me.date.size() > 1) {
+            me.date.vector = sort(me.date.vector, string.icmp);
+        }
+
         if (me.aircrafts.size() > 1) {
             me.aircrafts.vector = sort(me.aircrafts.vector, string.icmp);
         }
@@ -111,6 +123,15 @@ var Filters = {
         if (filterData.value != FilterSelector.CLEAR_FILTER_VALUE) {
             me.appliedFilters.append(filterData);
         }
+    },
+
+    #
+    # Return true if user used filter for Date header
+    #
+    # return bool
+    #
+    isAppliedDate: func() {
+        return me.isApplied(FilterSelector.ID_DATE);
     },
 
     #
@@ -172,6 +193,11 @@ var Filters = {
     isAllowedByFilter: func(logData) {
         var matchCounter = 0;
         foreach (var filterData; me.appliedFilters.vector) {
+            if (filterData.isMatch(FilterSelector.ID_DATE, logData.getYear())) {
+                matchCounter += 1;
+                continue;
+            }
+
             if (filterData.isMatch(FilterSelector.ID_AC, logData.aircraft)) {
                 matchCounter += 1;
                 continue;
@@ -202,7 +228,8 @@ var Filters = {
     # return vector|nil
     #
     getFilterItemsByColumnIndex: func(column) {
-             if (column == File.INDEX_AIRCRAFT)      return me.aircrafts.vector;
+             if (column == File.INDEX_DATE)          return me.date.vector;
+        else if (column == File.INDEX_AIRCRAFT)      return me.aircrafts.vector;
         else if (column == File.INDEX_AIRCRAFT_TYPE) return me.aircraftTypes.vector;
         else if (column == File.INDEX_FROM)          return me.airportsFrom.vector;
         else if (column == File.INDEX_TO)            return me.airportsTo.vector;
@@ -215,7 +242,8 @@ var Filters = {
     # return string|nil
     #
     getFilerTitleByColumnIndex: func(column) {
-             if (column == File.INDEX_AIRCRAFT)      return "Aircraft filter";
+             if (column == File.INDEX_DATE)          return "Date filter";
+        else if (column == File.INDEX_AIRCRAFT)      return "Aircraft filter";
         else if (column == File.INDEX_AIRCRAFT_TYPE) return "Aircraft type filter";
         else if (column == File.INDEX_FROM)          return "Airport from filter";
         else if (column == File.INDEX_TO)            return "Airport to filter";
@@ -228,7 +256,8 @@ var Filters = {
     # return int|nil
     #
     getFilerSelectorIdByColumnIndex: func(column) {
-             if (column == File.INDEX_AIRCRAFT)      return FilterSelector.ID_AC;
+             if (column == File.INDEX_DATE)          return FilterSelector.ID_DATE;
+        else if (column == File.INDEX_AIRCRAFT)      return FilterSelector.ID_AC;
         else if (column == File.INDEX_AIRCRAFT_TYPE) return FilterSelector.ID_AC_TYPE;
         else if (column == File.INDEX_FROM)          return FilterSelector.ID_AIRPORT_FROM;
         else if (column == File.INDEX_TO)            return FilterSelector.ID_AIRPORT_TO;
