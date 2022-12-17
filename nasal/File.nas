@@ -53,7 +53,7 @@ var File = {
         me.loadedData  = [];
         me.headersData = [];
 
-        me.allData     = [];
+        me.allData     = std.Vector.new();
 
         me.totals      = [];
         me.resetTotals();
@@ -176,7 +176,7 @@ var File = {
         me.saveItem(file, logData);
         io.close(file);
 
-        append(me.allData, logData);
+        me.allData.append(logData);
         me.filters.append(logData);
         me.filters.sort();
         me.totalLines += 1;
@@ -215,7 +215,7 @@ var File = {
     # return void
     #
     loadAllData: func() {
-        me.allData = [];
+        me.allData.clear();
         me.filters.clear();
         me.resetTotals();
 
@@ -241,7 +241,7 @@ var File = {
 
                 me.filters.append(logData);
 
-                append(me.allData, logData);
+                me.allData.append(logData);
             }
 
             me.totalLines += 1;
@@ -265,7 +265,7 @@ var File = {
 
         var allDataIndex = 0;
         var counter = 0;
-        foreach (var logData; me.allData) {
+        foreach (var logData; me.allData.vector) {
             var vectorLogData = logData.toVector();
             if (me.filters.isAllowedByFilter(logData)) {
                 if (me.totalLines >= start and counter < count) {
@@ -298,7 +298,7 @@ var File = {
             return false;
         }
 
-        if (rowIndex >= size(me.allData)) {
+        if (rowIndex >= me.allData.size()) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, index out of range");
             return false;
         }
@@ -309,9 +309,9 @@ var File = {
             return false;
         }
 
-        var items = me.allData[rowIndex].toVector();
+        var items = me.allData.vector[rowIndex].toVector();
         items[headerIndex] = value;
-        me.allData[rowIndex].fromVector(items);
+        me.allData.vector[rowIndex].fromVector(items);
 
         var recalcTotals = headerIndex >= File.INDEX_LANDINGS and headerIndex <= File.INDEX_MAX_ALT;
         var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
@@ -343,7 +343,7 @@ var File = {
         }
 
         # Save data
-        foreach (var logData; me.allData) {
+        foreach (var logData; me.allData.vector) {
             me.saveItem(file, logData);
 
             if (recalcTotals) {
@@ -452,7 +452,7 @@ var File = {
     getLogData: func(index) {
         return {
             "allDataIndex" : index,
-            "data" : me.allData[index].toVector()
+            "data" : me.allData.vector[index].toVector()
         };
     },
 
@@ -461,27 +461,12 @@ var File = {
     # return bool
     #
     deleteLog: func(index) {
-        var isDeleted = false;
+        me.allData.pop(index);
 
-        var tmp = me.allData;
-        me.allData = [];
-        var count = 0;
-        foreach (var item; tmp) {
-            if (count == index) {
-                isDeleted = true;
-            }
-            else {
-                append(me.allData, item);
-            }
+        me.totalLines -= 1;
 
-            count += 1;
-        }
+        me.saveAllData(true, true);
 
-        if (isDeleted) {
-            me.totalLines -= 1;
-            me.saveAllData(true, true);
-        }
-
-        return isDeleted;
+        return true;
     },
 };
