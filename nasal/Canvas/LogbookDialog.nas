@@ -208,6 +208,7 @@ var LogbookDialog = {
     #
     hide: func() {
         me.filterSelector.hide();
+        me.detailsDialog.hide();
         call(Dialog.hide, [], me);
     },
 

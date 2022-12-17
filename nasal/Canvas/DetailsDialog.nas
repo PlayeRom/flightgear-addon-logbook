@@ -39,6 +39,12 @@ var DetailsDialog = {
             Dialog.new(Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
+        # Override window del method for hide InputDialog and ConfirmationDialog
+        var self = me;
+        me.window.del = func() {
+            call(DetailsDialog.hide, [], self);
+        };
+
         me.dataRow         = nil;
         me.parentDataIndex = nil;
         me.file            = file;
@@ -160,6 +166,7 @@ var DetailsDialog = {
     #
     show: func(data) {
         me.inputDialog.hide();
+        me.deleteDialog.hide();
 
         me.parentDataIndex = data[1]["allDataIndex"];
         me.listView.parentDataIndex = me.parentDataIndex;
@@ -168,6 +175,17 @@ var DetailsDialog = {
         me.reDrawDataContent();
 
         call(Dialog.show, [], me);
+    },
+
+    #
+    # Hide details window with its sub windows
+    #
+    # return void
+    #
+    hide: func() {
+        me.inputDialog.hide();
+        me.deleteDialog.hide();
+        call(Dialog.hide, [], me);
     },
 
     #

@@ -184,7 +184,7 @@ var InputDialog = {
             return;
         }
 
-        me.window.hide();
+        me.hide();
 
         if (me.file.editData(me.allDataIndex, me.header, value)) {
             gui.popupTip("The change has been saved!");
