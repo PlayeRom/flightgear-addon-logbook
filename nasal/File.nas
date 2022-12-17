@@ -53,7 +53,10 @@ var File = {
         me.loadedData  = [];
         me.headersData = [];
 
-        me.allData     = std.Vector.new();
+        me.allData      = std.Vector.new();
+
+        # Temporary filtered data as a cache for optimized viewing of large logs
+        me.cachedData = std.Vector.new();
 
         me.totals      = [];
         me.resetTotals();
@@ -216,6 +219,7 @@ var File = {
     #
     loadAllData: func() {
         me.allData.clear();
+        me.cachedData.clear();
         me.filters.clear();
         me.resetTotals();
 
@@ -240,7 +244,6 @@ var File = {
                 me.countTotals(items);
 
                 me.filters.append(logData);
-
                 me.allData.append(logData);
             }
 
@@ -260,11 +263,35 @@ var File = {
     loadDataRange: func(start, count) {
         me.loadedData = [];
 
+        var counter = 0;
+
+        if (!me.filters.dirty and me.cachedData.size() > 0) {
+            # Use a faster loop because we know that nothing has changed in the data
+
+            foreach (var hash; me.cachedData.vector[start:]) {
+                var vectorLogData = hash.logData.toVector();
+                if (counter < count) {
+                    append(me.loadedData, {
+                        "allDataIndex" : hash.allDataIndex,
+                        "data" : vectorLogData,
+                    });
+                    counter += 1;
+                }
+                else {
+                    break;
+                }
+            }
+
+            return me.loadedData;
+        }
+
+        # Use a more complex loop because we know you have to recalculate everything from scratch
+
+        var allDataIndex = 0;
+        me.cachedData.clear();
         me.resetTotals();
         me.totalLines = 0;
 
-        var allDataIndex = 0;
-        var counter = 0;
         foreach (var logData; me.allData.vector) {
             var vectorLogData = logData.toVector();
             if (me.filters.isAllowedByFilter(logData)) {
@@ -278,10 +305,17 @@ var File = {
 
                 me.totalLines += 1;
                 me.countTotals(vectorLogData);
+
+                me.cachedData.append({
+                    "allDataIndex" : allDataIndex,
+                    "logData" : logData,
+                });
             }
 
             allDataIndex += 1;
         }
+
+        me.filters.dirty = false;
 
         return me.loadedData;
     },

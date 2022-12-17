@@ -32,6 +32,11 @@ var Filters = {
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
 
+        # The dirty true flag says that the data has been modified, e.g. by
+        # applying a new filter or adding new data to be filtered, which means
+        # we have to recalculate everything.
+        me.dirty = false;
+
         return me;
     },
 
@@ -57,6 +62,7 @@ var Filters = {
             var value = logData.getFilterValueByIndex(index);
             if (value != "" and !me.data[index].contains(value)) {
                 me.data[index].append(value);
+                me.dirty = true;
             }
         }
     },
@@ -83,12 +89,14 @@ var Filters = {
             if (item.index == filterData.index) {
                 # Remove the same ID if already exist
                 me.appliedFilters.remove(item);
+                me.dirty = true;
                 break;
             }
         }
 
         if (filterData.value != FilterSelector.CLEAR_FILTER_VALUE) {
             me.appliedFilters.append(filterData);
+            me.dirty = true;
         }
     },
 
