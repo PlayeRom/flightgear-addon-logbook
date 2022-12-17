@@ -36,10 +36,13 @@ var File = {
     # hash addon - addons.Addon object
     # return me
     #
-    new: func (addon) {
-        var me = { parents: [File] };
+    new: func (addon, filters) {
+        var me = {
+            parents : [File],
+            addon   : addon,
+            filters : filters,
+        };
 
-        me.addon       = addon;
         me.filePath    = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, File.FILE_VERSION);
         me.loadedData  = [];
         me.headersData = [];
@@ -51,8 +54,6 @@ var File = {
 
         # Total lines in CSV file (without headers)
         me.totalLines  = -1;
-
-        me.filters = Filters.new();
 
         me.saveHeaders();
 
@@ -463,21 +464,5 @@ var File = {
         }
 
         return isDeleted;
-    },
-
-    getAircraftsFilter: func() {
-        me.filters.aircrafts.vector;
-    },
-
-    getAircraftTypesFilter: func() {
-        me.filters.aircraftTypes.vector;
-    },
-
-    #
-    # hash filter - {"id": filterId, "value": "text"}
-    # return void
-    #
-    applyFilter: func(filter) {
-        me.filters.applyFilter(filter);
     },
 };

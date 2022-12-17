@@ -58,14 +58,17 @@ var LogbookDialog = {
     # Constructor
     #
     # hash file - File object
+    # hash filters - Filters object
     # return me
     #
-    new: func(file) {
+    new: func(file, filters) {
         var me = {
-            parents: [
+            parents : [
                 LogbookDialog,
                 Dialog.new(Dialog.ID_LOGBOOK, LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook"),
             ],
+            file    : file,
+            filters : filters,
         };
 
         me.addonNodePath = me.addon.node.getPath();
@@ -80,9 +83,8 @@ var LogbookDialog = {
 
         me.startIndex = 0;
 
-        file.loadAllData();
+        me.file.loadAllData();
 
-        me.file           = file;
         me.data           = [];
         me.totals         = me.file.getTotalsData();
         me.rowTotal       = nil;
@@ -250,24 +252,13 @@ var LogbookDialog = {
 
             me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(text));
 
-            if (column == File.INDEX_AIRCRAFT) {
-                me.setMouseHoverHeadersListener(
-                    rowGroup,
-                    rect,
-                    me.file.getAircraftsFilter(),
-                    "Aircraft filter",
-                    FilterSelector.ID_AC
-                );
-            }
-            else if (column == File.INDEX_AIRCRAFT_TYPE) {
-                me.setMouseHoverHeadersListener(
-                    rowGroup,
-                    rect,
-                    me.file.getAircraftTypesFilter(),
-                    "Aircraft type filter",
-                    FilterSelector.ID_AC_TYPE
-                );
-            }
+            me.setMouseHoverHeadersListener(
+                rowGroup,
+                rect,
+                me.filters.getFilterItemsByColumnIndex(column),
+                me.filters.getFilerTitleByColumnIndex(column),
+                me.filters.getFilerSelectorIdByColumnIndex(column)
+            );
 
             x += me.listView.getX(column);
             column += 1;
@@ -277,12 +268,17 @@ var LogbookDialog = {
     #
     # hash rowGroup - canvas group
     # hash rect - rectangle canvas object
-    # vector items - Items for FilterSelector
-    # string title - FilterSelector title dialog
-    # int id - FilterSelector ID
+    # vector items|nil - Items for FilterSelector
+    # string title|nil - FilterSelector title dialog
+    # int id|nil - FilterSelector ID
     # return void
     #
     setMouseHoverHeadersListener: func(rowGroup, rect, items, title, id) {
+        if (items == nil or title == nil or id == nil) {
+            # No filters for this column, skip it
+            return;
+        }
+
         rowGroup.addEventListener("mouseenter", func {
             rect.setColorFill(me.style.HOVER_BG);
         });
@@ -307,7 +303,7 @@ var LogbookDialog = {
     # return void
     #
     filterSelectorCallback: func(filterId, value) {
-        me.reloadData(true, {"id": filterId, "value": value});
+        me.reloadData(true, FilterData.new(filterId, value));
     },
 
     #
@@ -317,12 +313,20 @@ var LogbookDialog = {
     # return string
     #
     getReplaceHeaderText: func(text) {
-        if (text == "Aircraft" and me.file.filters.isAppliedAircraft()) {
+        if (text == "Aircraft" and me.filters.isAppliedAircraft()) {
             return "Aircraft (!)";
         }
 
-        if (text == "Type" and me.file.filters.isAppliedAircraftType()) {
+        if (text == "Type" and me.filters.isAppliedAircraftType()) {
             return "Type (!)";
+        }
+
+        if (text == "From" and me.filters.isAppliedAirportFrom()) {
+            return "From (!)";
+        }
+
+        if (text == "To" and me.filters.isAppliedAirportTo()) {
+            return "To (!)";
         }
 
         if (text == "Landings") {
@@ -542,14 +546,14 @@ var LogbookDialog = {
     # Reload logbook data
     #
     # bool withHeaders - Set true when color must be change too.
-    # hash filter - {"id": filterId, "value": "text"}
+    # hash filter - FilterData object as {"id": filterId, "value": "text"}
     # return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
         if (filter != nil) {
             # Reset range
             me.startIndex = 0;
-            me.file.applyFilter(filter);
+            me.filters.applyFilter(filter);
         }
 
         me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);

@@ -23,6 +23,10 @@ var Filters = {
 
         me.aircrafts      = std.Vector.new();
         me.aircraftTypes  = std.Vector.new();
+        me.airportsFrom   = std.Vector.new();
+        me.airportsTo     = std.Vector.new();
+
+        # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
 
         return me;
@@ -36,6 +40,8 @@ var Filters = {
     clear: func() {
         me.aircrafts.clear();
         me.aircraftTypes.clear();
+        me.airportsFrom.clear();
+        me.airportsTo.clear();
     },
 
     #
@@ -53,7 +59,16 @@ var Filters = {
         # Add unique aircraft types
         if (!me.aircraftTypes.contains(logData.aircraftType)) {
             me.aircraftTypes.append(logData.aircraftType);
+        }
 
+        # Add unique airport from
+        if (logData.from != "" and !me.airportsFrom.contains(logData.from)) {
+            me.airportsFrom.append(logData.from);
+        }
+
+        # Add unique airport to
+        if (logData.to != "" and !me.airportsTo.contains(logData.to)) {
+            me.airportsTo.append(logData.to);
         }
     },
 
@@ -70,23 +85,31 @@ var Filters = {
         if (me.aircraftTypes.size() > 1) {
             me.aircraftTypes.vector = sort(me.aircraftTypes.vector, string.icmp);
         }
+
+        if (me.airportsFrom.size() > 1) {
+            me.airportsFrom.vector = sort(me.airportsFrom.vector, string.icmp);
+        }
+
+        if (me.airportsTo.size() > 1) {
+            me.airportsTo.vector = sort(me.airportsTo.vector, string.icmp);
+        }
     },
 
     #
-    # hash filters - {"id": filterId, "value": "text"}
+    # hash filterData - FilterData as {"id": filterId, "value": "text"}
     # return void
     #
-    applyFilter: func(filter) {
+    applyFilter: func(filterData) {
         foreach (var item; me.appliedFilters.vector) {
-            if (item["id"] == filter["id"]) {
+            if (item.id == filterData.id) {
                 # Remove the same ID if already exist
                 me.appliedFilters.remove(item);
                 break;
             }
         }
 
-        if (filter["value"] != FilterSelector.CLEAR_FILTER_VALUE) {
-            me.appliedFilters.append(filter);
+        if (filterData.value != FilterSelector.CLEAR_FILTER_VALUE) {
+            me.appliedFilters.append(filterData);
         }
     },
 
@@ -96,13 +119,7 @@ var Filters = {
     # return bool
     #
     isAppliedAircraft: func() {
-        foreach (var item; me.appliedFilters.vector) {
-            if (item["id"] == FilterSelector.ID_AC) {
-                return true;
-            }
-        }
-
-        return false;
+        return me.isApplied(FilterSelector.ID_AC);
     },
 
     #
@@ -111,8 +128,36 @@ var Filters = {
     # return bool
     #
     isAppliedAircraftType: func() {
+        return me.isApplied(FilterSelector.ID_AC_TYPE);
+    },
+
+    #
+    # Return true if user used filter for airport "from"
+    #
+    # return bool
+    #
+    isAppliedAirportFrom: func() {
+        return me.isApplied(FilterSelector.ID_AIRPORT_FROM);
+    },
+
+    #
+    # Return true if user used filter for airport "to"
+    #
+    # return bool
+    #
+    isAppliedAirportTo: func() {
+        return me.isApplied(FilterSelector.ID_AIRPORT_TO);
+    },
+
+    #
+    # Return true if user used filter with given ID
+    #
+    # int id
+    # return bool
+    #
+    isApplied: func(id) {
         foreach (var item; me.appliedFilters.vector) {
-            if (item["id"] == FilterSelector.ID_AC_TYPE) {
+            if (item.id == id) {
                 return true;
             }
         }
@@ -126,17 +171,68 @@ var Filters = {
     #
     isAllowedByFilter: func(logData) {
         var matchCounter = 0;
-        foreach (var filterHash; me.appliedFilters.vector) {
-            if (filterHash["id"] == FilterSelector.ID_AC and filterHash["value"] == logData.aircraft) {
+        foreach (var filterData; me.appliedFilters.vector) {
+            if (filterData.isMatch(FilterSelector.ID_AC, logData.aircraft)) {
                 matchCounter += 1;
+                continue;
             }
 
-            if (filterHash["id"] == FilterSelector.ID_AC_TYPE and filterHash["value"] == logData.aircraftType) {
+            if (filterData.isMatch(FilterSelector.ID_AC_TYPE, logData.aircraftType)) {
                 matchCounter += 1;
+                continue;
+            }
+
+            if (filterData.isMatch(FilterSelector.ID_AIRPORT_FROM, logData.from)) {
+                matchCounter += 1;
+                continue;
+            }
+
+            if (filterData.isMatch(FilterSelector.ID_AIRPORT_TO, logData.to)) {
+                matchCounter += 1;
+                continue;
             }
         }
 
         # Return true if all filters have been met
         return matchCounter == size(me.appliedFilters.vector);
+    },
+
+    #
+    # int column - Index of column
+    # return vector|nil
+    #
+    getFilterItemsByColumnIndex: func(column) {
+             if (column == File.INDEX_AIRCRAFT)      return me.aircrafts.vector;
+        else if (column == File.INDEX_AIRCRAFT_TYPE) return me.aircraftTypes.vector;
+        else if (column == File.INDEX_FROM)          return me.airportsFrom.vector;
+        else if (column == File.INDEX_TO)            return me.airportsTo.vector;
+
+        return nil;
+    },
+
+    #
+    # int column - Index of column
+    # return string|nil
+    #
+    getFilerTitleByColumnIndex: func(column) {
+             if (column == File.INDEX_AIRCRAFT)      return "Aircraft filter";
+        else if (column == File.INDEX_AIRCRAFT_TYPE) return "Aircraft type filter";
+        else if (column == File.INDEX_FROM)          return "Airport from filter";
+        else if (column == File.INDEX_TO)            return "Airport to filter";
+
+        return nil;
+    },
+
+    #
+    # int column - Index of column
+    # return int|nil
+    #
+    getFilerSelectorIdByColumnIndex: func(column) {
+             if (column == File.INDEX_AIRCRAFT)      return FilterSelector.ID_AC;
+        else if (column == File.INDEX_AIRCRAFT_TYPE) return FilterSelector.ID_AC_TYPE;
+        else if (column == File.INDEX_FROM)          return FilterSelector.ID_AIRPORT_FROM;
+        else if (column == File.INDEX_TO)            return FilterSelector.ID_AIRPORT_TO;
+
+        return nil;
     },
 };

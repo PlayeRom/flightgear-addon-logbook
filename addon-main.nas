@@ -42,6 +42,7 @@ var loadExtraNasalFiles = func (addon) {
         "nasal/Canvas/LogbookDialog",
         "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
         "nasal/AircraftType",
+        "nasal/FilterData",
         "nasal/Filters",
         "nasal/Settings",
         "nasal/MouseHover",

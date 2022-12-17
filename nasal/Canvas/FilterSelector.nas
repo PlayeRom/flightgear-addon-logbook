@@ -23,6 +23,8 @@ var FilterSelector = {
     BUTTON_HEIGHT      : 26,
     ID_AC              : "Aircraft",
     ID_AC_TYPE         : "Type",
+    ID_AIRPORT_FROM    : "From",
+    ID_AIRPORT_TO      : "To",
     CLEAR_FILTER_VALUE : "All",
 
     #

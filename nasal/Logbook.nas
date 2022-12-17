@@ -43,11 +43,12 @@ var Logbook = {
         me.logData       = nil;
         me.environment   = Environment.new();
         me.landingGear   = LandingGear.new();
-        me.file          = File.new(addon);
+        me.filters       = Filters.new();
+        me.file          = File.new(addon, me.filters);
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
-        me.logbookDialog = LogbookDialog.new(me.file);
+        me.logbookDialog = LogbookDialog.new(me.file, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
