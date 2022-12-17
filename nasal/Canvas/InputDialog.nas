@@ -150,7 +150,7 @@ var InputDialog = {
     #
     actionTypeSelect: func() {
         me.filterSelector.setItems(AircraftType.getVector(), false);
-        me.filterSelector.setId(FilterSelector.ID_AC_TYPE);
+        me.filterSelector.setColumnIndex(File.INDEX_TYPE);
         me.filterSelector.setPosition(
             getprop("/devices/status/mice/mouse/x") or 0,
             getprop("/devices/status/mice/mouse/y") or 0
