@@ -114,36 +114,12 @@ var LogbookDialog = {
 
         me.listeners = [];
 
-        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
-            if (node.getValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
-
-                if (getprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted") == true) {
-                    setprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted", false);
-
-                    # Check index of last page
-                    var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
-                    var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
-                    if (me.startIndex > newIndex) {
-                        # We exceed the maximum index, so set a new one
-                        me.startIndex = newIndex;
-                    }
-
-                    me.reloadData(false);
-
-                    # User deleted entry, hide details window
-                    me.detailsDialog.hide();
-                    me.detailsDialog.parentDataIndex = nil;
-                    me.detailsDialog.listView.parentDataIndex = nil;
-                }
-                else {
-                    # Reload after edit data
-                    me.reloadData(false);
-                    me.detailsDialog.reload();
-                }
-            }
-        }));
+        append(
+            me.listeners,
+            setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
+                me.reloadLogbookListenerCallback(node);
+            })
+        );
 
         append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", func(node) {
             if (node.getValue()) {
@@ -155,6 +131,43 @@ var LogbookDialog = {
         }));
 
         return me;
+    },
+
+    #
+    # Callback from "/addons/by-id/org.flightgear.addons.logbook/addon-devel/reload-logbook" listener
+    #
+    # hash node - Node object
+    # return void
+    #
+    reloadLogbookListenerCallback: func(node) {
+        if (node.getValue()) {
+            # Back to false
+            setprop(node.getPath(), false);
+
+            if (getprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted") == true) {
+                setprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted", false);
+
+                # Check index of last page
+                var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+                var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+                if (me.startIndex > newIndex) {
+                    # We exceed the maximum index, so set a new one
+                    me.startIndex = newIndex;
+                }
+
+                me.reloadData(false);
+
+                # User deleted entry, hide details window
+                me.detailsDialog.hide();
+                me.detailsDialog.parentDataIndex = nil;
+                me.detailsDialog.listView.parentDataIndex = nil;
+            }
+            else {
+                # Reload after edit data
+                me.reloadData(false);
+                me.detailsDialog.reload();
+            }
+        }
     },
 
     #
@@ -286,8 +299,12 @@ var LogbookDialog = {
         });
     },
 
+    #
+    # int filterId
+    # string value
+    # return void
+    #
     filterSelectorCallback: func(filterId, value) {
-        # gui.popupTip("Filter " ~ filterId ~ " " ~ value);
         me.reloadData(true, {"id": filterId, "value": value});
     },
 

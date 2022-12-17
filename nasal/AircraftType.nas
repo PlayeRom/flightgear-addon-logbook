@@ -53,25 +53,7 @@ var AircraftType = {
             return type;
         }
 
-        # Manual assignment of the type of known aircrafts
-        var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft-id"));
-
-        if (substr(aircraftId, 0, 5) == "ask21" or # ask21, ask21mi, ask21-jsb, ask21mi-jsb
-            aircraftId == "Perlan2" or
-            aircraftId == "horsa" or
-            aircraftId == "bocian" or
-            aircraftId == "sportster"
-        ) {
-            return AircraftType.GLIDER;
-        }
-
-        if (string.match(aircraftId, "Embraer[0-9][0-9][0-9]") or # Embraer170, Embraer175, Embraer190, Embraer195
-            aircraftId == "EmbraerLineage1000"
-        ) {
-            return AircraftType.AIRLINER;
-        }
-
-        return AircraftType.OTHERS;
+        return me.manualSelection();
     },
 
     #
@@ -194,6 +176,36 @@ var AircraftType = {
         }
 
         return andSize > 0 and andCounter == andSize;
+    },
+
+    #
+    # Manual assignment of the type of known aircrafts
+    #
+    # return string
+    #
+    manualSelection: func() {
+        var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft-id"));
+
+        if (substr(aircraftId, 0, 5) == "ask21" or # ask21, ask21mi, ask21-jsb, ask21mi-jsb
+            aircraftId == "Perlan2" or
+            aircraftId == "horsa" or
+            aircraftId == "bocian" or
+            aircraftId == "sportster"
+        ) {
+            return AircraftType.GLIDER;
+        }
+
+        if (string.match(aircraftId, "Embraer[0-9][0-9][0-9]") or # Embraer170, Embraer175, Embraer190, Embraer195
+            aircraftId == "EmbraerLineage1000"
+        ) {
+            return AircraftType.AIRLINER;
+        }
+
+        if (aircraftId == "alphaelectro") {
+            return AircraftType.GA_SINGLE;
+        }
+
+        return AircraftType.OTHERS;
     },
 
     #
