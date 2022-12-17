@@ -159,7 +159,7 @@ var LogbookDialog = {
                     me.startIndex = newIndex;
                 }
 
-                me.reloadData(false);
+                me.reloadData();
 
                 # User deleted entry, hide details window
                 me.detailsDialog.hide();
@@ -168,7 +168,7 @@ var LogbookDialog = {
             }
             else {
                 # Reload after edit data
-                me.reloadData(false);
+                me.reloadData();
                 me.detailsDialog.reload();
             }
         }
@@ -550,7 +550,7 @@ var LogbookDialog = {
     #
     # Reload logbook data
     #
-    # bool withHeaders - Set true when color must be change too.
+    # bool withHeaders - Set true when headers/filters must be change too.
     # hash filter - FilterData object as {"id": filterId, "value": "text"}
     # return void
     #

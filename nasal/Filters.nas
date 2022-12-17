@@ -264,4 +264,16 @@ var Filters = {
 
         return nil;
     },
+
+    #
+    # int column
+    # return bool
+    #
+    isColumnIndexFiltered: func(column) {
+        return column == File.INDEX_DATE or
+               column == File.INDEX_AIRCRAFT or
+               column == File.INDEX_AIRCRAFT_TYPE or
+               column == File.INDEX_FROM or
+               column == File.INDEX_TO;
+    },
 };

@@ -309,16 +309,18 @@ var File = {
         me.allData[rowIndex].fromVector(items);
 
         var recalcTotals = headerIndex >= File.INDEX_LANDINGS and headerIndex <= File.INDEX_MAX_ALT;
-        me.saveAllData(recalcTotals);
+        var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
+        me.saveAllData(recalcTotals, resetFilters);
 
         return true;
     },
 
     #
-    # bool recalcTotals
+    # bool recalcTotals - Set true for recalculate totals, because data can changed
+    # bool resetFilters - Set true for reload filters, because data can changed
     # return void
     #
-    saveAllData: func(recalcTotals) {
+    saveAllData: func(recalcTotals, resetFilters) {
         # Do backup
         me.copyFile(me.filePath, me.filePath ~ ".bak");
 
@@ -327,21 +329,32 @@ var File = {
         # Save headers
         io.write(file, me.getHeaderLine() ~ "\n");
 
-        # Save data
         if (recalcTotals) {
             me.resetTotals();
         }
 
+        if (resetFilters) {
+            me.filters.clear();
+        }
+
+        # Save data
         foreach (var logData; me.allData) {
             me.saveItem(file, logData);
 
-            # Recalculate totals, because data can changed
             if (recalcTotals) {
                 me.countTotals(logData.toVector());
+            }
+
+            if (resetFilters) {
+                me.filters.append(logData);
             }
         }
 
         io.close(file);
+
+        if (resetFilters) {
+            me.filters.sort();
+        }
     },
 
     #
@@ -461,7 +474,7 @@ var File = {
 
         if (isDeleted) {
             me.totalLines -= 1;
-            me.saveAllData(true);
+            me.saveAllData(true, true);
         }
 
         return isDeleted;
