@@ -31,12 +31,20 @@ var InputDialog = {
             Dialog.new(Dialog.ID_INPUT, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
         ] };
 
+        # Override window del method for close FilterSelector
+        var self = me;
+        me.window.del = func() {
+            call(InputDialog.hide, [], self);
+        };
+
         me.bgImage.hide();
 
         me.file            = file;
         me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.parentDataIndex = nil; # index of column in single row
         me.header          = nil; # header name
+
+        me.filterSelector = FilterSelector.new();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
@@ -51,7 +59,12 @@ var InputDialog = {
         var buttonBox = canvas.HBoxLayout.new();
         me.vbox.addItem(buttonBox);
 
-        buttonBox.addStretch(1);
+        me.btnTypeSelector = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Select")
+            .listen("clicked", func { me.actionTypeSelect(); }
+        );
+        me.btnTypeSelector.setVisible(false);
+
         var btnOK = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Save")
             .listen("clicked", func { me.actionSave(); }
@@ -62,6 +75,8 @@ var InputDialog = {
             .listen("clicked", func { me.actionCancel(); }
         );
 
+        buttonBox.addItem(me.btnTypeSelector);
+        buttonBox.addStretch(1);
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
 
@@ -77,6 +92,7 @@ var InputDialog = {
     # return void
     #
     del: func() {
+        me.filterSelector.del();
         call(Dialog.del, [], me);
     },
 
@@ -87,6 +103,8 @@ var InputDialog = {
     # return void
     #
     setLabel: func(label) {
+        me.btnTypeSelector.setVisible(label == "Type");
+
         me.label.setText(label);
     },
 
@@ -113,10 +131,42 @@ var InputDialog = {
         me.allDataIndex    = data[1];
         me.header          = data[2];
 
-        me.label.setText(data[2]);
-        me.lineEdit.setText(sprintf("%s", data[3]));
+        me.setLabel(data[2]);
+        me.setLineEdit(sprintf("%s", data[3]));
         me.lineEdit.setFocus();
         call(Dialog.show, [], me);
+    },
+
+    #
+    # return void
+    #
+    hide: func() {
+        me.filterSelector.hide();
+        call(Dialog.hide, [], me);
+    },
+
+    #
+    # return void
+    #
+    actionTypeSelect: func() {
+        me.filterSelector.setItems(AircraftType.getVector(), false);
+        me.filterSelector.setId(FilterSelector.ID_AC_TYPE);
+        me.filterSelector.setPosition(
+            getprop("/devices/status/mice/mouse/x") or 0,
+            getprop("/devices/status/mice/mouse/y") or 0
+        );
+        me.filterSelector.setTitle("Aircraft type filter");
+        me.filterSelector.setCallback(me, me.filterSelectorCallback);
+        me.filterSelector.show();
+    },
+
+    #
+    # int filterId
+    # string value
+    # return void
+    #
+    filterSelectorCallback: func(filterId, value) {
+        me.lineEdit.setText(value);
     },
 
     #
@@ -149,7 +199,7 @@ var InputDialog = {
     # return void
     #
     actionCancel: func() {
-        me.window.hide();
+        me.hide();
 
         # Set property redraw-details for remove selected bar
         setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-details", true);

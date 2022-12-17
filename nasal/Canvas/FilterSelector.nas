@@ -43,6 +43,7 @@ var FilterSelector = {
         me.canvas.set("background", me.style.CANVAS_BG);
 
         me.items = [];
+        me.withDefaultAll = true;
 
         me.scrollData = nil;
         me.scrollDataContent = nil;
@@ -89,10 +90,12 @@ var FilterSelector = {
 
     #
     # vector items
+    # bool withDefaultAll
     # return void
     #
-    setItems: func(items) {
+    setItems: func(items, withDefaultAll = 1) {
         me.items = items;
+        me.withDefaultAll = withDefaultAll;
 
         me.recalculateWindowHeight();
         me.reDrawContent();
@@ -102,8 +105,16 @@ var FilterSelector = {
     # return void
     #
     recalculateWindowHeight: func() {
-        var count = size(me.items) + 1; # +1 for "Default All"
-        var windowHeight = count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * 3); # 5 = spacing between buttons
+        var paddingMultiplier = 2;
+        var count = size(me.items);
+
+        if (me.withDefaultAll) {
+            count += 1;  # +1 for "Default All"
+            paddingMultiplier += 1;
+        }
+
+        # 5 = spacing between buttons:
+        var windowHeight = count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * paddingMultiplier);
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
@@ -170,17 +181,19 @@ var FilterSelector = {
     drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        # Add "All" item to reset filter
-        var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
-            .setText("Default All")
-            .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
-            .listen("clicked", func {
-                call(me.callback, [me.id, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
-                me.window.hide();
-            });
+        if (me.withDefaultAll) {
+            # Add "All" item to reset filter
+            var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
+                .setText("Default All")
+                .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
+                .listen("clicked", func {
+                    call(me.callback, [me.id, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
+                    me.window.hide();
+                });
 
-        vBoxLayout.addItem(btnRepo);
-        vBoxLayout.addSpacing(FilterSelector.PADDING);
+            vBoxLayout.addItem(btnRepo);
+            vBoxLayout.addSpacing(FilterSelector.PADDING);
+        }
 
         # Add others available items
         foreach (var item; me.items) {
