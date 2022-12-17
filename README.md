@@ -69,9 +69,9 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 
 ### Data filtering
 
-The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Aircraft" and "Type" columns. To use filtering, hover the mouse cursor over a given column (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
+The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Type", "Callsign", "From", "To", "Landings" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
 
-After using the filter, the "Totals" row will also be updated with the filtered data. In this way, he can see statistics for a specific aircraft or types of aircraft.
+After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
 
 ### Editing and deleting data
 
@@ -97,7 +97,7 @@ Before each saving of a single change, the add-on creates a copy of the original
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
 11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
 12. Supported FG versions from 2020.1.
-13. A CSV file with more than 100,000 entries will take much longer to load. On my powerful hardware about 2-3 seconds. This file is always loaded when the add-on loads. Thus, large files will cause a temporary but noticeable stuttering of the entire simulator. I'm considering moving the loading to a separate thread, as long as I also get good stability of this solution.
+13. A CSV file with more than 100,000 entries will take much longer to load. On my powerful hardware about 3-4 seconds. This file is always loaded when the add-on loads. Thus, large files will cause a temporary but noticeable stuttering of the entire simulator. Similarly, when we apply filters or change data, the whole thing will have to recalculate (like the "Totals" calculation), which again can take a few seconds and stuttering the animation. Therefore, it is best to modify the log before or after the flight. I'm considering moving the loading to a separate thread, as long as I also get good stability of this solution.
 
 ## Authors
 
@@ -174,9 +174,9 @@ Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy s
 
 ### Filtrowanie danych
 
-Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Aircraft" i "Type". Aby użyć filtrowania należy najechać kursorem myszy na daną kolumnę (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
+Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Date" (jako rok), "Aircraft", "Type", "Callsign", "From", "To", "Landings" i "Crash". Aby użyć filtrowania należy najechać kursorem myszy na nazwę kolumny (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych itd. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
 
-Po użyciu filtra rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób może zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
+Po użyciu filtra, rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób możesz zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
 
 ### Edycja i usuwanie danych
 
@@ -202,7 +202,7 @@ Przed każdym zapisem pojedynczej zmian, dodatek tworzy kopię oryginalnego plik
 10. Zapauzowanie symulacji lub włączenie trybu powtórki, zatrzymuje naliczanie statystyk lotu do dziennika.
 11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
 12. Wspierane wersje FG od 2020.1.
-13. Plik CSV zawierający ponad 100 000 wpisów, będzie znacznie dłużej się wczytywał. Na moim wydajnym sprzęcie około 2-3 sekundy. Plik ten zawsze jest wczytywany podczas wczytywania się dodatku. Zatem duże pliki spowodują chwilowe lecz zauważalne przycięcie się całego symulatora. Rozważam przenieść wczytywanie do osobnego wątku, o ile uzyskam też dobrą stabilność takiego rozwiązania.
+13. Plik CSV zawierający ponad 100 000 wpisów, będzie znacznie dłużej się wczytywał. Na moim wydajnym sprzęcie około 3-4 sekundy. Plik ten zawsze jest wczytywany podczas wczytywania się dodatku. Zatem duże pliki spowodują chwilowe lecz zauważalne przycięcie się całego symulatora. Podobnie gdy zastosujemy filtry lub zmienimy dane, całość będzie musiała przeliczyć się ponowanie (wyliczenie "Totals"), co znowu może trwać parę sekund i przyciąć animację. Dlatego najlepiej modyfikować dziennik przed lub po wykonaniu lotu. Rozważam przenieść wczytywanie do osobnego wątku, o ile uzyskam też dobrą stabilność takiego rozwiązania.
 
 ## Autorzy
 
