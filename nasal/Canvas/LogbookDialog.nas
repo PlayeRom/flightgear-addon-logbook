@@ -315,12 +315,12 @@ var LogbookDialog = {
     # return string
     #
     getReplaceHeaderText: func(column, text) {
-        if (me.filters.isApplied(column)) {
-            return text ~ " (!)";
+        if (column == File.INDEX_LANDINGS) {
+            text = "Land.";
         }
 
-        if (column == File.INDEX_LANDINGS) {
-            return "Land.";
+        if (me.filters.isApplied(column)) {
+            return text ~ " (!)";
         }
 
         if (column == File.INDEX_INSTRUMENT) {

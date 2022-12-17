@@ -28,6 +28,7 @@ var Filters = {
         me.data[File.INDEX_CALLSIGN] = std.Vector.new();
         me.data[File.INDEX_FROM]     = std.Vector.new();
         me.data[File.INDEX_TO]       = std.Vector.new();
+        me.data[File.INDEX_LANDINGS] = std.Vector.new();
 
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
