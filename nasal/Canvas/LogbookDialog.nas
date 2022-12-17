@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1120,
+    WINDOW_WIDTH         : 1130,
     WINDOW_HEIGHT        : 680,
     TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
@@ -28,8 +28,8 @@ var LogbookDialog = {
          80, #  4 - callsign
          55, #  5 - from
          55, #  6 - to
-         50, #  7 - landings
-         50, #  8 - crash
+         55, #  7 - landings
+         55, #  8 - crash
          50, #  9 - day
          50, # 10 - night
          50, # 11 - instrument

@@ -29,6 +29,7 @@ var Filters = {
         me.data[File.INDEX_FROM]     = std.Vector.new();
         me.data[File.INDEX_TO]       = std.Vector.new();
         me.data[File.INDEX_LANDINGS] = std.Vector.new();
+        me.data[File.INDEX_CRASH]    = std.Vector.new();
 
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
@@ -61,7 +62,7 @@ var Filters = {
     append: func(logData) {
         foreach (var index; keys(me.data)) {
             var value = logData.getFilterValueByIndex(index);
-            if (value != "" and !me.data[index].contains(value)) {
+            if (!me.data[index].contains(value)) {
                 me.data[index].append(value);
                 me.dirty = true;
             }
