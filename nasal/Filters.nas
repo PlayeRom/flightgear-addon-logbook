@@ -141,28 +141,16 @@ var Filters = {
     },
 
     #
-    # int column - Index of column
-    # return string|nil
-    #
-    getFilerTitleByColumnIndex: func(column) {
-             if (column == File.INDEX_DATE)     return "Date filter";
-        else if (column == File.INDEX_AIRCRAFT) return "Aircraft filter";
-        else if (column == File.INDEX_TYPE)     return "Aircraft type filter";
-        else if (column == File.INDEX_FROM)     return "Airport from filter";
-        else if (column == File.INDEX_TO)       return "Airport to filter";
-
-        return nil;
-    },
-
-    #
     # int column
     # return bool
     #
     isColumnIndexFiltered: func(column) {
-        return column == File.INDEX_DATE or
-               column == File.INDEX_AIRCRAFT or
-               column == File.INDEX_TYPE or
-               column == File.INDEX_FROM or
-               column == File.INDEX_TO;
+        foreach (var index; keys(me.data)) {
+            if (column == index) {
+                return true;
+            }
+        }
+
+        return false;
     },
 };

@@ -257,7 +257,7 @@ var LogbookDialog = {
                 rowGroup,
                 rect,
                 me.filters.getFilterItemsByColumnIndex(column),
-                me.filters.getFilerTitleByColumnIndex(column),
+                "Filter",
                 column
             );
 
@@ -315,12 +315,7 @@ var LogbookDialog = {
     # return string
     #
     getReplaceHeaderText: func(column, text) {
-        if ((column == File.INDEX_DATE     and me.filters.isApplied(column)) or
-            (column == File.INDEX_AIRCRAFT and me.filters.isApplied(column)) or
-            (column == File.INDEX_TYPE     and me.filters.isApplied(column)) or
-            (column == File.INDEX_FROM     and me.filters.isApplied(column)) or
-            (column == File.INDEX_TO       and me.filters.isApplied(column))
-        ) {
+        if (me.filters.isApplied(column)) {
             return text ~ " (!)";
         }
 
