@@ -27,8 +27,6 @@ var Logbook = {
     new: func(addon) {
         var me = { parents: [Logbook] };
 
-        me.addonNodePath = addon.node.getPath();
-
         # Auxiliary variables
         me.startFuel     = 0.0; # amount of fuel at takeoff
         me.startOdometer = 0.0; # distance at takeoff

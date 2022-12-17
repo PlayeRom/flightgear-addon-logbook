@@ -68,6 +68,8 @@ var LogbookDialog = {
             ],
         };
 
+        me.addonNodePath = me.addon.node.getPath();
+
         me.setPositionOnCenter();
 
         # Override window del method for close FilterSelector
@@ -116,12 +118,12 @@ var LogbookDialog = {
 
         append(
             me.listeners,
-            setlistener(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", func(node) {
+            setlistener(me.addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
                 me.reloadLogbookListenerCallback(node);
             })
         );
 
-        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", func(node) {
+        append(me.listeners, setlistener(me.addonNodePath ~ "/addon-devel/redraw-logbook", func(node) {
             if (node.getValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
@@ -144,8 +146,8 @@ var LogbookDialog = {
             # Back to false
             setprop(node.getPath(), false);
 
-            if (getprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted") == true) {
-                setprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted", false);
+            if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted") == true) {
+                setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
                 # Check index of last page
                 var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
