@@ -21,11 +21,6 @@ var FilterSelector = {
     MAX_WINDOW_HEIGHT  : LogbookDialog.WINDOW_HEIGHT,
     PADDING            : 10,
     BUTTON_HEIGHT      : 26,
-    ID_DATE            : "Date",
-    ID_AC              : "Aircraft",
-    ID_AC_TYPE         : "Type",
-    ID_AIRPORT_FROM    : "From",
-    ID_AIRPORT_TO      : "To",
     CLEAR_FILTER_VALUE : "All",
 
     #
@@ -52,7 +47,7 @@ var FilterSelector = {
         me.scrollDataContent = nil;
         me.callback = nil;
         me.objCallback = nil;
-        me.id = nil;
+        me.columnIndex = nil;
 
         return me;
     },
@@ -126,13 +121,13 @@ var FilterSelector = {
     },
 
     #
-    # Set ID of filter: ID_AC, ID_AC_TYPE, etc.
+    # Set column index of filter as File.INDEX_[...]
     #
-    # int id
+    # int index - Column index as File.INDEX_[...] of column
     # return void
     #
-    setId: func(id) {
-        me.id = id;
+    setColumnIndex: func(index) {
+        me.columnIndex = index;
     },
 
     #
@@ -166,7 +161,12 @@ var FilterSelector = {
     reDrawContent: func() {
         me.vbox.clear();
 
-        var margins = {"left": FilterSelector.PADDING, "top": FilterSelector.PADDING, "right": 0, "bottom": FilterSelector.PADDING};
+        var margins = {
+            "left"   : FilterSelector.PADDING,
+            "top"    : FilterSelector.PADDING,
+            "right"  : 0,
+            "bottom" : FilterSelector.PADDING,
+        };
         me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
@@ -190,7 +190,7 @@ var FilterSelector = {
                 .setText("Default All")
                 .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
                 .listen("clicked", func {
-                    call(me.callback, [me.id, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
+                    call(me.callback, [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
                     me.window.hide();
                 });
 
@@ -207,7 +207,7 @@ var FilterSelector = {
                     .setText(text)
                     .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
                     .listen("clicked", func {
-                        call(me.callback, [me.id, text], me.objCallback);
+                        call(me.callback, [me.columnIndex, text], me.objCallback);
                         me.window.hide();
                     });
 

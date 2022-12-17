@@ -16,25 +16,25 @@ var FilterData = {
     #
     # Constructor
     #
-    # int id
+    # int index - Column index as File.INDEX_[...]
     # string value
     # return me
     #
-    new: func(id, value) {
+    new: func(index, value) {
         return {
             parents : [FilterData],
-            id      : id,
+            index   : index,
             value   : value,
         };
     },
 
     #
     # hash filterHash
-    # int id - FilterSelector ID
+    # int index - Column index as File.INDEX_[...]
     # string value
     # return bool
     #
-    isMatch: func(id, value) {
-        return me.id == id and me.value == value;
+    isMatch: func(index, value) {
+        return me.index == index and me.value == value;
     },
 };

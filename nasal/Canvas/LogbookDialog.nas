@@ -258,7 +258,7 @@ var LogbookDialog = {
                 rect,
                 me.filters.getFilterItemsByColumnIndex(column),
                 me.filters.getFilerTitleByColumnIndex(column),
-                me.filters.getFilerSelectorIdByColumnIndex(column)
+                column
             );
 
             x += me.listView.getX(column);
@@ -271,11 +271,11 @@ var LogbookDialog = {
     # hash rect - rectangle canvas object
     # vector items|nil - Items for FilterSelector
     # string title|nil - FilterSelector title dialog
-    # int id|nil - FilterSelector ID
+    # int index|nil - Column index as File.INDEX_[...]
     # return void
     #
-    setMouseHoverHeadersListener: func(rowGroup, rect, items, title, id) {
-        if (items == nil or title == nil or id == nil) {
+    setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
+        if (items == nil or title == nil or index == nil) {
             # No filters for this column, skip it
             return;
         }
@@ -290,7 +290,7 @@ var LogbookDialog = {
 
         rowGroup.addEventListener("click", func(event) {
             me.filterSelector.setItems(items);
-            me.filterSelector.setId(id);
+            me.filterSelector.setColumnIndex(index);
             me.filterSelector.setPosition(event.screenX, event.screenY);
             me.filterSelector.setTitle(title);
             me.filterSelector.setCallback(me, me.filterSelectorCallback);
@@ -551,7 +551,7 @@ var LogbookDialog = {
     # Reload logbook data
     #
     # bool withHeaders - Set true when headers/filters must be change too.
-    # hash filter - FilterData object as {"id": filterId, "value": "text"}
+    # hash filter - FilterData object as {"index": column index, "value": "text"}
     # return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
