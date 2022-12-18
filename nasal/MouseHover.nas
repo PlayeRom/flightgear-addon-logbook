@@ -41,26 +41,32 @@ var MouseHover = {
     #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {
-            if (me.isBlocked()) {
-                me.target.setColorFill(me.style.SELECTED_BAR);
-            }
-            else {
-                me.target.setColorFill(me.style.HOVER_BG);
+            if (!g_isThreadPanding) {
+                if (me.isBlocked()) {
+                    me.target.setColorFill(me.style.SELECTED_BAR);
+                }
+                else {
+                    me.target.setColorFill(me.style.HOVER_BG);
+                }
             }
         });
 
         me.element.addEventListener("mouseleave", func {
-            if (me.isBlocked()) {
-                me.target.setColorFill(me.style.SELECTED_BAR);
-            }
-            else {
-                me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            if (!g_isThreadPanding) {
+                if (me.isBlocked()) {
+                    me.target.setColorFill(me.style.SELECTED_BAR);
+                }
+                else {
+                    me.target.setColorFill([0.0, 0.0, 0.0, 0.0]);
+                }
             }
         });
 
         if (me.clickDialog != nil and me.dataToPass != nil) {
             me.element.addEventListener("click", func {
-                me.clickDialog.show(me.dataToPass);
+                if (!g_isThreadPanding) {
+                    me.clickDialog.show(me.dataToPass);
+                }
             });
         }
     },

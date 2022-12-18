@@ -49,22 +49,27 @@ var File = {
             filters : filters,
         };
 
-        me.filePath    = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, File.FILE_VERSION);
-        me.loadedData  = [];
-        me.headersData = [];
-
-        me.allData      = std.Vector.new();
+        me.filePath      = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, File.FILE_VERSION);
+        me.addonNodePath = me.addon.node.getPath();
+        me.loadedData    = [];
+        me.headersData   = [];
+        me.withHeaders   = true;
+        me.allData       = std.Vector.new();
 
         # Temporary filtered data as a cache for optimized viewing of large logs
-        me.cachedData = std.Vector.new();
+        me.cachedData    = std.Vector.new();
 
-        me.totals      = [];
+        me.totals        = [];
         me.resetTotals();
 
         # Total lines in CSV file (without headers)
-        me.totalLines  = -1;
+        me.totalLines    = -1;
 
         me.saveHeaders();
+
+        # Callback for return results of loadDataRange
+        me.objCallback = nil;
+        me.callback    = func;
 
         return me;
     },
@@ -283,13 +288,16 @@ var File = {
     # int count - How many rows should be returned
     # return vector
     #
-    loadDataRange: func(start, count) {
-        me.loadedData = [];
-
-        var counter = 0;
+    loadDataRange: func(objCallback, callback, start, count, withHeaders) {
+        me.objCallback = objCallback;
+        me.callback    = callback;
+        me.withHeaders = withHeaders;
 
         if (!me.filters.dirty and me.cachedData.size() > 0) {
             # Use a faster loop because we know that nothing has changed in the data
+
+            me.loadedData = [];
+            var counter = 0;
 
             foreach (var hash; me.cachedData.vector[start:]) {
                 var vectorLogData = hash.logData.toVector();
@@ -305,8 +313,29 @@ var File = {
                 }
             }
 
-            return me.loadedData;
+            call(me.callback, [me.loadedData, me.totals, me.withHeaders], me.objCallback);
         }
+        else {
+            # Run more complex loop with filters in a separate thread
+
+            Thread.new().run(
+                func { me.loadDataRangeThread(start, count); },
+                me,
+                me.loadDataRangeThreadFinish,
+                false
+            );
+        }
+    },
+
+    #
+    # int start - Start index counting from 0 as a first row of data
+    # int count - How many rows should be returned
+    # return void
+    #
+    loadDataRangeThread: func(start, count) {
+        me.loadedData = [];
+
+        var counter = 0;
 
         # Use a more complex loop because we know we have to recalculate everything from scratch
 
@@ -340,11 +369,21 @@ var File = {
 
         me.filters.dirty = false;
 
-        return me.loadedData;
+        g_isThreadPanding = false;
     },
 
     #
-    # int rowIndex - where 0 = first data row, now header row
+    # Callback function when the loadDataRangeThread finishes work
+    #
+    # return void
+    #
+    loadDataRangeThreadFinish: func() {
+        # Pass result to callback function
+        call(me.callback, [me.loadedData, me.totals, me.withHeaders], me.objCallback);
+    },
+
+    #
+    # int rowIndex - where 0 = first data row, not header row
     # string header
     # string value
     # return bool - Return true if successful
@@ -355,7 +394,11 @@ var File = {
             return false;
         }
 
-        if (rowIndex >= me.allData.size()) {
+        if (g_isThreadPanding) {
+            return false;
+        }
+
+        if (rowIndex < 0 or rowIndex >= me.allData.size()) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, index out of range");
             return false;
         }
@@ -366,6 +409,21 @@ var File = {
             return false;
         }
 
+        return Thread.new().run(
+            func { me.editDataThread(rowIndex, header, value, headerIndex); },
+            me,
+            me.editThreadFinish
+        );
+    },
+
+    #
+    # int rowIndex - where 0 = first data row, not header row
+    # string header
+    # string value
+    # int headerIndex
+    # return void
+    #
+    editDataThread: func(rowIndex, header, value, headerIndex) {
         var items = me.allData.vector[rowIndex].toVector();
         items[headerIndex] = value;
         me.allData.vector[rowIndex].fromVector(items);
@@ -373,8 +431,18 @@ var File = {
         var recalcTotals = headerIndex >= File.INDEX_LANDINGS and headerIndex <= File.INDEX_MAX_ALT;
         var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
         me.saveAllData(recalcTotals, resetFilters);
+    },
 
-        return true;
+    #
+    # Callback function when the editDataThread thread finishes work
+    #
+    # return void
+    #
+    editThreadFinish: func() {
+        gui.popupTip("The change has been saved!");
+
+        # Get signal to reload data
+        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
     },
 
     #
@@ -427,6 +495,10 @@ var File = {
     # return int|nil
     #
     getHeaderIndex: func(headerText, headersData) {
+        if (g_isThreadPanding) {
+            return nil;
+        }
+
         var index = 0;
         foreach (var text; headersData) {
             if (text == headerText) {
@@ -474,15 +546,6 @@ var File = {
     },
 
     #
-    # Get vector with totals data
-    #
-    # return vector
-    #
-    getTotalsData: func() {
-        return me.totals;
-    },
-
-    #
     # Get total number of rows in CSV file (excluded headers row)
     #
     # return int
@@ -507,6 +570,11 @@ var File = {
     # return hash
     #
     getLogData: func(index) {
+        if (g_isThreadPanding) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - getLogData in g_isThreadPanding = true, return nil");
+            return nil;
+        }
+
         return {
             "allDataIndex" : index,
             "data" : me.allData.vector[index].toVector()
@@ -518,12 +586,42 @@ var File = {
     # return bool
     #
     deleteLog: func(index) {
+        if (index < 0 or index >= me.allData.size()) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - index out of range in deleteLog");
+            return false;
+        }
+
+        return Thread.new().run(
+            func { me.deleteLogThread(index); },
+            me,
+            me.deleteThreadFinish
+        );
+    },
+
+    #
+    # int index - Index to delete
+    # return void
+    #
+    deleteLogThread: func(index) {
         me.allData.pop(index);
 
         me.totalLines -= 1;
 
-        me.saveAllData(true, true);
+        var recalcTotals = true;
+        var resetFilters = true;
+        me.saveAllData(recalcTotals, resetFilters);
+    },
 
-        return true;
+    #
+    # Callback function when the deleteLogThread finishes work
+    #
+    # return void
+    #
+    deleteThreadFinish: func() {
+        gui.popupTip("The log has been deleted!");
+
+        # Get signal to reload data
+        setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
+        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
     },
 };

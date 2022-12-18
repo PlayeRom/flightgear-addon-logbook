@@ -25,12 +25,22 @@
 
                     <!-- This flag is set on true after edit logbook. Then listener is triggered and reload the logbook data.-->
                     <reload-logbook type="bool">false</reload-logbook>
+                    <!-- This flag is using together with <reload-logbook> and indicate that user removed entry log -->
+                    <logbook-entry-deleted type="bool">false</logbook-entry-deleted>
 
+                    <!-- Flags for redraw window only, no need reload data -->
                     <redraw-logbook type="bool">false</redraw-logbook>
                     <redraw-details type="bool">false</redraw-details>
 
-                    <!-- This flag indicate that user removed entry log -->
-                    <logbook-entry-deleted type="bool">false</logbook-entry-deleted>
+                    <!-- Trigger action on delete entry -->
+                    <action-delete-entry type="bool">false</action-delete-entry>
+                    <action-delete-entry-index type="int">0</action-delete-entry-index>
+
+                    <!-- Trigger action on edit entry -->
+                    <action-edit-entry type="bool">false</action-edit-entry>
+                    <action-edit-entry-index type="int">0</action-edit-entry-index>
+                    <action-edit-entry-header type="string"></action-edit-entry-header>
+                    <action-edit-entry-value type="string"></action-edit-entry-value>
 
                     <help-text type="string">
 This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.

@@ -114,16 +114,49 @@ var LogbookDialog = {
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me.drawBottomBar();
 
-        me.listeners = [];
+        me.listeners = std.Vector.new();
 
-        append(
-            me.listeners,
-            setlistener(me.addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
+        # User clicked delete entry
+        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
+                var index = getprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index");
+                if (me.file.deleteLog(index)) {
+                    me.listView.drawLoading();
+                }
+            }
+        }));
+
+        # User clicked edit
+        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-edit-entry", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
+                var index  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-index");
+                var header = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-header");
+                var value  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value");
+
+                if (me.file.editData(index, header, value)) {
+                    me.listView.drawLoading();
+                }
+            }
+        }));
+
+        # Reload data dialog after edit or delete file operation
+        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
+            if (node.getValue()) {
+                # Back to false
+                setprop(node.getPath(), false);
+
                 me.reloadLogbookListenerCallback(node);
-            })
-        );
+            }
+        }));
 
-        append(me.listeners, setlistener(me.addonNodePath ~ "/addon-devel/redraw-logbook", func(node) {
+        # User exit detials dialog, redraw only for remove green selected bar
+        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/redraw-logbook", func(node) {
             if (node.getValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
@@ -138,35 +171,28 @@ var LogbookDialog = {
     #
     # Callback from "/addons/by-id/org.flightgear.addons.logbook/addon-devel/reload-logbook" listener
     #
-    # hash node - Node object
     # return void
     #
-    reloadLogbookListenerCallback: func(node) {
-        if (node.getValue()) {
-            # Back to false
-            setprop(node.getPath(), false);
+    reloadLogbookListenerCallback: func() {
+        if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted") == true) {
+            setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
-            if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted") == true) {
-                setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
-
-                # Check index of last page
-                var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
-                var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
-                if (me.startIndex > newIndex) {
-                    # We exceed the maximum index, so set a new one
-                    me.startIndex = newIndex;
-                }
-
-                # User deleted entry, hide details window, it MUST be before me.reloadData();
-                me.detailsDialog.hide();
-
-                me.reloadData();
+            # Check index of last page
+            var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+            var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+            if (me.startIndex > newIndex) {
+                # We exceed the maximum index, so set a new one
+                me.startIndex = newIndex;
             }
-            else {
-                # Reload after edit data
-                me.reloadData();
-                me.detailsDialog.reload();
-            }
+
+            # User deleted entry, hide details window, it MUST be before me.reloadData();
+            me.detailsDialog.hide();
+
+            me.reloadData();
+        }
+        else {
+            # Reload after edit data
+            me.reloadData();
         }
     },
 
@@ -176,7 +202,7 @@ var LogbookDialog = {
     # return void
     #
     del: func() {
-        foreach (var listener; me.listeners) {
+        foreach (var listener; me.listeners.vector) {
             removelistener(listener);
         }
 
@@ -193,6 +219,10 @@ var LogbookDialog = {
     # return void
     #
     show: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         # We need to redraw the headers, because when the window was created,
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(true);
@@ -281,20 +311,26 @@ var LogbookDialog = {
         }
 
         rowGroup.addEventListener("mouseenter", func {
-            rect.setColorFill(me.style.HOVER_BG);
+            if (!g_isThreadPanding) {
+                rect.setColorFill(me.style.HOVER_BG);
+            }
         });
 
         rowGroup.addEventListener("mouseleave", func {
-            rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            if (!g_isThreadPanding) {
+                rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            }
         });
 
         rowGroup.addEventListener("click", func(event) {
-            me.filterSelector.setItems(items);
-            me.filterSelector.setColumnIndex(index);
-            me.filterSelector.setPosition(event.screenX, event.screenY);
-            me.filterSelector.setTitle(title);
-            me.filterSelector.setCallback(me, me.filterSelectorCallback);
-            me.filterSelector.show();
+            if (!g_isThreadPanding) {
+                me.filterSelector.setItems(items);
+                me.filterSelector.setColumnIndex(index);
+                me.filterSelector.setPosition(event.screenX, event.screenY);
+                me.filterSelector.setTitle(title);
+                me.filterSelector.setCallback(me, me.filterSelectorCallback);
+                me.filterSelector.show();
+            }
         });
     },
 
@@ -442,6 +478,10 @@ var LogbookDialog = {
     # return void
     #
     toggleStyle: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         me.style = me.style.NAME == "dark"
             ? me.getStyle().light
             : me.getStyle().dark;
@@ -486,6 +526,10 @@ var LogbookDialog = {
     # return void
     #
     first: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         if (me.startIndex != 0) {
             me.startIndex = 0;
             me.reloadData(false);
@@ -498,6 +542,10 @@ var LogbookDialog = {
     # return void
     #
     prev: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
             me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
             me.reloadData(false);
@@ -510,6 +558,10 @@ var LogbookDialog = {
     # return void
     #
     next: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
             me.reloadData(false);
@@ -522,6 +574,10 @@ var LogbookDialog = {
     # return void
     #
     last: func() {
+        if (g_isThreadPanding) {
+            return;
+        }
+
         var old = me.startIndex;
         var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
@@ -545,13 +601,30 @@ var LogbookDialog = {
             me.filters.applyFilter(filter);
         }
 
-        me.data   = me.file.loadDataRange(me.startIndex, LogbookDialog.MAX_DATA_ITEMS);
-        me.totals = me.file.getTotalsData();
+        me.listView.drawLoading();
+
+        me.file.loadDataRange(me, me.reloadDataCallback, me.startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
+    },
+
+    #
+    # This function is call when loadDataRange thread finish its job and give as a results.
+    #
+    # vector data - Vector of hashes {"allDataIndex": index, "data": vectorLogData}
+    # vector totals
+    # bool withHeaders
+    # return void
+    #
+    reloadDataCallback: func(data, totals, withHeaders) {
+        me.data   = data;
+        me.totals = totals;
 
         me.listView.setDataToDraw(me.data);
-
         me.redraw(withHeaders);
         me.setPaging();
+
+        if (me.detailsDialog.isWindowVisible()) {
+            me.detailsDialog.reload();
+        }
     },
 
     #

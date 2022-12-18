@@ -22,10 +22,9 @@ var InputDialog = {
     #
     # Constructor
     #
-    # hash file - File object
     # return me
     #
-    new: func(file) {
+    new: func() {
         var me = { parents: [
             InputDialog,
             Dialog.new(Dialog.ID_INPUT, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
@@ -39,7 +38,8 @@ var InputDialog = {
 
         me.bgImage.hide();
 
-        me.file            = file;
+        me.addonNodePath = me.addon.node.getPath();
+
         me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.parentDataIndex = nil; # index of column in single row
         me.header          = nil; # header name
@@ -186,11 +186,11 @@ var InputDialog = {
 
         me.hide();
 
-        if (me.file.editData(me.allDataIndex, me.header, value)) {
-            gui.popupTip("The change has been saved!");
-
-            setprop(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", true);
-        }
+        # Set values to properties and trigger action listener
+        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-index", me.allDataIndex);
+        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-header", me.header);
+        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value", value);
+        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry", true);
     },
 
     #
@@ -202,7 +202,7 @@ var InputDialog = {
         me.hide();
 
         # Set property redraw-details for remove selected bar
-        setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-details", true);
+        setprop(me.addonNodePath ~ "/addon-devel/redraw-details", true);
     },
 
     #

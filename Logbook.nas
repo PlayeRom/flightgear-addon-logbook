@@ -30,6 +30,12 @@ var ADDON_ID = "org.flightgear.addons.logbook";
 var g_Logbook = nil;
 
 #
+# This flag indicates that a separate thread is running (for loading data) and
+# other actions should be temporarily blocked.
+#
+var g_isThreadPanding = false;
+
+#
 # Initialize Logbook
 #
 # addon - Addon object

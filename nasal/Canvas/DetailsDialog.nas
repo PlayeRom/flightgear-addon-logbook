@@ -48,8 +48,8 @@ var DetailsDialog = {
         me.dataRow         = nil;
         me.parentDataIndex = nil;
         me.file            = file;
-        me.inputDialog     = InputDialog.new(file);
-        me.deleteDialog    = ConfirmationDialog.new(file, "Delete entry log");
+        me.inputDialog     = InputDialog.new();
+        me.deleteDialog    = ConfirmationDialog.new("Delete entry log");
         me.deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
@@ -128,7 +128,9 @@ var DetailsDialog = {
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
-                me.deleteDialog.show(me.listView.parentDataIndex);
+                if (!g_isThreadPanding) {
+                    me.deleteDialog.show(me.listView.parentDataIndex, me);
+                }
             }
         );
 

@@ -44,6 +44,7 @@ var ListView = {
         me.clickDialog    = nil;
         me.dataRows       = [];
         me.headers        = nil;
+        me.vBoxSpacing    = vBoxSpacing;
 
         # If ListView is using in DetailsDialog
         me.parentDataIndex = nil;
@@ -200,6 +201,21 @@ var ListView = {
         }
 
         return 0;
+    },
+
+    #
+    # Draw "Loading..." text (for LogbookDialog only)
+    #
+    # return void
+    #
+    drawLoading: func() {
+        me.dataContent.removeAllChildren();
+
+        me.dataContent.createChild("text")
+            .setTranslation(LogbookDialog.WINDOW_WIDTH / 2, me.vBoxSpacing / 2)
+            .setColor(me.style.TEXT_COLOR)
+            .setAlignment("center-center")
+            .setText("Loading...");
     },
 
     #

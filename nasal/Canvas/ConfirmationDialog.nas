@@ -22,11 +22,10 @@ var ConfirmationDialog = {
     #
     # Constructor
     #
-    # hash file - File object
     # string title
     # return me
     #
-    new: func(file, title) {
+    new: func(title) {
         var me = { parents: [
             ConfirmationDialog,
             Dialog.new(Dialog.ID_DELETE, ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT, title)
@@ -34,8 +33,9 @@ var ConfirmationDialog = {
 
         me.bgImage.hide();
 
-        me.file     = file;
-        me.logIndex = nil;
+        me.logIndex      = nil;
+        me.parentObj     = nil;
+        me.addonNodePath = me.addon.node.getPath();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
@@ -87,10 +87,12 @@ var ConfirmationDialog = {
 
     #
     # int logIndex
+    # hash|nill parentObj - Dialog parent class
     # return void
     #
-    show: func(logIndex) {
+    show: func(logIndex, parentObj = nil) {
         me.logIndex = logIndex;
+        me.parentObj = parentObj;
 
         call(Dialog.show, [], me);
     },
@@ -101,14 +103,18 @@ var ConfirmationDialog = {
     # return void
     #
     actionPositive: func() {
-        me.window.hide();
-
-        if (me.file.deleteLog(me.logIndex)) {
-            gui.popupTip("The log has been deleted!");
-
-            setprop(me.addon.node.getPath() ~ "/addon-devel/logbook-entry-deleted", true);
-            setprop(me.addon.node.getPath() ~ "/addon-devel/reload-logbook", true);
+        if (me.parentObj == nil) {
+            call(Dialog.hide, [], me);
         }
+        else {
+            # Also hide immediately the parent window that called ConfirmationDialog.
+            # In our case, it will be DetailsDialog.
+            call(me.parentObj.hide, [], me.parentObj);
+        }
+
+        # Set index to properties and trigger action listener
+        setprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index", me.logIndex);
+        setprop(me.addonNodePath ~ "/addon-devel/action-delete-entry", true);
     },
 
     #
@@ -117,6 +123,6 @@ var ConfirmationDialog = {
     # return void
     #
     actionNegative: func() {
-        me.window.hide();
+        call(Dialog.hide, [], me);
     },
 };

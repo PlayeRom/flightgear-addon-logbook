@@ -196,8 +196,10 @@ var Dialog = {
         me.window.hide();
 
         if (me.dialogId == Dialog.ID_DETAILS) {
-            # Set property redraw-logbook for remove selected bar
-            setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", true);
+            if (!g_isThreadPanding) {
+                # Set property redraw-logbook for remove selected bar
+                setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", true);
+            }
         }
         else if (me.dialogId == Dialog.ID_INPUT) {
             # Set property redraw-details for remove selected bar
