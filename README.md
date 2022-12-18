@@ -101,7 +101,6 @@ This add-on includes a mechanism to save the current flight status to a separate
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
 11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
 12. Supported FG versions from 2020.1.
-13. A CSV file with more than 100,000 entries will take much longer to load. On my powerful hardware about 3-4 seconds. This file is always loaded when the add-on loads. Thus, large files will cause a temporary but noticeable stuttering of the entire simulator. Similarly, when we apply filters or change data, the whole thing will have to recalculate (like the "Totals" calculation), which again can take a few seconds and stuttering the animation. Therefore, it is best to modify the log before or after the flight. I'm considering moving the loading to a separate thread, as long as I also get good stability of this solution.
 
 ## Authors
 
@@ -210,7 +209,6 @@ Dodatek ten zawiera mechanizm zapisywania co minutę aktualnego stanu lotu do os
 10. Zapauzowanie symulacji lub włączenie trybu powtórki, zatrzymuje naliczanie statystyk lotu do dziennika.
 11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
 12. Wspierane wersje FG od 2020.1.
-13. Plik CSV zawierający ponad 100 000 wpisów, będzie znacznie dłużej się wczytywał. Na moim wydajnym sprzęcie około 3-4 sekundy. Plik ten zawsze jest wczytywany podczas wczytywania się dodatku. Zatem duże pliki spowodują chwilowe lecz zauważalne przycięcie się całego symulatora. Podobnie gdy zastosujemy filtry lub zmienimy dane, całość będzie musiała przeliczyć się ponowanie (wyliczenie "Totals"), co znowu może trwać parę sekund i przyciąć animację. Dlatego najlepiej modyfikować dziennik przed lub po wykonaniu lotu. Rozważam przenieść wczytywanie do osobnego wątku, o ile uzyskam też dobrą stabilność takiego rozwiązania.
 
 ## Autorzy
 
