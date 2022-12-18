@@ -23,7 +23,7 @@ The add-on also recognizes the moment of launch of the Space Shuttle from the st
 
 ## Logbook file
 
-You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.1.csv`, where `$FG_HOME` on Windows is:
+You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v2.csv`, where `$FG_HOME` on Windows is:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
@@ -83,10 +83,14 @@ At the bottom of the details window there is a `Delete` button, with which you c
 
 Before each saving of a single change, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name. Remember, you only have a copy of one recent file operation.
 
+### Recovery mode
+
+This add-on includes a mechanism to save the current flight status to a separate file `recovery.csv` every minute. If FlightGear unexpectedly close due to an error, this file will be read on reboot and an entry from this file will be moved to the main log file. In this way, no flight, even aborted, should be lost.
+
 ## NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the flight status will lost.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery.csv` file. The data in the `recovery.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted.
 3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
 5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
@@ -128,7 +132,7 @@ Dodatek rozpoznaje także moment startu Wahadłowca Kosmicznego z pozycji starto
 
 ## Plik logbooka
 
-Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v1.0.1.csv`, gdzie `$FG_HOME` pod Windows to:
+Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v2.csv`, gdzie `$FG_HOME` pod Windows to:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
@@ -188,10 +192,14 @@ Na dole okna szczegółów znajduje się przycisk `Delete`, za pomocą którego 
 
 Przed każdym zapisem pojedynczej zmian, dodatek tworzy kopię oryginalnego pliku CSV, do którego dokleja na koniec rozszerzenie `.bak`. Tak więc gdyby podczas edycji danych coś się nie powiodło i oryginalny plik został by uszkodzony, zawsze możesz go odzyskać, usuwając z nazwy kopi dopisek `.bak`. Pamiętaj, że masz tylko jedną kopię ostatniej operacji na pliku.
 
+### Tryb odzyskiwania
+
+Dodatek ten zawiera mechanizm zapisywania co minutę aktualnego stanu lotu do osobnego pliku `recovery.csv`. Gdyby FlightGear niespodziewanie zamknął się z powodu błędu, plik ten zostanie przeczytany przy ponownym uruchomieniu i wpis z tego pliku zostanie przeniesiony do głównego pliku dziennika. W ten sposób żaden, nawet przerwany lot, nie powinien być utracony.
+
 ## Uwagi
 
 1. Jeśli podczas lotu prawidłowo zamkniesz symulator ("Plik" -> "Zamknij"), aktualny stan lotu zostanie zapisany do dziennika (oczywiście bez informacji o lądowaniu).
-2. Jeśli podczas lotu symulator zostanie zamknięty w nieprawidłowy sposób, np. poprzez przycisk [X] na belce okna lub wystąpi crash, to stan lotu zostanie utracony.
+2. Jeśli podczas lotu symulator zostanie zamknięty w nieprawidłowy sposób, np. poprzez przycisk [X] na belce okna lub wystąpi crash, to dane dziennika powinny być zapisany w pliku `recovery.csv`. Dane z pliku `recovery.csv` zostaną automatycznie przeniesione do pliku `logbook.csv` po ponownym uruchomieniu symulatora.
 3. Aby dodatek zaliczył lądowanie, statek powietrzny musi oprzeć się na wszystkich kołach i utrzymać ten stan przez co najmniej 3 sekundy. W ten sposób brzydkie odbicie się od pasa nie zostanie zaliczone jako lądowanie.
 4. Jeśli rozpoczniesz symulację w powietrzu, dodatek to rozpozna i rozpocznie logowanie nie czekając na start.
 5. Jeśli rozpoczniesz symulację w powietrzu, dodatek nie jest w stanie rozpoznać podwozia, więc zaliczenie lądowania wydłuży się do 6 sekund (dając dodatkowe 3 sekundy na upewnienie się, że statek powietrzny spoczywa na wszystkich kołach).
