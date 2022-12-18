@@ -272,6 +272,9 @@ var File = {
         # Un-dirty it because it's first load and everything is calculated and cache can be use
         me.filters.dirty = false;
 
+        # Enable Logbook menu because we have a data
+        gui.menuEnable("logbook-addon", true);
+
         logprint(MY_LOG_LEVEL, "Logbook Add-on - loadAllDataThread finished");
     },
 
