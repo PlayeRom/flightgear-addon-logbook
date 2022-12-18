@@ -304,6 +304,7 @@ var LogbookDialog = {
     # return void
     #
     filterSelectorCallback: func(filterId, value) {
+        me.detailsDialog.hide();
         me.reloadData(true, FilterData.new(filterId, value));
     },
 
