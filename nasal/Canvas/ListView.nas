@@ -219,8 +219,6 @@ var ListView = {
             y = me.reDrawHorizontal(me.dataRows);
         }
 
-        me.dataContent.update();
-
         return y;
     },
 

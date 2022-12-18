@@ -352,8 +352,6 @@ var LogbookDialog = {
         # Continue drawing totals row
         me.rowTotal = me.listView.drawHoverBox(y);
         me.drawTotalsRow(me.rowTotal);
-
-        me.listView.dataContent.update();
     },
 
     #
