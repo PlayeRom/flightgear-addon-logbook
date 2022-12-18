@@ -83,8 +83,6 @@ var LogbookDialog = {
 
         me.startIndex = 0;
 
-        me.file.loadAllData();
-
         me.data           = [];
         me.totals         = me.file.getTotalsData();
         me.rowTotal       = nil;

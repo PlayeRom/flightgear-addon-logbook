@@ -397,4 +397,32 @@ var LogData = {
 
         return nil;
     },
+
+    #
+    # Get copy object of me
+    #
+    # return hash - LogData object
+    #
+    getClone: func() {
+        var clone = LogData.new();
+        clone.date         = me.date;
+        clone.time         = me.time;
+        clone.aircraft     = me.aircraft;
+        clone.aircraftType = me.aircraftType;
+        clone.callsign     = me.callsign;
+        clone.from         = me.from;
+        clone.to           = me.to;
+        clone.landings     = me.landings;
+        clone.crash        = me.crash;
+        clone.day          = me.day;
+        clone.night        = me.night;
+        clone.instrument   = me.instrument;
+        clone.duration     = me.duration;
+        clone.distance     = me.distance;
+        clone.fuel         = me.fuel;
+        clone.maxAlt       = me.maxAlt;
+        clone.note         = me.note;
+
+        return clone;
+    },
 };

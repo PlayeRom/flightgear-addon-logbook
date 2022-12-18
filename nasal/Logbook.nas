@@ -48,6 +48,7 @@ var Logbook = {
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
+        me.recovery      = Recovery.new(addon, me.file);
         me.logbookDialog = LogbookDialog.new(me.file, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
@@ -100,6 +101,7 @@ var Logbook = {
     # return void
     #
     del: func() {
+        me.recovery.del();
         me.mainTimer.stop();
         me.logbookDialog.del();
     },
@@ -243,6 +245,8 @@ var Logbook = {
             return;
         }
 
+        me.recovery.start(me, me.recoveryCallback);
+
         me.logData = LogData.new();
         me.logData.setDate(me.environment.getDateString());
         me.logData.setTime(me.environment.getTimeString());
@@ -276,17 +280,16 @@ var Logbook = {
             return;
         }
 
+        me.recovery.stop();
+
         # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional orientation check
         var isOrientationOk = me.crashDetector.isOrientationOK();
         if ((landed and !isOrientationOk) or me.spaceShuttle.isCrashed()) {
             crashed = 1; # force crash state
         }
 
-        var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
-        me.logData.setFuel(math.abs(me.startFuel - fuel));
-
-        var odometer = getprop("/instrumentation/gps/odometer");
-        me.logData.setDistance(odometer - me.startOdometer);
+        me.logData.setFuel(me.getFuel());
+        me.logData.setDistance(me.getDistance());
 
         if (landed) {
             if (isOrientationOk) {
@@ -315,6 +318,46 @@ var Logbook = {
         me.file.saveData(me.logData);
         me.logData = nil;
         me.wowSec = 0;
+
+        me.recovery.clear();
+    },
+
+    #
+    # Get amount of fuel burned
+    #
+    # return double
+    #
+    getFuel: func() {
+        var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
+        return math.abs(me.startFuel - fuel);
+    },
+
+    #
+    # Take the distance flown
+    #
+    # return double
+    #
+    getDistance: func() {
+        var odometer = getprop("/instrumentation/gps/odometer");
+        return odometer - me.startOdometer;
+    },
+
+    #
+    # Callback for Recovery class. Get last statistics data and put it to Recovery.
+    #
+    # return void
+    #
+    recoveryCallback: func() {
+        var recoveryData = me.logData.getClone();
+
+        recoveryData.setFuel(me.getFuel());
+        recoveryData.setDistance(me.getDistance());
+        recoveryData.setDay(me.environment.getDayHours());
+        recoveryData.setNight(me.environment.getNightHours());
+        recoveryData.setInstrument(me.environment.getInstrumentHours());
+        recoveryData.setMaxAlt(me.environment.getMaxAlt());
+
+        me.recovery.save(recoveryData);
     },
 
     #

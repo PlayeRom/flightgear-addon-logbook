@@ -172,18 +172,21 @@ var File = {
     # Store log data to logbook file
     #
     # hash logData - LogData object
+    # bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
     # return void
     #
-    saveData: func(logData) {
+    saveData: func(logData, onlyIO = 0) {
         var file = io.open(me.filePath, "a");
         me.saveItem(file, logData);
         io.close(file);
 
-        me.allData.append(logData);
-        me.filters.append(logData);
-        me.filters.sort();
-        me.totalLines += 1;
-        me.countTotals(logData.toVector());
+        if (!onlyIO) {
+            me.allData.append(logData);
+            me.filters.append(logData);
+            me.filters.sort();
+            me.totalLines += 1;
+            me.countTotals(logData.toVector());
+        }
     },
 
     #
