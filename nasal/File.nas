@@ -288,7 +288,7 @@ var File = {
             return me.loadedData;
         }
 
-        # Use a more complex loop because we know you have to recalculate everything from scratch
+        # Use a more complex loop because we know we have to recalculate everything from scratch
 
         var allDataIndex = 0;
         me.cachedData.clear();
