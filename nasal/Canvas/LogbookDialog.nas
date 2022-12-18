@@ -193,7 +193,10 @@ var LogbookDialog = {
     # return void
     #
     show: func() {
-        me.reloadData(false);
+        # We need to redraw the headers, because when the window was created,
+        # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
+        me.reloadData(true);
+
         call(Dialog.show, [], me);
     },
 
@@ -221,7 +224,8 @@ var LogbookDialog = {
             .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
 
-        me.reDrawHeadersContent();
+        # There is no need to re-draw headers here because the data loads in a separate thread so we may not have them
+        # me.reDrawHeadersContent();
     },
 
     #
@@ -549,8 +553,6 @@ var LogbookDialog = {
 
         me.redraw(withHeaders);
         me.setPaging();
-
-        me.isPending = false;
     },
 
     #

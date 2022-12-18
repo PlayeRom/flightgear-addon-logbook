@@ -64,11 +64,6 @@ var File = {
         # Total lines in CSV file (without headers)
         me.totalLines  = -1;
 
-        me.start = 0;
-        me.count = 0;
-        me.obj = nil;
-        me.callback = nil;
-
         me.saveHeaders();
 
         return me;
@@ -260,6 +255,11 @@ var File = {
 
                 me.filters.append(logData);
                 me.allData.append(logData);
+
+                me.cachedData.append({
+                    "allDataIndex" : me.totalLines,
+                    "logData" : logData,
+                });
             }
 
             me.totalLines += 1;
@@ -268,6 +268,11 @@ var File = {
         io.close(file);
 
         me.filters.sort();
+
+        # Un-dirty it because it's first load and everything is calculated and cache can be use
+        me.filters.dirty = false;
+
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - loadAllDataThread finished");
     },
 
     #
@@ -279,6 +284,7 @@ var File = {
         me.loadedData = [];
 
         var counter = 0;
+
         if (!me.filters.dirty and me.cachedData.size() > 0) {
             # Use a faster loop because we know that nothing has changed in the data
 
@@ -331,15 +337,6 @@ var File = {
 
         me.filters.dirty = false;
 
-        # print(timestamp.elapsedMSec(), " ms elapsed <------------------------------------------- ");
-
-        call(me.callback, [me.loadedData, me.totals], me.obj);
-    },
-
-    #
-    # return vector
-    #
-    getLoadedData: func() {
         return me.loadedData;
     },
 
