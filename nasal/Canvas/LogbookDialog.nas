@@ -159,12 +159,10 @@ var LogbookDialog = {
                     me.startIndex = newIndex;
                 }
 
-                me.reloadData();
-
-                # User deleted entry, hide details window
+                # User deleted entry, hide details window, it MUST be before me.reloadData();
                 me.detailsDialog.hide();
-                me.detailsDialog.parentDataIndex = nil;
-                me.detailsDialog.listView.parentDataIndex = nil;
+
+                me.reloadData();
             }
             else {
                 # Reload after edit data

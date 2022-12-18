@@ -138,7 +138,6 @@ var DetailsDialog = {
         buttonBox.addItem(btnDelete);
         buttonBox.addStretch(1);
 
-
         return buttonBox;
     },
 
@@ -183,6 +182,8 @@ var DetailsDialog = {
     # return void
     #
     hide: func() {
+        me.parentDataIndex = nil;
+        me.listView.parentDataIndex = nil;
         me.inputDialog.hide();
         me.deleteDialog.hide();
         call(Dialog.hide, [], me);
