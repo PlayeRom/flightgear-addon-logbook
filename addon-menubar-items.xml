@@ -25,6 +25,8 @@
 
             <item>
                 <label>Logbook</label>
+                <name>logbook-addon</name>
+                <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
                     <script>logbook.g_Logbook.showLogbookDialog();</script>
@@ -67,13 +69,13 @@
             </item>
             -->
             <!-- for FG Version >= 2020.1 use the fgcommand -->
-            <!-- <item>
+            <item>
                 <label>Dev Reload</label>
                 <binding>
                     <command>addon-reload</command>
                     <id>org.flightgear.addons.logbook</id>
                 </binding>
-            </item> -->
+            </item>
 
         </menu>
     </menubar-items>
