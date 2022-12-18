@@ -84,7 +84,7 @@ var LogbookDialog = {
         me.startIndex = 0;
 
         me.data           = [];
-        me.totals         = me.file.getTotalsData();
+        me.totals         = [];
         me.rowTotal       = nil;
         me.headersContent = nil;
         me.dataContent    = nil;
