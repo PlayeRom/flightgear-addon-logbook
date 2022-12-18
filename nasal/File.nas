@@ -191,6 +191,7 @@ var File = {
             me.filters.sort();
             me.totalLines += 1;
             me.countTotals(logData.toVector());
+            me.filters.dirty = true;
         }
     },
 
@@ -274,7 +275,7 @@ var File = {
 
         me.filters.sort();
 
-        # Un-dirty it because it's first load and everything is calculated and cache can be use
+        # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
         me.filters.dirty = false;
 
         # Enable Logbook menu because we have a data
