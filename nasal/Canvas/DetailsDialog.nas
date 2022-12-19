@@ -200,6 +200,11 @@ var DetailsDialog = {
     reload: func() {
         if (me.listView.parentDataIndex != nil) {
             var data = me.file.getLogData(me.listView.parentDataIndex);
+            if (data == nil) {
+                call(DetailsDialog.hide, [false], me);
+                return;
+            }
+
             me.listView.setDataToDraw(data, me.file.getHeadersData());
             me.reDrawDataContent();
         }

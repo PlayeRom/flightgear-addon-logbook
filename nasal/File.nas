@@ -314,11 +314,13 @@ var File = {
                 }
             }
 
+            # We have not used the thread here, but we must point out that it has ended
+            g_isThreadPending = false;
+
             call(me.callback, [me.loadedData, me.totals, me.withHeaders], me.objCallback);
         }
         else {
             # Run more complex loop with filters in a separate thread
-
             Thread.new().run(
                 func { me.loadDataRangeThread(start, count); },
                 me,
@@ -568,11 +570,16 @@ var File = {
     # Get vector of data row by given index of row
     #
     # int index
-    # return hash
+    # return hash|nil
     #
     getLogData: func(index) {
+        if (index == nil or index < 0 or index >= me.allData.size()) {
+            logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
+            return nil;
+        }
+
         if (g_isThreadPending) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
+            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
