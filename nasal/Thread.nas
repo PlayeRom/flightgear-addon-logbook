@@ -23,7 +23,7 @@ var Thread = {
         return {
             parents     : [Thread],
             timer       : nil,
-            isPanding   : false,
+            isPending   : false,
             objCallback : nil,
             callback    : func,
         };
@@ -56,11 +56,11 @@ var Thread = {
         me.callback = callback;
 
         g_isThreadPending = true;
-        me.isPanding = true;
+        me.isPending = true;
 
         thread.newthread(func {
             threadFunc();
-            me.isPanding = false;
+            me.isPending = false;
         });
 
         me.timer = maketimer(0.5, me, me.checkEnd);
@@ -75,7 +75,7 @@ var Thread = {
     # return void
     #
     checkEnd: func() {
-        if (me.isPanding) {
+        if (me.isPending) {
             # Still working, skip it
             return;
         }
