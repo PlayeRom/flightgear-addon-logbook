@@ -121,7 +121,7 @@ var DetailsDialog = {
             .setText("Close")
             .setFixedSize(75, 26)
             .listen("clicked", func {
-                call(Dialog.hide, [], me);
+                call(me.hide, [], me);
             }
         );
 
