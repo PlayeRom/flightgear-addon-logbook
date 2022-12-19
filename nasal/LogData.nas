@@ -328,8 +328,8 @@ var LogData = {
             return "";
         }
 
-        text = string.replace(text, ',', '');
-        return string.replace(text, '"', '');
+        text = string.replace(text, ',', ''); # remove , chars
+        return string.replace(text, '"', ''); # remove " chars
     },
 
     #
