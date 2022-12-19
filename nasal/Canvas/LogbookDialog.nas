@@ -603,9 +603,13 @@ var LogbookDialog = {
     #
     reloadData: func(withHeaders = 1, filter = nil) {
         if (filter != nil) {
+            if (!me.filters.applyFilter(filter)) {
+                # The filter did not change anything, so there is nothing to reload
+                return;
+            }
+
             # Reset range
             me.startIndex = 0;
-            me.filters.applyFilter(filter);
         }
 
         me.listView.drawLoading();

@@ -84,11 +84,16 @@ var Filters = {
 
     #
     # hash filterData - FilterData as {"index": column index, "value": "text"}
-    # return void
+    # return bool - Return true if filter is applied
     #
     applyFilter: func(filterData) {
         foreach (var item; me.appliedFilters.vector) {
             if (item.index == filterData.index) {
+                if (item.value == filterData.value) {
+                    # It is the same filter already applied, no changes are required
+                    return false;
+                }
+
                 # Remove the same ID if already exist
                 me.appliedFilters.remove(item);
                 me.dirty = true;
@@ -100,6 +105,8 @@ var Filters = {
             me.appliedFilters.append(filterData);
             me.dirty = true;
         }
+
+        return me.dirty;
     },
 
     #
