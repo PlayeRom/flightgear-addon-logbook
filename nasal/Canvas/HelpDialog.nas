@@ -24,12 +24,14 @@ var HelpDialog = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # return me
     #
-    new: func() {
+    new: func(settings) {
         var me = { parents: [
             HelpDialog,
             Dialog.new(
+                settings,
                 Dialog.ID_HELP,
                 HelpDialog.WINDOW_WIDTH,
                 HelpDialog.WINDOW_HEIGHT,

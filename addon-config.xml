@@ -20,6 +20,7 @@
                     <save>
                         <settings>
                             <dark-style type="bool">0</dark-style>
+                            <real-time-duration type="bool">1</real-time-duration>
                         </settings>
                     </save>
 

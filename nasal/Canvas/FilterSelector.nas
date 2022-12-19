@@ -26,12 +26,19 @@ var FilterSelector = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # return me
     #
-    new: func () {
+    new: func (settings) {
         var me = { parents: [
             FilterSelector,
-            Dialog.new(Dialog.ID_FILTER_SELECTOR, FilterSelector.WINDOW_WIDTH, FilterSelector.WINDOW_HEIGHT, "Logbook About"),
+            Dialog.new(
+                settings,
+                Dialog.ID_FILTER_SELECTOR,
+                FilterSelector.WINDOW_WIDTH,
+                FilterSelector.WINDOW_HEIGHT,
+                "Logbook About"
+            ),
         ] };
 
         me.window.set("decoration-border", "0 0 0");

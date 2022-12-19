@@ -27,16 +27,17 @@ var DetailsDialog = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # hash file - File object
     # return me
     #
-    new: func(file) {
+    new: func(settings, file) {
         var VBOX_SPACING = ListView.SHIFT_Y * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
         var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space and paddings
 
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(settings, Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
         # Override window del method for hide InputDialog and ConfirmationDialog
@@ -48,8 +49,8 @@ var DetailsDialog = {
         me.dataRow         = nil;
         me.parentDataIndex = nil;
         me.file            = file;
-        me.inputDialog     = InputDialog.new();
-        me.deleteDialog    = ConfirmationDialog.new("Delete entry log");
+        me.inputDialog     = InputDialog.new(settings);
+        me.deleteDialog    = ConfirmationDialog.new(settings, "Delete entry log");
         me.deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
@@ -75,7 +76,7 @@ var DetailsDialog = {
         me.listeners = [];
 
         append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 

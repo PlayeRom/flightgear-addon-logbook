@@ -22,17 +22,28 @@ var Environment = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # return me
     #
-    new: func () {
+    new: func (settings) {
         var me = { parents: [Environment] };
 
-        me.dayCounter        = 0;
-        me.nightCounter      = 0;
-        me.instrumentCounter = 0;
-        me.maxAlt            = 0.0;
-        me.lastElapsedSec    = me.getElapsedSec();
-        me.isReplayMode      = false;
+        me.isRealTimeDuration = settings.isRealTimeDuration();
+        me.dayCounter         = 0;
+        me.nightCounter       = 0;
+        me.instrumentCounter  = 0;
+        me.maxAlt             = 0.0;
+        me.lastElapsedSec     = me.isRealTimeDuration ? 0 : me.getElapsedSec();
+        me.isReplayMode       = false;
+
+        me.propAltFt          = props.globals.getNode("/position/altitude-ft");
+
+        me.propSkyRed         = props.globals.getNode("/rendering/dome/sky/red");
+        me.propSkyGreen       = props.globals.getNode("/rendering/dome/sky/green");
+        me.propSkyBlue        = props.globals.getNode("/rendering/dome/sky/blue");
+
+        me.propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
+        me.propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
 
         return me;
     },
@@ -74,7 +85,7 @@ var Environment = {
         me.nightCounter      = 0;
         me.instrumentCounter = 0;
         me.maxAlt            = 0.0;
-        me.lastElapsedSec    = me.getElapsedSec();
+        me.lastElapsedSec    = me.isRealTimeDuration ? 0 : me.getElapsedSec();
     },
 
     #
@@ -83,23 +94,23 @@ var Environment = {
     # return void
     #
     update: func () {
-        var currentElapsedSec = me.getElapsedSec();
+        var currentElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
 
-        if (!me.isReplayMode) {
-            var diffElapsedSec = currentElapsedSec - me.lastElapsedSec;
+        var diffElapsedSec = me.isRealTimeDuration
+            ? Logbook.MAIN_TIMER_INTERVAL
+            : (currentElapsedSec - me.lastElapsedSec);
 
-            me.isNight()
-                ? (me.nightCounter += diffElapsedSec)
-                : (me.dayCounter   += diffElapsedSec);
+        me.isNight()
+            ? (me.nightCounter += diffElapsedSec)
+            : (me.dayCounter   += diffElapsedSec);
 
-            if (me.isIMC()) {
-                me.instrumentCounter += diffElapsedSec;
-            }
+        if (me.isIMC()) {
+            me.instrumentCounter += diffElapsedSec;
+        }
 
-            var alt = getprop("/position/altitude-ft");
-            if (alt > me.maxAlt) {
-                me.maxAlt = alt;
-            }
+        var alt = me.propAltFt.getValue();
+        if (alt > me.maxAlt) {
+            me.maxAlt = alt;
         }
 
         me.lastElapsedSec = currentElapsedSec;
@@ -111,9 +122,9 @@ var Environment = {
     # return bool
     #
     isNight: func() {
-        return getprop("/rendering/dome/sky/red")   < Environment.SKY_DOME_COLOR_THRESHOLD and
-               getprop("/rendering/dome/sky/green") < Environment.SKY_DOME_COLOR_THRESHOLD and
-               getprop("/rendering/dome/sky/blue")  < Environment.SKY_DOME_COLOR_THRESHOLD;
+        return me.propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD and
+               me.propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD and
+               me.propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
     },
 
     #
@@ -122,8 +133,8 @@ var Environment = {
     # return bool
     #
     isIMC: func() {
-        return getprop("/environment/ground-visibility-m")    < Environment.MINIMUM_VFR_VISIBILITY or
-               getprop("/environment/effective-visibility-m") < Environment.MINIMUM_VFR_VISIBILITY;
+        return me.propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY or
+               me.propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
     },
 
     #

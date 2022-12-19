@@ -69,7 +69,7 @@ var Settings = {
     # return bool
     #
     isDarkStyle: func() {
-        getprop(me.propToSave ~ "/settings/dark-style") or false;
+        return getprop(me.propToSave ~ "/settings/dark-style") or false;
     },
 
     #
@@ -78,5 +78,17 @@ var Settings = {
     #
     setDarkMode: func(value) {
         setprop(me.propToSave ~ "/settings/dark-style", value);
+    },
+
+    #
+    # return bool
+    #
+    isRealTimeDuration: func() {
+        var isRealTimeDuration = getprop(me.propToSave ~ "/settings/real-time-duration");
+        if (isRealTimeDuration == nil) {
+            return true;
+        }
+
+        return isRealTimeDuration;
     },
 };

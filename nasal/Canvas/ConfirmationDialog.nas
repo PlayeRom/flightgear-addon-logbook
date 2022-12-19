@@ -22,13 +22,20 @@ var ConfirmationDialog = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # string title
     # return me
     #
-    new: func(title) {
+    new: func(settings, title) {
         var me = { parents: [
             ConfirmationDialog,
-            Dialog.new(Dialog.ID_DELETE, ConfirmationDialog.WINDOW_WIDTH, ConfirmationDialog.WINDOW_HEIGHT, title)
+            Dialog.new(
+                settings,
+                Dialog.ID_DELETE,
+                ConfirmationDialog.WINDOW_WIDTH,
+                ConfirmationDialog.WINDOW_HEIGHT,
+                title
+            )
         ] };
 
         me.bgImage.hide();

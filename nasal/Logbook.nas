@@ -17,6 +17,7 @@ var Logbook = {
     # Constants
     #
     ALT_AGL_FT_THRESHOLD : 100,
+    MAIN_TIMER_INTERVAL  : 1,
 
     #
     # Constructor
@@ -30,6 +31,8 @@ var Logbook = {
         # Disable Logbook menu because we have to load data first in thread
         gui.menuEnable("logbook-addon", false);
 
+        me.settings      = Settings.new(addon);
+
         # Auxiliary variables
         me.startFuel     = 0.0; # amount of fuel at takeoff
         me.startOdometer = 0.0; # distance at takeoff
@@ -40,11 +43,11 @@ var Logbook = {
         me.isReplayMode  = false;
 
         me.wowSec        = 0;
-        me.mainTimer     = maketimer(1, me, me.update);
+        me.mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me.update);
         me.delayInit     = maketimer(5, me, me.initLogbook);
 
         me.logData       = nil;
-        me.environment   = Environment.new();
+        me.environment   = Environment.new(me.settings);
         me.landingGear   = LandingGear.new();
         me.filters       = Filters.new();
         me.file          = File.new(addon, me.filters);
@@ -52,7 +55,7 @@ var Logbook = {
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
         me.recovery      = Recovery.new(addon, me.file);
-        me.logbookDialog = LogbookDialog.new(me.file, me.filters);
+        me.logbookDialog = LogbookDialog.new(me.settings, me.file, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
@@ -76,17 +79,17 @@ var Logbook = {
         });
 
         setlistener("/sim/freeze/master", func(node) {
-            me.isSimPaused = node.getValue();
+            me.isSimPaused = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me.isSimPaused);
         });
 
         setlistener("/sim/replay/replay-state", func(node) {
-            me.isReplayMode = node.getValue();
+            me.isReplayMode = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me.isReplayMode);
         });
 
         setlistener("/sim/signals/exit", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # sim is going to exit, save the logData
                 me.stopLogging(false);
             }

@@ -27,6 +27,7 @@ var Dialog = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # int id - ID of the Dialog as one of constants ID_LOGBOOK, ID_DETAILS, etc.
     # int width - Initial width of window
     # int height - Initial height of window
@@ -35,17 +36,16 @@ var Dialog = {
     # func onResizeWidth - callback call when width of window was changed
     # return me
     #
-    new: func(id, width, height, title, resize = 0, onResizeWidth = nil) {
+    new: func(settings, id, width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
         me.addon    = addons.getAddon(ADDON_ID);
         me.dialogId = id;
         me.width    = width;
         me.height   = height;
+        me.settings = settings;
 
-        me.settings = Settings.new(me.addon);
-
-        me.style = me.settings.isDarkStyle()
+        me.style = settings.isDarkStyle()
             ? me.getStyle().dark
             : me.getStyle().light;
 

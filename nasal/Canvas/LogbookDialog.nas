@@ -57,15 +57,22 @@ var LogbookDialog = {
     #
     # Constructor
     #
+    # hash settings - Settings object
     # hash file - File object
     # hash filters - Filters object
     # return me
     #
-    new: func(file, filters) {
+    new: func(settings, file, filters) {
         var me = {
             parents : [
                 LogbookDialog,
-                Dialog.new(Dialog.ID_LOGBOOK, LogbookDialog.WINDOW_WIDTH, LogbookDialog.WINDOW_HEIGHT, "Logbook"),
+                Dialog.new(
+                    settings,
+                    Dialog.ID_LOGBOOK,
+                    LogbookDialog.WINDOW_WIDTH,
+                    LogbookDialog.WINDOW_HEIGHT,
+                    "Logbook"
+                ),
             ],
             file    : file,
             filters : filters,
@@ -90,10 +97,10 @@ var LogbookDialog = {
         me.dataContent    = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.detailsDialog  = DetailsDialog.new(file);
-        me.helpDialog     = HelpDialog.new();
-        me.aboutDialog    = AboutDialog.new();
-        me.filterSelector = FilterSelector.new();
+        me.detailsDialog  = DetailsDialog.new(settings, file);
+        me.helpDialog     = HelpDialog.new(settings);
+        me.aboutDialog    = AboutDialog.new(settings);
+        me.filterSelector = FilterSelector.new(settings);
 
         me.listView = ListView.new(
             me.group,
@@ -118,7 +125,7 @@ var LogbookDialog = {
 
         # User clicked delete entry
         me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
@@ -131,7 +138,7 @@ var LogbookDialog = {
 
         # User clicked edit
         me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-edit-entry", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
@@ -147,7 +154,7 @@ var LogbookDialog = {
 
         # Reload data dialog after edit or delete file operation
         me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
@@ -157,7 +164,7 @@ var LogbookDialog = {
 
         # User exit detials dialog, redraw only for remove green selected bar
         me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/redraw-logbook", func(node) {
-            if (node.getValue()) {
+            if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
