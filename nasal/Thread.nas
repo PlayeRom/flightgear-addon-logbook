@@ -48,14 +48,14 @@ var Thread = {
     # return bool
     #
     run: func(threadFunc, objCallback, callback, isLockByGlobal = 1) {
-        if (isLockByGlobal and g_isThreadPanding) {
+        if (isLockByGlobal and g_isThreadPending) {
             return false;
         }
 
         me.objCallback = objCallback;
         me.callback = callback;
 
-        g_isThreadPanding = true;
+        g_isThreadPending = true;
         me.isPanding = true;
 
         thread.newthread(func {

@@ -41,7 +41,7 @@ var MouseHover = {
     #
     addEvents: func() {
         me.element.addEventListener("mouseenter", func {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 if (me.isBlocked()) {
                     me.target.setColorFill(me.style.SELECTED_BAR);
                 }
@@ -52,7 +52,7 @@ var MouseHover = {
         });
 
         me.element.addEventListener("mouseleave", func {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 if (me.isBlocked()) {
                     me.target.setColorFill(me.style.SELECTED_BAR);
                 }
@@ -64,7 +64,7 @@ var MouseHover = {
 
         if (me.clickDialog != nil and me.dataToPass != nil) {
             me.element.addEventListener("click", func {
-                if (!g_isThreadPanding) {
+                if (!g_isThreadPending) {
                     me.clickDialog.show(me.dataToPass);
                 }
             });

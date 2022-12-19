@@ -196,7 +196,7 @@ var Dialog = {
         me.window.hide();
 
         if (me.dialogId == Dialog.ID_DETAILS) {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 # Set property redraw-logbook for remove selected bar
                 setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-logbook", true);
             }

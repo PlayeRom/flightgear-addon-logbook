@@ -226,7 +226,7 @@ var LogbookDialog = {
     # return void
     #
     show: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 
@@ -318,19 +318,19 @@ var LogbookDialog = {
         }
 
         rowGroup.addEventListener("mouseenter", func {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 rect.setColorFill(me.style.HOVER_BG);
             }
         });
 
         rowGroup.addEventListener("mouseleave", func {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
             }
         });
 
         rowGroup.addEventListener("click", func(event) {
-            if (!g_isThreadPanding) {
+            if (!g_isThreadPending) {
                 me.filterSelector.setItems(items);
                 me.filterSelector.setColumnIndex(index);
                 me.filterSelector.setPosition(event.screenX, event.screenY);
@@ -485,7 +485,7 @@ var LogbookDialog = {
     # return void
     #
     toggleStyle: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 
@@ -533,7 +533,7 @@ var LogbookDialog = {
     # return void
     #
     first: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 
@@ -549,7 +549,7 @@ var LogbookDialog = {
     # return void
     #
     prev: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 
@@ -565,7 +565,7 @@ var LogbookDialog = {
     # return void
     #
     next: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 
@@ -581,7 +581,7 @@ var LogbookDialog = {
     # return void
     #
     last: func() {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return;
         }
 

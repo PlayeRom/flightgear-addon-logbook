@@ -129,7 +129,7 @@ var DetailsDialog = {
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
-                if (!g_isThreadPanding) {
+                if (!g_isThreadPending) {
                     me.deleteDialog.show(me.listView.parentDataIndex, me);
                 }
             }

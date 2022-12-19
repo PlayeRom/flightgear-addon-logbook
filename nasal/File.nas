@@ -370,7 +370,7 @@ var File = {
 
         me.filters.dirty = false;
 
-        g_isThreadPanding = false;
+        g_isThreadPending = false;
     },
 
     #
@@ -395,7 +395,7 @@ var File = {
             return false;
         }
 
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return false;
         }
 
@@ -496,7 +496,7 @@ var File = {
     # return int|nil
     #
     getHeaderIndex: func(headerText, headersData) {
-        if (g_isThreadPanding) {
+        if (g_isThreadPending) {
             return nil;
         }
 
@@ -571,8 +571,8 @@ var File = {
     # return hash
     #
     getLogData: func(index) {
-        if (g_isThreadPanding) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - getLogData in g_isThreadPanding = true, return nil");
+        if (g_isThreadPending) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
