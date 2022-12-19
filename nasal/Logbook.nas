@@ -221,8 +221,6 @@ var Logbook = {
                 me.wowSec += 1;
                 logprint(MY_LOG_LEVEL, "Logbook Add-on - landing detected, wowSec = ", me.wowSec);
                 if (me.wowSec > 2) {
-                    logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
-
                     # We recognise that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognise the landing when we bounce off the ground.
                     me.stopLogging(true);
@@ -235,7 +233,6 @@ var Logbook = {
         me.wowSec = 0;
 
         if (me.crashDetector.isCrash(me.onGround)) {
-            logprint(LOG_ALERT, "Logbook Add-on - crash detected");
             me.stopLogging(false, true);
         }
     },
@@ -298,6 +295,8 @@ var Logbook = {
         me.logData.setDistance(me.getDistance());
 
         if (landed) {
+            logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
+
             if (isOrientationOk) {
                 me.logData.setLanding();
                 # Use max distance as 6000 m (Schiphol need 6 km)
@@ -318,6 +317,7 @@ var Logbook = {
         me.logData.setMaxAlt(me.environment.getMaxAlt());
 
         if (crashed) {
+            logprint(LOG_ALERT, "Logbook Add-on - crash detected");
             me.logData.setCrash();
         }
 
