@@ -80,11 +80,15 @@ var LogData = {
     #
     # Set the aircraft ID
     #
-    # string aircraft - Aircraft ID
     # return me
     #
-    setAircraft: func (aircraft) {
-        me.aircraft = me.removeHangarName(aircraft);
+    setAircraft: func () {
+        var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
+        # When "/sim/aircraft" exists, this property contains the correct ID.
+        # This is a case that can occur when an aircraft has multiple variants.
+        var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
+        me.aircraft = aircraft == nil ? aircraftId : aircraft;
+
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
 
         return me;
@@ -106,10 +110,14 @@ var LogData = {
     #
     # Remove hangar name from aircraft ID
     #
-    # string aircraft - Aircraft ID probably with hangar name
-    # return string - Aircraft ID without hangar name
+    # string|nil aircraft - Aircraft ID probably with hangar name
+    # return string|nil - Aircraft ID without hangar name
     #
     removeHangarName: func(aircraft) {
+        if (aircraft == nil) {
+            return nil;
+        }
+
         var aircraftLength = size(aircraft);
 
         # Known hangars

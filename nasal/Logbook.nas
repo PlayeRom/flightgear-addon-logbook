@@ -256,7 +256,7 @@ var Logbook = {
         me.logData = LogData.new();
         me.logData.setDate(me.environment.getDateString());
         me.logData.setTime(me.environment.getTimeString());
-        me.logData.setAircraft(getprop("/sim/aircraft-id"));
+        me.logData.setAircraft();
         me.logData.setAircraftType(me.aircraftType);
         me.logData.setNote(getprop("/sim/description"));
         me.logData.setCallsign(getprop("/sim/multiplay/callsign"));
