@@ -81,12 +81,12 @@ var Logbook = {
         setlistener("/sim/freeze/master", func(node) {
             me.isSimPaused = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me.isSimPaused);
-        });
+        }, true);
 
         setlistener("/sim/replay/replay-state", func(node) {
             me.isReplayMode = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me.isReplayMode);
-        });
+        }, true);
 
         setlistener("/sim/signals/exit", func(node) {
             if (node.getBoolValue()) {
