@@ -150,8 +150,8 @@ var LogData = {
     # return me
     #
     setCallsign: func(callsign) {
-        me.callsign = callsign;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setCallsign = ", callsign);
+        me.callsign = me.getCsvSafeText(callsign);
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setCallsign = ", me.callsign);
 
         return me;
     },
@@ -313,10 +313,23 @@ var LogData = {
     # return me
     #
     setNote: func (note) {
-        me.note = note;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", note);
+        me.note = me.getCsvSafeText(note);
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", me.note);
 
         return me;
+    },
+
+    #
+    # string|nil text
+    # return string
+    #
+    getCsvSafeText: func(text) {
+        if (text == nil or text == "") {
+            return "";
+        }
+
+        text = string.replace(text, ',', '');
+        return string.replace(text, '"', '');
     },
 
     #
