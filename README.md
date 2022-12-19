@@ -49,7 +49,7 @@ The following information is logged into the file:
 10. **Day** – the number of hours spent flying during the day.
 11. **Night** – number of hours spent flying during the night.
 12. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-13. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
+13. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
 14. **Distance** – total distance flown from take-off to landing, in nautical miles.
 15. **Fuel** – total fuel burned, in US gallons.
 16. **Max Alt** – maximum altitude, in feet, reached during flight.
@@ -157,7 +157,7 @@ Do pliku logowane są następujące informacje:
 10. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
 11. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
 12. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-13. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc.
+13. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas sumulacji nie będzie to miało wpływu.
 14. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
 15. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
 16. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.

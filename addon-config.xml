@@ -80,7 +80,7 @@ The following information is logged into the file:
 10. Day - the number of hours spent flying during the day.
 11. Night - number of hours spent flying during the night.
 12. Instrument - the number of hours flown during the IMC (Instrument Meteorological Conditions).
-13. Duration - total duration of the flight in hours, as the sum of Day and Night. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night.
+13. Duration - total duration of the flight in hours, as the sum of Day and Night. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. Duration is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
 14. Distance - total distance flown from take-off to landing, in nautical miles.
 15. Fuel - total fuel burned, in US gallons.
 16. Max Alt - maximum altitude, in feet, reached during flight.
@@ -89,7 +89,7 @@ The following information is logged into the file:
 NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the flight status will lost.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the recovery.csv file. The data in the recovery.csv file will be automatically transferred to the logbook.csv file when the simulator is restarted.
 3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
 5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
