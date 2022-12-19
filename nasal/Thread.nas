@@ -63,7 +63,7 @@ var Thread = {
             me.isPending = false;
         });
 
-        me.timer = maketimer(0.5, me, me.checkEnd);
+        me.timer = maketimer(0.1, me, me.checkEnd);
         me.timer.start();
 
         return true;
