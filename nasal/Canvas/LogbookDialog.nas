@@ -293,7 +293,7 @@ var LogbookDialog = {
                 rowGroup,
                 rect,
                 me.filters.getFilterItemsByColumnIndex(column),
-                "Filter",
+                me.filters.getFilterTitleByColumnIndex(column),
                 column
             );
 

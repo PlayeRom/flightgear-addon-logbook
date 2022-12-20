@@ -159,6 +159,23 @@ var Filters = {
     },
 
     #
+    # int column - Index of column
+    # return string
+    #
+    getFilterTitleByColumnIndex: func(column) {
+             if (column == File.INDEX_DATE)     return "Date filter";
+        else if (column == File.INDEX_AIRCRAFT) return "Aircraft filter";
+        else if (column == File.INDEX_TYPE)     return "Type filter";
+        else if (column == File.INDEX_CALLSIGN) return "Callsign filter";
+        else if (column == File.INDEX_FROM)     return "From filter";
+        else if (column == File.INDEX_TO)       return "To filter";
+        else if (column == File.INDEX_LANDINGS) return "Landings filter";
+        else if (column == File.INDEX_CRASH)    return "Crash filter";
+
+        return "Filter";
+    },
+
+    #
     # int column
     # return bool
     #
