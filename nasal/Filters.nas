@@ -48,7 +48,7 @@ var Filters = {
     # return void
     #
     clear: func() {
-        foreach(var key; keys(me.data)) {
+        foreach (var key; keys(me.data)) {
             me.data[key].clear();
         }
     },

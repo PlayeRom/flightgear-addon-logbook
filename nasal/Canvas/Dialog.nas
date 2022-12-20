@@ -124,8 +124,8 @@ var Dialog = {
     # return void
     #
     setPositionOnCenter: func(width = nil, height = nil) {
-        var screenW = getprop("/sim/gui/canvas/size[0]");
-        var screenH = getprop("/sim/gui/canvas/size[1]");
+        var screenW = me.getScreenWidth();
+        var screenH = me.getScreenHeight();
 
         var w = width  == nil ? me.width  : width;
         var h = height == nil ? me.height : height;
@@ -270,9 +270,46 @@ var Dialog = {
         return highest;
     },
 
+    #
+    # Hide background image for "dark" theme and show it for "light" theme
+    #
+    # return void
+    #
     toggleBgImage: func() {
         me.style.NAME == "dark"
             ? me.bgImage.hide()
             : me.bgImage.show();
+    },
+
+    #
+    # Get X position of this window
+    #
+    # return int
+    #
+    getPosX: func() {
+        return me.window.get("tf/t[0]");
+    },
+
+    #
+    # Get Y position of this window
+    #
+    # return int
+    #
+    getPosY: func() {
+        return me.window.get("tf/t[1]");
+    },
+
+    #
+    # return int
+    #
+    getScreenWidth: func() {
+        return getprop("/sim/gui/canvas/size[0]");
+    },
+
+    #
+    # return int
+    #
+    getScreenHeight: func() {
+        return getprop("/sim/gui/canvas/size[1]");
     },
 };

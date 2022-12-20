@@ -145,6 +145,14 @@ var FilterSelector = {
         }
 
         me.window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
+
+        # Check whether the selector window does not go outside the screen at the bottom, if so, move it up
+        var posY = me.getPosY();
+        var screenH = me.getScreenHeight();
+        if (screenH - posY < windowHeight) {
+            posY = screenH - windowHeight;
+            me.window.setPosition(me.getPosX(), posY);
+        }
     },
 
     #
