@@ -106,22 +106,20 @@ var Recovery = {
     # return void
     #
     restore: func() {
-        if (!me.file.exists(me.filePath)) {
-            return;
-        }
+        if (me.file.exists(me.filePath)) {
+            var file = io.open(me.filePath, "r");
+            var line = io.readln(file);
+            io.close(file);
 
-        var file = io.open(me.filePath, "r");
-        var line = io.readln(file);
-        io.close(file);
+            if (line != nil) {
+                var items = split(",", me.file.removeQuotes(line));
+                var logData = LogData.new();
+                logData.fromVector(items);
 
-        if (line != nil) {
-            var items = split(",", me.file.removeQuotes(line));
-            var logData = LogData.new();
-            logData.fromVector(items);
+                me.file.saveData(logData, true);
 
-            me.file.saveData(logData, true);
-
-            me.clear();
+                me.clear();
+            }
         }
 
         me.file.loadAllData();
