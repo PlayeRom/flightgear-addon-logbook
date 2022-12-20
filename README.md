@@ -101,6 +101,7 @@ This add-on includes a mechanism to save the current flight status to a separate
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
 11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
 12. Supported FG versions from 2020.1.
+13. The minimum resolution for using the GUI is 1366x768.
 
 ## Authors
 
@@ -209,6 +210,7 @@ Dodatek ten zawiera mechanizm zapisywania co minutę aktualnego stanu lotu do os
 10. Zapauzowanie symulacji lub włączenie trybu powtórki, zatrzymuje naliczanie statystyk lotu do dziennika.
 11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
 12. Wspierane wersje FG od 2020.1.
+13. Minimalna wersja rozdzielczości dla używanie GUI to 1366x768.
 
 ## Autorzy
 
