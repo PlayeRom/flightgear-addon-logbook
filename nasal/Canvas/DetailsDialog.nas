@@ -33,7 +33,7 @@ var DetailsDialog = {
     #
     new: func(settings, file) {
         var VBOX_SPACING = ListView.SHIFT_Y * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
-        var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space and paddings
+        var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space for buttons and paddings
 
         var me = { parents: [
             DetailsDialog,
@@ -66,6 +66,9 @@ var DetailsDialog = {
         me.listView.setStyle(me.style);
         me.listView.setFont(DetailsDialog.FONT_NAME, DetailsDialog.FONT_SIZE);
         me.listView.setClickDialog(me.inputDialog);
+
+        # Since the long description text overlapped the buttons, we specify a clip box
+        me.listView.dataContent.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
 
         var buttonBox = me.drawBottomBar();
 
