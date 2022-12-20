@@ -330,12 +330,13 @@ var LogbookDialog = {
 
         rowGroup.addEventListener("click", func(event) {
             if (!g_isThreadPending) {
-                me.filterSelector.setItems(items);
-                me.filterSelector.setColumnIndex(index);
-                me.filterSelector.setPosition(event.screenX, event.screenY);
-                me.filterSelector.setTitle(title);
-                me.filterSelector.setCallback(me, me.filterSelectorCallback);
-                me.filterSelector.show();
+                me.filterSelector
+                    .setItems(items)
+                    .setColumnIndex(index)
+                    .setPosition(event.screenX, event.screenY)
+                    .setTitle(title)
+                    .setCallback(me, me.filterSelectorCallback)
+                    .show();
             }
         });
     },
