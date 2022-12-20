@@ -21,7 +21,7 @@ var DetailsDialog = {
     FONT_SIZE     : 16,
     COLUMNS_WIDTH : [
         120, # header
-        450, # data
+        440, # data
     ],
 
     #
