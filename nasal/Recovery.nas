@@ -106,6 +106,10 @@ var Recovery = {
     # return void
     #
     restore: func() {
+        if (!me.file.exists(me.filePath)) {
+            return;
+        }
+
         var file = io.open(me.filePath, "r");
         var line = io.readln(file);
         io.close(file);
