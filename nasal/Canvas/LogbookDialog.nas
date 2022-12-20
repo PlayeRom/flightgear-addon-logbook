@@ -273,7 +273,6 @@ var LogbookDialog = {
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
 
-        var y = ListView.PADDING * 3;
         var x = ListView.PADDING * 3;
         var column = 0;
         var headers = me.file.getHeadersData();
