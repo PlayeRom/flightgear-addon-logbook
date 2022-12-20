@@ -220,9 +220,16 @@ var FilterSelector = {
         y = me.drawHoverBoxTitle(x, y);
         y = me.drawHoverBoxSeparator(y);
 
-        rowGroup = me.drawHoverBox(y, [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE], [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
-        me.drawText(rowGroup, x, "Default All");
-        y += ListView.SHIFT_Y;
+        if (me.withDefaultAll) {
+            rowGroup = me.drawHoverBox(
+                y,
+                [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE],
+                [0.0, 0.0, 0.0, 0.0],
+                ListView.SHIFT_Y
+            );
+            me.drawText(rowGroup, x, "Default All");
+            y += ListView.SHIFT_Y;
+        }
 
         foreach (var text; me.items) {
             var label = text == "" ? "<empty>" : text;
