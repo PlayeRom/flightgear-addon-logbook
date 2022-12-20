@@ -51,7 +51,7 @@ var LogbookDialog = {
         "%.0f", # fuel
         "%.0f", # max alt
     ],
-    TOTALS_COLUMNS_SHIFT : 6,
+    TOTALS_COLUMNS_SHIFT : File.INDEX_TO,
     FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
     FONT_SIZE            : 12,
 
