@@ -16,12 +16,13 @@ var FilterSelector = {
     #
     # Constants
     #
-    WINDOW_WIDTH       : 250,
-    WINDOW_HEIGHT      : 300,
-    MAX_WINDOW_HEIGHT  : LogbookDialog.WINDOW_HEIGHT,
-    PADDING            : 10,
-    BUTTON_HEIGHT      : 26,
-    CLEAR_FILTER_VALUE : "All",
+    WINDOW_WIDTH           : 250,
+    WINDOW_HEIGHT          : 300,
+    MAX_WINDOW_HEIGHT      : LogbookDialog.WINDOW_HEIGHT - 50,
+    PADDING                : 10,
+    BUTTON_HEIGHT          : 26,
+    CLEAR_FILTER_VALUE     : "All",
+    SEPARATOR_H_MULTIPLIER : 0.25,
 
     #
     # Constructor
@@ -40,6 +41,10 @@ var FilterSelector = {
                 "Logbook About"
             ),
         ] };
+
+        me.font     = "LiberationFonts/LiberationSans-Bold.ttf";
+        me.fontSize = 16;
+        me.title    = "Filter";
 
         me.window.set("decoration-border", "0 0 0");
 
@@ -69,7 +74,7 @@ var FilterSelector = {
     },
 
     #
-    # Hide canvas dialog
+    # Hide canvas window
     #
     # return void
     #
@@ -78,32 +83,48 @@ var FilterSelector = {
     },
 
     #
-    # int x, y
+    # Show canvas window
+    #
     # return void
+    #
+    show: func() {
+        me.recalculateWindowHeight();
+        me.reDrawContent();
+
+        call(Dialog.show, [], me);
+    },
+
+    #
+    # int x, y
+    # return me
     #
     setPosition: func(x, y) {
         me.window.setPosition(x, y);
+
+        return me;
     },
 
     #
     # string title
-    # return void
+    # return me
     #
     setTitle: func(title) {
+        me.title = title;
         me.window.setTitle(title);
+
+        return me;
     },
 
     #
     # vector items
     # bool withDefaultAll
-    # return void
+    # return me
     #
     setItems: func(items, withDefaultAll = 1) {
         me.items = items;
         me.withDefaultAll = withDefaultAll;
 
-        me.recalculateWindowHeight();
-        me.reDrawContent();
+        return me;
     },
 
     #
@@ -111,15 +132,14 @@ var FilterSelector = {
     #
     recalculateWindowHeight: func() {
         var paddingMultiplier = 2;
-        var count = size(me.items);
+        var count = size(me.items) + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
         if (me.withDefaultAll) {
             count += 1;  # +1 for "Default All"
             paddingMultiplier += 1;
         }
 
-        # 5 = spacing between buttons:
-        var windowHeight = count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * paddingMultiplier);
+        var windowHeight = count * ListView.SHIFT_Y + (FilterSelector.PADDING * paddingMultiplier);
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
@@ -131,10 +151,11 @@ var FilterSelector = {
     # Set column index of filter as File.INDEX_[...]
     #
     # int index - Column index as File.INDEX_[...] of column
-    # return void
+    # return me
     #
     setColumnIndex: func(index) {
         me.columnIndex = index;
+        return me;
     },
 
     #
@@ -142,16 +163,17 @@ var FilterSelector = {
     #
     # hash objCallback - The class object which contains the callback function
     # func callback
-    # return void
+    # return me
     #
     setCallback: func(objCallback, callback) {
         me.objCallback = objCallback;
         me.callback = callback;
+        return me;
     },
 
     #
     # hash style
-    # return void
+    # return me
     #
     setStyle: func(style) {
         me.style = style;
@@ -160,6 +182,8 @@ var FilterSelector = {
         if (me.scrollData != nil) {
             me.scrollData.setColorBackground(me.style.CANVAS_BG);
         }
+
+        return me;
     },
 
     #
@@ -178,7 +202,7 @@ var FilterSelector = {
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
+        me.scrollDataContent = me.getScrollAreaContent(me.scrollData, me.font, me.fontSize);
 
         me.drawScrollable();
     },
@@ -189,48 +213,123 @@ var FilterSelector = {
     # return void
     #
     drawScrollable: func() {
-        var vBoxLayout = canvas.VBoxLayout.new();
+        me.scrollDataContent.removeAllChildren();
 
-        if (me.withDefaultAll) {
-            # Add "All" item to reset filter
-            var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
-                .setText("Default All")
-                .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
-                .listen("clicked", func {
-                    call(me.callback, [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE], me.objCallback);
-                    me.window.hide();
-                });
+        var x = FilterSelector.PADDING * 2;
+        var y = 0;
+        y = me.drawHoverBoxTitle(x, y);
+        y = me.drawHoverBoxSeparator(y);
 
-            vBoxLayout.addItem(btnRepo);
-            vBoxLayout.addSpacing(FilterSelector.PADDING);
+        rowGroup = me.drawHoverBox(y, [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE], [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
+        me.drawText(rowGroup, x, "Default All");
+        y += ListView.SHIFT_Y;
+
+        foreach (var text; me.items) {
+            var label = text == "" ? "<empty>" : text;
+            var rowGroup = me.drawHoverBox(y, [me.columnIndex, text], [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
+            me.drawText(rowGroup, x, label);
+
+            y += ListView.SHIFT_Y;
         }
 
-        # Add others available items
-        foreach (var item; me.items) {
-            (func { # A magic function that makes the correct "text" available in the "clicked" listener.
-                    # Without it, in "clicked" we will always get the last item.
-                var text = item;
-                var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
-                    .setText(text)
-                    .setFixedSize(FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2), FilterSelector.BUTTON_HEIGHT)
-                    .listen("clicked", func {
-                        call(me.callback, [me.columnIndex, text], me.objCallback);
-                        me.window.hide();
-                    });
-
-                vBoxLayout.addItem(btnRepo);
-            })();
-        }
-
-        me.scrollData.setLayout(vBoxLayout);
+        me.scrollDataContent.update();
     },
 
     #
-    # string text - Label text
-    # return hash - Label widget
+    # int x, y
+    # return int - Y pos
     #
-    getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me.scrollDataContent, canvas.style, {})
+    drawHoverBoxTitle: func(x, y) {
+        var group = me.drawHoverBox(y, nil, me.style.CANVAS_BG, ListView.SHIFT_Y, false);
+        me.drawText(group, x, me.title);
+        y += ListView.SHIFT_Y;
+        return y;
+    },
+
+    #
+    # int y
+    # return int - Y pos
+    #
+    drawHoverBoxSeparator: func(y) {
+        return y + ListView.SHIFT_Y * FilterSelector.SEPARATOR_H_MULTIPLIER;
+    },
+
+    #
+    # int y
+    # vector|nil dataToPass - data to pass to MouseHover
+    # return hash - canvas group
+    #
+    drawHoverBoxItems: func(y, dataToPass = nil) {
+        return me.drawHoverBox(y, dataToPass, [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
+    },
+
+    #
+    # int y
+    # vector|nil dataToPass - data to pass to MouseHover
+    # vector bgColor
+    # int height
+    # bool isMouseHover
+    # return hash - canvas group
+    #
+    drawHoverBox: func(y, dataToPass, bgColor, height, isMouseHover = 1) {
+        var rowGroup = me.scrollDataContent.createChild("group")
+            .setTranslation(0, y);
+
+        # Create rect because setColorFill on rowGroup doesn't work
+        var rect = rowGroup.rect(0, 0, FilterSelector.WINDOW_WIDTH - (ListView.PADDING * 3), height)
+            .setColorFill(bgColor);
+
+        if (isMouseHover) {
+            rowGroup.addEventListener("mouseenter", func {
+                rect.setColorFill(me.style.HOVER_BG);
+            });
+
+            rowGroup.addEventListener("mouseleave", func {
+                rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+            });
+
+            if (dataToPass != nil) {
+                rowGroup.addEventListener("click", func {
+                    call(me.callback, dataToPass, me.objCallback);
+                    me.hide();
+                });
+            }
+        }
+
+        return rowGroup;
+    },
+
+    #
+    # hash cGroup - Parent canvas group
+    # int x
+    # string text
+    # int|nil maxWidth
+    # return hash - canvas text object
+    #
+    drawText: func(cGroup, x, text, maxWidth = nil) {
+        var text = cGroup.createChild("text")
+            .setTranslation(x, me.getTextYOffset())
+            .setColor(me.style.TEXT_COLOR)
             .setText(text);
+
+        if (maxWidth != nil) {
+            text.setMaxWidth(maxWidth);
+        }
+
+        return text;
+    },
+
+    #
+    # return int
+    #
+    getTextYOffset: func() {
+        if (me.fontSize == 12) {
+            return 16;
+        }
+        else if (me.fontSize == 16) {
+            return 18;
+        }
+
+        return 0;
     },
 };
