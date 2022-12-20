@@ -23,7 +23,8 @@ var LogData = {
 
         me.date         = "";    # Take-off date (real)
         me.time         = "";    # Take-off time (real)
-        me.aircraft     = "";    # Aircraft ID
+        me.aircraft     = "";    # Aircraft ID (/sim/aircraft-id)
+        me.variant      = "";    # Aircraft variant (/sim/aircraft)
         me.aircraftType = "";    # Aircraft type
         me.callsign     = "";    # Pilot callsign
         me.from         = "";    # ICAO departure airport (if take-off from the ground)
@@ -78,18 +79,30 @@ var LogData = {
     },
 
     #
-    # Set the aircraft ID
+    # Set the aircraft ID (/sim/aircraft-id)
     #
     # return me
     #
     setAircraft: func () {
+        me.aircraft = me.removeHangarName(getprop("/sim/aircraft-id"));
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
+
+        return me;
+    },
+
+    #
+    # Set the aircraft variant as /sim/aircraft. If not exist then use /sim/aircraft-id.
+    #
+    # return me
+    #
+    setVariant: func () {
         var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
         # When "/sim/aircraft" exists, this property contains the correct ID.
         # This is a case that can occur when an aircraft has multiple variants.
         var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
-        me.aircraft = aircraft == nil ? aircraftId : aircraft;
+        me.variant = aircraft == nil ? aircraftId : aircraft;
 
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setVariant = ", me.variant);
 
         return me;
     },
@@ -342,6 +355,7 @@ var LogData = {
         append(vector, me.date);
         append(vector, me.time);
         append(vector, me.aircraft);
+        append(vector, me.variant);
         append(vector, me.aircraftType);
         append(vector, me.callsign);
         append(vector, me.from);
@@ -367,23 +381,24 @@ var LogData = {
     # return void
     #
     fromVector: func(items) {
-        me.date         = items[0];
-        me.time         = items[1];
-        me.aircraft     = items[2];
-        me.aircraftType = items[3];
-        me.callsign     = items[4];
-        me.from         = items[5];
-        me.to           = items[6];
-        me.landings     = items[7];
-        me.crash        = items[8] == "1" or items[8] == true ? true : false;
-        me.day          = items[9];
-        me.night        = items[10];
-        me.instrument   = items[11];
-        me.duration     = items[12];
-        me.distance     = items[13];
-        me.fuel         = items[14];
-        me.maxAlt       = items[15];
-        me.note         = items[16];
+        me.date         = items[File.INDEX_DATE];
+        me.time         = items[File.INDEX_TIME];
+        me.aircraft     = items[File.INDEX_AIRCRAFT];
+        me.variant      = items[File.INDEX_VARIANT];
+        me.aircraftType = items[File.INDEX_TYPE];
+        me.callsign     = items[File.INDEX_CALLSIGN];
+        me.from         = items[File.INDEX_FROM];
+        me.to           = items[File.INDEX_TO];
+        me.landings     = items[File.INDEX_LANDINGS];
+        me.crash        = items[File.INDEX_CRASH] == "1" or items[File.INDEX_CRASH] == true ? true : false;
+        me.day          = items[File.INDEX_DAY];
+        me.night        = items[File.INDEX_NIGHT];
+        me.instrument   = items[File.INDEX_INSTRUMENT];
+        me.duration     = items[File.INDEX_DURATION];
+        me.distance     = items[File.INDEX_DISTANCE];
+        me.fuel         = items[File.INDEX_FUEL];
+        me.maxAlt       = items[File.INDEX_MAX_ALT];
+        me.note         = items[File.INDEX_NOTE];
     },
 
     #
@@ -396,6 +411,9 @@ var LogData = {
         }
         else if (index == File.INDEX_AIRCRAFT) {
             return me.aircraft;
+        }
+        else if (index == File.INDEX_VARIANT) {
+            return me.variant;
         }
         else if (index == File.INDEX_TYPE) {
             return me.aircraftType;
@@ -429,6 +447,7 @@ var LogData = {
         clone.date         = me.date;
         clone.time         = me.time;
         clone.aircraft     = me.aircraft;
+        clone.variant      = me.variant;
         clone.aircraftType = me.aircraftType;
         clone.callsign     = me.callsign;
         clone.from         = me.from;

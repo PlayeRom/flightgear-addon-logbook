@@ -17,24 +17,25 @@ var File = {
     # Constants
     #
     LOGBOOK_FILE     : "logbook-v%s.csv",
-    FILE_VERSION     : "2",
+    FILE_VERSION     : "3",
     INDEX_DATE       : 0,
     INDEX_TIME       : 1,
     INDEX_AIRCRAFT   : 2,
-    INDEX_TYPE       : 3,
-    INDEX_CALLSIGN   : 4,
-    INDEX_FROM       : 5,
-    INDEX_TO         : 6,
-    INDEX_LANDINGS   : 7,
-    INDEX_CRASH      : 8,
-    INDEX_DAY        : 9,
-    INDEX_NIGHT      : 10,
-    INDEX_INSTRUMENT : 11,
-    INDEX_DURATION   : 12,
-    INDEX_DISTANCE   : 13,
-    INDEX_FUEL       : 14,
-    INDEX_MAX_ALT    : 15,
-    INDEX_NOTE       : 16,
+    INDEX_VARIANT    : 3,
+    INDEX_TYPE       : 4,
+    INDEX_CALLSIGN   : 5,
+    INDEX_FROM       : 6,
+    INDEX_TO         : 7,
+    INDEX_LANDINGS   : 8,
+    INDEX_CRASH      : 9,
+    INDEX_DAY        : 10,
+    INDEX_NIGHT      : 11,
+    INDEX_INSTRUMENT : 12,
+    INDEX_DURATION   : 13,
+    INDEX_DISTANCE   : 14,
+    INDEX_FUEL       : 15,
+    INDEX_MAX_ALT    : 16,
+    INDEX_NOTE       : 17,
 
     #
     # Constructor
@@ -49,8 +50,9 @@ var File = {
             filters : filters,
         };
 
-        me.filePath      = addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, File.FILE_VERSION);
+        me.filePath      = me.getPathToFile(File.FILE_VERSION);
         me.addonNodePath = me.addon.node.getPath();
+        me.fileMigration = nil;
         me.loadedData    = [];
         me.headersData   = [];
         me.withHeaders   = true;
@@ -75,6 +77,14 @@ var File = {
     },
 
     #
+    # string version
+    # retrun string - full path to file
+    #
+    getPathToFile: func(version) {
+        return me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, version);
+    },
+
+    #
     # return void
     #
     resetTotals: func() {
@@ -86,21 +96,32 @@ var File = {
     # return bool - Return true if migration was done
     #
     migrateVersion: func() {
+        me.fileMigration = FileMigration.new(me);
+
         var olderReleases = [
             # Keep the order from the newest to oldest
-            "1.0.1",
+            "2",
+            "1.0.1", # nothing has changed from v.1.0.0, so 1.0.0 = 1.1.0
             "1.0.0",
         ];
 
         foreach (var oldVersion; olderReleases) {
-            var oldFile = me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, oldVersion);
+            var oldFile = me.getPathToFile(oldVersion);
             if (me.exists(oldFile)) {
-                if (File.FILE_VERSION == "2") {
-                    FileMigration.new(me).migrateToFileVersion_2(oldFile, me.filePath);
+                if (oldVersion == "1.0.1" or oldVersion == "1.0.0") {
+                    # If there is no version 2 file, but older ones exist, migrate to version 2 first
+                    var file_v2 = me.getPathToFile("2");
+                    if (!me.exists(file_v2)) {
+                        me.fileMigration.migrateToFileVersion_2(oldFile, file_v2);
+
+                        # Prepare variables to next migration
+                        oldFile = file_v2;
+                        oldVersion = "2";
+                    }
                 }
-                else {
-                    # Nothing changed, just copy whole file
-                    me.copyFile(oldFile, me.filePath);
+
+                if (oldVersion == "2") {
+                    me.fileMigration.migrateToFileVersion_3(oldFile, me.filePath);
                 }
 
                 return true;
@@ -146,6 +167,7 @@ var File = {
         return 'Date,' ~
                'Time,' ~
                'Aircraft,' ~
+               'Variant,' ~
                'Type,' ~
                'Callsign,' ~
                'From,' ~
@@ -202,10 +224,11 @@ var File = {
     #
     saveItem: func(file, logData) {
         io.write(file, sprintf(
-            "%s,%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+            "%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,
+            logData.variant,
             logData.aircraftType,
             logData.callsign,
             logData.from,

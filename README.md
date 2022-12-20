@@ -40,20 +40,33 @@ The following information is logged into the file:
 1. **Date** – aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
 2. **Time** – aircraft take-off time. As for **Date** this is the time taken from the OS.
 3. **Aircraft** – the code name of the aircraft.
-4. **Type** - aircraft type as a one of following value: "heli" (helicopter), "balloon" (also airship), "space" (space ship), "seaplane" (also amphibious), "military", "glider", "turboprop", "bizjet", "airliner", "ga-single" (small piston single-engine general aviation), "ga-multi" (small piston multi-engine general aviation), "others" (undefined or not recognized).
-5. **Callsign** – your callsign set for multiplayer.
-6. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
-7. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
-8. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
-9. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
-10. **Day** – the number of hours spent flying during the day.
-11. **Night** – number of hours spent flying during the night.
-12. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-13. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
-14. **Distance** – total distance flown from take-off to landing, in nautical miles.
-15. **Fuel** – total fuel burned, in US gallons.
-16. **Max Alt** – maximum altitude, in feet, reached during flight.
-17. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
+4. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in more than one variant, for example, we have an aircraft called "Cessna 182S" which also includes a variant called "Cessna 182T." If you select "Cessna 182S," you will see `c182s` in the **Aircraft** as well as **Variant** column. If you select "Cessna 182T", you will see `c182s` in the **Aircraft** column, but `c182t` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. You should know that this is not a rule, and some aircraft do not distinguish between variants, such as the Cessna 172P. Then you will always see a variant of the aircraft in both columns, e.g. `c172p-amphibious`. If you want, you can manually correct the **Aircraft** column with a generic aircraft name, e.g. `c172p`, and leave `c172p-amphibious` in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
+5. **Type** – aircraft type as a one of following value:
+    * "heli" (helicopter),
+    * "balloon" (also airship),
+    * "space" (space ship),
+    * "seaplane" (also amphibious),
+    * "military",
+    * "glider",
+    * "turboprop",
+    * "bizjet",
+    * "airliner",
+    * "ga-single" (small piston single-engine general aviation),
+    * "ga-multi" (small piston multi-engine general aviation),
+    * "others" (undefined or not recognized).
+6. **Callsign** – your callsign set for multiplayer.
+7. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
+8. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
+9. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+10. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
+11. **Day** – the number of hours spent flying during the day.
+12. **Night** – number of hours spent flying during the night.
+13. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
+14. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+15. **Distance** – total distance flown from take-off to landing, in nautical miles.
+16. **Fuel** – total fuel burned, in US gallons.
+17. **Max Alt** – maximum altitude, in feet, reached during flight.
+18. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
@@ -69,7 +82,7 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 
 ### Data filtering
 
-The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Type", "Callsign", "From", "To", "Landings" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
+The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landings" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
 
 After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
 
@@ -149,20 +162,33 @@ Do pliku logowane są następujące informacje:
 1. **Date** – data startu statku powietrznego. Jest to data pobierana z twojego systemu operacyjnego, a nie data w symulatorze. Uznałem, że wolę wiedzieć, kiedy odbyłem lot we własnej strefie czasowej, przed własnym komputerem, niż to jaki był czas UTC czy lokalny w symulacji, co wg mnie było by mało wartościową informacją. Jeśli masz inne zdanie i sensowne argumenty, daj mi znać.
 2. **Time** ‒ czas startu statku powietrznego. Podobnie jak dla **Date** jest to czas pobrany z systemu operacyjnego.
 3. **Aircraft** ‒ nazwa kodowa statku powietrznego.
-4. **Type** ‒ typ statku powietrznego jako jeden z następujących wartości: "heli" (śmigłowiec), "balloon" (także sterowiec), "space" (statek kosmiczny), "seaplane" (wodnosamolot), "military" (wojskowy), "glider" (szybowiec), "turboprop" (turbo śmigłowy), "bizjet" (odrzutowiec biznesowy), "airliner" (liniowiec), "ga-single" (mały śmigłowy, jednosilnikowy, lotnictwa ogólnego), "ga-multi" (mały śmigłowy, wielosilnikowy, lotnictwa ogólnego), "others" (inne niezdefiniowane lub  nierozpoznane).
-5. **Callsign** ‒ Twój callsign ustawiony dla multiplayer.
-6. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
-7. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
-8. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
-9. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
-10. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
-11. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
-12. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-13. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
-14. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
-15. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
-16. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
-17. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
+4. **Variant** ‒ nazwa kodowa statku powietrznego jako jego wariant. Niektóre samoloty dostępne są w kilku wariantach, np. mamy samolot "Cessna 182S", który także zawiera wariant "Cessna 182T". Jeśli wybierzesz "Cessna 182S", to w kolumnie **Aircraft** jak i **Variant**  zobaczysz `c182s`. Jeśli wybierzesz "Cessna 182T", to w kolumnie **Aircraft** zobaczysz `c182s`, ale w kolumnie **Variant** `c182t`. W ten sposób masz główną grupę samolotu w kolumnie **Aircraft**, oraz jego warianty w kolumnie **Variant**. Należy wiedzieć, że nie jest to reguła, i niektóre samoloty nie rozróżniają wariantów, jak np. Cessna 172P. Wówczas w obydwu kolumnach zawsze zobaczysz wariant samolotu, np. `c172p-amphibious`. Jeśli chcesz możesz ręcznie poprawić kolumnę **Aircraft** podając ogólną nazwę samolotu, np. `c172p`, a w kolumnie **Variant** pozostawić `c172p-amphibious`. Dzięki temu będziesz mógł wydobyć statystyki **Totals** dla ogólnej grupy samolotu bez znaczenia w jakim wariancie (filtrując po **Aircraft**), jak i precyzyjniej dla konkretnego wariantu danego samolotu (filtrując po **Variant**).
+5. **Type** ‒ typ statku powietrznego jako jeden z następujących wartości:
+    * "heli" (śmigłowiec),
+    * "balloon" (także sterowiec),
+    * "space" (statek kosmiczny),
+    * "seaplane" (wodnosamolot),
+    * "military" (wojskowy),
+    * "glider" (szybowiec),
+    * "turboprop" (turbo śmigłowy),
+    * "bizjet" (odrzutowiec biznesowy),
+    * "airliner" (liniowiec),
+    * "ga-single" (mały śmigłowy, jednosilnikowy, lotnictwa ogólnego),
+    * "ga-multi" (mały śmigłowy, wielosilnikowy, lotnictwa ogólnego),
+    * "others" (inne niezdefiniowane lub  nierozpoznane).
+6. **Callsign** ‒ Twój callsign ustawiony dla multiplayer.
+7. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
+8. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
+9. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
+10. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
+11. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
+12. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
+13. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
+14. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
+15. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
+16. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
+17. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
+18. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
 ## Przeglądanie dziennika
 
@@ -178,7 +204,7 @@ Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy s
 
 ### Filtrowanie danych
 
-Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Date" (jako rok), "Aircraft", "Type", "Callsign", "From", "To", "Landings" i "Crash". Aby użyć filtrowania należy najechać kursorem myszy na nazwę kolumny (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych itd. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
+Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Date" (jako rok), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landings" i "Crash". Aby użyć filtrowania należy najechać kursorem myszy na nazwę kolumny (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych itd. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
 
 Po użyciu filtra, rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób możesz zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
 

@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1130,
+    WINDOW_WIDTH         : 1280,
     WINDOW_HEIGHT        : 680,
     TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
@@ -24,20 +24,21 @@ var LogbookDialog = {
          85, #  0 - date
          50, #  1 - time
         150, #  2 - aircraft
-         80, #  3 - aircraft type
-         80, #  4 - callsign
-         55, #  5 - from
-         55, #  6 - to
-         55, #  7 - landings
-         55, #  8 - crash
-         50, #  9 - day
-         50, # 10 - night
-         50, # 11 - instrument
-         65, # 12 - duration
-         65, # 13 - distance
-         80, # 14 - fuel
-         70, # 15 - max alt
-        100, # 16 - note
+        150, #  3 - variant
+         80, #  4 - aircraft type
+         80, #  5 - callsign
+         55, #  6 - from
+         55, #  7 - to
+         55, #  8 - landings
+         55, #  9 - crash
+         50, # 10 - day
+         50, # 11 - night
+         50, # 12 - instrument
+         65, # 13 - duration
+         65, # 14 - distance
+         80, # 15 - fuel
+         70, # 16 - max alt
+        100, # 17 - note
     ],
     TOTAL_FORMATS        : [
         "%d",   # landings
