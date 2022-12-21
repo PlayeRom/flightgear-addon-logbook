@@ -196,7 +196,8 @@ var ListView = {
         if (me.fontSize == 12) {
             return 16;
         }
-        else if (me.fontSize == 16) {
+
+        if (me.fontSize == 16) {
             return 18;
         }
 
@@ -321,32 +322,49 @@ var ListView = {
 
     #
     # int column
-    # string data
+    # string value
     # return string
     #
-    getExtraText: func(column, data) {
-        if ((column == File.INDEX_FROM or column == File.INDEX_TO) and data != "") { # From and To
-            var airport = airportinfo(data);
+    getExtraText: func(column, value) {
+        if ((column == File.INDEX_FROM or column == File.INDEX_TO) and value != "") {
+            var airport = airportinfo(value);
             if (airport != nil) {
                 return "(" ~ airport.name ~ ")";
             }
+
+            return "";
         }
-        else if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
-            var digits = split(".", data);
+
+        if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
+            var digits = split(".", value);
             if (size(digits) < 2) {
                 # something is wrong
                 return "hours";
             }
+
             return sprintf("hours (%d:%02d)", digits[0], int((digits[1] / 100) * 60));
         }
-        else if (column == File.INDEX_DISTANCE) {
-            return sprintf("nm (%.02f km)", data * globals.NM2M / 1000);
+
+        if (column == File.INDEX_DISTANCE) {
+            var inMeters = value * globals.NM2M;
+            if (inMeters >= 1000) {
+                return sprintf("nm (%.02f km)", inMeters / 1000);
+            }
+
+            return sprintf("nm (%.0f m)", inMeters);
         }
-        else if (column == File.INDEX_FUEL) {
-            return sprintf("US gallons (%.02f l)", data * globals.GAL2L);
+
+        if (column == File.INDEX_FUEL) {
+            return sprintf("US gallons (%.02f l)", value * globals.GAL2L);
         }
-        else if (column == File.INDEX_MAX_ALT) {
-            return "ft MSL"
+
+        if (column == File.INDEX_MAX_ALT) {
+            var inMeters = value * globals.FT2M;
+            if (inMeters >= 1000) {
+                return sprintf("ft MSL (%.02f km)", inMeters / 1000);
+            }
+
+            return sprintf("ft MSL (%.0f m)", inMeters);
         }
 
         return "";
