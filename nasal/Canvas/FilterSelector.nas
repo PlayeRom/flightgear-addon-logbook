@@ -247,6 +247,7 @@ var FilterSelector = {
             y += ListView.SHIFT_Y;
         }
 
+        # Scrollable content must be updated for set paddings
         me.scrollDataContent.update();
     },
 
