@@ -332,7 +332,12 @@ var ListView = {
             }
         }
         else if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
-            return "hours";
+            var digits = split(".", data);
+            if (size(digits) < 2) {
+                # something is wrong
+                return "hours";
+            }
+            return sprintf("hours (%d:%02d)", digits[0], int((digits[1] / 100) * 60));
         }
         else if (column == File.INDEX_DISTANCE) {
             return sprintf("nm (%.02f km)", data * globals.NM2M / 1000);
