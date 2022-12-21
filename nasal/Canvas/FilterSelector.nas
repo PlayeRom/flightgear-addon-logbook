@@ -139,7 +139,7 @@ var FilterSelector = {
             paddingMultiplier += 1;
         }
 
-        var windowHeight = count * ListView.SHIFT_Y + (FilterSelector.PADDING * paddingMultiplier);
+        var windowHeight = int(count * ListView.SHIFT_Y + (FilterSelector.PADDING * paddingMultiplier));
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }

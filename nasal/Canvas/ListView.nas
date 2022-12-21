@@ -212,7 +212,7 @@ var ListView = {
         me.dataContent.removeAllChildren();
 
         me.dataContent.createChild("text")
-            .setTranslation(LogbookDialog.WINDOW_WIDTH / 2, me.vBoxSpacing / 2)
+            .setTranslation(int(LogbookDialog.WINDOW_WIDTH / 2), int(me.vBoxSpacing / 2))
             .setColor(me.style.TEXT_COLOR)
             .setAlignment("center-center")
             .setText("Loading...");

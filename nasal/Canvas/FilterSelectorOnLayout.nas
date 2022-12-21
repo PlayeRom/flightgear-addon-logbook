@@ -134,7 +134,7 @@ var FilterSelector = {
         }
 
         # 5 = spacing between buttons:
-        var windowHeight = count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * paddingMultiplier);
+        var windowHeight = int(count * (FilterSelector.BUTTON_HEIGHT + 5) + (FilterSelector.PADDING * paddingMultiplier));
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
