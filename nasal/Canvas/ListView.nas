@@ -293,7 +293,7 @@ var ListView = {
                 column += 1;
 
                 var text = dataText == "" ? "-" : dataText;
-                text = sprintf("%s %s\n", text, me.getExtraText(index, dataText));
+                text = sprintf("%s %s\n", me.addCommaSeparator(index, text), me.getExtraText(index, dataText));
                 var maxWidth = index == File.INDEX_NOTE ? me.getX(column) : nil;
                 me.drawText(rowGroup, x, text, maxWidth);
 
@@ -342,31 +342,82 @@ var ListView = {
                 return "hours";
             }
 
-            return sprintf("hours (%d:%02d)", digits[0], int((digits[1] / 100) * 60));
+            return sprintf("hours (%d:%02.0f)", digits[0], (digits[1] / 100) * 60);
         }
 
         if (column == File.INDEX_DISTANCE) {
             var inMeters = value * globals.NM2M;
             if (inMeters >= 1000) {
-                return sprintf("nm (%.02f km)", inMeters / 1000);
+                var km = sprintf("%.02f", inMeters / 1000);
+                return sprintf("nm (%s km)", me.getValueWithCommaSeparator(km));
             }
 
             return sprintf("nm (%.0f m)", inMeters);
         }
 
         if (column == File.INDEX_FUEL) {
-            return sprintf("US gallons (%.02f l)", value * globals.GAL2L);
+            var liters = sprintf("%.02f", value * globals.GAL2L);
+            return sprintf("US gallons (%s l)", me.getValueWithCommaSeparator(liters));
         }
 
         if (column == File.INDEX_MAX_ALT) {
             var inMeters = value * globals.FT2M;
             if (inMeters >= 1000) {
-                return sprintf("ft MSL (%.02f km)", inMeters / 1000);
+                var km = sprintf("%.02f", inMeters / 1000);
+                return sprintf("ft MSL (%s km)", me.getValueWithCommaSeparator(km));
             }
 
             return sprintf("ft MSL (%.0f m)", inMeters);
         }
 
         return "";
+    },
+
+    #
+    # int column
+    # string value
+    # return string
+    #
+    addCommaSeparator: func(column, value) {
+        if (column == File.INDEX_DISTANCE or
+            column == File.INDEX_FUEL or
+            column == File.INDEX_MAX_ALT
+        ) {
+            return me.getValueWithCommaSeparator(value);
+        }
+
+        return value;
+    },
+
+    #
+    # string value
+    # return string
+    #
+    getValueWithCommaSeparator: func(value) {
+        var splitted   = split(".", value);
+        var strToCheck = splitted[0];
+        var newValue   = strToCheck;
+        var length     = size(strToCheck);
+        if (length > 3) {
+            newValue = "";
+            var modulo = math.mod(length, 3);
+            if (modulo > 0) {
+                newValue ~= substr(strToCheck, 0, modulo);
+                newValue ~= ",";
+            }
+
+            for (var i = modulo; i < length; i += 3) {
+                newValue ~= substr(strToCheck, i, 3);
+                if (i + 3 < length) {
+                    newValue ~= ",";
+                }
+            }
+        }
+
+        if (size(splitted) == 2) {
+            return newValue ~ "." ~ splitted[1];
+        }
+
+        return newValue;
     },
 };
