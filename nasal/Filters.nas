@@ -166,6 +166,7 @@ var Filters = {
     getFilterTitleByColumnIndex: func(column) {
              if (column == File.INDEX_DATE)     return "Date filter";
         else if (column == File.INDEX_AIRCRAFT) return "Aircraft filter";
+        else if (column == File.INDEX_VARIANT)  return "Variant filter";
         else if (column == File.INDEX_TYPE)     return "Type filter";
         else if (column == File.INDEX_CALLSIGN) return "Callsign filter";
         else if (column == File.INDEX_FROM)     return "From filter";
