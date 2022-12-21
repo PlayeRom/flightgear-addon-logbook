@@ -232,8 +232,7 @@ var FilterSelector = {
             rowGroup = me.drawHoverBox(
                 y,
                 [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE],
-                [0.0, 0.0, 0.0, 0.0],
-                ListView.SHIFT_Y
+                me.style.CANVAS_BG
             );
             me.drawText(rowGroup, x, "Default All");
             y += ListView.SHIFT_Y;
@@ -241,7 +240,7 @@ var FilterSelector = {
 
         foreach (var text; me.items) {
             var label = text == "" ? "<empty>" : text;
-            var rowGroup = me.drawHoverBox(y, [me.columnIndex, text], [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
+            var rowGroup = me.drawHoverBox(y, [me.columnIndex, text], me.style.CANVAS_BG);
             me.drawText(rowGroup, x, label);
 
             y += ListView.SHIFT_Y;
@@ -256,7 +255,7 @@ var FilterSelector = {
     # return int - Y pos
     #
     drawHoverBoxTitle: func(x, y) {
-        var group = me.drawHoverBox(y, nil, me.style.CANVAS_BG, ListView.SHIFT_Y, false);
+        var group = me.drawHoverBox(y, nil, me.style.CANVAS_BG, false);
         me.drawText(group, x, me.title);
         y += ListView.SHIFT_Y;
         return y;
@@ -276,23 +275,22 @@ var FilterSelector = {
     # return hash - canvas group
     #
     drawHoverBoxItems: func(y, dataToPass = nil) {
-        return me.drawHoverBox(y, dataToPass, [0.0, 0.0, 0.0, 0.0], ListView.SHIFT_Y);
+        return me.drawHoverBox(y, dataToPass, me.style.CANVAS_BG);
     },
 
     #
     # int y
     # vector|nil dataToPass - data to pass to MouseHover
     # vector bgColor
-    # int height
     # bool isMouseHover
     # return hash - canvas group
     #
-    drawHoverBox: func(y, dataToPass, bgColor, height, isMouseHover = 1) {
+    drawHoverBox: func(y, dataToPass, bgColor, isMouseHover = 1) {
         var rowGroup = me.scrollDataContent.createChild("group")
             .setTranslation(0, y);
 
         # Create rect because setColorFill on rowGroup doesn't work
-        var rect = rowGroup.rect(0, 0, FilterSelector.WINDOW_WIDTH - (ListView.PADDING * 3), height)
+        var rect = rowGroup.rect(0, 0, FilterSelector.WINDOW_WIDTH - (ListView.PADDING * 3), ListView.SHIFT_Y)
             .setColorFill(bgColor);
 
         if (isMouseHover) {
@@ -301,7 +299,7 @@ var FilterSelector = {
             });
 
             rowGroup.addEventListener("mouseleave", func {
-                rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
+                rect.setColorFill(me.style.CANVAS_BG);
             });
 
             if (dataToPass != nil) {
@@ -342,7 +340,8 @@ var FilterSelector = {
         if (me.fontSize == 12) {
             return 16;
         }
-        else if (me.fontSize == 16) {
+
+        if (me.fontSize == 16) {
             return 18;
         }
 
