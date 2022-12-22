@@ -12,7 +12,8 @@
 #
 # Main Nasal function
 #
-# addon - Addon object
+# hash addon - Addon object
+# return void
 #
 var main = func(addon) {
     logprint(LOG_INFO, "Logbook addon initialized from path ", addon.basePath);
@@ -23,12 +24,13 @@ var main = func(addon) {
     addon.createStorageDir();
 
     logbook.init(addon);
-}
+};
 
 #
 # Load extra Nasal files in main add-on directory
 #
-# addon - Addon object
+# hash addon - Addon object
+# return void
 #
 var loadExtraNasalFiles = func (addon) {
     var modules = [
@@ -60,14 +62,32 @@ var loadExtraNasalFiles = func (addon) {
         "Logbook",
     ];
 
+    loadVectorOfModules(addon, modules, "logbook");
+
+    # Add widgets to canvas namespace
+    var widgets = [
+        "nasal/Canvas/Widgets/ListView",
+        "nasal/Canvas/Widgets/Styles/DefaultStyle",
+    ];
+
+    loadVectorOfModules(addon, widgets, "canvas");
+};
+
+#
+# hash addon - addons.Addon object
+# vector modules
+# string namespace
+# return void
+#
+var loadVectorOfModules = func(addon, modules, namespace) {
     foreach (var scriptName; modules) {
         var fileName = addon.basePath ~ "/" ~ scriptName ~ ".nas";
 
-        if (io.load_nasal(fileName, "logbook")) {
-            logprint(LOG_INFO, "Logbook Add-on module \"", scriptName, "\" loaded OK");
+        if (!io.load_nasal(fileName, namespace)) {
+            logprint(LOG_ALERT, "Logbook Add-on module \"", scriptName, "\" loading failed");
         }
     }
-}
+};
 
 #
 # This function is for addon development only. It is called on addon reload.
@@ -85,4 +105,4 @@ var loadExtraNasalFiles = func (addon) {
 var unload = func(addon) {
     logprint(LOG_INFO, "Logbook addon unload");
     logbook.uninit();
-}
+};
