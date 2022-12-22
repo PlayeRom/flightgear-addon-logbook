@@ -40,8 +40,8 @@ var File = {
     #
     # Constructor
     #
-    # hash addon - addons.Addon object
-    # return me
+    # @param hash addon - addons.Addon object
+    # @return me
     #
     new: func (addon, filters) {
         var me = {
@@ -77,7 +77,7 @@ var File = {
     },
 
     #
-    # string version
+    # @param string version
     # retrun string - full path to file
     #
     getPathToFile: func(version) {
@@ -85,7 +85,7 @@ var File = {
     },
 
     #
-    # return void
+    # @return void
     #
     resetTotals: func() {
         # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
@@ -93,7 +93,7 @@ var File = {
     },
 
     #
-    # return bool - Return true if migration was done
+    # @return bool - Return true if migration was done
     #
     migrateVersion: func() {
         me.fileMigration = FileMigration.new(me);
@@ -134,8 +134,8 @@ var File = {
     #
     # Copy file from older version to the newest
     #
-    # string oldFile
-    # return void
+    # @param string oldFile
+    # @return void
     #
     copyFile: func(oldFile, newFile) {
         var content = io.readfile(oldFile);
@@ -148,7 +148,7 @@ var File = {
     #
     # If logbook file doesn't exist then create it with headers
     #
-    # return void
+    # @return void
     #
     saveHeaders: func() {
         if (!me.exists(me.filePath)) {
@@ -161,7 +161,7 @@ var File = {
     },
 
     #
-    # return string
+    # @return string
     #
     getHeaderLine: func() {
         return 'Date,' ~
@@ -188,8 +188,8 @@ var File = {
     # Check that file already exists.
     # From FG 2020.4 (next) we have io.exists() but for older versions we have to write it ourselves.
     #
-    # string path
-    # return bool
+    # @param string path
+    # @return bool
     #
     exists: func(path) {
         return io.stat(path) != nil;
@@ -198,9 +198,9 @@ var File = {
     #
     # Store log data to logbook file
     #
-    # hash logData - LogData object
-    # bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
-    # return void
+    # @param hash logData - LogData object
+    # @param bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
+    # @return void
     #
     saveData: func(logData, onlyIO = 0) {
         var file = io.open(me.filePath, "a");
@@ -218,9 +218,9 @@ var File = {
     },
 
     #
-    # hash file - file handler
-    # hash logData - LogData object
-    # return void
+    # @param hash file - file handler
+    # @param hash logData - LogData object
+    # @return void
     #
     saveItem: func(file, logData) {
         io.write(file, sprintf(
@@ -247,14 +247,14 @@ var File = {
     },
 
     #
-    # return void
+    # @return void
     #
     loadAllData: func() {
         thread.newthread(func { me.loadAllDataThread(); });
     },
 
     #
-    # return void
+    # @return void
     #
     loadAllDataThread: func() {
         me.allData.clear();
@@ -308,9 +308,9 @@ var File = {
     },
 
     #
-    # int start - Start index counting from 0 as a first row of data
-    # int count - How many rows should be returned
-    # return vector
+    # @param int start - Start index counting from 0 as a first row of data
+    # @param int count - How many rows should be returned
+    # @return vector
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
         me.objCallback = objCallback;
@@ -357,9 +357,9 @@ var File = {
     },
 
     #
-    # int start - Start index counting from 0 as a first row of data
-    # int count - How many rows should be returned
-    # return void
+    # @param int start - Start index counting from 0 as a first row of data
+    # @param int count - How many rows should be returned
+    # @return void
     #
     loadDataRangeThread: func(start, count) {
         me.loadedData = [];
@@ -407,7 +407,7 @@ var File = {
     #
     # Callback function when the loadDataRangeThread finishes work
     #
-    # return void
+    # @return void
     #
     loadDataRangeThreadFinish: func() {
         # Pass result to callback function
@@ -417,7 +417,7 @@ var File = {
     #
     # Append totals row to loadedData
     #
-    # return void
+    # @return void
     #
     appendTotalsRow: func() {
         append(me.loadedData, {
@@ -440,10 +440,10 @@ var File = {
     },
 
     #
-    # int rowIndex - where 0 = first data row, not header row
-    # string header
-    # string value
-    # return bool - Return true if successful
+    # @param int rowIndex - where 0 = first data row, not header row
+    # @param string header
+    # @param string value
+    # @return bool - Return true if successful
     #
     editData: func(rowIndex, header, value) {
         if (rowIndex == nil or header == nil or value == nil) {
@@ -474,11 +474,11 @@ var File = {
     },
 
     #
-    # int rowIndex - where 0 = first data row, not header row
-    # string header
-    # string value
-    # int headerIndex
-    # return void
+    # @param int rowIndex - where 0 = first data row, not header row
+    # @param string header
+    # @param string value
+    # @param int headerIndex
+    # @return void
     #
     editDataThread: func(rowIndex, header, value, headerIndex) {
         var items = me.allData.vector[rowIndex].toVector();
@@ -493,7 +493,7 @@ var File = {
     #
     # Callback function when the editDataThread thread finishes work
     #
-    # return void
+    # @return void
     #
     editThreadFinish: func() {
         gui.popupTip("The change has been saved!");
@@ -503,9 +503,9 @@ var File = {
     },
 
     #
-    # bool recalcTotals - Set true for recalculate totals, because data can changed
-    # bool resetFilters - Set true for reload filters, because data can changed
-    # return void
+    # @param bool recalcTotals - Set true for recalculate totals, because data can changed
+    # @param bool resetFilters - Set true for reload filters, because data can changed
+    # @return void
     #
     saveAllData: func(recalcTotals, resetFilters) {
         # Do backup
@@ -547,9 +547,9 @@ var File = {
     #
     # Search header by text in given vector and return index of it
     #
-    # string headerText
-    # vector headersData
-    # return int|nil
+    # @param string headerText
+    # @param vector headersData
+    # @return int|nil
     #
     getHeaderIndex: func(headerText, headersData) {
         if (g_isThreadPending) {
@@ -571,8 +571,8 @@ var File = {
     #
     # Remove all quotes from given text and return a new text without quotes
     #
-    # string text
-    # return string
+    # @param string text
+    # @return string
     #
     removeQuotes: func(text) {
         return string.replace(text, '"', '');
@@ -581,8 +581,8 @@ var File = {
     #
     # Increase values in me.totals vector with given items data
     #
-    # vector items
-    # return void
+    # @param vector items
+    # @return void
     #
     countTotals: func(items) {
         var index = 0;
@@ -605,7 +605,7 @@ var File = {
     #
     # Get total number of rows in CSV file (excluded headers row)
     #
-    # return int
+    # @return int
     #
     getTotalLines: func() {
         me.totalLines;
@@ -614,7 +614,7 @@ var File = {
     #
     # Get vector with headers names
     #
-    # return vector
+    # @return vector
     #
     getHeadersData: func() {
         me.headersData;
@@ -623,8 +623,8 @@ var File = {
     #
     # Get vector of data row by given index of row
     #
-    # int index
-    # return hash|nil
+    # @param int index
+    # @return hash|nil
     #
     getLogData: func(index) {
         if (index == nil or index < 0 or index >= me.allData.size()) {
@@ -644,8 +644,8 @@ var File = {
     },
 
     #
-    # int index - Index to delete
-    # return bool
+    # @param int index - Index to delete
+    # @return bool
     #
     deleteLog: func(index) {
         if (index < 0 or index >= me.allData.size()) {
@@ -661,8 +661,8 @@ var File = {
     },
 
     #
-    # int index - Index to delete
-    # return void
+    # @param int index - Index to delete
+    # @return void
     #
     deleteLogThread: func(index) {
         me.allData.pop(index);
@@ -677,7 +677,7 @@ var File = {
     #
     # Callback function when the deleteLogThread finishes work
     #
-    # return void
+    # @return void
     #
     deleteThreadFinish: func() {
         gui.popupTip("The log has been deleted!");

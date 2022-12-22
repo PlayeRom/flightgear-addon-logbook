@@ -22,8 +22,8 @@ var InputDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # return me
+    # @param hash settings - Settings object
+    # @return me
     #
     new: func(settings) {
         var me = { parents: [
@@ -90,7 +90,7 @@ var InputDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         me.filterSelector.del();
@@ -100,8 +100,8 @@ var InputDialog = {
     #
     # Set label text
     #
-    # string label
-    # return void
+    # @param string label
+    # @return void
     #
     setLabel: func(label) {
         me.btnTypeSelector.setVisible(label == "Type");
@@ -112,19 +112,19 @@ var InputDialog = {
     #
     # Set input text
     #
-    # string text
-    # return void
+    # @param string text
+    # @return void
     #
     setLineEdit: func(text) {
         me.lineEdit.setText(text);
     },
 
     #
-    # hash parent
-    # int allDataIndex
-    # string label as a Header text
-    # string value to edit
-    # return void
+    # @param hash parent
+    # @param int allDataIndex
+    # @param string label as a Header text
+    # @param string value to edit
+    # @return void
     #
     show: func(parent, allDataIndex, label, value) {
         me.parent       = parent;
@@ -138,7 +138,7 @@ var InputDialog = {
     },
 
     #
-    # return void
+    # @return void
     #
     hide: func() {
         if (me.parent != nil) {
@@ -151,8 +151,8 @@ var InputDialog = {
     },
 
     #
-    # hash style
-    # return me
+    # @param hash style
+    # @return me
     #
     setStyle: func(style) {
         me.filterSelector.setStyle(style);
@@ -160,7 +160,7 @@ var InputDialog = {
     },
 
     #
-    # return void
+    # @return void
     #
     actionTypeSelect: func() {
         me.filterSelector
@@ -176,9 +176,9 @@ var InputDialog = {
     },
 
     #
-    # int filterId
-    # string value
-    # return void
+    # @param int filterId
+    # @param string value
+    # @return void
     #
     filterSelectorCallback: func(filterId, value) {
         me.lineEdit.setText(value);
@@ -187,7 +187,7 @@ var InputDialog = {
     #
     # Save action
     #
-    # return void
+    # @return void
     #
     actionSave: func() {
         var value = me.lineEdit.text();
@@ -211,7 +211,7 @@ var InputDialog = {
     #
     # Cancel action
     #
-    # return void
+    # @return void
     #
     actionCancel: func() {
         me.hide();
@@ -223,7 +223,7 @@ var InputDialog = {
     #
     # Validate the value according to header
     #
-    # return bool - Return true if value is correct
+    # @return bool - Return true if value is correct
     #
     validate: func(value) {
         for (var i = 0; i < size(value); i += 1) {
@@ -300,24 +300,24 @@ var InputDialog = {
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateDate: func(value) {
         return string.match(value, "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]");
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateTime: func(value) {
         return string.match(value, "[0-9][0-9]:[0-9][0-9]");
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateAircraft: func(value) {
         for (var i = 0; i < size(value); i += 1) {
@@ -330,8 +330,8 @@ var InputDialog = {
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateAircraftType: func(value) {
         foreach (var type; AircraftType.getVector()) {
@@ -344,24 +344,24 @@ var InputDialog = {
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateDigit: func(value) {
         return string.match(value, "[0-9]");
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateCrash: func(value) {
         return value == "1" or value == "0" or value == "";
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateDecimal: func(value) {
         for (var i = 0; i < size(value); i += 1) {
@@ -374,8 +374,8 @@ var InputDialog = {
     },
 
     #
-    # string value
-    # return bool
+    # @param string value
+    # @return bool
     #
     validateNumber: func(value) {
         for (var i = 0; i < size(value); i += 1) {

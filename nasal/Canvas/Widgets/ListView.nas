@@ -148,7 +148,7 @@ gui.widgets.ListView = {
     # If you didn't use setColumnsWidth then items is a vector of strings. Then each string will be a row. If you used
     # setColumnsWidth then items is a vector of hashes, where each hash must have "data" key with a vector of strings.
     # Then each hash will be a row and each string will be a column in its row. In this case, the size of the string
-    # vector must be the same as the size of the vector given in setColumnsWidth.
+    # @param vector must be the same as the size of the vector given in setColumnsWidth.
     #
     # @param vector items - ["Item 1", "Item 2", ...] or
     #                       [{data: ["Row 1 Col 1", "Row 1 Col 2", ...]}, {data: ["Row 2 Col 1", "Row 2 col 2", ...]}, ...]

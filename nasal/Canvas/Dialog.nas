@@ -16,13 +16,13 @@ var Dialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # int width - Initial width of window
-    # int height - Initial height of window
-    # string title - Title of window in the top bar
-    # bool resize - If true then user will be possible to resize the window
-    # func onResizeWidth - callback call when width of window was changed
-    # return me
+    # @param hash settings - Settings object
+    # @param int width - Initial width of window
+    # @param int height - Initial height of window
+    # @param string title - Title of window in the top bar
+    # @param bool resize - If true then user will be possible to resize the window
+    # @param func onResizeWidth - callback call when width of window was changed
+    # @return me
     #
     new: func(settings, width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
@@ -63,11 +63,11 @@ var Dialog = {
     },
 
     #
-    # int width
-    # int height
-    # string title
-    # bool resize
-    # return hash - canvas Window object
+    # @param int width
+    # @param int height
+    # @param string title
+    # @param bool resize
+    # @return hash - canvas Window object
     #
     createCanvasWindow: func(width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
@@ -98,7 +98,7 @@ var Dialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         me.window.destroy();
@@ -107,8 +107,8 @@ var Dialog = {
     #
     # Set position on center of screen
     #
-    # int|nil width, height - Dimension of window. If nil, the values provided by the constructor will be used.
-    # return void
+    # @param int|nil width, height - Dimension of window. If nil, the values provided by the constructor will be used.
+    # @return void
     #
     setPositionOnCenter: func(width = nil, height = nil) {
         var screenW = me.getScreenWidth();
@@ -124,9 +124,9 @@ var Dialog = {
     },
 
     #
-    # vector|nil bgColor
-    # hash|nil margins - Margins hash or nil
-    # return hash - gui.widgets.ScrollArea object
+    # @param vector|nil bgColor
+    # @param hash|nil margins - Margins hash or nil
+    # @return hash - gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
@@ -140,11 +140,11 @@ var Dialog = {
     },
 
     #
-    # hash cGroup - Pareent object as ScrollArea widget
-    # string|nil font - Font file name
-    # int|nil - Font size
-    # string|nil alignment - Content alignment value
-    # return hash - content group of ScrollArea
+    # @param hash cGroup - Pareent object as ScrollArea widget
+    # @param string|nil font - Font file name
+    # @param int|nil - Font size
+    # @param string|nil alignment - Content alignment value
+    # @return hash - content group of ScrollArea
     #
     getScrollAreaContent: func(cGroup, font = nil, fontSize = nil, alignment = nil) {
         var scrollContent = cGroup.getContent();
@@ -167,7 +167,7 @@ var Dialog = {
     #
     # Show canvas dialog
     #
-    # return void
+    # @return void
     #
     show: func() {
         me.window.raise();
@@ -177,8 +177,8 @@ var Dialog = {
     #
     # Hide canvas dialog
     #
-    # bool withRedraw
-    # return void
+    # @param bool withRedraw
+    # @return void
     #
     hide: func(withRedraw = 1) {
         me.window.hide();
@@ -187,7 +187,7 @@ var Dialog = {
     #
     # Return true if window is showing
     #
-    # return bool
+    # @return bool
     #
     isWindowVisible: func() {
         return me.window.isVisible();
@@ -196,7 +196,7 @@ var Dialog = {
     #
     # Get hash with dialog styles/themes
     #
-    # return hash
+    # @return hash
     #
     getStyle: func() {
         return {
@@ -220,8 +220,8 @@ var Dialog = {
     },
 
     #
-    # string title
-    # return int - return index of window in property tree or -1 if not found.
+    # @param string title
+    # @return int - return index of window in property tree or -1 if not found.
     #
     getWindowPropertyIndex: func(title) {
         var highest = -1; # We are looking for the highest index for support dev reload the add-on
@@ -240,7 +240,7 @@ var Dialog = {
     #
     # Hide background image for "dark" theme and show it for "light" theme
     #
-    # return void
+    # @return void
     #
     toggleBgImage: func() {
         me.style.NAME == "dark"
@@ -251,7 +251,7 @@ var Dialog = {
     #
     # Get X position of this window
     #
-    # return int
+    # @return int
     #
     getPosX: func() {
         return me.window.get("tf/t[0]");
@@ -260,21 +260,21 @@ var Dialog = {
     #
     # Get Y position of this window
     #
-    # return int
+    # @return int
     #
     getPosY: func() {
         return me.window.get("tf/t[1]");
     },
 
     #
-    # return int
+    # @return int
     #
     getScreenWidth: func() {
         return getprop("/sim/gui/canvas/size[0]");
     },
 
     #
-    # return int
+    # @return int
     #
     getScreenHeight: func() {
         return getprop("/sim/gui/canvas/size[1]");

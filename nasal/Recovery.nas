@@ -22,7 +22,7 @@ var Recovery = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func (addon, file) {
         var me = {
@@ -43,16 +43,16 @@ var Recovery = {
     #
     # Uninitialize Recovery module
     #
-    # return void
+    # @return void
     #
     del: func() {
         me.stop();
     },
 
     #
-    # hash objCallback - Class as owner of callback
-    # func callback
-    # return void
+    # @param hash objCallback - Class as owner of callback
+    # @param func callback
+    # @return void
     #
     start: func(objCallback, callback) {
         me.stop();
@@ -63,7 +63,7 @@ var Recovery = {
     },
 
     #
-    # return void
+    # @return void
     #
     stop: func() {
         me.timer.stop();
@@ -72,7 +72,7 @@ var Recovery = {
     #
     # Timer update function
     #
-    # return void
+    # @return void
     #
     update: func() {
         call(me.callback, [], me.objCallback);
@@ -81,7 +81,7 @@ var Recovery = {
     #
     # Save log data to recovery file
     #
-    # return void
+    # @return void
     #
     save: func(logData) {
         var file = io.open(me.filePath, "w");
@@ -92,7 +92,7 @@ var Recovery = {
     #
     # Clear recovery file
     #
-    # return void
+    # @return void
     #
     clear: func() {
         var file = io.open(me.filePath, "w");
@@ -103,7 +103,7 @@ var Recovery = {
     # Retrieve the log from the recovery file if it exists, write it to the main log file,
     # clear recovery file and load the entire main log file.
     #
-    # return void
+    # @return void
     #
     restore: func() {
         if (me.file.exists(me.filePath)) {

@@ -16,8 +16,8 @@ var FileMigration = {
     #
     # Constructor
     #
-    # hash file - File object
-    # return me
+    # @param hash file - File object
+    # @return me
     #
     new: func (file) {
         var me = { parents: [FileMigration] };
@@ -28,8 +28,8 @@ var FileMigration = {
     },
 
     #
-    # string oldFilePath
-    # string newFilePath
+    # @param string oldFilePath
+    # @param string newFilePath
     # retrun void
     #
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
@@ -79,7 +79,7 @@ var FileMigration = {
     },
 
     #
-    # return string
+    # @return string
     #
     getHeaderLine_v2: func() {
         return 'Date,' ~
@@ -102,8 +102,8 @@ var FileMigration = {
     },
 
     #
-    # string oldFilePath
-    # string newFilePath
+    # @param string oldFilePath
+    # @param string newFilePath
     # retrun void
     #
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
@@ -154,7 +154,7 @@ var FileMigration = {
     },
 
     #
-    # return string
+    # @return string
     #
     getHeaderLine_v3: func() {
         return 'Date,' ~

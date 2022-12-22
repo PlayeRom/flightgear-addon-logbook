@@ -24,8 +24,8 @@ var HelpDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # return me
+    # @param hash settings - Settings object
+    # @return me
     #
     new: func(settings) {
         var me = { parents: [
@@ -72,18 +72,18 @@ var HelpDialog = {
     #
     # Reszie collback from parent Dialog
     #
-    # int width
-    # return void
+    # @param int width
+    # @return void
     #
     onResizeWidth: func(width) {
         me.textHelp.setMaxWidth(width - (HelpDialog.PADDING * 2));
     },
 
     #
-    # int x
-    # int y
-    # int|nil maxWidth
-    # return hash - canvas text object
+    # @param int x
+    # @param int y
+    # @param int|nil maxWidth
+    # @return hash - canvas text object
     #
     drawText: func(x, y, maxWidth = nil) {
         var text = me.scrollDataContent.createChild("text")
@@ -100,7 +100,7 @@ var HelpDialog = {
     },
 
     #
-    # return hash - HBoxLayout object with button
+    # @return hash - HBoxLayout object with button
     #
     drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -121,15 +121,15 @@ var HelpDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         call(Dialog.del, [], me);
     },
 
     #
-    # hash style
-    # return void
+    # @param hash style
+    # @return void
     #
     setStyle: func(style) {
         me.style = style;
@@ -140,7 +140,7 @@ var HelpDialog = {
     },
 
     #
-    # return string
+    # @return string
     #
     getHelpText: func() {
         return sprintf(getprop(me.addon.node.getPath() ~ "/addon-devel/help-text"), File.FILE_VERSION);

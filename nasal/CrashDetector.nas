@@ -16,8 +16,8 @@ var CrashDetector = {
     #
     # Constructor
     #
-    # hash spaceShuttle - SpaceShuttle object
-    # return me
+    # @param hash spaceShuttle - SpaceShuttle object
+    # @return me
     #
     new: func (spaceShuttle) {
         var me = { parents: [CrashDetector] };
@@ -34,8 +34,8 @@ var CrashDetector = {
     #
     # Return true if testCrash positive within 3 seconds
     #
-    # bool onGround
-    # return bool
+    # @param bool onGround
+    # @return bool
     #
     isCrash: func(onGround) {
         if (me.testCrash(onGround)) {
@@ -52,8 +52,8 @@ var CrashDetector = {
     #
     # Reutrn true if possible crash occured
     #
-    # bool onGround
-    # return bool
+    # @param bool onGround
+    # @return bool
     #
     testCrash: func(onGround) {
         if (me.spaceShuttle.isCrashed()) {
@@ -92,7 +92,7 @@ var CrashDetector = {
     #
     # Return true if roll and pitch is less than 30 degrees
     #
-    # return bool
+    # @return bool
     #
     isOrientationOK: func() {
         return math.abs(getprop("/orientation/roll-deg"))  < 30 and
@@ -102,7 +102,7 @@ var CrashDetector = {
     #
     # Return true if any gear is broken for Cessna 172P.
     #
-    # return bool
+    # @return bool
     #
     isC172PBrokenGear: func() {
         var node = props.globals.getNode("/fdm/jsbsim/gear");
@@ -121,7 +121,7 @@ var CrashDetector = {
     #
     # Return true if any wing is broken for Cessna 172P.
     #
-    # return bool
+    # @return bool
     #
     isC172PBrokenWing: func() {
         return

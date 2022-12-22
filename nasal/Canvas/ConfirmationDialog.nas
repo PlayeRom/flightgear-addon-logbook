@@ -22,9 +22,9 @@ var ConfirmationDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # string title
-    # return me
+    # @param hash settings - Settings object
+    # @param string title
+    # @return me
     #
     new: func(settings, title) {
         var me = { parents: [
@@ -75,7 +75,7 @@ var ConfirmationDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         call(Dialog.del, [], me);
@@ -84,17 +84,17 @@ var ConfirmationDialog = {
     #
     # Set label text
     #
-    # string label
-    # return void
+    # @param string label
+    # @return void
     #
     setLabel: func(label) {
         me.label.setText(label);
     },
 
     #
-    # int logIndex
+    # @param int logIndex
     # hash|nill parentObj - Dialog parent class
-    # return void
+    # @return void
     #
     show: func(logIndex, parentObj = nil) {
         me.logIndex = logIndex;
@@ -106,7 +106,7 @@ var ConfirmationDialog = {
     #
     # Positive button action
     #
-    # return void
+    # @return void
     #
     actionPositive: func() {
         if (me.parentObj == nil) {
@@ -126,7 +126,7 @@ var ConfirmationDialog = {
     #
     # Negative button action
     #
-    # return void
+    # @return void
     #
     actionNegative: func() {
         call(Dialog.hide, [], me);

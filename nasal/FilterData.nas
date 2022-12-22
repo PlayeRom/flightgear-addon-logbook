@@ -16,9 +16,9 @@ var FilterData = {
     #
     # Constructor
     #
-    # int index - Column index as File.INDEX_[...]
-    # string value
-    # return me
+    # @param int index - Column index as File.INDEX_[...]
+    # @param string value
+    # @return me
     #
     new: func(index, value) {
         return {
@@ -29,10 +29,10 @@ var FilterData = {
     },
 
     #
-    # hash filterHash
-    # int index - Column index as File.INDEX_[...]
-    # string value
-    # return bool
+    # @param hash filterHash
+    # @param int index - Column index as File.INDEX_[...]
+    # @param string value
+    # @return bool
     #
     isMatch: func(index, value) {
         return me.index == index and me.value == value;

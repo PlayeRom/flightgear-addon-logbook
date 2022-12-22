@@ -17,7 +17,7 @@ var Thread = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         return {
@@ -32,7 +32,7 @@ var Thread = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         if (me.timer != nil) {
@@ -41,11 +41,11 @@ var Thread = {
     },
 
     #
-    # func threadFunc
-    # hash objCallback
-    # func callback
-    # bool isLockByGlobal
-    # return bool
+    # @param func threadFunc
+    # @param hash objCallback
+    # @param func callback
+    # @param bool isLockByGlobal
+    # @return bool
     #
     run: func(threadFunc, objCallback, callback, isLockByGlobal = 1) {
         if (isLockByGlobal and g_isThreadPending) {
@@ -72,7 +72,7 @@ var Thread = {
     #
     # Timer callback function
     #
-    # return void
+    # @return void
     #
     checkEnd: func() {
         if (me.isPending) {

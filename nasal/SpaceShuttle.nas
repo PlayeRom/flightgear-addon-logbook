@@ -18,7 +18,7 @@ var SpaceShuttle = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         var me = { parents: [SpaceShuttle] };
@@ -45,14 +45,14 @@ var SpaceShuttle = {
     #
     # Is Shuttle on the launch position
     #
-    # return bool
+    # @return bool
     #
     isPreLaunch: func() {
         return me.preLaunch;
     },
 
     #
-    # return bool
+    # @return bool
     #
     isLiftOff: func() {
         if (me.ignition) {
@@ -67,7 +67,7 @@ var SpaceShuttle = {
     #
     # Return true if Shuttle lifted off
     #
-    # return bool
+    # @return bool
     #
     isLaunched: func() {
         return me.launched;
@@ -76,7 +76,7 @@ var SpaceShuttle = {
     #
     # Return true if the Shuttle carshed or any gear is broken.
     #
-    # return bool
+    # @return bool
     #
     isCrashed: func() {
         return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false) or
@@ -86,7 +86,7 @@ var SpaceShuttle = {
     #
     # Return true if any gear is broken.
     #
-    # return bool
+    # @return bool
     #
     isGearBroken: func() {
         return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0 or

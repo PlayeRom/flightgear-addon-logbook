@@ -32,7 +32,7 @@ var AircraftType = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         var me = { parents: [AircraftType] };
@@ -45,7 +45,7 @@ var AircraftType = {
     #
     # Get aircraft type according to tags
     #
-    # return string
+    # @return string
     #
     getType: func() {
         var type = me.getTypeByTags();
@@ -59,7 +59,7 @@ var AircraftType = {
     #
     # Get aircraft type according to tags
     #
-    # return string
+    # @return string
     #
     getTypeByTags: func() {
         if (me.tagsNode == nil) {
@@ -150,11 +150,11 @@ var AircraftType = {
     #
     # Serach group of tags
     #
-    # hash itemsToSearch - Hash with 2 key "or" and "and" inficated to the vectors of tags.
+    # @param hash itemsToSearch - Hash with 2 key "or" and "and" inficated to the vectors of tags.
     #       Vector of "or" means that this function return true if at least one is found.
     #       Vector of "and" means that this function return true if all of them are found.
     #       Both vectors ("or" and "and") are working with "or" logic.
-    # return bool - Return true if tag or group of tags is found
+    # @return bool - Return true if tag or group of tags is found
     #
     searchTag: func(itemsToSearch) {
         var andCounter = 0;
@@ -181,7 +181,7 @@ var AircraftType = {
     #
     # Manual assignment of the type of known aircrafts
     #
-    # return string
+    # @return string
     #
     manualSelection: func() {
         var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft-id"));
@@ -211,7 +211,7 @@ var AircraftType = {
     #
     # Get vector for all types
     #
-    # return vector
+    # @return vector
     #
     getVector: func() {
         return [

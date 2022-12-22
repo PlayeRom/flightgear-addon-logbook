@@ -26,9 +26,9 @@ var DetailsDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # hash file - File object
-    # return me
+    # @param hash settings - Settings object
+    # @param hash file - File object
+    # @return me
     #
     new: func(settings, file) {
         var VBOX_SPACING = canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
@@ -91,7 +91,7 @@ var DetailsDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         me.inputDialog.del();
@@ -100,7 +100,7 @@ var DetailsDialog = {
     },
 
     #
-    # return hash - HBoxLayout object with button
+    # @return hash - HBoxLayout object with button
     #
     drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -133,8 +133,8 @@ var DetailsDialog = {
     },
 
     #
-    # hash style
-    # return void
+    # @param hash style
+    # @return void
     #
     setStyle: func(style) {
         me.style = style;
@@ -155,9 +155,9 @@ var DetailsDialog = {
     #
     # Show canvas dialog
     #
-    # hash parent - LogbookDialog object
-    # hash data - {"allDataIndex": index, "data": vector}
-    # return void
+    # @param hash parent - LogbookDialog object
+    # @param hash data - {"allDataIndex": index, "data": vector}
+    # @return void
     #
     show: func(parent, data) {
         me.dataRow = data;
@@ -175,7 +175,7 @@ var DetailsDialog = {
     #
     # Hide details window with its sub windows
     #
-    # return void
+    # @return void
     #
     hide: func() {
         if (me.parent != nil) {
@@ -192,8 +192,8 @@ var DetailsDialog = {
     #
     # Perapre columns data for ListView
     #
-    # vector data
-    # return vector
+    # @param vector data
+    # @return vector
     #
     getListViewRows: func(data) {
         var headers = me.file.getHeadersData();
@@ -213,7 +213,7 @@ var DetailsDialog = {
     #
     # Reload current log
     #
-    # return void
+    # @return void
     #
     reload: func() {
         if (me.parentDataIndex != nil) {
@@ -230,8 +230,8 @@ var DetailsDialog = {
     #
     # The click callback on the ListView widget. Open the inputDialog.
     #
-    # int index
-    # return void
+    # @param int index
+    # @return void
     #
     listViewCallback: func(index) {
         if (!g_isThreadPending) {
@@ -246,9 +246,9 @@ var DetailsDialog = {
     },
 
     #
-    # int column
-    # string value
-    # return string
+    # @param int column
+    # @param string value
+    # @return string
     #
     getExtraText: func(column, value) {
         if ((column == File.INDEX_FROM or column == File.INDEX_TO) and value != "") {
@@ -299,9 +299,9 @@ var DetailsDialog = {
     },
 
     #
-    # int column
-    # string value
-    # return string
+    # @param int column
+    # @param string value
+    # @return string
     #
     addCommaSeparator: func(column, value) {
         if (column == File.INDEX_DISTANCE or
@@ -315,8 +315,8 @@ var DetailsDialog = {
     },
 
     #
-    # string value
-    # return string
+    # @param string value
+    # @return string
     #
     getValueWithCommaSeparator: func(value) {
         var splitted   = split(".", value);

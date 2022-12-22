@@ -16,7 +16,7 @@ var Airport = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         return { parents: [Airport] };
@@ -25,8 +25,8 @@ var Airport = {
     #
     # Get the ICAO code of the nearest airport.
     #
-    # double maxDistance - in meters
-    # return string - ICAO code or empty
+    # @param double maxDistance - in meters
+    # @return string - ICAO code or empty
     #
     getNearestIcao: func(maxDistance) {
         var distance = me.getNearestAirportDistanceM();
@@ -40,7 +40,7 @@ var Airport = {
     #
     # Get nearest airport distance in meters.
     #
-    # return hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
+    # @return hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
     getNearestAirportDistanceM: func() {
         var icao = getprop("/sim/airport/closest-airport-id");

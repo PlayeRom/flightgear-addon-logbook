@@ -16,7 +16,7 @@ var LogData = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         var me = { parents: [LogData] };
@@ -46,8 +46,8 @@ var LogData = {
     #
     # Set the take-off date
     #
-    # string date - Take-off date
-    # return me
+    # @param string date - Take-off date
+    # @return me
     #
     setDate: func (date) {
         me.date = date;
@@ -59,7 +59,7 @@ var LogData = {
     #
     # Get only year from date
     #
-    # return string
+    # @return string
     #
     getYear: func() {
         return substr(me.date, 0, 4);
@@ -68,8 +68,8 @@ var LogData = {
     #
     # Set the take-off time
     #
-    # string time - Take-off time
-    # return me
+    # @param string time - Take-off time
+    # @return me
     #
     setTime: func (time) {
         me.time = time;
@@ -81,7 +81,7 @@ var LogData = {
     #
     # Set the aircraft ID (/sim/aircraft-id)
     #
-    # return me
+    # @return me
     #
     setAircraft: func () {
         me.aircraft = me.removeHangarName(getprop("/sim/aircraft-id"));
@@ -93,7 +93,7 @@ var LogData = {
     #
     # Set the aircraft variant as /sim/aircraft. If not exist then use /sim/aircraft-id.
     #
-    # return me
+    # @return me
     #
     setVariant: func () {
         var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
@@ -110,8 +110,8 @@ var LogData = {
     #
     # Set the aircraft type
     #
-    # string type
-    # return me
+    # @param string type
+    # @return me
     #
     setAircraftType: func (type) {
         me.aircraftType = type;
@@ -123,8 +123,8 @@ var LogData = {
     #
     # Remove hangar name from aircraft ID
     #
-    # string|nil aircraft - Aircraft ID probably with hangar name
-    # return string|nil - Aircraft ID without hangar name
+    # @param string|nil aircraft - Aircraft ID probably with hangar name
+    # @return string|nil - Aircraft ID without hangar name
     #
     removeHangarName: func(aircraft) {
         if (aircraft == nil) {
@@ -159,8 +159,8 @@ var LogData = {
     #
     # Set the callsign
     #
-    # string callsign
-    # return me
+    # @param string callsign
+    # @return me
     #
     setCallsign: func(callsign) {
         me.callsign = me.getCsvSafeText(callsign);
@@ -172,8 +172,8 @@ var LogData = {
     #
     # Set the ICAO departure airport
     #
-    # string from - ICAO departure airport
-    # return me
+    # @param string from - ICAO departure airport
+    # @return me
     #
     setFrom: func(from) {
         me.from = from;
@@ -185,8 +185,8 @@ var LogData = {
     #
     # Set the ICAO destination airport
     #
-    # string to - ICAO destination airport
-    # return me
+    # @param string to - ICAO destination airport
+    # @return me
     #
     setTo: func(to) {
         me.to = to;
@@ -198,7 +198,7 @@ var LogData = {
     #
     # Set flag that aircraft landed
     #
-    # return me
+    # @return me
     #
     setLanding: func() {
         me.landings = 1;
@@ -210,7 +210,7 @@ var LogData = {
     #
     # Set flag that aircraft crashed
     #
-    # return me
+    # @return me
     #
     setCrash: func() {
         me.crash = true;
@@ -222,7 +222,7 @@ var LogData = {
     #
     # Get crash flag state as a value to save to the file
     #
-    # return string
+    # @return string
     #
     printCrash: func() {
         return me.crash ? "1" : "";
@@ -231,8 +231,8 @@ var LogData = {
     #
     # Set the total flight time during the day (in h)
     #
-    # double day - Total flight time during the day (in h)
-    # return me
+    # @param double day - Total flight time during the day (in h)
+    # @return me
     #
     setDay: func(day) {
         me.day = day;
@@ -245,8 +245,8 @@ var LogData = {
     #
     # Set the total flight time during the night (in h)
     #
-    # double night - Total flight time during the night (in h)
-    # return me
+    # @param double night - Total flight time during the night (in h)
+    # @return me
     #
     setNight: func(night) {
         me.night = night;
@@ -259,8 +259,8 @@ var LogData = {
     #
     # Set the total flight time during the IMC (in h)
     #
-    # double instrument - Total flight time during the IMC (in h)
-    # return me
+    # @param double instrument - Total flight time during the IMC (in h)
+    # @return me
     #
     setInstrument: func(instrument) {
         me.instrument = instrument;
@@ -271,7 +271,7 @@ var LogData = {
 
     #
     # Set the total flight time as sum of day and night
-    # return me
+    # @return me
     #
     setDuration: func() {
         me.duration = me.day + me.night;
@@ -283,8 +283,8 @@ var LogData = {
     #
     # Set the distance traveled during the flight in nautical miles
     #
-    # double distance - distance traveled during the flight in nautical miles
-    # return me
+    # @param double distance - distance traveled during the flight in nautical miles
+    # @return me
     #
     setDistance: func (distance) {
         me.distance = distance;
@@ -296,8 +296,8 @@ var LogData = {
     #
     # Set the amount of fuel used
     #
-    # double fuel - amount of fuel used
-    # return me
+    # @param double fuel - amount of fuel used
+    # @return me
     #
     setFuel: func (fuel) {
         me.fuel = fuel;
@@ -309,8 +309,8 @@ var LogData = {
     #
     # Set the max altitude
     #
-    # double maxAlt - max altitude in feets
-    # return me
+    # @param double maxAlt - max altitude in feets
+    # @return me
     #
     setMaxAlt: func (maxAlt) {
         me.maxAlt = maxAlt;
@@ -322,8 +322,8 @@ var LogData = {
     #
     # Set the note
     #
-    # string note - note
-    # return me
+    # @param string note - note
+    # @return me
     #
     setNote: func (note) {
         me.note = me.getCsvSafeText(note);
@@ -333,8 +333,8 @@ var LogData = {
     },
 
     #
-    # string|nil text
-    # return string
+    # @param string|nil text
+    # @return string
     #
     getCsvSafeText: func(text) {
         if (text == nil or text == "") {
@@ -348,7 +348,7 @@ var LogData = {
     #
     # Convert hash to vector
     #
-    # return vector
+    # @return vector
     #
     toVector: func() {
         var vector = [];
@@ -377,8 +377,8 @@ var LogData = {
     #
     # Apply given vector to this object
     #
-    # vector items
-    # return void
+    # @param vector items
+    # @return void
     #
     fromVector: func(items) {
         me.date         = items[File.INDEX_DATE];
@@ -402,8 +402,8 @@ var LogData = {
     },
 
     #
-    # int index - Column index
-    # return string|nil
+    # @param int index - Column index
+    # @return string|nil
     #
     getFilterValueByIndex: func(index) {
         if (index == File.INDEX_DATE) {
@@ -440,7 +440,7 @@ var LogData = {
     #
     # Get copy object of me
     #
-    # return hash - LogData object
+    # @return hash - LogData object
     #
     getClone: func() {
         var clone = LogData.new();

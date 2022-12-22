@@ -22,8 +22,8 @@ var Environment = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # return me
+    # @param hash settings - Settings object
+    # @return me
     #
     new: func (settings) {
         var me = { parents: [Environment] };
@@ -51,7 +51,7 @@ var Environment = {
     #
     # Get real date as string in ISO format
     #
-    # return string
+    # @return string
     #
     getDateString: func() {
         return sprintf(
@@ -65,7 +65,7 @@ var Environment = {
     #
     # Get real time as string
     #
-    # return string
+    # @return string
     #
     getTimeString: func() {
         return sprintf(
@@ -78,7 +78,7 @@ var Environment = {
     #
     # Reset all environment counters
     #
-    # return void
+    # @return void
     #
     resetCounters: func() {
         me.dayCounter        = 0;
@@ -91,7 +91,7 @@ var Environment = {
     #
     # Update all environment counters
     #
-    # return void
+    # @return void
     #
     update: func () {
         var currentElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
@@ -119,7 +119,7 @@ var Environment = {
     #
     # Return true when we have a night. It is a trick to check the color of the sky.
     #
-    # return bool
+    # @return bool
     #
     isNight: func() {
         return me.propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD and
@@ -130,7 +130,7 @@ var Environment = {
     #
     # Return true if visibility is for IFR conditions.
     #
-    # return bool
+    # @return bool
     #
     isIMC: func() {
         return me.propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY or
@@ -140,7 +140,7 @@ var Environment = {
     #
     # Get flight duration in day in hours
     #
-    # return double
+    # @return double
     #
     getDayHours: func() {
         return me.dayCounter / 3600;
@@ -149,7 +149,7 @@ var Environment = {
     #
     # Get flight duration in night in hours
     #
-    # return double
+    # @return double
     #
     getNightHours: func() {
         return me.nightCounter / 3600;
@@ -158,7 +158,7 @@ var Environment = {
     #
     # Get flight duration in IMC in hours
     #
-    # return double
+    # @return double
     #
     getInstrumentHours: func() {
         return me.instrumentCounter / 3600;
@@ -167,7 +167,7 @@ var Environment = {
     #
     # Get max altitude in ft
     #
-    # return double
+    # @return double
     #
     getMaxAlt: func() {
         return me.maxAlt;
@@ -177,7 +177,7 @@ var Environment = {
     # Get elapsed time in seconds in simulation.
     # The "/sim/time/elapsed-sec" property is count automatically and also paused when sim is paused.
     #
-    # return double
+    # @return double
     #
     getElapsedSec: func() {
         return getprop("/sim/time/elapsed-sec");
@@ -187,8 +187,8 @@ var Environment = {
     # Set replay mode flag. If true then sim is in replay mode and the counters should not be updated.
     # The problem is that elapsed-sec in reply mode is continuing counting, so we have to handle it manually.
     #
-    # bool isReplayMode
-    # return void
+    # @param bool isReplayMode
+    # @return void
     #
     setReplayMode: func(isReplayMode) {
         me.isReplayMode = isReplayMode;

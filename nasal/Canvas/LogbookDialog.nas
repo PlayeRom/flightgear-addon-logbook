@@ -57,10 +57,10 @@ var LogbookDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # hash file - File object
-    # hash filters - Filters object
-    # return me
+    # @param hash settings - Settings object
+    # @param hash file - File object
+    # @param hash filters - Filters object
+    # @return me
     #
     new: func(settings, file, filters) {
         var me = {
@@ -174,7 +174,7 @@ var LogbookDialog = {
     #
     # Callback from "/addons/by-id/org.flightgear.addons.logbook/addon-devel/reload-logbook" listener
     #
-    # return void
+    # @return void
     #
     reloadLogbookListenerCallback: func() {
         if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted") == true) {
@@ -202,7 +202,7 @@ var LogbookDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         foreach (var listener; me.listeners.vector) {
@@ -219,7 +219,7 @@ var LogbookDialog = {
     #
     # Show canvas dialog
     #
-    # return void
+    # @return void
     #
     show: func() {
         if (g_isThreadPending) {
@@ -236,7 +236,7 @@ var LogbookDialog = {
     #
     # Hide canvas dialog
     #
-    # return void
+    # @return void
     #
     hide: func() {
         me.filterSelector.hide();
@@ -247,7 +247,7 @@ var LogbookDialog = {
     #
     # Draw headers row
     #
-    # return void
+    # @return void
     #
     drawHeaders: func() {
         me.headersContent = me.group.createChild("group");
@@ -264,7 +264,7 @@ var LogbookDialog = {
     #
     # Draw headers row
     #
-    # return void
+    # @return void
     #
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
@@ -301,20 +301,20 @@ var LogbookDialog = {
     #
     # Get width of column for given index
     #
-    # int index
-    # return int
+    # @param int index
+    # @return int
     #
     getColumnWidth: func(index) {
         return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
-    # hash rowGroup - canvas group
-    # hash rect - rectangle canvas object
-    # vector items|nil - Items for FilterSelector
-    # string title|nil - FilterSelector title dialog
-    # int index|nil - Column index as File.INDEX_[...]
-    # return void
+    # @param hash rowGroup - canvas group
+    # @param hash rect - rectangle canvas object
+    # @param vector|nil items - Items for FilterSelector
+    # @param string|nil title - FilterSelector title dialog
+    # @param int|nil index - Column index as File.INDEX_[...]
+    # @return void
     #
     setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
         if (items == nil or title == nil or index == nil) {
@@ -348,9 +348,9 @@ var LogbookDialog = {
     },
 
     #
-    # int filterId
-    # string value
-    # return void
+    # @param int filterId
+    # @param string value
+    # @return void
     #
     filterSelectorCallback: func(filterId, value) {
         me.detailsDialog.hide();
@@ -361,8 +361,8 @@ var LogbookDialog = {
     # Replace some too long header text or set "filtered" marker
     #
     # index column
-    # string text
-    # return string
+    # @param string text
+    # @return string
     #
     getReplaceHeaderText: func(column, text) {
         if (column == File.INDEX_LANDINGS) {
@@ -383,10 +383,10 @@ var LogbookDialog = {
     #
     # Draw text
     #
-    # hash cGroup - Parent canvas group
-    # int x, y - Position of text
-    # string text - Text to draw
-    # return void
+    # @param hash cGroup - Parent canvas group
+    # @param int x, y - Position of text
+    # @param string text - Text to draw
+    # @return void
     #
     drawText: func(cGroup, x, y, text) {
         return cGroup.createChild("text")
@@ -398,7 +398,7 @@ var LogbookDialog = {
     #
     # Draw bottom bar with buttons
     #
-    # return void
+    # @return void
     #
     drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -454,7 +454,7 @@ var LogbookDialog = {
     #
     # Toggle style from light to dark and vice versa.
     #
-    # return void
+    # @return void
     #
     toggleStyle: func() {
         if (g_isThreadPending) {
@@ -496,7 +496,7 @@ var LogbookDialog = {
     },
 
     #
-    # return string
+    # @return string
     #
     getOppositeStyleName: func() {
         return me.style.NAME == "dark"
@@ -507,7 +507,7 @@ var LogbookDialog = {
     #
     # Go to first logbook items
     #
-    # return void
+    # @return void
     #
     first: func() {
         if (g_isThreadPending) {
@@ -524,7 +524,7 @@ var LogbookDialog = {
     #
     # Go to previous logbook items
     #
-    # return void
+    # @return void
     #
     prev: func() {
         if (g_isThreadPending) {
@@ -541,7 +541,7 @@ var LogbookDialog = {
     #
     # Go to next logbook items
     #
-    # return void
+    # @return void
     #
     next: func() {
         if (g_isThreadPending) {
@@ -558,7 +558,7 @@ var LogbookDialog = {
     #
     # Go to last logbook items
     #
-    # return void
+    # @return void
     #
     last: func() {
         if (g_isThreadPending) {
@@ -578,9 +578,9 @@ var LogbookDialog = {
     #
     # Reload logbook data
     #
-    # bool withHeaders - Set true when headers/filters must be change too.
-    # hash filter - FilterData object as {"index": column index, "value": "text"}
-    # return void
+    # @param bool withHeaders - Set true when headers/filters must be change too.
+    # @param hash filter - FilterData object as {"index": column index, "value": "text"}
+    # @return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
         if (filter != nil) {
@@ -601,10 +601,10 @@ var LogbookDialog = {
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # vector data - Vector of hashes {"allDataIndex": index, "data": vectorLogData}
-    # vector totals
-    # bool withHeaders
-    # return void
+    # @param vector data - Vector of hashes {"allDataIndex": index, "data": vectorLogData}
+    # @param vector totals
+    # @param bool withHeaders
+    # @return void
     #
     reloadDataCallback: func(data, withHeaders) {
         me.data = data;
@@ -623,7 +623,7 @@ var LogbookDialog = {
     #
     # Set paging information
     #
-    # return void
+    # @return void
     #
     setPaging: func() {
         var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
@@ -634,8 +634,8 @@ var LogbookDialog = {
     #
     # The click callback on the ListView widget. Open the details window.
     #
-    # int index
-    # return void
+    # @param int index
+    # @return void
     #
     listViewCallback: func(index) {
         if (!g_isThreadPending) {

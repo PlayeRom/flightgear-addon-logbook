@@ -22,8 +22,8 @@ var Logbook = {
     #
     # Constructor
     #
-    # hash addon - addons.Addon object
-    # return me
+    # @param hash addon - addons.Addon object
+    # @return me
     #
     new: func(addon) {
         var me = { parents: [Logbook] };
@@ -104,7 +104,7 @@ var Logbook = {
     #
     # Uninitialize Logbook module
     #
-    # return void
+    # @return void
     #
     del: func() {
         me.recovery.del();
@@ -115,7 +115,7 @@ var Logbook = {
     #
     # Initialize logbook after FDM initialized
     #
-    # return void
+    # @return void
     #
     fdmInitialized: func() {
         return setlistener(
@@ -135,7 +135,7 @@ var Logbook = {
     },
 
     #
-    # return void
+    # @return void
     #
     initStartAirport: func() {
         me.startAirportIcao = getprop("/sim/presets/airport-id");
@@ -154,7 +154,7 @@ var Logbook = {
     #
     # Recognition that the aircraft has taken off
     #
-    # return void
+    # @return void
     #
     initLogbook: func() {
         # logprint(MY_LOG_LEVEL, "Logbook Add-on - initLogbook <------------------------------------------");
@@ -177,7 +177,7 @@ var Logbook = {
     #
     # Initialize alitutde AGL threshold
     #
-    # return void
+    # @return void
     #
     initAltAglThreshold: func() {
         me.initAltAglFt = me.onGround
@@ -188,7 +188,7 @@ var Logbook = {
     #
     # Main timer callback for recognize takeoff, landing and crash
     #
-    # return void
+    # @return void
     #
     update: func() {
         if (me.isSimPaused or me.isReplayMode) {
@@ -240,7 +240,7 @@ var Logbook = {
     #
     # Call when aircraft is in the air
     #
-    # return void
+    # @return void
     #
     startLogging: func() {
         if (me.logData != nil) {
@@ -274,9 +274,9 @@ var Logbook = {
     #
     # Collect all information and save it to CSV file
     #
-    # bool landed - If true then aircraft landed, otherwise the flight aborted mid-air
-    # bool crashed - Set true when aircraft crashed
-    # return void
+    # @param bool landed - If true then aircraft landed, otherwise the flight aborted mid-air
+    # @param bool crashed - Set true when aircraft crashed
+    # @return void
     #
     stopLogging: func(landed, crashed = 0) {
         if (me.logData == nil) {
@@ -332,7 +332,7 @@ var Logbook = {
     #
     # Get amount of fuel burned
     #
-    # return double
+    # @return double
     #
     getFuel: func() {
         var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
@@ -342,7 +342,7 @@ var Logbook = {
     #
     # Take the distance flown
     #
-    # return double
+    # @return double
     #
     getDistance: func() {
         var odometer = getprop("/instrumentation/gps/odometer");
@@ -352,7 +352,7 @@ var Logbook = {
     #
     # Callback for Recovery class. Get last statistics data and put it to Recovery.
     #
-    # return void
+    # @return void
     #
     recoveryCallback: func() {
         var recoveryData = me.logData.getClone();
@@ -370,7 +370,7 @@ var Logbook = {
     #
     # Show Logbook canvas dialog
     #
-    # return void
+    # @return void
     #
     showLogbookDialog: func() {
         me.logbookDialog.show();
@@ -379,7 +379,7 @@ var Logbook = {
     #
     # Show Help canvas dialog
     #
-    # return void
+    # @return void
     #
     showHelpDialog: func() {
         me.logbookDialog.helpDialog.show();
@@ -388,7 +388,7 @@ var Logbook = {
     #
     # Show About canvas dialog
     #
-    # return void
+    # @return void
     #
     showAboutDialog: func() {
         me.logbookDialog.aboutDialog.show();

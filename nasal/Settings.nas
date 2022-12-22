@@ -23,7 +23,7 @@ var Settings = {
     # Constructor
     #
     # addons.Addon addon
-    # return me
+    # @return me
     #
     new: func (addon) {
         var me = { parents: [Settings] };
@@ -37,7 +37,7 @@ var Settings = {
     },
 
     #
-    # return hash - node object with data to save/load
+    # @return hash - node object with data to save/load
     #
     getSaveNode: func() {
         return props.globals.getNode(me.propToSave);
@@ -46,7 +46,7 @@ var Settings = {
     #
     # Load settings properties tree
     #
-    # return void
+    # @return void
     #
     load: func() {
         if (io.read_properties(me.file, me.getSaveNode()) == nil) {
@@ -57,7 +57,7 @@ var Settings = {
     #
     # Save settings properties tree
     #
-    # return void
+    # @return void
     #
     save: func() {
         if (io.write_properties(me.file, me.getSaveNode()) == nil) {
@@ -66,22 +66,22 @@ var Settings = {
     },
 
     #
-    # return bool
+    # @return bool
     #
     isDarkStyle: func() {
         return getprop(me.propToSave ~ "/settings/dark-style") or false;
     },
 
     #
-    # bool value
-    # return void
+    # @param bool value
+    # @return void
     #
     setDarkMode: func(value) {
         setprop(me.propToSave ~ "/settings/dark-style", value);
     },
 
     #
-    # return bool
+    # @return bool
     #
     isRealTimeDuration: func() {
         var isRealTimeDuration = getprop(me.propToSave ~ "/settings/real-time-duration");

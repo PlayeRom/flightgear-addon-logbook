@@ -16,7 +16,7 @@ var Filters = {
     #
     # Constructor
     #
-    # return me
+    # @return me
     #
     new: func () {
         var me = { parents: [Filters] };
@@ -46,7 +46,7 @@ var Filters = {
     #
     # Clear all filters
     #
-    # return void
+    # @return void
     #
     clear: func() {
         foreach (var key; keys(me.data)) {
@@ -57,8 +57,8 @@ var Filters = {
     #
     # Append single row of data to filter data
     #
-    # hash logData - LogData object
-    # return void
+    # @param hash logData - LogData object
+    # @return void
     #
     append: func(logData) {
         foreach (var index; keys(me.data)) {
@@ -73,7 +73,7 @@ var Filters = {
     #
     # Sorting all filters
     #
-    # return void
+    # @return void
     #
     sort: func() {
         foreach (var index; keys(me.data)) {
@@ -84,8 +84,8 @@ var Filters = {
     },
 
     #
-    # hash filterData - FilterData as {"index": column index, "value": "text"}
-    # return bool - Return true if filter is applied
+    # @param hash filterData - FilterData as {"index": column index, "value": "text"}
+    # @return bool - Return true if filter is applied
     #
     applyFilter: func(filterData) {
         foreach (var item; me.appliedFilters.vector) {
@@ -113,8 +113,8 @@ var Filters = {
     #
     # Return true if user used filter with given column index
     #
-    # int index
-    # return bool
+    # @param int index
+    # @return bool
     #
     isApplied: func(index) {
         foreach (var item; me.appliedFilters.vector) {
@@ -127,8 +127,8 @@ var Filters = {
     },
 
     #
-    # hash logData - LogData object
-    # return bool
+    # @param hash logData - LogData object
+    # @return bool
     #
     isAllowedByFilter: func(logData) {
         var matchCounter = 0;
@@ -146,8 +146,8 @@ var Filters = {
     },
 
     #
-    # int column - Index of column
-    # return vector|nil
+    # @param int column - Index of column
+    # @return vector|nil
     #
     getFilterItemsByColumnIndex: func(column) {
         foreach (var index; keys(me.data)) {
@@ -160,8 +160,8 @@ var Filters = {
     },
 
     #
-    # int column - Index of column
-    # return string
+    # @param int column - Index of column
+    # @return string
     #
     getFilterTitleByColumnIndex: func(column) {
              if (column == File.INDEX_DATE)     return "Date filter";
@@ -178,8 +178,8 @@ var Filters = {
     },
 
     #
-    # int column
-    # return bool
+    # @param int column
+    # @return bool
     #
     isColumnIndexFiltered: func(column) {
         foreach (var index; keys(me.data)) {

@@ -23,8 +23,8 @@ var AboutDialog = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # return me
+    # @param hash settings - Settings object
+    # @return me
     #
     new: func(settings) {
         var me = { parents: [
@@ -62,7 +62,7 @@ var AboutDialog = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         call(Dialog.del, [], me);
@@ -71,7 +71,7 @@ var AboutDialog = {
     #
     # Draw content for scrollable area
     #
-    # return void
+    # @return void
     #
     drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
@@ -103,8 +103,8 @@ var AboutDialog = {
     },
 
     #
-    # string text - Label text
-    # return hash - Label widget
+    # @param string text - Label text
+    # @return hash - Label widget
     #
     getLabel: func(text) {
         return canvas.gui.widgets.Label.new(me.scrollDataContent, canvas.style, {})
@@ -112,9 +112,9 @@ var AboutDialog = {
     },
 
     #
-    # string label - Label of button
-    # func callback - function which will be executed after click the button
-    # return hash - HBoxLayout object with button
+    # @param string label - Label of button
+    # @param func callback - function which will be executed after click the button
+    # @return hash - HBoxLayout object with button
     #
     drawBottomBar: func(label, callback) {
         var buttonBox = canvas.HBoxLayout.new();

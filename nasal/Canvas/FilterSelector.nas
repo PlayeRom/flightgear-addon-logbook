@@ -27,8 +27,8 @@ var FilterSelector = {
     #
     # Constructor
     #
-    # hash settings - Settings object
-    # return me
+    # @param hash settings - Settings object
+    # @return me
     #
     new: func (settings) {
         var me = { parents: [
@@ -68,7 +68,7 @@ var FilterSelector = {
     #
     # Destructor
     #
-    # return void
+    # @return void
     #
     del: func() {
         call(Dialog.del, [], me);
@@ -77,7 +77,7 @@ var FilterSelector = {
     #
     # Hide canvas window
     #
-    # return void
+    # @return void
     #
     hide: func() {
         call(Dialog.hide, [], me);
@@ -86,7 +86,7 @@ var FilterSelector = {
     #
     # Show canvas window
     #
-    # return void
+    # @return void
     #
     show: func() {
         me.recalculateWindowHeight();
@@ -95,8 +95,8 @@ var FilterSelector = {
     },
 
     #
-    # int x, y
-    # return me
+    # @param int x, y
+    # @return me
     #
     setPosition: func(x, y) {
         me.window.setPosition(x, y);
@@ -105,8 +105,8 @@ var FilterSelector = {
     },
 
     #
-    # string title
-    # return me
+    # @param string title
+    # @return me
     #
     setTitle: func(title) {
         me.title = title;
@@ -120,9 +120,9 @@ var FilterSelector = {
     },
 
     #
-    # vector items
-    # bool withDefaultAll
-    # return me
+    # @param vector items
+    # @param bool withDefaultAll
+    # @return me
     #
     setItems: func(items, withDefaultAll = 1) {
         me.items.clear();
@@ -141,7 +141,7 @@ var FilterSelector = {
     },
 
     #
-    # return void
+    # @return void
     #
     recalculateWindowHeight: func() {
         var paddingMultiplier = 2;
@@ -166,8 +166,8 @@ var FilterSelector = {
     #
     # Set column index of filter as File.INDEX_[...]
     #
-    # int index - Column index as File.INDEX_[...] of column
-    # return me
+    # @param int index - Column index as File.INDEX_[...] of column
+    # @return me
     #
     setColumnIndex: func(index) {
         me.columnIndex = index;
@@ -177,9 +177,9 @@ var FilterSelector = {
     #
     # Set callback function (with object) which will be call to apply filter
     #
-    # hash objCallback - The class object which contains the callback function
-    # func callback
-    # return me
+    # @param hash objCallback - The class object which contains the callback function
+    # @param func callback
+    # @return me
     #
     setCallback: func(objCallback, callback) {
         me.objCallback = objCallback;
@@ -188,8 +188,8 @@ var FilterSelector = {
     },
 
     #
-    # hash style
-    # return me
+    # @param hash style
+    # @return me
     #
     setStyle: func(style) {
         me.style = style;
@@ -210,7 +210,7 @@ var FilterSelector = {
     },
 
     #
-    # return void
+    # @return void
     #
     reDrawContent: func() {
         me.vbox.clear();
@@ -233,7 +233,7 @@ var FilterSelector = {
     #
     # Draw content for scrollable area
     #
-    # return void
+    # @return void
     #
     drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
@@ -251,6 +251,13 @@ var FilterSelector = {
         me.scrollData.setLayout(vBoxLayout);
     },
 
+    #
+    # The click callback on the ListView widget.
+    # Call other callback passed by parent object by setCallback and hide this dialog.
+    #
+    # @param int index
+    # @return void
+    #
     listViewCallback: func(index) {
         var text = me.items.vector[index];
 
