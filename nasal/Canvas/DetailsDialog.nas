@@ -57,19 +57,19 @@ var DetailsDialog = {
 
         me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeLarge()
-            # Set transaltion for align with headers row:
-            .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.PADDING)
+            .setTranslation( # Set translation for padding
+                canvas.DefaultStyle.widgets.ListView.PADDING,
+                canvas.DefaultStyle.widgets.ListView.PADDING
+            )
             .setFontName(DetailsDialog.FONT_NAME)
             .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
-            .setTextColor(me.style.TEXT_COLOR)
-            # .setBackgroundColor(me.style.CANVAS_BG)
-            # Set a transparent background so that the background texture image of the window remains visible
-            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
-            .setHoverBackgroundColor(me.style.HOVER_BG)
             .setClickCallback(me, me.listViewCallback)
             .useTextMaxWidth();
 
-        # # Since the long description text overlapped the buttons, we specify a clip box
+        me.setListViewStyle();
+
+        # Since the long description text overlapped the buttons, we specify a clip box
+        # TODO: this must be solved by other way. The height of the note test is not taken into account in the ListView when the text wraps.
         me.listView.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
 
         me.vbox.addItem(me.listView, 1); # 2nd param = stretch
@@ -136,16 +136,22 @@ var DetailsDialog = {
         me.style = style;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.listView
+        me.setListViewStyle();
+        me.toggleBgImage();
+
+        me.inputDialog.setStyle(style);
+    },
+
+    #
+    # @return hash - ListView widget
+    #
+    setListViewStyle: func() {
+        return me.listView
             .setTextColor(me.style.TEXT_COLOR)
             # .setBackgroundColor(me.style.CANVAS_BG)
             # Set a transparent background so that the background texture image of the window remains visible
             .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
             .setHoverBackgroundColor(me.style.HOVER_BG);
-
-        me.toggleBgImage();
-
-        me.inputDialog.setStyle(style);
     },
 
     #

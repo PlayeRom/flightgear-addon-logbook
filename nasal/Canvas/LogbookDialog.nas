@@ -18,7 +18,6 @@ var LogbookDialog = {
     #
     WINDOW_WIDTH         : 1280,
     WINDOW_HEIGHT        : 680,
-    TXT_WIDTH_MULTIPLIER : 8.5,
     MAX_DATA_ITEMS       : 20,
     COLUMNS_WIDTH        : [
          85, #  0 - date
@@ -50,7 +49,6 @@ var LogbookDialog = {
         "%.0f", # fuel
         "%.0f", # max alt
     ],
-    TOTALS_COLUMNS_SHIFT : File.INDEX_TO,
     FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
     FONT_SIZE            : 12,
 
@@ -105,16 +103,15 @@ var LogbookDialog = {
 
         me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeSmall()
-            # Set transaltion for align with headers row:
-            .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT)
+            .setTranslation( # Set translation for align ListView with headers row
+                canvas.DefaultStyle.widgets.ListView.PADDING,
+                canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT
+            )
             .setFontName(LogbookDialog.FONT_NAME)
             .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
-            .setTextColor(me.style.TEXT_COLOR)
-            # .setBackgroundColor(me.style.CANVAS_BG)
-            # Set a transparent background so that the background texture image of the window remains visible
-            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
-            .setHoverBackgroundColor(me.style.HOVER_BG)
             .setClickCallback(me, me.listViewCallback);
+
+        me.setListViewStyle();
 
         me.vbox.addItem(me.listView, 1); # 2nd param = stretch
 
@@ -468,12 +465,7 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.btnStyle.setText(me.getOppositeStyleName());
-        me.listView
-            .setTextColor(me.style.TEXT_COLOR)
-            # .setBackgroundColor(me.style.CANVAS_BG)
-            # Set a transparent background so that the background texture image of the window remains visible
-            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
-            .setHoverBackgroundColor(me.style.HOVER_BG);
+        me.setListViewStyle();
         me.filterSelector.setStyle(me.style);
 
         me.reloadData();
@@ -489,6 +481,18 @@ var LogbookDialog = {
 
         me.detailsDialog.setStyle(me.style);
         me.helpDialog.setStyle(me.style);
+    },
+
+    #
+    # @return hash - ListView widget
+    #
+    setListViewStyle: func() {
+        me.listView
+            .setTextColor(me.style.TEXT_COLOR)
+            # .setBackgroundColor(me.style.CANVAS_BG)
+            # Set a transparent background so that the background texture image of the window remains visible
+            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setHoverBackgroundColor(me.style.HOVER_BG);
     },
 
     #
