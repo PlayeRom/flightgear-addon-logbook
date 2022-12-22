@@ -44,6 +44,7 @@ var InputDialog = {
         me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.header          = nil; # header name
         me.parent          = nil;
+        me.value           = nil;
 
         me.filterSelector = FilterSelector.new(settings);
 
@@ -130,6 +131,7 @@ var InputDialog = {
         me.parent       = parent;
         me.allDataIndex = allDataIndex;
         me.header       = label;
+        me.value        = value;
 
         me.setLabel(me.header);
         me.setLineEdit(sprintf("%s", value));
@@ -193,6 +195,13 @@ var InputDialog = {
         var value = me.lineEdit.text();
         if (value == nil) {
             value = "";
+        }
+
+        if (cmp(value, me.value) == 0) {
+            # Nothing changed, nothing to save
+            me.hide();
+            gui.popupTip("Nothing has changed");
+            return;
         }
 
         if (!me.validate(value)) {
