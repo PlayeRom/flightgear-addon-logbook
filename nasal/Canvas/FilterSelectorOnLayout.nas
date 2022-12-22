@@ -11,6 +11,7 @@
 
 #
 # FilterSelector class
+# @deprecated
 #
 var FilterSelector = {
     #

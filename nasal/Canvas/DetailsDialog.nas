@@ -46,6 +46,7 @@ var DetailsDialog = {
             call(DetailsDialog.hide, [], self);
         };
 
+        me.parent          = nil;
         me.dataRow         = nil;
         me.parentDataIndex = nil;
         me.file            = file;
@@ -164,15 +165,17 @@ var DetailsDialog = {
     #
     # Show canvas dialog
     #
+    # hash parent - LogbookDialog object
     # vector data
     #   data[0] = int - index of row in CSV file
     #   data[1] = vector of hashes {"allDataIndex": index, "data": row data}
     # return void
     #
-    show: func(data) {
+    show: func(parent, data) {
         me.inputDialog.hide();
         me.deleteDialog.hide();
 
+        me.parent = parent;
         me.parentDataIndex = data[1]["allDataIndex"];
         me.listView.parentDataIndex = me.parentDataIndex;
         me.listView.setDataToDraw(data[1], me.file.getHeadersData());
@@ -188,6 +191,11 @@ var DetailsDialog = {
     # return void
     #
     hide: func() {
+        if (me.parent != nil) {
+            # Remove highlighted row in LogbookDialog
+            me.parent.listView.removeHighlightingRow();
+        }
+
         me.parentDataIndex = nil;
         me.listView.parentDataIndex = nil;
         me.inputDialog.hide();

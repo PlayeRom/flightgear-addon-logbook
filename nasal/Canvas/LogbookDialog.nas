@@ -38,7 +38,6 @@ var LogbookDialog = {
          65, # 14 - distance
          80, # 15 - fuel
          70, # 16 - max alt
-        100, # 17 - note
     ],
     TOTAL_FORMATS        : [
         "%d",   # landings
@@ -92,31 +91,38 @@ var LogbookDialog = {
         me.startIndex = 0;
 
         me.data           = [];
-        me.totals         = [];
         me.rowTotal       = nil;
         me.headersContent = nil;
         me.dataContent    = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
+
         me.detailsDialog  = DetailsDialog.new(settings, file);
         me.helpDialog     = HelpDialog.new(settings);
         me.aboutDialog    = AboutDialog.new(settings);
         me.filterSelector = FilterSelector.new(settings);
 
-        me.listView = ListView.new(
-            me.group,
-            me.vbox,
-            ListView.SHIFT_Y * 22, # 22 = 20 items + 1 headers + 1 totals
-            LogbookDialog.WINDOW_WIDTH,
-            LogbookDialog.COLUMNS_WIDTH,
-            ListView.LAYOUT_H
-        );
-        me.listView.setTranslation(0, 20);
-        me.listView.setClickDialog(me.detailsDialog);
-        me.listView.setStyle(me.style);
-        me.listView.setFont(LogbookDialog.FONT_NAME, LogbookDialog.FONT_SIZE);
-
         me.drawHeaders();
+
+        me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
+            .setFontSizeSmall()
+            .setMaxRows(21) # 20 items + 1 totals
+            # Set transaltion for align with headers row:
+            .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT)
+            .setFontName(LogbookDialog.FONT_NAME)
+            .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
+            .setTextColor(me.style.TEXT_COLOR)
+            # .setBackgroundColor(me.style.CANVAS_BG)
+            # Set a transparent background so that the background texture image of the window remains visible
+            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setHoverBackgroundColor(me.style.HOVER_BG)
+            .setClickCallback(me, me.listViewCallback);
+
+        me.vbox.addItem(me.listView);
+
+        # It's still little tricky that we have to set spacing after ListView
+        # content for set the bottom buttons in one place:
+        me.vbox.addSpacing(me.listView.getContentHeight());
 
         me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
@@ -132,7 +138,7 @@ var LogbookDialog = {
 
                 var index = getprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index");
                 if (me.file.deleteLog(index)) {
-                    me.listView.drawLoading();
+                    me.listView.enableLoading();
                 }
             }
         }));
@@ -148,7 +154,7 @@ var LogbookDialog = {
                 var value  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value");
 
                 if (me.file.editData(index, header, value)) {
-                    me.listView.drawLoading();
+                    me.listView.enableLoading();
                 }
             }
         }));
@@ -160,16 +166,6 @@ var LogbookDialog = {
                 setprop(node.getPath(), false);
 
                 me.reloadLogbookListenerCallback(node);
-            }
-        }));
-
-        # User exit detials dialog, redraw only for remove green selected bar
-        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/redraw-logbook", func(node) {
-            if (node.getBoolValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
-
-                me.redraw(false);
             }
         }));
 
@@ -231,7 +227,7 @@ var LogbookDialog = {
             return;
         }
 
-        # We need to redraw the headers, because when the window was created,
+        # We need to redraw the headers too, because when the window was created,
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(true);
 
@@ -274,7 +270,7 @@ var LogbookDialog = {
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
 
-        var x = ListView.PADDING * 3;
+        var x = canvas.DefaultStyle.widgets.ListView.PADDING * 2;
         var column = 0;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
@@ -285,7 +281,7 @@ var LogbookDialog = {
 
             var rowGroup = me.headersContent.createChild("group");
             rowGroup.setTranslation(x, 0);
-            var rect = rowGroup.rect(0, 0, me.listView.getX(column), ListView.SHIFT_Y);
+            var rect = rowGroup.rect(0, 0, me.getColumnWidth(column), canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
             me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(column, text));
@@ -298,9 +294,19 @@ var LogbookDialog = {
                 column
             );
 
-            x += me.listView.getX(column);
+            x += me.getColumnWidth(column);
             column += 1;
         }
+    },
+
+    #
+    # Get width of column for given index
+    #
+    # int index
+    # return int
+    #
+    getColumnWidth: func(index) {
+        return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
@@ -391,40 +397,6 @@ var LogbookDialog = {
     },
 
     #
-    # Draw grid with logbook data
-    #
-    # return void
-    #
-    reDrawDataContent: func() {
-        var y = me.listView.reDrawDataContent();
-
-        # Continue drawing totals row
-        me.rowTotal = me.listView.drawHoverBox(y);
-        me.drawTotalsRow(me.rowTotal);
-    },
-
-    #
-    # Draw row with totals summary
-    #
-    # hash cGroup - Parent canvas group
-    # return void
-    #
-    drawTotalsRow: func(cGroup) {
-        var x = ListView.PADDING * 2;
-        for (var i = 0; i < LogbookDialog.TOTALS_COLUMNS_SHIFT; i += 1) {
-            x += me.listView.getX(i);
-        }
-
-        me.listView.drawText(cGroup, x, "Totals:");
-
-        for (var i = 0; i < size(me.totals); i += 1) {
-            var total = me.totals[i];
-            x += me.listView.getX(i + LogbookDialog.TOTALS_COLUMNS_SHIFT);
-            me.listView.drawText(cGroup, x, sprintf(LogbookDialog.TOTAL_FORMATS[i], total));
-        }
-    },
-
-    #
     # Draw bottom bar with buttons
     #
     # return void
@@ -501,7 +473,12 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.btnStyle.setText(me.getOppositeStyleName());
-        me.listView.setStyle(me.style);
+        me.listView
+            .setTextColor(me.style.TEXT_COLOR)
+            # .setBackgroundColor(me.style.CANVAS_BG)
+            # Set a transparent background so that the background texture image of the window remains visible
+            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setHoverBackgroundColor(me.style.HOVER_BG);
         me.filterSelector.setStyle(me.style);
 
         me.reloadData();
@@ -613,7 +590,7 @@ var LogbookDialog = {
             me.startIndex = 0;
         }
 
-        me.listView.drawLoading();
+        me.listView.enableLoading();
 
         me.file.loadDataRange(me, me.reloadDataCallback, me.startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
     },
@@ -626,30 +603,18 @@ var LogbookDialog = {
     # bool withHeaders
     # return void
     #
-    reloadDataCallback: func(data, totals, withHeaders) {
+    reloadDataCallback: func(data, withHeaders) {
         me.data   = data;
-        me.totals = totals;
 
-        me.listView.setDataToDraw(me.data);
-        me.redraw(withHeaders);
+        me.listView.setItems(me.data);
+        if (withHeaders) {
+            me.reDrawHeadersContent();
+        }
         me.setPaging();
 
         if (me.detailsDialog.isWindowVisible()) {
             me.detailsDialog.reload();
         }
-    },
-
-    #
-    # Redraw windows
-    #
-    # bool withHeaders - Set true when color must be change too.
-    # return void
-    #
-    redraw: func(withHeaders) {
-        if (withHeaders) {
-            me.reDrawHeadersContent();
-        }
-        me.reDrawDataContent();
     },
 
     #
@@ -661,5 +626,22 @@ var LogbookDialog = {
         var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
         var maxPages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
         me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.file.getTotalLines()));
+    },
+
+    #
+    # The click callback on the ListView widget. Open the details window.
+    #
+    # int index
+    # return void
+    #
+    listViewCallback: func(index) {
+        if (!g_isThreadPending) {
+            var hash = me.data[index];
+            if (hash.allDataIndex > -1) { # -1 is using for Totals row
+                me.listView.removeHighlightingRow();
+                me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+                me.detailsDialog.show(me, [hash.allDataIndex, hash]);
+            }
+        }
     },
 };

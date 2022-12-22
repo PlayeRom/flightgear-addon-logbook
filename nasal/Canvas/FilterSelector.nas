@@ -135,7 +135,7 @@ var FilterSelector = {
         me.items.extend(items);
 
         if (me.listView != nil) {
-            me.listView.setItems(me.items.vector, me, me.listViewCallback);
+            me.listView.setItems(me.items.vector);
         }
 
         return me;
@@ -202,7 +202,6 @@ var FilterSelector = {
 
         if (me.listView != nil) {
             me.listView
-                .setTitle(me.title)
                 .setTextColor(me.style.TEXT_COLOR)
                 .setBackgroundColor(me.style.CANVAS_BG)
                 .setHoverBackgroundColor(me.style.HOVER_BG);
@@ -246,7 +245,8 @@ var FilterSelector = {
             .setTextColor(me.style.TEXT_COLOR)
             .setBackgroundColor(me.style.CANVAS_BG)
             .setHoverBackgroundColor(me.style.HOVER_BG)
-            .setItems(me.items.vector, me, me.listViewCallback);
+            .setClickCallback(me, me.listViewCallback)
+            .setItems(me.items.vector);
 
         vBoxLayout.addItem(me.listView);
         me.scrollData.setLayout(vBoxLayout);

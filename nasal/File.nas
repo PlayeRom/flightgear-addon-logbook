@@ -337,10 +337,13 @@ var File = {
                 }
             }
 
+            # Add totals row to the end
+            me.appendTotalsRow();
+
             # We have not used the thread here, but we must point out that it has ended
             g_isThreadPending = false;
 
-            call(me.callback, [me.loadedData, me.totals, me.withHeaders], me.objCallback);
+            call(me.callback, [me.loadedData, me.withHeaders], me.objCallback);
         }
         else {
             # Run more complex loop with filters in a separate thread
@@ -393,6 +396,9 @@ var File = {
             allDataIndex += 1;
         }
 
+        # Add totals row to the end
+        me.appendTotalsRow();
+
         me.filters.dirty = false;
 
         g_isThreadPending = false;
@@ -405,7 +411,32 @@ var File = {
     #
     loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me.callback, [me.loadedData, me.totals, me.withHeaders], me.objCallback);
+        call(me.callback, [me.loadedData, me.withHeaders], me.objCallback);
+    },
+
+    #
+    # Append totals row to loadedData
+    #
+    # return void
+    #
+    appendTotalsRow: func() {
+        append(me.loadedData, {
+            "allDataIndex" : -1,
+            "data"         : [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "Totals:",
+            ],
+        });
+
+        foreach (var total; me.totals) {
+            append(me.loadedData[size(me.loadedData) - 1].data, total);
+        }
     },
 
     #

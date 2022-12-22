@@ -30,7 +30,6 @@
                     <logbook-entry-deleted type="bool">false</logbook-entry-deleted>
 
                     <!-- Flags for redraw window only, no need reload data -->
-                    <redraw-logbook type="bool">false</redraw-logbook>
                     <redraw-details type="bool">false</redraw-details>
 
                     <!-- Trigger action on delete entry -->
