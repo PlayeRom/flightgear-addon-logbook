@@ -29,6 +29,7 @@ DefaultStyle.widgets.ListView = {
         me._titleElement = nil;
         me._itemElements = [];
         me._loadingText = nil;
+        me._columnsWidth = nil;
 
         me._fontSize = 14;
         me._fontName = "LiberationFonts/LiberationSans-Regular.ttf";
@@ -36,7 +37,7 @@ DefaultStyle.widgets.ListView = {
         me._textColor = me._style.getColor("fg_color");
         me._backgroundColor = me._style.getColor("bg_color");
         me._hoverBackgroundColor = [1.0, 1.0, 0.5, 1.0];
-        me._columnsWidth = nil;
+        me._highlightingRowColor = nil;
 
         me._xTransaltion = nil;
         me._yTransaltion = nil;
@@ -226,7 +227,10 @@ DefaultStyle.widgets.ListView = {
     # @return me
     #
     setHighlightingRow: func(model, color) {
-        me._itemElements[model._highlightingRowIndex].rect.setColorFill(color);
+        if (model._highlightingRowIndex != nil) {
+            me._highlightingRowColor = color;
+            me._itemElements[model._highlightingRowIndex].rect.setColorFill(color);
+        }
         return me;
     },
 
@@ -342,6 +346,9 @@ DefaultStyle.widgets.ListView = {
             y += DefaultStyle.widgets.ListView.ITEM_HEIGHT;
             index += 1;
         }
+
+        # Make sure that highlighted row is still highlighting
+        me.setHighlightingRow(model, me._highlightingRowColor);
 
         return y;
     },
