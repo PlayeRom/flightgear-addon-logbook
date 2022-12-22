@@ -36,7 +36,7 @@ var DetailsDialog = {
 
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(settings, Dialog.ID_DETAILS, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(settings, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
         # Override window del method for hide InputDialog and ConfirmationDialog

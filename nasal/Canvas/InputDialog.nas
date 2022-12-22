@@ -28,7 +28,7 @@ var InputDialog = {
     new: func(settings) {
         var me = { parents: [
             InputDialog,
-            Dialog.new(settings, Dialog.ID_INPUT, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
+            Dialog.new(settings, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
         ] };
 
         # Override window del method for close FilterSelector

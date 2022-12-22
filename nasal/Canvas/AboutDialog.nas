@@ -29,7 +29,7 @@ var AboutDialog = {
     new: func(settings) {
         var me = { parents: [
             AboutDialog,
-            Dialog.new(settings, Dialog.ID_ABOUT, AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
+            Dialog.new(settings, AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
         me.bgImage.hide();

@@ -68,7 +68,6 @@ var LogbookDialog = {
                 LogbookDialog,
                 Dialog.new(
                     settings,
-                    Dialog.ID_LOGBOOK,
                     LogbookDialog.WINDOW_WIDTH,
                     LogbookDialog.WINDOW_HEIGHT,
                     "Logbook"

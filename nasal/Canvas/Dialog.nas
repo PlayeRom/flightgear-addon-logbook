@@ -14,21 +14,9 @@
 #
 var Dialog = {
     #
-    # Constants
-    # @deprecated
-    ID_LOGBOOK         : 1,
-    ID_DETAILS         : 2,
-    ID_INPUT           : 3,
-    ID_DELETE          : 4,
-    ID_ABOUT           : 5,
-    ID_HELP            : 6,
-    ID_FILTER_SELECTOR : 7,
-
-    #
     # Constructor
     #
     # hash settings - Settings object
-    # int id - ID of the Dialog as one of constants ID_LOGBOOK, ID_DETAILS, etc.
     # int width - Initial width of window
     # int height - Initial height of window
     # string title - Title of window in the top bar
@@ -36,11 +24,10 @@ var Dialog = {
     # func onResizeWidth - callback call when width of window was changed
     # return me
     #
-    new: func(settings, id, width, height, title, resize = 0, onResizeWidth = nil) {
+    new: func(settings, width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
         me.addon    = addons.getAddon(ADDON_ID);
-        me.dialogId = id; @deprecated
         me.width    = width;
         me.height   = height;
         me.settings = settings;
@@ -204,14 +191,6 @@ var Dialog = {
     #
     isWindowVisible: func() {
         return me.window.isVisible();
-    },
-
-    #
-    # return int
-    # @deprecated
-    #
-    getDialogId: func() {
-        return me.dialogId;
     },
 
     #

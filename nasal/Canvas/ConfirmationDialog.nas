@@ -31,7 +31,6 @@ var ConfirmationDialog = {
             ConfirmationDialog,
             Dialog.new(
                 settings,
-                Dialog.ID_DELETE,
                 ConfirmationDialog.WINDOW_WIDTH,
                 ConfirmationDialog.WINDOW_HEIGHT,
                 title

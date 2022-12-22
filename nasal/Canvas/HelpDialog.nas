@@ -32,7 +32,6 @@ var HelpDialog = {
             HelpDialog,
             Dialog.new(
                 settings,
-                Dialog.ID_HELP,
                 HelpDialog.WINDOW_WIDTH,
                 HelpDialog.WINDOW_HEIGHT,
                 HelpDialog.TITLE,

@@ -35,7 +35,6 @@ var FilterSelector = {
             FilterSelector,
             Dialog.new(
                 settings,
-                Dialog.ID_FILTER_SELECTOR,
                 FilterSelector.WINDOW_WIDTH,
                 FilterSelector.WINDOW_HEIGHT,
                 "Logbook About"
