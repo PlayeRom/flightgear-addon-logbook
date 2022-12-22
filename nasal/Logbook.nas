@@ -60,6 +60,8 @@ var Logbook = {
         me.aircraftType = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
 
+        me.propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
+
         setlistener("/sim/presets/airport-id", func(node) {
             me.initStartAirport();
         }, true);
@@ -181,7 +183,7 @@ var Logbook = {
     #
     initAltAglThreshold: func() {
         me.initAltAglFt = me.onGround
-            ? (getprop("/position/altitude-agl-ft") + Logbook.ALT_AGL_FT_THRESHOLD)
+            ? (me.propAltAglFt.getValue() + Logbook.ALT_AGL_FT_THRESHOLD)
             : Logbook.ALT_AGL_FT_THRESHOLD;
     },
 
@@ -203,7 +205,7 @@ var Logbook = {
             return;
         }
 
-        if (!me.onGround and getprop("/position/altitude-agl-ft") > me.initAltAglFt) {
+        if (!me.onGround and me.propAltAglFt.getValue() > me.initAltAglFt) {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - update do nothing");
             # There's nothing to check for landing, we're too high
             return;
