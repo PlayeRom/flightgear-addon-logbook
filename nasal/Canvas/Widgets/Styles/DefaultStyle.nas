@@ -329,6 +329,16 @@ DefaultStyle.widgets.ListView = {
                 });
             }();
 
+            # Since the text can wrap, you need to take the height of the last text and add it to the height of the content.
+            if (model._isUseTextMaxWidth) {
+                var itemsCount = size(me._itemElements);
+                if (itemsCount > 0) {
+                    var height = me._itemElements[itemsCount - 1].maxHeight;
+
+                    y += (height > 18 ? height : 0); # 18 - font size threshold for 1 row (non-wraped text)
+                }
+            }
+
             y += DefaultStyle.widgets.ListView.ITEM_HEIGHT;
             index += 1;
         }
@@ -364,6 +374,10 @@ DefaultStyle.widgets.ListView = {
             var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
             if (model._isUseTextMaxWidth) {
                 text.setMaxWidth(me._getColumnWidth(columnIndex));
+                var height = text.getSize()[1];
+                if (height > hash.maxHeight) {
+                    hash.maxHeight = height;
+                }
             }
             append(hash.text, text);
 
@@ -390,9 +404,10 @@ DefaultStyle.widgets.ListView = {
     #
     _createBar: func(model, y) {
         var hash = {
-            group : me._createBarGroup(y),
-            rect  : nil,
-            text  : nil,
+            group     : me._createBarGroup(y),
+            rect      : nil,
+            text      : nil, # vector of text element, or single text element
+            maxHeight : 0,   # max text height in this row
         };
 
         hash.rect = hash.group.rect(
