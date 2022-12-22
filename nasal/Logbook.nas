@@ -212,9 +212,15 @@ var Logbook = {
         if (me.landingGear.checkWow(me.onGround)) {
             if (me.onGround) {
                 # Our state is on the ground and all wheels are in the air - we have takte-off
-                logprint(LOG_ALERT, "Logbook Add-on - takeoff detected");
-
-                me.startLogging();
+                # logprint(LOG_ALERT, "Logbook Add-on - takeoff detected");
+                me.wowSec += 1;
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me.wowSec);
+                if (me.wowSec > 2) {
+                    # We recognise that we taken off after testing WoW for 3 seconds.
+                    # This is to not recognise the takeoff when we bounce off the ground.
+                    me.startLogging();
+                    me.wowSec = 0;
+                }
             }
             else {
                 # Our state is in the air and all wheels are on the ground
@@ -224,6 +230,7 @@ var Logbook = {
                     # We recognise that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognise the landing when we bounce off the ground.
                     me.stopLogging(true);
+                    me.wowSec = 0;
                 }
             }
 
