@@ -60,7 +60,7 @@ var FilterSelector = {
         me.objCallback = nil;
         me.columnIndex = nil;
 
-        me.reDrawContent();
+        me.drawContent();
 
         return me;
     },
@@ -212,7 +212,7 @@ var FilterSelector = {
     #
     # @return void
     #
-    reDrawContent: func() {
+    drawContent: func() {
         me.vbox.clear();
 
         var margins = {
@@ -240,6 +240,8 @@ var FilterSelector = {
 
         me.listView = canvas.gui.widgets.ListView.new(me.scrollDataContent, canvas.style, {})
             .setTitle(me.title)
+            .useTextMaxWidth()
+            .setColumnsWidth([FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2)])
             .setFontSizeLarge()
             .setTextColor(me.style.TEXT_COLOR)
             .setBackgroundColor(me.style.CANVAS_BG)
