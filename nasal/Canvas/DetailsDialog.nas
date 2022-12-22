@@ -17,6 +17,7 @@ var DetailsDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 600,
+    WINDOW_HEIGHT : 600,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     COLUMNS_WIDTH : [
         120, # header
@@ -31,12 +32,9 @@ var DetailsDialog = {
     # @return me
     #
     new: func(settings, file) {
-        var VBOX_SPACING = canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
-        var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space for buttons and paddings
-
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(settings, DetailsDialog.WINDOW_WIDTH, WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(settings, DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
         # Override window del method for hide InputDialog and ConfirmationDialog
