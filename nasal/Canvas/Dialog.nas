@@ -15,7 +15,7 @@
 var Dialog = {
     #
     # Constants
-    #
+    # @deprecated
     ID_LOGBOOK         : 1,
     ID_DETAILS         : 2,
     ID_INPUT           : 3,
@@ -40,7 +40,7 @@ var Dialog = {
         var me = { parents: [Dialog] };
 
         me.addon    = addons.getAddon(ADDON_ID);
-        me.dialogId = id;
+        me.dialogId = id; @deprecated
         me.width    = width;
         me.height   = height;
         me.settings = settings;
@@ -195,13 +195,6 @@ var Dialog = {
     #
     hide: func(withRedraw = 1) {
         me.window.hide();
-
-        if (withRedraw) {
-            if (me.dialogId == Dialog.ID_INPUT) {
-                # Set property redraw-details for remove selected bar
-                setprop(me.addon.node.getPath() ~ "/addon-devel/redraw-details", true);
-            }
-        }
     },
 
     #
@@ -215,6 +208,7 @@ var Dialog = {
 
     #
     # return int
+    # @deprecated
     #
     getDialogId: func() {
         return me.dialogId;

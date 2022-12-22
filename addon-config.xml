@@ -29,9 +29,6 @@
                     <!-- This flag is using together with <reload-logbook> and indicate that user removed entry log -->
                     <logbook-entry-deleted type="bool">false</logbook-entry-deleted>
 
-                    <!-- Flags for redraw window only, no need reload data -->
-                    <redraw-details type="bool">false</redraw-details>
-
                     <!-- Trigger action on delete entry -->
                     <action-delete-entry type="bool">false</action-delete-entry>
                     <action-delete-entry-index type="int">0</action-delete-entry-index>

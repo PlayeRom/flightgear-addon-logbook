@@ -34,6 +34,7 @@ gui.widgets.ListView = {
         me._callback = func;
         me._highlightingRowIndex = nil;
         me._isLoading = 0;
+        me._isUseTextMaxWidth = 0;
 
         return me;
     },
@@ -242,5 +243,25 @@ gui.widgets.ListView = {
     #
     isLoading: func() {
         return me._isLoading;
+    },
+
+    #
+    # Use it for wrap text to text next line. The max text width will be column
+    # width so setColumnsWidth must be call too.
+    #
+    # @return me
+    #
+    useTextMaxWidth: func() {
+        me._isUseTextMaxWidth = 1;
+        return me;
+    },
+
+    #
+    # @param vector boundingBox - [xmin, ymin, xmax, ymax]
+    # @return me
+    #
+    setClipByBoundingBox: func(boundingBox) {
+        me._view.setClipByBoundingBox(me, boundingBox);
+        return me;
     },
 };

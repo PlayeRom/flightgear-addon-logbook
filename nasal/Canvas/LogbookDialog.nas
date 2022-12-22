@@ -604,7 +604,7 @@ var LogbookDialog = {
     # return void
     #
     reloadDataCallback: func(data, withHeaders) {
-        me.data   = data;
+        me.data = data;
 
         me.listView.setItems(me.data);
         if (withHeaders) {
@@ -636,11 +636,11 @@ var LogbookDialog = {
     #
     listViewCallback: func(index) {
         if (!g_isThreadPending) {
-            var hash = me.data[index];
+            var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
             if (hash.allDataIndex > -1) { # -1 is using for Totals row
                 me.listView.removeHighlightingRow();
                 me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
-                me.detailsDialog.show(me, [hash.allDataIndex, hash]);
+                me.detailsDialog.show(me, hash);
             }
         }
     },

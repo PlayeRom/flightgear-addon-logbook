@@ -42,8 +42,8 @@ var InputDialog = {
         me.addonNodePath = me.addon.node.getPath();
 
         me.allDataIndex    = nil; # index of log entry in whole CSV file
-        me.parentDataIndex = nil; # index of column in single row
         me.header          = nil; # header name
+        me.parent          = nil;
 
         me.filterSelector = FilterSelector.new(settings);
 
@@ -120,20 +120,19 @@ var InputDialog = {
     },
 
     #
-    # vector data
-    #   data[0] - index of header
-    #   data[1] - index of row in CSV file
-    #   data[2] - label text (header)
-    #   data[3] - text to edit
+    # hash parent
+    # int allDataIndex
+    # string label as a Header text
+    # string value to edit
     # return void
     #
-    show: func(data) {
-        me.parentDataIndex = data[0];
-        me.allDataIndex    = data[1];
-        me.header          = data[2];
+    show: func(parent, allDataIndex, label, value) {
+        me.parent       = parent;
+        me.allDataIndex = allDataIndex;
+        me.header       = label;
 
-        me.setLabel(data[2]);
-        me.setLineEdit(sprintf("%s", data[3]));
+        me.setLabel(me.header);
+        me.setLineEdit(sprintf("%s", value));
         me.lineEdit.setFocus();
         call(Dialog.show, [], me);
     },
@@ -142,8 +141,22 @@ var InputDialog = {
     # return void
     #
     hide: func() {
+        if (me.parent != nil) {
+            # Remove highlighted row in LogbookDialog
+            me.parent.listView.removeHighlightingRow();
+        }
+
         me.filterSelector.hide();
         call(Dialog.hide, [], me);
+    },
+
+    #
+    # hash style
+    # return me
+    #
+    setStyle: func(style) {
+        me.filterSelector.setStyle(style);
+        return me;
     },
 
     #

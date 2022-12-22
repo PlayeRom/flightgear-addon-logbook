@@ -255,6 +255,16 @@ DefaultStyle.widgets.ListView = {
 
     #
     # @param hash model
+    # @param vector boundingBox
+    # @return me
+    #
+    setClipByBoundingBox: func(model, boundingBox) {
+        me._root.setClipByBoundingBox(boundingBox);
+        return me;
+    },
+
+    #
+    # @param hash model
     # @return void
     #
     reDrawContent: func(model) {
@@ -358,7 +368,11 @@ DefaultStyle.widgets.ListView = {
         hash.text = [];
 
         forindex (var columnIndex; me._columnsWidth) {
-            append(hash.text, me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]));
+            var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
+            if (model._isUseTextMaxWidth) {
+                text.setMaxWidth(me._getColumnWidth(columnIndex));
+            }
+            append(hash.text, text);
 
             x += me._getColumnWidth(columnIndex);
         }

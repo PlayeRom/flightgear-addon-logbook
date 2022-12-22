@@ -18,7 +18,6 @@ var DetailsDialog = {
     #
     WINDOW_WIDTH  : 600,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
-    FONT_SIZE     : 16,
     COLUMNS_WIDTH : [
         120, # header
         440, # data
@@ -32,7 +31,7 @@ var DetailsDialog = {
     # return me
     #
     new: func(settings, file) {
-        var VBOX_SPACING = ListView.SHIFT_Y * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
+        var VBOX_SPACING = canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT * (File.INDEX_NOTE + 1 + 2); # File.INDEX_NOTE + 1 items + 2 for longer note text
         var WINDOW_HEIGHT = VBOX_SPACING + 68; # 68 = extra space for buttons and paddings
 
         var me = { parents: [
@@ -56,37 +55,35 @@ var DetailsDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.listView = ListView.new(
-            me.group,
-            me.vbox,
-            VBOX_SPACING,
-            DetailsDialog.WINDOW_WIDTH,
-            DetailsDialog.COLUMNS_WIDTH,
-            ListView.LAYOUT_V
-        );
-        me.listView.setStyle(me.style);
-        me.listView.setFont(DetailsDialog.FONT_NAME, DetailsDialog.FONT_SIZE);
-        me.listView.setClickDialog(me.inputDialog);
+        me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
+            .setFontSizeLarge()
+            .setMaxRows(File.INDEX_NOTE + 1)
+            # Set transaltion for align with headers row:
+            .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.PADDING)
+            .setFontName(DetailsDialog.FONT_NAME)
+            .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
+            .setTextColor(me.style.TEXT_COLOR)
+            # .setBackgroundColor(me.style.CANVAS_BG)
+            # Set a transparent background so that the background texture image of the window remains visible
+            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setHoverBackgroundColor(me.style.HOVER_BG)
+            .setClickCallback(me, me.listViewCallback)
+            .useTextMaxWidth();
 
-        # Since the long description text overlapped the buttons, we specify a clip box
-        me.listView.dataContent.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
+        # # Since the long description text overlapped the buttons, we specify a clip box
+        me.listView.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
+
+        me.vbox.addItem(me.listView);
+
+        # It's still little tricky that we have to set spacing after ListView
+        # content for set the bottom buttons in one place:
+        # me.vbox.addSpacing(me.listView.getContentHeight());
 
         var buttonBox = me.drawBottomBar();
 
         me.vbox.addItem(buttonBox);
 
         me.setPositionOnCenter();
-
-        me.listeners = [];
-
-        append(me.listeners, setlistener(me.addon.node.getPath() ~ "/addon-devel/redraw-details", func(node) {
-            if (node.getBoolValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
-
-                me.reload();
-            }
-        }));
 
         return me;
     },
@@ -97,22 +94,9 @@ var DetailsDialog = {
     # return void
     #
     del: func() {
-        foreach (var listener; me.listeners) {
-            removelistener(listener);
-        }
-
         me.inputDialog.del();
         me.deleteDialog.del();
         call(Dialog.del, [], me);
-    },
-
-    #
-    # Draw grid with logbook details
-    #
-    # return void
-    #
-    reDrawDataContent: func() {
-        me.listView.reDrawDataContent();
     },
 
     #
@@ -134,7 +118,7 @@ var DetailsDialog = {
             .setFixedSize(75, 26)
             .listen("clicked", func {
                 if (!g_isThreadPending) {
-                    me.deleteDialog.show(me.listView.parentDataIndex, me);
+                    me.deleteDialog.show(me.parentDataIndex, me);
                 }
             }
         );
@@ -156,31 +140,34 @@ var DetailsDialog = {
         me.style = style;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.listView.setStyle(style);
+        me.listView
+            .setTextColor(me.style.TEXT_COLOR)
+            # .setBackgroundColor(me.style.CANVAS_BG)
+            # Set a transparent background so that the background texture image of the window remains visible
+            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setHoverBackgroundColor(me.style.HOVER_BG);
 
-        me.reDrawDataContent();
         me.toggleBgImage();
+
+        me.inputDialog.setStyle(style);
     },
 
     #
     # Show canvas dialog
     #
     # hash parent - LogbookDialog object
-    # vector data
-    #   data[0] = int - index of row in CSV file
-    #   data[1] = vector of hashes {"allDataIndex": index, "data": row data}
+    # hash data - {"allDataIndex": index, "data": vector}
     # return void
     #
     show: func(parent, data) {
+        me.dataRow = data;
         me.inputDialog.hide();
         me.deleteDialog.hide();
 
         me.parent = parent;
-        me.parentDataIndex = data[1]["allDataIndex"];
-        me.listView.parentDataIndex = me.parentDataIndex;
-        me.listView.setDataToDraw(data[1], me.file.getHeadersData());
+        me.parentDataIndex = me.dataRow.allDataIndex;
 
-        me.reDrawDataContent();
+        me.listView.setItems(me.getListViewRows(me.dataRow.data));
 
         call(Dialog.show, [], me);
     },
@@ -197,10 +184,30 @@ var DetailsDialog = {
         }
 
         me.parentDataIndex = nil;
-        me.listView.parentDataIndex = nil;
         me.inputDialog.hide();
         me.deleteDialog.hide();
         call(Dialog.hide, [], me);
+    },
+
+    #
+    # Perapre columns data for ListView
+    #
+    # vector data
+    # return vector
+    #
+    getListViewRows: func(data) {
+        var headers = me.file.getHeadersData();
+        var rowsData = [];
+        forindex (var index; headers) {
+            append(rowsData, {
+                data : [
+                    sprintf("%10s:", headers[index]),
+                    sprintf("%s %s", me.addCommaSeparator(index, data[index]), me.getExtraText(index, data[index])),
+                ],
+            });
+        }
+
+        return rowsData;
     },
 
     #
@@ -209,15 +216,133 @@ var DetailsDialog = {
     # return void
     #
     reload: func() {
-        if (me.listView.parentDataIndex != nil) {
-            var data = me.file.getLogData(me.listView.parentDataIndex);
-            if (data == nil) {
+        if (me.parentDataIndex != nil) {
+            me.dataRow = me.file.getLogData(me.parentDataIndex);
+            if (me.dataRow == nil) {
                 call(DetailsDialog.hide, [false], me);
                 return;
             }
 
-            me.listView.setDataToDraw(data, me.file.getHeadersData());
-            me.reDrawDataContent();
+            me.listView.setItems(me.getListViewRows(me.dataRow.data));
         }
+    },
+
+    #
+    # The click callback on the ListView widget. Open the inputDialog.
+    #
+    # int index
+    # return void
+    #
+    listViewCallback: func(index) {
+        if (!g_isThreadPending) {
+            if (me.dataRow.allDataIndex > -1) { # -1 is using for Totals row
+                me.listView.removeHighlightingRow();
+                me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+
+                var headers = me.file.getHeadersData();
+                me.inputDialog.show(me, me.dataRow.allDataIndex, headers[index], me.dataRow.data[index]);
+            }
+        }
+    },
+
+    #
+    # int column
+    # string value
+    # return string
+    #
+    getExtraText: func(column, value) {
+        if ((column == File.INDEX_FROM or column == File.INDEX_TO) and value != "") {
+            var airport = airportinfo(value);
+            if (airport != nil) {
+                return "(" ~ airport.name ~ ")";
+            }
+
+            return "";
+        }
+
+        if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
+            var digits = split(".", value);
+            if (size(digits) < 2) {
+                # something is wrong
+                return "hours";
+            }
+
+            return sprintf("hours (%d:%02.0f)", digits[0], (digits[1] / 100) * 60);
+        }
+
+        if (column == File.INDEX_DISTANCE) {
+            var inMeters = value * globals.NM2M;
+            if (inMeters >= 1000) {
+                var km = sprintf("%.02f", inMeters / 1000);
+                return sprintf("nm (%s km)", me.getValueWithCommaSeparator(km));
+            }
+
+            return sprintf("nm (%.0f m)", inMeters);
+        }
+
+        if (column == File.INDEX_FUEL) {
+            var liters = sprintf("%.02f", value * globals.GAL2L);
+            return sprintf("US gallons (%s l)", me.getValueWithCommaSeparator(liters));
+        }
+
+        if (column == File.INDEX_MAX_ALT) {
+            var inMeters = value * globals.FT2M;
+            if (inMeters >= 1000) {
+                var km = sprintf("%.02f", inMeters / 1000);
+                return sprintf("ft MSL (%s km)", me.getValueWithCommaSeparator(km));
+            }
+
+            return sprintf("ft MSL (%.0f m)", inMeters);
+        }
+
+        return "";
+    },
+
+    #
+    # int column
+    # string value
+    # return string
+    #
+    addCommaSeparator: func(column, value) {
+        if (column == File.INDEX_DISTANCE or
+            column == File.INDEX_FUEL or
+            column == File.INDEX_MAX_ALT
+        ) {
+            return me.getValueWithCommaSeparator(value);
+        }
+
+        return value;
+    },
+
+    #
+    # string value
+    # return string
+    #
+    getValueWithCommaSeparator: func(value) {
+        var splitted   = split(".", value);
+        var strToCheck = splitted[0];
+        var newValue   = strToCheck;
+        var length     = size(strToCheck);
+        if (length > 3) {
+            newValue = "";
+            var modulo = math.mod(length, 3);
+            if (modulo > 0) {
+                newValue ~= substr(strToCheck, 0, modulo);
+                newValue ~= ",";
+            }
+
+            for (var i = modulo; i < length; i += 3) {
+                newValue ~= substr(strToCheck, i, 3);
+                if (i + 3 < length) {
+                    newValue ~= ",";
+                }
+            }
+        }
+
+        if (size(splitted) == 2) {
+            return newValue ~ "." ~ splitted[1];
+        }
+
+        return newValue;
     },
 };
