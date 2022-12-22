@@ -8,6 +8,63 @@
 # Logbook is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
+#############################################################################################
+# Simplest example of use:
+#############################################################################################
+# var window = canvas.Window.new([600, 480], "dialog").set("title", "ListView demo");
+# var myCanvas = window.createCanvas().set("background", canvas.style.getColor("bg_color"));
+# var root = myCanvas.createGroup();
+#
+# var vbox = canvas.VBoxLayout.new();
+# myCanvas.setLayout(vbox);
+#
+# var listView = canvas.gui.widgets.ListView.new(root, canvas.style, {});
+# vbox.addItem(listView, 1);
+#
+# listView
+#     .setClickCallback(func(index) {
+#         gui.popupTip("Clicked on row " ~ index);
+#     })
+#     .setItems([
+#         "Item text 1",
+#         "Item text 2",
+#         "Item text 3",
+#         "Item text 4",
+#         "Item text 5",
+#     ]);
+#
+#############################################################################################
+# The simplest use case with multiple columns:
+#############################################################################################
+# listView
+#     .setClickCallback(func(index) {
+#         gui.popupTip("Clicked on row " ~ index);
+#     })
+#     .setColumnsWidth([150, 150, 150])
+#     .setItems([
+#         {
+#             data: [
+#                 "Row 1 column 1",
+#                 "Row 1 column 2",
+#                 "Row 1 column 3",
+#             ]
+#         },
+#         {
+#             data: [
+#                 "Row 2 column 1",
+#                 "Row 2 column 2",
+#                 "Row 2 column 3",
+#             ]
+#         },
+#         {
+#             data: [
+#                 "Row 3 column 1",
+#                 "Row 3 column 2",
+#                 "Row 3 column 3",
+#             ]
+#         },
+#     ]);
+#
 
 #
 # ListView widget Model
@@ -76,11 +133,11 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param hash callbackContext - The click callback context
     # @param func callback - The click callback with int parameter as clicked item index
+    # @param hash callbackContext - The click callback context
     # @return me
     #
-    setClickCallback: func(callbackContext, callback) {
+    setClickCallback: func(callback, callbackContext = nil) {
         me._callbackContext = callbackContext;
         me._callback = callback;
         return me;

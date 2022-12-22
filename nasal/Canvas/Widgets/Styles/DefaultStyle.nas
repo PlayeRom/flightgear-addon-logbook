@@ -310,6 +310,7 @@ DefaultStyle.widgets.ListView = {
         foreach (var item; model._items) {
             me._createRow(model, item, x, y);
 
+            # TODO: event listeners should be move to model
             func () {
                 var innerIndex = index;
                 me._itemElements[innerIndex].group.addEventListener("mouseenter", func {
@@ -335,11 +336,15 @@ DefaultStyle.widgets.ListView = {
                 if (itemsCount > 0) {
                     var height = me._itemElements[itemsCount - 1].maxHeight;
 
-                    y += (height > 18 ? height : 0); # 18 - font size threshold for 1 row (non-wraped text)
+                    y += height > DefaultStyle.widgets.ListView.ITEM_HEIGHT
+                        ? (height + me._getHeightItemPadding(model))
+                        : DefaultStyle.widgets.ListView.ITEM_HEIGHT;
                 }
             }
+            else {
+                y += DefaultStyle.widgets.ListView.ITEM_HEIGHT;
+            }
 
-            y += DefaultStyle.widgets.ListView.ITEM_HEIGHT;
             index += 1;
         }
 
@@ -394,7 +399,7 @@ DefaultStyle.widgets.ListView = {
             tempText.del();
         }
 
-        hash.rect = me._createRectangle(model, hash.group, height * me._getHeightItemMultiplier());
+        hash.rect = me._createRectangle(model, hash.group, height + me._getHeightItemPadding(model));
 
         hash.text = me._createText(hash.group, x, me._getTextYOffset(), item);
         if (model._isUseTextMaxWidth) {
@@ -420,20 +425,23 @@ DefaultStyle.widgets.ListView = {
         # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
         # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
         if (model._isUseTextMaxWidth) {
+            var tempText = me._createText(hash.group, x, me._getTextYOffset(), "temp");
             forindex (var columnIndex; me._columnsWidth) {
-                var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
-                text.setMaxWidth(me._getColumnWidth(columnIndex));
-                var height = text.getSize()[1];
+                tempText
+                    .setText(item.data[columnIndex])
+                    .setMaxWidth(me._getColumnWidth(columnIndex));
+
+                var height = tempText.getSize()[1];
                 if (height > hash.maxHeight) {
                     hash.maxHeight = height;
                 }
-                text.del();
             }
+            tempText.del();
         }
 
         var rectHeight = hash.maxHeight == 0
             ? DefaultStyle.widgets.ListView.ITEM_HEIGHT
-            : hash.maxHeight * me._getHeightItemMultiplier();
+            : hash.maxHeight + me._getHeightItemPadding(model);
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
         forindex (var columnIndex; me._columnsWidth) {
@@ -495,7 +503,7 @@ DefaultStyle.widgets.ListView = {
         return context.rect(
                 0,
                 0,
-                model._size[0] - (DefaultStyle.widgets.ListView.PADDING * 2) - (me._xTransaltion == nil ? 0 : me._xTransaltion),
+                model._size[0] - (me._xTransaltion == nil ? 0 : (me._xTransaltion * 2)),
                 math.max(textHeight, DefaultStyle.widgets.ListView.ITEM_HEIGHT)
             )
             .setColorFill(me._backgroundColor);
@@ -538,22 +546,15 @@ DefaultStyle.widgets.ListView = {
     },
 
     #
+    # @param hash model
     # @return double
     #
-    _getHeightItemMultiplier: func() {
-        if (me._fontSize == 12) {
-            return 1.3;
+    _getHeightItemPadding: func(model) {
+        if (model._isUseTextMaxWidth) {
+            return me._fontSize;
         }
 
-        if (me._fontSize == 14) {
-            return 1.375;
-        }
-
-        if (me._fontSize == 16) {
-            return 1.45;
-        }
-
-        return 1;
+        return 0;
     },
 
     #
