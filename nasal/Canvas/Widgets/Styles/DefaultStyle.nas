@@ -258,7 +258,7 @@ DefaultStyle.widgets.ListView = {
     # @return void
     #
     reDrawContent: func(model) {
-        me._deleteElements(); # TODO: <- is it really needed? Maybe removeAllChildren does the job?
+        # me._deleteElements(); # TODO: <- is it really needed? Maybe removeAllChildren does the job?
         me._root.removeAllChildren();
 
         var y = model._isLoading
@@ -350,7 +350,7 @@ DefaultStyle.widgets.ListView = {
     },
 
     #
-    # Get width of column for given index
+    # Create row
     #
     # @param hash model
     # @param string|hash item
@@ -358,30 +358,95 @@ DefaultStyle.widgets.ListView = {
     # @return void
     #
     _createRow: func(model, item, x, y) {
-        if (me._columnsWidth == nil) {
-            # model._items is a vactor of strings
-            var hash = me._createBar(model, y);
-            hash.text = me._createText(hash.group, x, me._getTextYOffset(), item);
-            append(me._itemElements, hash);
+        if (model._isComplexItems) {
+            # model._items is a vactor of hash, each hash has "data" key with vector of strings
+            me._createComplexRow(model, item, x, y);
             return;
         }
 
-        # model._items is a vactor of hash, each hash has "data" key with vector of strings
-        var hash = me._createBar(model, y);
+        # model._items is a vactor of strings
+        me._createSimpleRow(model, item, x, y);
+    },
+
+    #
+    # Create simple row
+    #
+    # @param hash model
+    # @param string|hash item
+    # @param int x, y
+    # @return void
+    #
+    _createSimpleRow: func(model, item, x, y) {
+        var hash = me._createBar(y);
+
+        # Create temporary text element for get his height
+        # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
+        # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
+        var height = DefaultStyle.widgets.ListView.ITEM_HEIGHT;
+        if (model._isUseTextMaxWidth) {
+            var tempText = me._createText(hash.group, x, me._getTextYOffset(), item)
+                .setMaxWidth(me._columnsWidth[0]);
+
+            height = tempText.getSize()[1];
+            if (height > hash.maxHeight) {
+                hash.maxHeight = height;
+            }
+            tempText.del();
+        }
+
+        hash.rect = me._createRectangle(model, hash.group, height * me._getHeightItemMultiplier());
+
+        hash.text = me._createText(hash.group, x, me._getTextYOffset(), item);
+        if (model._isUseTextMaxWidth) {
+            hash.text.setMaxWidth(me._columnsWidth[0]);
+        }
+
+        append(me._itemElements, hash);
+    },
+
+    #
+    # Create complex row
+    #
+    # @param hash model
+    # @param string|hash item
+    # @param int x, y
+    # @return void
+    #
+    _createComplexRow: func(model, item, x, y) {
+        var hash = me._createBar(y);
         hash.text = [];
 
-        forindex (var columnIndex; me._columnsWidth) {
-            var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
-            if (model._isUseTextMaxWidth) {
+        # Create temporary text elements to get their height
+        # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
+        # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
+        if (model._isUseTextMaxWidth) {
+            forindex (var columnIndex; me._columnsWidth) {
+                var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
                 text.setMaxWidth(me._getColumnWidth(columnIndex));
                 var height = text.getSize()[1];
                 if (height > hash.maxHeight) {
                     hash.maxHeight = height;
                 }
+                text.del();
             }
+        }
+
+        var rectHeight = hash.maxHeight == 0
+            ? DefaultStyle.widgets.ListView.ITEM_HEIGHT
+            : hash.maxHeight * me._getHeightItemMultiplier();
+        hash.rect = me._createRectangle(model, hash.group, rectHeight);
+
+        forindex (var columnIndex; me._columnsWidth) {
+            var columnWidth = me._getColumnWidth(columnIndex);
+
+            var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
+            if (model._isUseTextMaxWidth) {
+                text.setMaxWidth(columnWidth);
+            }
+
             append(hash.text, text);
 
-            x += me._getColumnWidth(columnIndex);
+            x += columnWidth;
         }
 
         append(me._itemElements, hash);
@@ -398,25 +463,16 @@ DefaultStyle.widgets.ListView = {
     },
 
     #
-    # @param hash model
     # @param int y
     # @return hash
     #
-    _createBar: func(model, y) {
+    _createBar: func(y) {
         var hash = {
             group     : me._createBarGroup(y),
             rect      : nil,
             text      : nil, # vector of text element, or single text element
             maxHeight : 0,   # max text height in this row
         };
-
-        hash.rect = hash.group.rect(
-                0,
-                0,
-                model._size[0] - (DefaultStyle.widgets.ListView.PADDING * 2) - (me._xTransaltion == nil ? 0 : me._xTransaltion),
-                DefaultStyle.widgets.ListView.ITEM_HEIGHT
-            )
-            .setColorFill(me._backgroundColor);
 
         return hash;
     },
@@ -427,6 +483,22 @@ DefaultStyle.widgets.ListView = {
     #
     _createBarGroup: func(y) {
         return me._root.createChild("group").setTranslation(0, y);
+    },
+
+    #
+    # @param hash model
+    # @param hash context
+    # @param int textHeight
+    # @return hash - Path element
+    #
+    _createRectangle: func(model, context, textHeight) {
+        return context.rect(
+                0,
+                0,
+                model._size[0] - (DefaultStyle.widgets.ListView.PADDING * 2) - (me._xTransaltion == nil ? 0 : me._xTransaltion),
+                math.max(textHeight, DefaultStyle.widgets.ListView.ITEM_HEIGHT)
+            )
+            .setColorFill(me._backgroundColor);
     },
 
     #
@@ -463,6 +535,25 @@ DefaultStyle.widgets.ListView = {
         }
 
         return 0;
+    },
+
+    #
+    # @return double
+    #
+    _getHeightItemMultiplier: func() {
+        if (me._fontSize == 12) {
+            return 1.3;
+        }
+
+        if (me._fontSize == 14) {
+            return 1.375;
+        }
+
+        if (me._fontSize == 16) {
+            return 1.45;
+        }
+
+        return 1;
     },
 
     #

@@ -27,13 +27,29 @@ gui.widgets.ListView = {
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "ListView", me._cfg));
 
-        me._title = nil;
+        # The items of the list
         me._items = [];
-        me._callbackContext = nil;
+
+        # Optional non-clickable title at the top of the list
+        me._title = nil;
+
+        # The callback function which will be call on click action on row
         me._callback = func;
+
+        # The object which is the owner of the _callback function
+        me._callbackContext = nil;
+
+        # Index of row with permanent special highlighting
         me._highlightingRowIndex = nil;
+
+        # If it's set on true, then "Loading..." text is displaying instead of list
         me._isLoading = 0;
+
+        # If it's set on true, long tests will be wrapped to the width of the column by setMaxWidth() method
         me._isUseTextMaxWidth = 0;
+
+        # If it's set on true, then ListView widget was recognized items as a complex structure with multicolumns
+        me._isComplexItems = 0;
 
         return me;
     },
@@ -67,7 +83,6 @@ gui.widgets.ListView = {
     setClickCallback: func(callbackContext, callback) {
         me._callbackContext = callbackContext;
         me._callback = callback;
-
         return me;
     },
 
@@ -160,6 +175,7 @@ gui.widgets.ListView = {
         }
 
         me._items = items;
+        me._isComplexItems = size(me._items) > 0 ? typeof(me._items[0]) == "hash" : 0;
         me._view.reDrawContent(me);
 
         return me;
