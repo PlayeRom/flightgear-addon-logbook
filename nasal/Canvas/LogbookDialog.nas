@@ -516,6 +516,7 @@ var LogbookDialog = {
 
         if (me.startIndex != 0) {
             me.startIndex = 0;
+            me.detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -532,6 +533,7 @@ var LogbookDialog = {
 
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
             me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
+            me.detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -548,6 +550,7 @@ var LogbookDialog = {
 
         if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
+            me.detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -567,6 +570,7 @@ var LogbookDialog = {
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
+            me.detailsDialog.hide();
             me.reloadData(false);
         }
     },
