@@ -74,10 +74,6 @@ var DetailsDialog = {
 
         me.vbox.addItem(me.listView, 1); # 2nd param = stretch
 
-        # It's still little tricky that we have to set spacing after ListView
-        # content for set the bottom buttons in one place:
-        # me.vbox.addSpacing(me.listView.getContentHeight());
-
         var buttonBox = me.drawBottomBar();
 
         me.vbox.addItem(buttonBox);
