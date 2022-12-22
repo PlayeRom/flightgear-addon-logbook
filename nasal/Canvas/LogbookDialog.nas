@@ -489,9 +489,7 @@ var LogbookDialog = {
     setListViewStyle: func() {
         me.listView
             .setTextColor(me.style.TEXT_COLOR)
-            # .setBackgroundColor(me.style.CANVAS_BG)
-            # Set a transparent background so that the background texture image of the window remains visible
-            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setBackgroundColor(me.style.LIST_BG)
             .setHoverBackgroundColor(me.style.HOVER_BG);
     },
 

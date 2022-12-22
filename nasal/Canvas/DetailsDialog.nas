@@ -55,12 +55,19 @@ var DetailsDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
+        var margins = {
+            "left"   : canvas.DefaultStyle.widgets.ListView.PADDING,
+            "top"    : canvas.DefaultStyle.widgets.ListView.PADDING,
+            "right"  : 0,
+            "bottom" : 0,
+        };
+        me.scrollData = me.createScrollArea(me.style.LIST_BG, margins);
+        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
+        me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
+
+        var vBoxLayout = canvas.VBoxLayout.new();
+        me.listView = canvas.gui.widgets.ListView.new(me.scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
-            .setTranslation( # Set translation for padding
-                canvas.DefaultStyle.widgets.ListView.PADDING,
-                canvas.DefaultStyle.widgets.ListView.PADDING
-            )
             .setFontName(DetailsDialog.FONT_NAME)
             .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
             .setClickCallback(me, me.listViewCallback)
@@ -68,16 +75,10 @@ var DetailsDialog = {
 
         me.setListViewStyle();
 
-        # Since the long description text overlapped the buttons, we specify a clip box
-        # TODO: this must be solved by other way. The height of the note test is not taken into account in the ListView when the text wraps.
-        me.listView.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
+        vBoxLayout.addItem(me.listView);
+        me.scrollData.setLayout(vBoxLayout);
 
-        me.vbox.addItem(me.listView, 1); # 2nd param = stretch
-
-        var buttonBox = me.drawBottomBar();
-
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
+        me.drawBottomBar();
 
         me.setPositionOnCenter();
 
@@ -96,7 +97,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return hash - HBoxLayout object with button
+    # @return void
     #
     drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -125,7 +126,9 @@ var DetailsDialog = {
         buttonBox.addItem(btnDelete);
         buttonBox.addStretch(1);
 
-        return buttonBox;
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
+        me.vbox.addItem(buttonBox);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
     },
 
     #
@@ -136,6 +139,7 @@ var DetailsDialog = {
         me.style = style;
 
         me.canvas.set("background", me.style.CANVAS_BG);
+        me.scrollData.setColorBackground(me.style.LIST_BG);
         me.setListViewStyle();
         me.toggleBgImage();
 
@@ -148,9 +152,7 @@ var DetailsDialog = {
     setListViewStyle: func() {
         return me.listView
             .setTextColor(me.style.TEXT_COLOR)
-            # .setBackgroundColor(me.style.CANVAS_BG)
-            # Set a transparent background so that the background texture image of the window remains visible
-            .setBackgroundColor([0.0, 0.0, 0.0, 0.0])
+            .setBackgroundColor(me.style.LIST_BG)
             .setHoverBackgroundColor(me.style.HOVER_BG);
     },
 
