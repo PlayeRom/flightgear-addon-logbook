@@ -94,7 +94,7 @@ DefaultStyle.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setTextColor: func(model, color) {
+    setColorText: func(model, color) {
         me._textColor = color;
 
         if (me._loadingText != nil) {
@@ -125,7 +125,7 @@ DefaultStyle.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setBackgroundColor: func(model, color) {
+    setColorBackground: func(model, color) {
         me._backgroundColor = color;
 
         foreach (var hash; me._itemElements) {
@@ -143,7 +143,7 @@ DefaultStyle.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setHoverBackgroundColor: func(model, color) {
+    setColorHoverBackground: func(model, color) {
         me._hoverBackgroundColor = color;
 
         me.update(model);

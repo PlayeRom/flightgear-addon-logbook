@@ -201,9 +201,9 @@ var FilterSelector = {
 
         if (me.listView != nil) {
             me.listView
-                .setTextColor(me.style.TEXT_COLOR)
-                .setBackgroundColor(me.style.CANVAS_BG)
-                .setHoverBackgroundColor(me.style.HOVER_BG);
+                .setColorText(me.style.TEXT_COLOR)
+                .setColorBackground(me.style.CANVAS_BG)
+                .setColorHoverBackground(me.style.HOVER_BG);
         }
 
         return me;
@@ -243,9 +243,9 @@ var FilterSelector = {
             .useTextMaxWidth()
             .setColumnsWidth([FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2)])
             .setFontSizeLarge()
-            .setTextColor(me.style.TEXT_COLOR)
-            .setBackgroundColor(me.style.CANVAS_BG)
-            .setHoverBackgroundColor(me.style.HOVER_BG)
+            .setColorText(me.style.TEXT_COLOR)
+            .setColorBackground(me.style.CANVAS_BG)
+            .setColorHoverBackground(me.style.HOVER_BG)
             .setClickCallback(me.listViewCallback, me)
             .setItems(me.items.vector);
 

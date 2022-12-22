@@ -147,8 +147,8 @@ gui.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setTextColor: func(color) {
-        me._view.setTextColor(me, color);
+    setColorText: func(color) {
+        me._view.setColorText(me, color);
         return me;
     },
 
@@ -156,8 +156,8 @@ gui.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setBackgroundColor: func(color) {
-        me._view.setBackgroundColor(me, color);
+    setColorBackground: func(color) {
+        me._view.setColorBackground(me, color);
         return me;
     },
 
@@ -165,8 +165,8 @@ gui.widgets.ListView = {
     # @param vector color
     # @return me
     #
-    setHoverBackgroundColor: func(color) {
-        me._view.setHoverBackgroundColor(me, color);
+    setColorHoverBackground: func(color) {
+        me._view.setColorHoverBackground(me, color);
         return me;
     },
 
