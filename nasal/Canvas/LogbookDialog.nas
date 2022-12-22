@@ -109,7 +109,7 @@ var LogbookDialog = {
             )
             .setFontName(LogbookDialog.FONT_NAME)
             .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
-            .setClickCallback(me, me.listViewCallback);
+            .setClickCallback(me.listViewCallback, me);
 
         me.setListViewStyle();
 

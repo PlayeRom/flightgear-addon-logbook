@@ -246,7 +246,7 @@ var FilterSelector = {
             .setTextColor(me.style.TEXT_COLOR)
             .setBackgroundColor(me.style.CANVAS_BG)
             .setHoverBackgroundColor(me.style.HOVER_BG)
-            .setClickCallback(me, me.listViewCallback)
+            .setClickCallback(me.listViewCallback, me)
             .setItems(me.items.vector);
 
         vBoxLayout.addItem(me.listView);

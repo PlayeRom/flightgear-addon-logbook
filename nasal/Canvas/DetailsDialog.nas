@@ -68,7 +68,7 @@ var DetailsDialog = {
             .setFontSizeLarge()
             .setFontName(DetailsDialog.FONT_NAME)
             .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
-            .setClickCallback(me, me.listViewCallback)
+            .setClickCallback(me.listViewCallback, me)
             .useTextMaxWidth();
 
         me.setListViewStyle();
