@@ -52,14 +52,16 @@ var FilterSelector = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.items = [];
-        me.withDefaultAll = true;
+        me.items = std.Vector.new();
 
         me.scrollData = nil;
         me.scrollDataContent = nil;
+        me.listView = nil;
         me.callback = nil;
         me.objCallback = nil;
         me.columnIndex = nil;
+
+        me.reDrawContent();
 
         return me;
     },
@@ -89,7 +91,6 @@ var FilterSelector = {
     #
     show: func() {
         me.recalculateWindowHeight();
-        me.reDrawContent();
 
         call(Dialog.show, [], me);
     },
@@ -112,6 +113,10 @@ var FilterSelector = {
         me.title = title;
         me.window.setTitle(title);
 
+        if (me.listView != nil) {
+            me.listView.setTitle(me.title);
+        }
+
         return me;
     },
 
@@ -121,8 +126,17 @@ var FilterSelector = {
     # return me
     #
     setItems: func(items, withDefaultAll = 1) {
-        me.items = items;
-        me.withDefaultAll = withDefaultAll;
+        me.items.clear();
+
+        if (withDefaultAll) {
+            me.items.append(FilterSelector.CLEAR_FILTER_VALUE);
+        }
+
+        me.items.extend(items);
+
+        if (me.listView != nil) {
+            me.listView.setItems(me.items.vector, me, me.listViewCallback);
+        }
 
         return me;
     },
@@ -132,12 +146,7 @@ var FilterSelector = {
     #
     recalculateWindowHeight: func() {
         var paddingMultiplier = 2;
-        var count = size(me.items) + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
-
-        if (me.withDefaultAll) {
-            count += 1;  # +1 for "Default All"
-            paddingMultiplier += 1;
-        }
+        var count = me.items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
         var windowHeight = int(count * ListView.SHIFT_Y + (FilterSelector.PADDING * paddingMultiplier));
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
@@ -191,6 +200,14 @@ var FilterSelector = {
             me.scrollData.setColorBackground(me.style.CANVAS_BG);
         }
 
+        if (me.listView != nil) {
+            me.listView
+                .setTitle(me.title)
+                .setTextColor(me.style.TEXT_COLOR)
+                .setBackgroundColor(me.style.CANVAS_BG)
+                .setHoverBackgroundColor(me.style.HOVER_BG);
+        }
+
         return me;
     },
 
@@ -221,130 +238,24 @@ var FilterSelector = {
     # return void
     #
     drawScrollable: func() {
-        me.scrollDataContent.removeAllChildren();
+        var vBoxLayout = canvas.VBoxLayout.new();
 
-        var x = FilterSelector.PADDING * 2;
-        var y = 0;
-        y = me.drawHoverBoxTitle(x, y);
-        y = me.drawHoverBoxSeparator(y);
+        me.listView = canvas.gui.widgets.ListView.new(me.scrollDataContent, canvas.style, {})
+            .setTitle(me.title)
+            .setFontSizeLarge()
+            .setTextColor(me.style.TEXT_COLOR)
+            .setBackgroundColor(me.style.CANVAS_BG)
+            .setHoverBackgroundColor(me.style.HOVER_BG)
+            .setItems(me.items.vector, me, me.listViewCallback);
 
-        if (me.withDefaultAll) {
-            rowGroup = me.drawHoverBox(
-                y,
-                [me.columnIndex, FilterSelector.CLEAR_FILTER_VALUE],
-                me.style.CANVAS_BG
-            );
-            me.drawText(rowGroup, x, "Default All");
-            y += ListView.SHIFT_Y;
-        }
-
-        foreach (var text; me.items) {
-            var label = text == "" ? "<empty>" : text;
-            var rowGroup = me.drawHoverBox(y, [me.columnIndex, text], me.style.CANVAS_BG);
-            me.drawText(rowGroup, x, label);
-
-            y += ListView.SHIFT_Y;
-        }
-
-        # Scrollable content must be updated for set paddings
-        me.scrollDataContent.update();
+        vBoxLayout.addItem(me.listView);
+        me.scrollData.setLayout(vBoxLayout);
     },
 
-    #
-    # int x, y
-    # return int - Y pos
-    #
-    drawHoverBoxTitle: func(x, y) {
-        var group = me.drawHoverBox(y, nil, me.style.CANVAS_BG, false);
-        me.drawText(group, x, me.title);
-        y += ListView.SHIFT_Y;
-        return y;
-    },
+    listViewCallback: func(index) {
+        var text = me.items.vector[index];
 
-    #
-    # int y
-    # return int - Y pos
-    #
-    drawHoverBoxSeparator: func(y) {
-        return y + ListView.SHIFT_Y * FilterSelector.SEPARATOR_H_MULTIPLIER;
-    },
-
-    #
-    # int y
-    # vector|nil dataToPass - data to pass to MouseHover
-    # return hash - canvas group
-    #
-    drawHoverBoxItems: func(y, dataToPass = nil) {
-        return me.drawHoverBox(y, dataToPass, me.style.CANVAS_BG);
-    },
-
-    #
-    # int y
-    # vector|nil dataToPass - data to pass to MouseHover
-    # vector bgColor
-    # bool isMouseHover
-    # return hash - canvas group
-    #
-    drawHoverBox: func(y, dataToPass, bgColor, isMouseHover = 1) {
-        var rowGroup = me.scrollDataContent.createChild("group")
-            .setTranslation(0, y);
-
-        # Create rect because setColorFill on rowGroup doesn't work
-        var rect = rowGroup.rect(0, 0, FilterSelector.WINDOW_WIDTH - (ListView.PADDING * 3), ListView.SHIFT_Y)
-            .setColorFill(bgColor);
-
-        if (isMouseHover) {
-            rowGroup.addEventListener("mouseenter", func {
-                rect.setColorFill(me.style.HOVER_BG);
-            });
-
-            rowGroup.addEventListener("mouseleave", func {
-                rect.setColorFill(me.style.CANVAS_BG);
-            });
-
-            if (dataToPass != nil) {
-                rowGroup.addEventListener("click", func {
-                    call(me.callback, dataToPass, me.objCallback);
-                    me.hide();
-                });
-            }
-        }
-
-        return rowGroup;
-    },
-
-    #
-    # hash cGroup - Parent canvas group
-    # int x
-    # string text
-    # int|nil maxWidth
-    # return hash - canvas text object
-    #
-    drawText: func(cGroup, x, text, maxWidth = nil) {
-        var text = cGroup.createChild("text")
-            .setTranslation(x, me.getTextYOffset())
-            .setColor(me.style.TEXT_COLOR)
-            .setText(text);
-
-        if (maxWidth != nil) {
-            text.setMaxWidth(maxWidth);
-        }
-
-        return text;
-    },
-
-    #
-    # return int
-    #
-    getTextYOffset: func() {
-        if (me.fontSize == 12) {
-            return 16;
-        }
-
-        if (me.fontSize == 16) {
-            return 18;
-        }
-
-        return 0;
+        call(me.callback, [me.columnIndex, text], me.objCallback);
+        me.hide();
     },
 };
