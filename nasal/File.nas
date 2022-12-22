@@ -37,6 +37,18 @@ var File = {
     INDEX_MAX_ALT    : 16,
     INDEX_NOTE       : 17,
 
+    TOTAL_FORMATS        : [
+        "%d",   # landings
+        "%d",   # crash
+        "%.2f", # day
+        "%.2f", # night
+        "%.2f", # instrument
+        "%.2f", # duration
+        "%.2f", # distance
+        "%.0f", # fuel
+        "%.0f", # max alt
+    ],
+
     #
     # Constructor
     #
@@ -434,8 +446,11 @@ var File = {
             ],
         });
 
-        foreach (var total; me.totals) {
-            append(me.loadedData[size(me.loadedData) - 1].data, total);
+        forindex (var index; me.totals) {
+            append(
+                me.loadedData[size(me.loadedData) - 1].data,
+                sprintf(File.TOTAL_FORMATS[index], me.totals[index])
+            );
         }
     },
 

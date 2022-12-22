@@ -45,6 +45,7 @@ var DetailsDialog = {
 
         me.parent          = nil;
         me.dataRow         = nil;
+        me.isTotals        = false;
         me.parentDataIndex = nil;
         me.file            = file;
         me.inputDialog     = InputDialog.new(settings);
@@ -159,14 +160,17 @@ var DetailsDialog = {
     #
     # @param hash parent - LogbookDialog object
     # @param hash data - {"allDataIndex": index, "data": vector}
+    # @param bool isTotals
     # @return void
     #
-    show: func(parent, data) {
+    show: func(parent, data, isTotals) {
+        me.parent = parent;
         me.dataRow = data;
+        me.isTotals = isTotals;
+
         me.inputDialog.hide();
         me.deleteDialog.hide();
 
-        me.parent = parent;
         me.parentDataIndex = me.dataRow.allDataIndex;
 
         me.listView.setItems(me.getListViewRows(me.dataRow.data));
@@ -200,11 +204,25 @@ var DetailsDialog = {
     getListViewRows: func(data) {
         var headers = me.file.getHeadersData();
         var rowsData = [];
-        forindex (var index; headers) {
+
+        var start = 0;
+        if (me.isTotals) {
+            start = File.INDEX_LANDINGS;
+        }
+
+        forindex (var index; headers[start:]) {
+            var shiftIndex = index + start;
+            if (me.isTotals and shiftIndex == File.INDEX_NOTE) {
+                break;
+            }
+
             append(rowsData, {
                 data : [
-                    sprintf("%10s:", headers[index]),
-                    sprintf("%s %s", me.addCommaSeparator(index, data[index]), me.getExtraText(index, data[index])),
+                    sprintf("%10s:", headers[shiftIndex]),
+                    sprintf("%s %s",
+                        me.addCommaSeparator(shiftIndex, data[shiftIndex]),
+                        me.getExtraText(shiftIndex, data[shiftIndex])
+                    ),
                 ],
             });
         }

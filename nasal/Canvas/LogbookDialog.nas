@@ -38,17 +38,6 @@ var LogbookDialog = {
          80, # 15 - fuel
          70, # 16 - max alt
     ],
-    TOTAL_FORMATS        : [
-        "%d",   # landings
-        "%d",   # crash
-        "%.2f", # day
-        "%.2f", # night
-        "%.2f", # instrument
-        "%.2f", # duration
-        "%.2f", # distance
-        "%.0f", # fuel
-        "%.0f", # max alt
-    ],
     FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
     FONT_SIZE            : 12,
 
@@ -638,11 +627,12 @@ var LogbookDialog = {
     listViewCallback: func(index) {
         if (!g_isThreadPending) {
             var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
-            if (hash.allDataIndex > -1) { # -1 is using for Totals row
-                me.listView.removeHighlightingRow();
-                me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
-                me.detailsDialog.show(me, hash);
-            }
+
+            me.listView.removeHighlightingRow();
+            me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+
+            var isTotals = hash.allDataIndex == -1;  # -1 is using for Totals row
+            me.detailsDialog.show(me, hash, isTotals);
         }
     },
 };
