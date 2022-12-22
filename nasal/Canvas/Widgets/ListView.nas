@@ -27,7 +27,6 @@ gui.widgets.ListView = {
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "ListView", me._cfg));
 
-        me._maxRows = nil;
         me._title = nil;
         me._items = [];
         me._callbackContext = nil;
@@ -199,22 +198,6 @@ gui.widgets.ListView = {
         }
 
         return me;
-    },
-
-    #
-    # @param int maxRows
-    # @return me
-    #
-    setMaxRows: func(maxRows) {
-        me._maxRows = maxRows;
-        return me;
-    },
-
-    #
-    # @return int
-    #
-    getContentHeight: func() {
-        return me._view.getContentHeight(me);
     },
 
     #

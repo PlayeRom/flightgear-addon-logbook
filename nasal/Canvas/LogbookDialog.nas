@@ -105,7 +105,6 @@ var LogbookDialog = {
 
         me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeSmall()
-            .setMaxRows(21) # 20 items + 1 totals
             # Set transaltion for align with headers row:
             .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT)
             .setFontName(LogbookDialog.FONT_NAME)
@@ -117,11 +116,7 @@ var LogbookDialog = {
             .setHoverBackgroundColor(me.style.HOVER_BG)
             .setClickCallback(me, me.listViewCallback);
 
-        me.vbox.addItem(me.listView);
-
-        # It's still little tricky that we have to set spacing after ListView
-        # content for set the bottom buttons in one place:
-        me.vbox.addSpacing(me.listView.getContentHeight());
+        me.vbox.addItem(me.listView, 1); # 2nd param = stretch
 
         me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
         me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
@@ -449,6 +444,7 @@ var LogbookDialog = {
         buttonBox.addStretch(1);
 
         me.vbox.addItem(buttonBox);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
     },
 
     #

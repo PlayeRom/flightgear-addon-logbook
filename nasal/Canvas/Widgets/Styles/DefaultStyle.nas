@@ -244,20 +244,6 @@ DefaultStyle.widgets.ListView = {
     },
 
     #
-    # Get max expected height of list view content
-    #
-    # @param hash model
-    # @return int
-    #
-    getContentHeight: func(model) {
-        if (model._maxRows == nil) {
-            loginfo(LOG_ALERT, "ListView widget: max rows are not set for call getContentHeight()");
-            return model._size[1];
-        }
-        return model._maxRows * DefaultStyle.widgets.ListView.ITEM_HEIGHT;
-    },
-
-    #
     # @param hash model
     # @param vector boundingBox
     # @return me
@@ -279,7 +265,7 @@ DefaultStyle.widgets.ListView = {
             ? me._drawContentLoading(model)
             : me._drawContentItems(model);
 
-        model.setLayoutMinimumSize([50, 100]);
+        model.setLayoutMinimumSize([50, DefaultStyle.widgets.ListView.ITEM_HEIGHT]);
         model.setLayoutSizeHint([model._size[0], y]);
     },
 
@@ -291,12 +277,12 @@ DefaultStyle.widgets.ListView = {
         me._loadingText = me._createText(
             me._root,
             int(model._size[0] / 2),
-            int(me.getContentHeight(model) / 2),
+            int(model._size[1] / 2),
             "Loading...",
             "center-center"
         );
 
-        return me.getContentHeight(model);
+        return model._size[1];
     },
 
     #

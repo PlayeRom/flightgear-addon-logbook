@@ -57,7 +57,6 @@ var DetailsDialog = {
 
         me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeLarge()
-            .setMaxRows(File.INDEX_NOTE + 1)
             # Set transaltion for align with headers row:
             .setTranslation(canvas.DefaultStyle.widgets.ListView.PADDING, canvas.DefaultStyle.widgets.ListView.PADDING)
             .setFontName(DetailsDialog.FONT_NAME)
@@ -73,7 +72,7 @@ var DetailsDialog = {
         # # Since the long description text overlapped the buttons, we specify a clip box
         me.listView.setClipByBoundingBox([0, 0, DetailsDialog.WINDOW_WIDTH, VBOX_SPACING]);
 
-        me.vbox.addItem(me.listView);
+        me.vbox.addItem(me.listView, 1); # 2nd param = stretch
 
         # It's still little tricky that we have to set spacing after ListView
         # content for set the bottom buttons in one place:
@@ -82,6 +81,7 @@ var DetailsDialog = {
         var buttonBox = me.drawBottomBar();
 
         me.vbox.addItem(buttonBox);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
 
         me.setPositionOnCenter();
 
