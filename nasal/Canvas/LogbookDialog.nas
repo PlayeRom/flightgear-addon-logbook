@@ -459,15 +459,6 @@ var LogbookDialog = {
 
         me.reloadData();
 
-        # TODO: Additional data setting due to crash "non-numeric string in numeric context: 'data'"
-        # by dataRows["data"] in ListView, but is it really needed? Will the index still be up to date?
-        # if (me.detailsDialog.parentDataIndex != nil) {
-        #     me.detailsDialog.listView.setDataToDraw(
-        #         me.file.getLogData(me.detailsDialog.parentDataIndex),
-        #         me.file.getHeadersData()
-        #     );
-        # }
-
         me.detailsDialog.setStyle(me.style);
         me.helpDialog.setStyle(me.style);
     },
