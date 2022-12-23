@@ -102,7 +102,7 @@ gui.widgets.ListView = {
         # If it's set on true, then "Loading..." text is displaying instead of list
         me._isLoading = 0;
 
-        # If it's set on true, long tests will be wrapped to the width of the column by setMaxWidth() method
+        # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
         me._isUseTextMaxWidth = 0;
 
         # If it's set on true, then ListView widget was recognized items as a complex structure with multicolumns
