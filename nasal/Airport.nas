@@ -40,7 +40,7 @@ var Airport = {
     #
     # Get nearest airport distance in meters.
     #
-    # @return hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
+    # @return hash|nil - hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
     getNearestAirportDistanceM: func() {
         var icao = getprop("/sim/airport/closest-airport-id");

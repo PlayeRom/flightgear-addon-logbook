@@ -29,7 +29,6 @@ var FilterData = {
     },
 
     #
-    # @param hash filterHash
     # @param int index - Column index as File.INDEX_[...]
     # @param string value
     # @return bool

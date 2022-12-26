@@ -93,7 +93,7 @@ var ConfirmationDialog = {
 
     #
     # @param int logIndex
-    # hash|nill parentObj - Dialog parent class
+    # @param hash|nil parentObj - Dialog parent class
     # @return void
     #
     show: func(logIndex, parentObj = nil) {

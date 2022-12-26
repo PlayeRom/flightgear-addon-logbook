@@ -22,7 +22,7 @@ var Settings = {
     #
     # Constructor
     #
-    # addons.Addon addon
+    # @param hash addon - addons.Addon object
     # @return me
     #
     new: func (addon) {

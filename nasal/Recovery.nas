@@ -22,6 +22,8 @@ var Recovery = {
     #
     # Constructor
     #
+    # @param hash addon - addons.Addon object
+    # @param file - File object
     # @return me
     #
     new: func (addon, file) {
@@ -81,6 +83,7 @@ var Recovery = {
     #
     # Save log data to recovery file
     #
+    # @param hash logData - LogData object
     # @return void
     #
     save: func(logData) {

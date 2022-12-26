@@ -142,7 +142,7 @@ var Filters = {
         }
 
         # Return true if all filters have been met
-        return matchCounter == size(me.appliedFilters.vector);
+        return matchCounter == me.appliedFilters.size();
     },
 
     #

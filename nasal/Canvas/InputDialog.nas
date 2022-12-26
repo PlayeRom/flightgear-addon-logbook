@@ -232,6 +232,7 @@ var InputDialog = {
     #
     # Validate the value according to header
     #
+    # @param string value
     # @return bool - Return true if value is correct
     #
     validate: func(value) {

@@ -100,7 +100,6 @@ var FilterSelector = {
     #
     setPosition: func(x, y) {
         me.window.setPosition(x, y);
-
         return me;
     },
 

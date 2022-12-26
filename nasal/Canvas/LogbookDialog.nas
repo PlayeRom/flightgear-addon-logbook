@@ -145,7 +145,7 @@ var LogbookDialog = {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                me.reloadLogbookListenerCallback(node);
+                me.reloadLogbookListenerCallback();
             }
         }));
 
@@ -341,7 +341,7 @@ var LogbookDialog = {
     #
     # Replace some too long header text or set "filtered" marker
     #
-    # index column
+    # @param int column
     # @param string text
     # @return string
     #
@@ -367,7 +367,7 @@ var LogbookDialog = {
     # @param hash cGroup - Parent canvas group
     # @param int x, y - Position of text
     # @param string text - Text to draw
-    # @return void
+    # @return hash - Text canvas element
     #
     drawText: func(cGroup, x, y, text) {
         return cGroup.createChild("text")
@@ -464,7 +464,7 @@ var LogbookDialog = {
     },
 
     #
-    # @return hash - ListView widget
+    # @return void
     #
     setListViewStyle: func() {
         me.listView
@@ -579,8 +579,7 @@ var LogbookDialog = {
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # @param vector data - Vector of hashes {"allDataIndex": index, "data": vectorLogData}
-    # @param vector totals
+    # @param vector data - Vector of hashes {"allDataIndex": index, "data": vector}
     # @param bool withHeaders
     # @return void
     #

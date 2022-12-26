@@ -53,6 +53,7 @@ var File = {
     # Constructor
     #
     # @param hash addon - addons.Addon object
+    # @param hash filters - Filters object
     # @return me
     #
     new: func (addon, filters) {
@@ -147,6 +148,7 @@ var File = {
     # Copy file from older version to the newest
     #
     # @param string oldFile
+    # @param string newFile
     # @return void
     #
     copyFile: func(oldFile, newFile) {
@@ -320,9 +322,12 @@ var File = {
     },
 
     #
+    # @param hash objCallback - owner object of callback function
+    # @param func callback - callback function called on finish
     # @param int start - Start index counting from 0 as a first row of data
     # @param int count - How many rows should be returned
-    # @return vector
+    # @param bool withHeaders
+    # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
         me.objCallback = objCallback;

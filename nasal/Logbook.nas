@@ -117,7 +117,7 @@ var Logbook = {
     #
     # Initialize logbook after FDM initialized
     #
-    # @return void
+    # @return int - listener ID
     #
     fdmInitialized: func() {
         return setlistener(
