@@ -12,8 +12,8 @@
 #
 # Main Nasal function
 #
-# hash addon - Addon object
-# return void
+# @param hash addon - addons.Addon object
+# @return void
 #
 var main = func(addon) {
     logprint(LOG_INFO, "Logbook addon initialized from path ", addon.basePath);
@@ -29,8 +29,8 @@ var main = func(addon) {
 #
 # Load extra Nasal files in main add-on directory
 #
-# hash addon - Addon object
-# return void
+# @param hash addon - addons.Addon object
+# @return void
 #
 var loadExtraNasalFiles = func (addon) {
     var modules = [
@@ -72,10 +72,10 @@ var loadExtraNasalFiles = func (addon) {
 };
 
 #
-# hash addon - addons.Addon object
-# vector modules
-# string namespace
-# return void
+# @param hash addon - addons.Addon object
+# @param vector modules
+# @param string namespace
+# @return void
 #
 var loadVectorOfModules = func(addon, modules, namespace) {
     foreach (var scriptName; modules) {
@@ -99,6 +99,9 @@ var loadVectorOfModules = func(addon, modules, namespace) {
 #
 # Other resources should be freed by adding the corresponding code here,
 # e.g. myCanvas.del();
+#
+# @param hash addon - addons.Addon object
+# @return void
 #
 var unload = func(addon) {
     logprint(LOG_INFO, "Logbook addon unload");

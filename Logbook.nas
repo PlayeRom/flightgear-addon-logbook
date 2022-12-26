@@ -38,17 +38,20 @@ var g_isThreadPending = false;
 #
 # Initialize Logbook
 #
-# addon - Addon object
+# @param hash addon - addons.Addon object
+# @return void
 #
 var init = func (addon) {
     g_Logbook = Logbook.new(addon);
-}
+};
 
 #
 # Uninitialize Logbook
+#
+# @return void
 #
 var uninit = func () {
     if (g_Logbook != nil) {
         g_Logbook.del();
     }
-}
+};
