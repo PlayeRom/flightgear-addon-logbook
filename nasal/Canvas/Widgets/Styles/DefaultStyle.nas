@@ -77,6 +77,7 @@ DefaultStyle.widgets.ListView = {
     #
     # Set title as non clickable description text on the top
     #
+    # @param hash model
     # @param string text
     # @return me
     #

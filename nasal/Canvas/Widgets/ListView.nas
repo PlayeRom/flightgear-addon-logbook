@@ -277,6 +277,8 @@ gui.widgets.ListView = {
     # Enable disaplying "Loading..." text instead of list. For set the "Loading..." text on the center of list view
     # please call setMaxRows first.
     #
+    # @return me
+    #
     enableLoading: func() {
         me._isLoading = 1;
         me._view.reDrawContent(me);
