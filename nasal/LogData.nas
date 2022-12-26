@@ -390,7 +390,7 @@ var LogData = {
         me.from         = items[File.INDEX_FROM];
         me.to           = items[File.INDEX_TO];
         me.landings     = items[File.INDEX_LANDINGS];
-        me.crash        = items[File.INDEX_CRASH] == "1" or items[File.INDEX_CRASH] == true ? true : false;
+        me.crash        = items[File.INDEX_CRASH] == 1;
         me.day          = items[File.INDEX_DAY];
         me.night        = items[File.INDEX_NIGHT];
         me.instrument   = items[File.INDEX_INSTRUMENT];
