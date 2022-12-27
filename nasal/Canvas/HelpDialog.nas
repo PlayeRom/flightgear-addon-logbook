@@ -58,13 +58,11 @@ var HelpDialog = {
             "left-baseline"
         );
 
-        me.textHelp = me.drawText(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        me.helpTexts = std.Vector.new();
+        me.propHelpText = props.globals.getNode(me.addon.node.getPath() ~ "/addon-devel/help-text");
 
-        var buttonBox = me.drawBottomBar();
-
-        me.vbox.addSpacing(10);
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(10);
+        me.reDrawTexts(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        me.drawBottomBar();
 
         return me;
     },
@@ -76,27 +74,43 @@ var HelpDialog = {
     # @return void
     #
     onResizeWidth: func(width) {
-        me.textHelp.setMaxWidth(width - (HelpDialog.PADDING * 2));
+        me.reDrawTexts(0, 0, width - (HelpDialog.PADDING * 2));
     },
 
     #
     # @param int x
     # @param int y
     # @param int|nil maxWidth
-    # @return hash - canvas text object
+    # @return void
     #
-    drawText: func(x, y, maxWidth = nil) {
-        var text = me.scrollDataContent.createChild("text")
-            .setText(me.getHelpText())
-            .setTranslation(x, y)
-            .setColor(me.style.TEXT_COLOR)
-            .setAlignment("left-top");
+    reDrawTexts: func(x, y, maxWidth = nil) {
+        me.scrollDataContent.removeAllChildren();
+        me.helpTexts.clear();
 
-        if (maxWidth != nil) {
-            text.setMaxWidth(maxWidth);
+        foreach (var node; me.propHelpText.getChildren("paragraph")) {
+            var isHeader = math.mod(node.getIndex(), 2) == 0;
+            var text = me.scrollDataContent.createChild("text")
+                .setText(node.getIndex() == 1
+                    ? sprintf(node.getValue(), File.FILE_VERSION)
+                    : node.getValue()
+                )
+                .setTranslation(x, y)
+                .setColor(me.style.TEXT_COLOR)
+                .setFontSize(isHeader ? 18 : 16)
+                .setFont(isHeader
+                    ? "LiberationFonts/LiberationSans-Bold.ttf"
+                    : "LiberationFonts/LiberationSans-Regular.ttf"
+                )
+                .setAlignment("left-baseline");
+
+            if (maxWidth != nil) {
+                text.setMaxWidth(maxWidth);
+            }
+
+            y += text.getSize()[1] + 10;
+
+            me.helpTexts.append(text);
         }
-
-        return text;
     },
 
     #
@@ -114,6 +128,10 @@ var HelpDialog = {
         });
 
         buttonBox.addItem(btnClose);
+
+        me.vbox.addSpacing(10);
+        me.vbox.addItem(buttonBox);
+        me.vbox.addSpacing(10);
 
         return buttonBox;
     },
@@ -136,13 +154,9 @@ var HelpDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
         me.scrollData.setColorBackground(me.style.CANVAS_BG);
-        me.textHelp.setColor(me.style.TEXT_COLOR);
-    },
 
-    #
-    # @return string
-    #
-    getHelpText: func() {
-        return sprintf(getprop(me.addon.node.getPath() ~ "/addon-devel/help-text"), File.FILE_VERSION);
+        foreach (var text; me.helpTexts.vector) {
+            text.setColor(me.style.TEXT_COLOR);
+        }
     },
 };

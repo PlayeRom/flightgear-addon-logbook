@@ -39,7 +39,11 @@
                     <action-edit-entry-header type="string"></action-edit-entry-header>
                     <action-edit-entry-value type="string"></action-edit-entry-value>
 
-                    <help-text type="string">
+                    <help-text>
+                        <paragraph type="string">
+CSV file
+                        </paragraph>
+                        <paragraph type="string">
 This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
 
 You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v%s.csv` directory, where `$FG_HOME` on Windows is:
@@ -49,13 +53,21 @@ You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.
 and on Linux/MacOS:
 
 `/home/{user name}/.fgfs/`
-
+                        </paragraph>
+                        <paragraph type="string">
+File structure
+                        </paragraph>
+                        <paragraph type="string">
 The following information is logged into the file:
 
 1. Date - aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
+
 2. Time - aircraft take-off time. As for Date this is the time taken from the OS.
+
 3. Aircraft - the code name of the aircraft.
+
 4. Variant - the code name of the aircraft as its variant. Some aircraft are available in more than one variant, for example, we have an aircraft called "Cessna 182S" which also includes a variant called "Cessna 182T." If you select "Cessna 182S," you will see "c182s" in the Aircraft as well as Variant column. If you select "Cessna 182T", you will see "c182s" in the Aircraft column, but "c182t" in the Variant column. This way you have the main group of aircraft in the Aircraft column, and its variants in the Variant column. You should know that this is not a rule, and some aircraft do not distinguish between variants, such as the Cessna 172P. Then you will always see a variant of the aircraft in both columns, e.g. "c172p-amphibious". If you want, you can manually correct the Aircraft column with a generic aircraft name, e.g. "c172p", and leave "c172p-amphibious" in the Variant column. This will allow you to extract Totals statistics for a general group of aircraft no matter what variant (filtering by Aircraft), as well as more precisely for a specific variant of a given aircraft (filtering by Variant).
+
 5. Type - aircraft type as a one of following value:
     - "heli" (helicopter),
     - "balloon" (also airship),
@@ -69,35 +81,63 @@ The following information is logged into the file:
     - "ga-single" (small piston single-engine general aviation),
     - "ga-multi" (small piston multi-engine general aviation),
     - "others" (undefined or not recognized).
+
 6. Callsign - your callsign set for multiplayer.
+
 7. From - the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
+
 8. To - the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
+
 9. Landings - number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+
 10. Crash - if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
+
 11. Day - the number of hours spent flying during the day.
+
 12. Night - number of hours spent flying during the night.
+
 13. Instrument - the number of hours flown during the IMC (Instrument Meteorological Conditions).
+
 14. Duration - total duration of the flight in hours, as the sum of Day and Night. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. Duration is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+
 15. Distance - total distance flown from take-off to landing, in nautical miles.
+
 16. Fuel - total fuel burned, in US gallons.
+
 17. Max Alt - maximum altitude, in feet, reached during flight.
+
 18. Note - notes, by default the full name of the aircraft.
-
-NOTE
-
+                        </paragraph>
+                        <paragraph type="string">
+Note
+                        </paragraph>
+                        <paragraph type="string">
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
+
 2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the recovery.csv file. The data in the recovery.csv file will be automatically transferred to the logbook.csv file when the simulator is restarted.
+
 3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
+
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
+
 5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
+
 6. Helicopters should also be supported, although I have not tested all of them.
+
 7. The add-on supports JSBSim-based watercraft, although I have not tested all of them.
+
 8. The add-on supports the Space Shuttle.
+
 9. Flights with UFO will not be logged.
+
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
+
 11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the Fuel column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
+
 12. Supported FG versions from 2020.1.
+
 13. The minimum resolution for using the GUI is 1366x768.
+                        </paragraph>
                     </help-text>
                 </addon-devel>
             </org.flightgear.addons.logbook>
