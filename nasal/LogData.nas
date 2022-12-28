@@ -84,10 +84,25 @@ var LogData = {
     # @return me
     #
     setAircraft: func () {
-        me.aircraft = me.removeHangarName(getprop("/sim/aircraft-id"));
+        me.aircraft = me.getAirctaftPrimary();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
 
         return me;
+    },
+
+    #
+    # Get primary aircraft name read from directory name
+    #
+    # @return string
+    #
+    getAirctaftPrimary: func() {
+        var dirSplitted = split("/", utf8.substr(getprop("/sim/aircraft-dir"), 0));
+        var length = size(dirSplitted);
+        if (length > 0) {
+            return dirSplitted[length - 1];
+        }
+
+        return me.getAircraftId();
     },
 
     #
@@ -96,15 +111,23 @@ var LogData = {
     # @return me
     #
     setVariant: func () {
-        var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
-        # When "/sim/aircraft" exists, this property contains the correct ID.
-        # This is a case that can occur when an aircraft has multiple variants.
-        var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
-        me.variant = aircraft == nil ? aircraftId : aircraft;
-
+        me.variant = me.getAircraftId();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setVariant = ", me.variant);
 
         return me;
+    },
+
+    #
+    # Get the exact aircraft name as its unique ID (variant)
+    #
+    # @return string
+    #
+    getAircraftId: func() {
+        # When "/sim/aircraft" exists, this property contains the correct ID.
+        # This is a case that can occur when an aircraft has multiple variants.
+        var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
+        var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
+        return aircraft == nil ? aircraftId : aircraft;
     },
 
     #
@@ -406,33 +429,15 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByIndex: func(index) {
-        if (index == File.INDEX_DATE) {
-            return me.getYear();
-        }
-        else if (index == File.INDEX_AIRCRAFT) {
-            return me.aircraft;
-        }
-        else if (index == File.INDEX_VARIANT) {
-            return me.variant;
-        }
-        else if (index == File.INDEX_TYPE) {
-            return me.aircraftType;
-        }
-        else if (index == File.INDEX_CALLSIGN) {
-            return me.callsign;
-        }
-        else if (index == File.INDEX_FROM) {
-            return me.from;
-        }
-        else if (index == File.INDEX_TO) {
-            return me.to;
-        }
-        else if (index == File.INDEX_LANDINGS) {
-            return me.landings;
-        }
-        else if (index == File.INDEX_CRASH) {
-            return me.printCrash();
-        }
+             if (index == File.INDEX_DATE)     return me.getYear();
+        else if (index == File.INDEX_AIRCRAFT) return me.aircraft;
+        else if (index == File.INDEX_VARIANT)  return me.variant;
+        else if (index == File.INDEX_TYPE)     return me.aircraftType;
+        else if (index == File.INDEX_CALLSIGN) return me.callsign;
+        else if (index == File.INDEX_FROM)     return me.from;
+        else if (index == File.INDEX_TO)       return me.to;
+        else if (index == File.INDEX_LANDINGS) return me.landings;
+        else if (index == File.INDEX_CRASH)    return me.printCrash();
 
         return nil;
     },

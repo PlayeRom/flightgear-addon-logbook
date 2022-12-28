@@ -237,8 +237,8 @@ var InputDialog = {
     #
     validate: func(value) {
         for (var i = 0; i < size(value); i += 1) {
-            if (value[i] == `,` or value[i] == `"`) {
-                gui.popupTip("Please do not use `,` and `\"` as these are special characters for the CSV file.");
+            if (value[i] == `,` or value[i] == `"`) { #"# <- Fix syntax coloring in Visual Code
+                gui.popupTip("Please don't use `,` and `\"` as these are special characters for the CSV file.");
                 return false;
             }
         }
@@ -255,9 +255,9 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (me.header == "Aircraft") {
-            if (!me.validateAircraft(value)) {
-                gui.popupTip("Incorrect Aircraft ID");
+        else if (me.header == "Variant") {
+            if (!me.validateVariant(value)) {
+                gui.popupTip("Please don't use space or dot characters");
                 return false;
             }
         }
@@ -329,7 +329,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateAircraft: func(value) {
+    validateVariant: func(value) {
         for (var i = 0; i < size(value); i += 1) {
             if (value[i] == `.` or value[i] == ` `) {
                 return false;
