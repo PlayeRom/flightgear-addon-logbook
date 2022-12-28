@@ -300,8 +300,8 @@ var File = {
                 me.allData.append(logData);
 
                 me.cachedData.append({
-                    "allDataIndex" : me.totalLines,
-                    "logData" : logData,
+                    allDataIndex : me.totalLines,
+                    logData      : logData,
                 });
             }
 
@@ -344,8 +344,8 @@ var File = {
                 var vectorLogData = hash.logData.toVector();
                 if (counter < count) {
                     append(me.loadedData, {
-                        "allDataIndex" : hash.allDataIndex,
-                        "data" : vectorLogData,
+                        allDataIndex : hash.allDataIndex,
+                        data         : vectorLogData,
                     });
                     counter += 1;
                 }
@@ -395,8 +395,8 @@ var File = {
             if (me.filters.isAllowedByFilter(logData)) {
                 if (me.totalLines >= start and counter < count) {
                     append(me.loadedData, {
-                        "allDataIndex" : allDataIndex,
-                        "data" : vectorLogData,
+                        allDataIndex : allDataIndex,
+                        data         : vectorLogData,
                     });
                     counter += 1;
                 }
@@ -405,8 +405,8 @@ var File = {
                 me.countTotals(vectorLogData);
 
                 me.cachedData.append({
-                    "allDataIndex" : allDataIndex,
-                    "logData" : logData,
+                    allDataIndex : allDataIndex,
+                    logData      : logData,
                 });
             }
 
@@ -438,8 +438,8 @@ var File = {
     #
     appendTotalsRow: func() {
         append(me.loadedData, {
-            "allDataIndex" : -1,
-            "data"         : [
+            allDataIndex : -1,
+            data         : [
                 "",
                 "",
                 "",
@@ -658,8 +658,8 @@ var File = {
         }
 
         return {
-            "allDataIndex" : index,
-            "data" : me.allData.vector[index].toVector()
+            allDataIndex : index,
+            data         : me.allData.vector[index].toVector()
         };
     },
 

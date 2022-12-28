@@ -32,7 +32,7 @@ var main = func(addon) {
 # @param hash addon - addons.Addon object
 # @return void
 #
-var loadExtraNasalFiles = func (addon) {
+var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/File", # Must be before LogbookDialog
         "nasal/Canvas/InputDialog",

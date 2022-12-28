@@ -41,7 +41,7 @@ var g_isThreadPending = false;
 # @param hash addon - addons.Addon object
 # @return void
 #
-var init = func (addon) {
+var init = func(addon) {
     g_Logbook = Logbook.new(addon);
 };
 
@@ -50,7 +50,7 @@ var init = func (addon) {
 #
 # @return void
 #
-var uninit = func () {
+var uninit = func() {
     if (g_Logbook != nil) {
         g_Logbook.del();
     }
