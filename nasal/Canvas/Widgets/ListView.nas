@@ -253,7 +253,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @return int
+    # @return int|nil
     #
     getHighlightingRow: func() {
         return me._highlightingRowIndex;

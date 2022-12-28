@@ -74,12 +74,12 @@ var LogbookDialog = {
             call(LogbookDialog.hide, [], self);
         };
 
-        me.startIndex = 0;
-
-        me.data           = [];
-        me.rowTotal       = nil;
-        me.headersContent = nil;
-        me.dataContent    = nil;
+        me.startIndex           = 0;
+        me.data                 = [];
+        me.rowTotal             = nil;
+        me.headersContent       = nil;
+        me.dataContent          = nil;
+        me.allDataIndexSelected = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
@@ -494,6 +494,7 @@ var LogbookDialog = {
 
         if (me.startIndex != 0) {
             me.startIndex = 0;
+            me.filterSelector.hide();
             me.detailsDialog.hide();
             me.reloadData(false);
         }
@@ -511,6 +512,7 @@ var LogbookDialog = {
 
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
             me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
+            me.filterSelector.hide();
             me.detailsDialog.hide();
             me.reloadData(false);
         }
@@ -528,6 +530,7 @@ var LogbookDialog = {
 
         if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
+            me.filterSelector.hide();
             me.detailsDialog.hide();
             me.reloadData(false);
         }
@@ -548,6 +551,7 @@ var LogbookDialog = {
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
+            me.filterSelector.hide();
             me.detailsDialog.hide();
             me.reloadData(false);
         }
@@ -595,6 +599,34 @@ var LogbookDialog = {
         if (me.detailsDialog.isWindowVisible()) {
             me.detailsDialog.reload();
         }
+
+        me.handleSelectedRowAfterReloadData();
+    },
+
+    #
+    # @return void
+    #
+    handleSelectedRowAfterReloadData: func() {
+        # Check if the selected row should still be selected.
+        var highlightedIndex = me.listView.getHighlightingRow();
+        if (highlightedIndex == nil or 
+            highlightedIndex < 0 or 
+            highlightedIndex >= size(me.data) or 
+            me.data[highlightedIndex].allDataIndex != me.allDataIndexSelected
+        ) {
+            me.listView.removeHighlightingRow();
+        }
+
+        # Check that the selected row is among the data.
+        if (me.detailsDialog.isWindowVisible()) {
+            forindex (var index; me.data) {
+                var allDataIndex = me.data[index].allDataIndex;
+                if (allDataIndex == me.allDataIndexSelected) {
+                    me.setHighlightingRow(allDataIndex, index);
+                    break;
+                }
+            }
+        }
     },
 
     #
@@ -618,11 +650,21 @@ var LogbookDialog = {
         if (!g_isThreadPending) {
             var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
 
-            me.listView.removeHighlightingRow();
-            me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+            me.setHighlightingRow(hash.allDataIndex, index);
 
             var isTotals = hash.allDataIndex == -1;  # -1 is using for Totals row
             me.detailsDialog.show(me, hash, isTotals);
         }
+    },
+
+    #
+    # @param int allDataIndex - index of row in whole CSV file
+    # @param int index - index of row in list view (among displayed rows)
+    # @return void
+    #
+    setHighlightingRow: func(allDataIndex, index) {
+        me.allDataIndexSelected = allDataIndex;
+        me.listView.removeHighlightingRow();
+        me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
     },
 };

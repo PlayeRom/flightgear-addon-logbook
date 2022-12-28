@@ -187,6 +187,7 @@ var DetailsDialog = {
         if (me.parent != nil) {
             # Remove highlighted row in LogbookDialog
             me.parent.listView.removeHighlightingRow();
+            me.parent.allDataIndexSelected = nil;
         }
 
         me.parentDataIndex = nil;
