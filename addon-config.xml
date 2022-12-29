@@ -66,7 +66,7 @@ The following information is logged into the file:
 
 3. Aircraft - the code name of the aircraft.
 
-4. Variant - the code name of the aircraft as its variant. Some aircraft are available in more than one variant, for example, we have an aircraft called "Cessna 182S" which also includes a variant called "Cessna 182T." If you select "Cessna 182S," you will see "c182s" in the Aircraft as well as Variant column. If you select "Cessna 182T", you will see "c182s" in the Aircraft column, but "c182t" in the Variant column. This way you have the main group of aircraft in the Aircraft column, and its variants in the Variant column. You should know that this is not a rule, and some aircraft do not distinguish between variants, such as the Cessna 172P. Then you will always see a variant of the aircraft in both columns, e.g. "c172p-amphibious". If you want, you can manually correct the Aircraft column with a generic aircraft name, e.g. "c172p", and leave "c172p-amphibious" in the Variant column. This will allow you to extract Totals statistics for a general group of aircraft no matter what variant (filtering by Aircraft), as well as more precisely for a specific variant of a given aircraft (filtering by Variant).
+4. Variant - the code name of the aircraft as its variant. Some aircraft are available in several variants, such as the default "Cessna 172P", which includes different variants like "Cessna 172P Float". If you select "Cessna 172P," you will see `c172p` in the Aircraft as well as Variant column. If you select the float variant ("Cessna 172P Float"), you will see `c172p` in the Aircraft column, but `c172p-float` in the Variant column. This way you have the main group of aircraft in the Aircraft column, and its variants in the Variant column. This will allow you to extract Totals statistics for a general group of aircraft no matter what variant (filtering by Aircraft), as well as more precisely for a specific variant of a given aircraft (filtering by Variant).
 
 5. Type - aircraft type as a one of following value:
     - "heli" (helicopter),
@@ -98,15 +98,23 @@ The following information is logged into the file:
 
 13. Instrument - the number of hours flown during the IMC (Instrument Meteorological Conditions).
 
-14. Duration - total duration of the flight in hours, as the sum of Day and Night. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. Duration is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+14. Duration - total duration of the flight in hours, as the sum of Day and Night. The Instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. Duration is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
 
 15. Distance - total distance flown from take-off to landing, in nautical miles.
 
-16. Fuel - total fuel burned, in US gallons.
+16. Fuel - total amount of fuel burned in flight, in U.S. gallons.
 
 17. Max Alt - maximum altitude, in feet, reached during flight.
 
 18. Note - notes, by default the full name of the aircraft.
+                        </paragraph>
+                        <paragraph type="string">
+Totals
+                        </paragraph>
+                        <paragraph type="string">
+The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which you don't have the sum of all altitudes, but the highest one.
+
+After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
                         </paragraph>
                         <paragraph type="string">
 Note

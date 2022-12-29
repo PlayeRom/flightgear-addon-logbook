@@ -40,7 +40,7 @@ The following information is logged into the file:
 1. **Date** – aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
 2. **Time** – aircraft take-off time. As for **Date** this is the time taken from the OS.
 3. **Aircraft** – the code name of the aircraft.
-4. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in more than one variant, for example, we have an aircraft called "Cessna 182S" which also includes a variant called "Cessna 182T." If you select "Cessna 182S," you will see `c182s` in the **Aircraft** as well as **Variant** column. If you select "Cessna 182T", you will see `c182s` in the **Aircraft** column, but `c182t` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. You should know that this is not a rule, and some aircraft do not distinguish between variants, such as the Cessna 172P. Then you will always see a variant of the aircraft in both columns, e.g. `c172p-amphibious`. If you want, you can manually correct the **Aircraft** column with a generic aircraft name, e.g. `c172p`, and leave `c172p-amphibious` in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
+4. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in several variants, such as the default "Cessna 172P", which includes different variants like "Cessna 172P Float". If you select "Cessna 172P," you will see `c172p` in the **Aircraft** as well as **Variant** column. If you select the float variant ("Cessna 172P Float"), you will see `c172p` in the **Aircraft** column, but `c172p-float` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
 5. **Type** – aircraft type as a one of following value:
     * "heli" (helicopter),
     * "balloon" (also airship),
@@ -62,23 +62,23 @@ The following information is logged into the file:
 11. **Day** – the number of hours spent flying during the day.
 12. **Night** – number of hours spent flying during the night.
 13. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-14. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The instrument is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+14. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The **Instrument** is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
 15. **Distance** – total distance flown from take-off to landing, in nautical miles.
-16. **Fuel** – total fuel burned, in US gallons.
+16. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
 17. **Max Alt** – maximum altitude, in feet, reached during flight.
 18. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
-The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which we do not have the sum of all altitudes, but the highest one.
+The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which you don't have the sum of all altitudes, but the highest one.
 
-At the very bottom we have a row of buttons, mainly for moving through the log pages. The `|<<` button means moving to the first page, `<` moving to the previous page, `>` moving to the next page, `>>|` moving to the last page. In the middle we have text information in the format `{on which page we are} / {number of all pages} (number of entries in the log)`. On the right we have a `dark`/`light` button to switch between window styles. The `?` button opens a window with help (the same as from the "Logbook" -> "Help" menu).
+At the very bottom there is a row of buttons, mainly for moving through the log pages. The `|<<` button means moving to the first page, `<` moving to the previous page, `>` moving to the next page, `>>|` moving to the last page. In the middle there is text information in the format `{on which page you are} / {number of all pages} (number of entries in the log)`. On the right is the `dark`/`light` button to switch between window styles. The `?` button opens a window with help (the same as from the "Logbook" -> "Help" menu).
 
-Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, we have the same information here as in the main window, except:
+Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, you have the same information here as in the main window, except:
 
 1. ICAO airport codes include their names in parentheses.
-2. With numerical data, we have given the units in which these values are presented with conversions to other units.
-3. At the very bottom we have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
+2. With numerical data, you have given the units in which these values are presented with conversions to other units.
+3. At the very bottom you have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
 
 ### Data filtering
 
@@ -162,7 +162,7 @@ Do pliku logowane są następujące informacje:
 1. **Date** – data startu statku powietrznego. Jest to data pobierana z twojego systemu operacyjnego, a nie data w symulatorze. Uznałem, że wolę wiedzieć, kiedy odbyłem lot we własnej strefie czasowej, przed własnym komputerem, niż to jaki był czas UTC czy lokalny w symulacji, co wg mnie było by mało wartościową informacją. Jeśli masz inne zdanie i sensowne argumenty, daj mi znać.
 2. **Time** ‒ czas startu statku powietrznego. Podobnie jak dla **Date** jest to czas pobrany z systemu operacyjnego.
 3. **Aircraft** ‒ nazwa kodowa statku powietrznego.
-4. **Variant** ‒ nazwa kodowa statku powietrznego jako jego wariant. Niektóre samoloty dostępne są w kilku wariantach, np. mamy samolot "Cessna 182S", który także zawiera wariant "Cessna 182T". Jeśli wybierzesz "Cessna 182S", to w kolumnie **Aircraft** jak i **Variant**  zobaczysz `c182s`. Jeśli wybierzesz "Cessna 182T", to w kolumnie **Aircraft** zobaczysz `c182s`, ale w kolumnie **Variant** `c182t`. W ten sposób masz główną grupę samolotu w kolumnie **Aircraft**, oraz jego warianty w kolumnie **Variant**. Należy wiedzieć, że nie jest to reguła, i niektóre samoloty nie rozróżniają wariantów, jak np. Cessna 172P. Wówczas w obydwu kolumnach zawsze zobaczysz wariant samolotu, np. `c172p-amphibious`. Jeśli chcesz możesz ręcznie poprawić kolumnę **Aircraft** podając ogólną nazwę samolotu, np. `c172p`, a w kolumnie **Variant** pozostawić `c172p-amphibious`. Dzięki temu będziesz mógł wydobyć statystyki **Totals** dla ogólnej grupy samolotu bez znaczenia w jakim wariancie (filtrując po **Aircraft**), jak i precyzyjniej dla konkretnego wariantu danego samolotu (filtrując po **Variant**).
+4. **Variant** ‒ nazwa kodowa statku powietrznego jako jego wariant. Niektóre samoloty dostępne są w kilku wariantach, np. domyślna "Cessna 172P", która zawiera różne warianty jak np. "Cessna 172P Float". Jeśli wybierzesz "Cessna 172P", to w kolumnie **Aircraft** jak i **Variant**  zobaczysz `c172p`. Jeśli wybierzesz wariant z pływakami ("Cessna 172P Float"), to w kolumnie **Aircraft** zobaczysz `c172p`, ale w kolumnie **Variant** `c172p-float`. W ten sposób masz główną grupę samolotu w kolumnie **Aircraft** oraz jego warianty w kolumnie **Variant**. Dzięki temu będziesz mógł wydobyć statystyki **Totals** dla ogólnej grupy samolotu bez znaczenia w jakim wariancie (filtrując po **Aircraft**), jak i precyzyjniej dla konkretnego wariantu danego samolotu (filtrując po **Variant**).
 5. **Type** ‒ typ statku powietrznego jako jeden z następujących wartości:
     * "heli" (śmigłowiec),
     * "balloon" (także sterowiec),
@@ -184,9 +184,9 @@ Do pliku logowane są następujące informacje:
 11. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
 12. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
 13. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-14. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  Instrument jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
+14. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  **Instrument** jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
 15. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
-16. **Fuel** ‒ łączna ilość spalonego paliwa, w galonach amerykańskich.
+16. **Fuel** ‒ łączna ilość spalonego paliwa podczas lotu, w galonach amerykańskich.
 17. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
 18. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
@@ -194,7 +194,7 @@ Do pliku logowane są następujące informacje:
 
 Dodatek udostępnia także możliwość przeglądania całego dziennika lotów z poziomu symulatora. Należy z menu wybrać pozycję "Logbook" -> "Logbook". Otworzy się okno główne z całym dziennikiem w postaci tabelarycznej. Ostatni rząd podpisany "Totals", zawiera podsumowanie, nie tylko widocznych wpisów na danej stronie, ale całego dziennika. Rząd "Totals" widoczny jest na każdej stronie. Wyjątkiem dla "Totals" jest kolumna `Max Alt`, w której nie mamy sumy wszystkich wysokości, tylko tę najwyższą.
 
-Na samym dole mamy rząd przycisków, głównie do przemieszczania się po stronach dziennika. Przycisk `|<<` oznacza przejście do pierwszej strony, `<` przejście do poprzedniej strony, `>` przejście do następnej strony, `>>|` przejście do ostatniej strony. Na środku mamy informację tekstową w formacie `{na której jesteśmy stronie} / {ilość wszystkich stron} (ilość wpisów w dzienniku)`. Po prawej mamy przycisk `dark`/`light` do przełączania się między stylami okna. Przycisk `?` otwiera okno z pomocą (to samo co z menu "Logbook" -> "Help").
+Na samym dole znajduje się rząd przycisków, głównie do przemieszczania się po stronach dziennika. Przycisk `|<<` oznacza przejście do pierwszej strony, `<` przejście do poprzedniej strony, `>` przejście do następnej strony, `>>|` przejście do ostatniej strony. Na środku znajduje się informacja tekstowa w formacie `{na której jesteśmy stronie} / {ilość wszystkich stron} (ilość wpisów w dzienniku)`. Po prawej znajduje się przycisk `dark`/`light` do przełączania się między stylami okna. Przycisk `?` otwiera okno z pomocą (to samo co z menu "Logbook" -> "Help").
 
 Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy się dodatkowe okno prezentujące szczegóły danego wpisu. Ogólnie mamy tutaj to samo co w oknie głównym, poza tym:
 
