@@ -35,6 +35,7 @@ var Environment = {
         me.maxAlt             = 0.0;
         me.lastElapsedSec     = me.isRealTimeDuration ? 0 : me.getElapsedSec();
         me.isReplayMode       = false;
+        me.isRunning          = false;
 
         me.propAltFt          = props.globals.getNode("/position/altitude-ft");
 
@@ -86,6 +87,7 @@ var Environment = {
         me.instrumentCounter = 0;
         me.maxAlt            = 0.0;
         me.lastElapsedSec    = me.isRealTimeDuration ? 0 : me.getElapsedSec();
+        me.isRunning         = true;
     },
 
     #
@@ -94,6 +96,10 @@ var Environment = {
     # @return void
     #
     update: func () {
+        if (!me.isRunning) {
+            return;
+        }
+
         var currentElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
 
         var diffElapsedSec = me.isRealTimeDuration
