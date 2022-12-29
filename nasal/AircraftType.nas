@@ -82,7 +82,7 @@ var AircraftType = {
         if (me.searchTag({"or" : ["seaplane", "amphibious"], "and" : []})) {
             # Handle exception where the aircraft has multiple versions i.e. with wheels and floats,
             # but tags are the same for all versions so it finds the seaplane when it has wheels.
-            var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft"));
+            var aircraftId = Aircraft.getAircraftId();
             if (aircraftId == "dhc6") {
                 var desc = getprop("/sim/description");
                 if (string.match(desc, "*Wheels") or
@@ -130,7 +130,7 @@ var AircraftType = {
             me.searchTag({"or" : [], "and" : ["propeller", "single-engine"]}) or
             me.searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
         ) {
-            var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft"));
+            var aircraftId = Aircraft.getAircraftId();
             if (string.match(aircraftId, "*-float") or # for c172p
                 string.match(aircraftId, "*-amphibious")
             ) {
@@ -184,7 +184,7 @@ var AircraftType = {
     # @return string
     #
     manualSelection: func() {
-        var aircraftId = LogData.removeHangarName(getprop("/sim/aircraft"));
+        var aircraftId = Aircraft.getAircraftId();
 
         if (substr(aircraftId, 0, 5) == "ask21" or # ask21, ask21mi, ask21-jsb, ask21mi-jsb
             aircraftId == "Perlan2" or

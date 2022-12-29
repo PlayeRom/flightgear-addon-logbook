@@ -92,5 +92,5 @@ var SpaceShuttle = {
         return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0 or
                getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0 or
                getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0
-    }
+    },
 };

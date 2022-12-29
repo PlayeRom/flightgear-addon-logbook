@@ -81,53 +81,27 @@ var LogData = {
     #
     # Set the primary aircraft from /sim/aircraft-dir
     #
+    # @param string aircraft
     # @return me
     #
-    setAircraft: func () {
-        me.aircraft = me.getAirctaftPrimary();
+    setAircraft: func (aircraft) {
+        me.aircraft = aircraft;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
 
         return me;
     },
 
     #
-    # Get primary aircraft name read from directory name
-    #
-    # @return string
-    #
-    getAirctaftPrimary: func() {
-        var dirSplitted = split("/", utf8.substr(getprop("/sim/aircraft-dir"), 0));
-        var length = size(dirSplitted);
-        if (length > 0) {
-            return dirSplitted[length - 1];
-        }
-
-        return me.getAircraftId();
-    },
-
-    #
     # Set the aircraft variant as /sim/aircraft. If not exist then use /sim/aircraft-id.
     #
+    # @param string aircraftId
     # @return me
     #
-    setVariant: func () {
-        me.variant = me.getAircraftId();
+    setVariant: func (aircraftId) {
+        me.variant = aircraftId;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setVariant = ", me.variant);
 
         return me;
-    },
-
-    #
-    # Get the exact aircraft name as its unique ID (variant)
-    #
-    # @return string
-    #
-    getAircraftId: func() {
-        # When "/sim/aircraft" exists, this property contains the correct ID.
-        # This is a case that can occur when an aircraft has multiple variants.
-        var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
-        var aircraftId = me.removeHangarName(getprop("/sim/aircraft-id"));
-        return aircraft == nil ? aircraftId : aircraft;
     },
 
     #
@@ -141,42 +115,6 @@ var LogData = {
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraftType);
 
         return me;
-    },
-
-    #
-    # Remove hangar name from aircraft ID
-    #
-    # @param string|nil aircraft - Aircraft ID probably with hangar name
-    # @return string|nil - Aircraft ID without hangar name
-    #
-    removeHangarName: func(aircraft) {
-        if (aircraft == nil) {
-            return nil;
-        }
-
-        var aircraftLength = size(aircraft);
-
-        # Known hangars
-        var hangars = [
-            "org.flightgear.fgaddon.stable_????.",
-            "org.flightgear.fgaddon.trunk.",
-        ];
-
-        foreach (var pattern; hangars) {
-            if (string.match(aircraft, pattern ~ "*")) {
-                var urlLength = size(pattern);
-                return substr(aircraft, urlLength, aircraftLength - urlLength);
-            }
-        }
-
-        # We're still not trim, so try to trim to the last dot (assumed that aircraft ID cannot has dot char)
-        for (var i = aircraftLength - 1; i >= 0; i -= 1) {
-            if (aircraft[i] == `.`) {
-                return substr(aircraft, i + 1, aircraftLength - i);
-            }
-        }
-
-        return aircraft;
     },
 
     #

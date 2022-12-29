@@ -55,6 +55,7 @@ var Logbook = {
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
         me.recovery      = Recovery.new(addon, me.file);
+        me.aircraft      = Aircraft.new();
         me.logbookDialog = LogbookDialog.new(me.settings, me.file, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
@@ -160,7 +161,6 @@ var Logbook = {
     # @return void
     #
     initLogbook: func() {
-        # logprint(MY_LOG_LEVEL, "Logbook Add-on - initLogbook <------------------------------------------");
         me.landingGear.recognizeGears(me.onGround);
 
         me.initAltAglThreshold();
@@ -264,13 +264,19 @@ var Logbook = {
             return;
         }
 
+        var aircraftId = me.aircraft.getAircraftId();
+        if (aircraftId == "ufo" or aircraftId == "mibs") {
+            # We don't log UFO, FG Video Assistant
+            return;
+        }
+
         me.recovery.start(me, me.recoveryCallback);
 
         me.logData = LogData.new();
         me.logData.setDate(me.environment.getDateString());
         me.logData.setTime(me.environment.getTimeString());
-        me.logData.setAircraft();
-        me.logData.setVariant();
+        me.logData.setAircraft(me.aircraft.getAirctaftPrimary());
+        me.logData.setVariant(aircraftId);
         me.logData.setAircraftType(me.aircraftType);
         me.logData.setNote(getprop("/sim/description"));
         me.logData.setCallsign(getprop("/sim/multiplay/callsign"));
