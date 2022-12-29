@@ -23,8 +23,8 @@ var LogData = {
 
         me.date         = "";    # Take-off date (real)
         me.time         = "";    # Take-off time (real)
-        me.aircraft     = "";    # Aircraft ID (/sim/aircraft-id)
-        me.variant      = "";    # Aircraft variant (/sim/aircraft)
+        me.aircraft     = "";    # Primary aircraft from dir (/sim/aircraft-dir)
+        me.variant      = "";    # Aircraft ID as a variant (/sim/aircraft)
         me.aircraftType = "";    # Aircraft type
         me.callsign     = "";    # Pilot callsign
         me.from         = "";    # ICAO departure airport (if take-off from the ground)
@@ -79,7 +79,7 @@ var LogData = {
     },
 
     #
-    # Set the aircraft ID (/sim/aircraft-id)
+    # Set the primary aircraft from /sim/aircraft-dir
     #
     # @return me
     #
