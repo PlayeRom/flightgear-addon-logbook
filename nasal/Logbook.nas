@@ -236,8 +236,7 @@ var Logbook = {
                 if (me.wowSec > 2) {
                     # We recognise that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognise the landing when we bounce off the ground.
-                    var crash = me.crashDetector.isGForceAbnormal();
-                    me.stopLogging(true, crash);
+                    me.stopLogging(true);
                     me.wowSec = 0;
                 }
             }
@@ -248,7 +247,7 @@ var Logbook = {
         me.wowSec = 0;
 
         var isLogging = me.logData != nil;
-        if (isLogging and me.crashDetector.isCrash(me.onGround)) {
+        if (isLogging and me.crashDetector.isCrashByTesting(me.onGround)) {
             me.stopLogging(false, true);
         }
     },
@@ -311,10 +310,9 @@ var Logbook = {
         me.recovery.stop();
         me.crashDetector.stopGForce();
 
-        # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional orientation check
-        var isOrientationOk = me.crashDetector.isOrientationOK();
-        if ((landed and !isOrientationOk) or me.spaceShuttle.isCrashed()) {
-            crashed = 1; # force crash state
+        # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional crash check
+        if (landed and me.crashDetector.isCrash()) {
+            crashed = true; # force crash state
         }
 
         me.logData.setFuel(me.getFuel());
@@ -323,7 +321,7 @@ var Logbook = {
         if (landed) {
             logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
 
-            if (isOrientationOk) {
+            if (me.crashDetector.isOrientationOK()) {
                 me.logData.setLanding();
                 # Use max distance as 6000 m (Schiphol need 6 km)
                 var icao = me.airport.getNearestIcao(6000);

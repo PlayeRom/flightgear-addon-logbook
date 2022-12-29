@@ -56,12 +56,26 @@ var CrashDetector = {
     },
 
     #
+    # Check differents values
+    #
+    # @return bool
+    #
+    isCrash: func() {
+        return !me.isOrientationOK() or
+            me.isGForceAbnormal() or
+            me.isSimCrashedFlag() or
+            me.isC172PBrokenGear() or
+            me.isC172PBrokenWing() or
+            me.spaceShuttle.isCrashed();
+    },
+
+    #
     # Return true if testCrash positive within 3 seconds
     #
     # @param bool onGround
     # @return bool
     #
-    isCrash: func(onGround) {
+    isCrashByTesting: func(onGround) {
         if (me.testCrash(onGround)) {
             me.crashCounter += 1;
             logprint(MY_LOG_LEVEL, "Logbook Add-on - crash counter  = ", me.crashCounter);
@@ -88,7 +102,7 @@ var CrashDetector = {
             return false;
         }
 
-        if (me.isC172PBrokenGear() or me.isC172PBrokenWing()) {
+        if (me.isSimCrashedFlag() or me.isC172PBrokenGear() or me.isC172PBrokenWing()) {
             return true;
         }
 
@@ -155,6 +169,20 @@ var CrashDetector = {
         return
             me.propWingLeft.getValue()  >= 1.0 or
             me.propWingRight.getValue() >= 1.0;
+    },
+
+    #
+    # Check "sim/crashed" property
+    #
+    # @return bool
+    #
+    isSimCrashedFlag: func() {
+        var crashed = getprop("/sim/crashed");
+        if (crashed == nil) {
+            return false;
+        }
+
+        return crashed;
     },
 
     #
