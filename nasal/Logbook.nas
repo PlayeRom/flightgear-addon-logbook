@@ -16,7 +16,7 @@ var Logbook = {
     #
     # Constants
     #
-    ALT_AGL_FT_THRESHOLD : 100,
+    ALT_AGL_FT_THRESHOLD : 500,
     MAIN_TIMER_INTERVAL  : 1,
 
     #
@@ -109,8 +109,9 @@ var Logbook = {
     # @return void
     #
     del: func() {
-        me.recovery.del();
         me.mainTimer.stop();
+        me.crashDetector.del();
+        me.recovery.del();
         me.logbookDialog.del();
     },
 
@@ -194,6 +195,7 @@ var Logbook = {
     #
     update: func() {
         if (me.isSimPaused or me.isReplayMode) {
+            me.crashDetector.stopGForce();
             return;
         }
 
@@ -208,8 +210,11 @@ var Logbook = {
         if (!me.onGround and me.propAltAglFt.getValue() > me.initAltAglFt) {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - update do nothing");
             # There's nothing to check for landing, we're too high
+            me.crashDetector.stopGForce();
             return;
         }
+
+        me.crashDetector.startGForce(me.onGround);
 
         if (me.landingGear.checkWow(me.onGround)) {
             if (me.onGround) {
@@ -231,7 +236,8 @@ var Logbook = {
                 if (me.wowSec > 2) {
                     # We recognise that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognise the landing when we bounce off the ground.
-                    me.stopLogging(true);
+                    var crash = me.crashDetector.isGForceAbnormal();
+                    me.stopLogging(true, crash);
                     me.wowSec = 0;
                 }
             }
@@ -241,7 +247,8 @@ var Logbook = {
 
         me.wowSec = 0;
 
-        if (me.crashDetector.isCrash(me.onGround)) {
+        var isLogging = me.logData != nil;
+        if (isLogging and me.crashDetector.isCrash(me.onGround)) {
             me.stopLogging(false, true);
         }
     },
@@ -278,6 +285,8 @@ var Logbook = {
         me.environment.resetCounters();
 
         me.onGround = false;
+
+        me.crashDetector.startGForce(me.onGround);
     },
 
     #
@@ -294,6 +303,7 @@ var Logbook = {
         }
 
         me.recovery.stop();
+        me.crashDetector.stopGForce();
 
         # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional orientation check
         var isOrientationOk = me.crashDetector.isOrientationOK();

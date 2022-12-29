@@ -14,6 +14,11 @@
 #
 var CrashDetector = {
     #
+    # Constants
+    #
+    GFORCE_INTERVAL : 0.2,
+
+    #
     # Constructor
     #
     # @param hash spaceShuttle - SpaceShuttle object
@@ -28,7 +33,26 @@ var CrashDetector = {
         me.lastAircraftAltAgl = nil;
         me.crashCounter = 0;
 
+        me.propWingLeft  = props.globals.getNode("/fdm/jsbsim/wing-damage/left-wing");
+        me.propWingRight = props.globals.getNode("/fdm/jsbsim/wing-damage/right-wing");
+
+        me.propGForce = props.globals.getNode("/accelerations/pilot-gdamped");
+        me.lastGForces = std.Vector.new();
+
+        me.timerGForce = maketimer(CrashDetector.GFORCE_INTERVAL, me, me.gForceCallback);
+
+        me.maxGForceSize = int(12 * (1 / CrashDetector.GFORCE_INTERVAL)); # from last 12 seconds
+
         return me;
+    },
+
+    #
+    # Destructor
+    #
+    # @return void
+    #
+    del: func() {
+        me.timerGForce.stop();
     },
 
     #
@@ -124,8 +148,61 @@ var CrashDetector = {
     # @return bool
     #
     isC172PBrokenWing: func() {
+        if (me.propWingLeft == nil or me.propWingRight == nil) {
+            return false;
+        }
+
         return
-            (getprop("/fdm/jsbsim/wing-damage/left-wing")  or 0.0) >= 1.0 or
-            (getprop("/fdm/jsbsim/wing-damage/right-wing") or 0.0) >= 1.0;
+            me.propWingLeft.getValue()  >= 1.0 or
+            me.propWingRight.getValue() >= 1.0;
+    },
+
+    #
+    # Start timer for collection G-force values
+    #
+    # @param bool onGround
+    # @return void
+    #
+    startGForce: func(onGround) {
+        if (!onGround and !me.timerGForce.isRunning) {
+            me.timerGForce.start();
+        }
+    },
+
+    #
+    # Stop timer for collection G-force values
+    #
+    # @return void
+    #
+    stopGForce: func() {
+        if (me.timerGForce.isRunning) {
+            me.timerGForce.stop();
+        }
+    },
+
+    #
+    # @return bool - Return true if G-Force in the last 12 seconds exceeds 3.0 g
+    #
+    isGForceAbnormal: func() {
+        foreach (var valueZeroBase; me.lastGForces.vector) {
+            if (valueZeroBase > 2.0) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    #
+    # Timer function for collecting G-force values
+    #
+    # @return void
+    #
+    gForceCallback: func() {
+        var zeroBase = math.abs(me.propGForce.getValue() - 1.0);
+        me.lastGForces.append(zeroBase);
+        if (me.lastGForces.size() > me.maxGForceSize) {
+            me.lastGForces.pop(0); # Maximum reached, delete first value
+        }
     },
 };
