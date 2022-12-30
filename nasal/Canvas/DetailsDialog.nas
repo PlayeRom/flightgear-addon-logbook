@@ -55,8 +55,8 @@ var DetailsDialog = {
         me.canvas.set("background", me.style.CANVAS_BG);
 
         var margins = {
-            "left"   : canvas.DefaultStyle.widgets.ListView.PADDING,
-            "top"    : canvas.DefaultStyle.widgets.ListView.PADDING,
+            "left"   : canvas.DefaultStyle.widgets["list-view"].PADDING,
+            "top"    : canvas.DefaultStyle.widgets["list-view"].PADDING,
             "right"  : 0,
             "bottom" : 0,
         };
@@ -126,9 +126,9 @@ var DetailsDialog = {
         buttonBox.addItem(btnDelete);
         buttonBox.addStretch(1);
 
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
         me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
     },
 
     #

@@ -93,8 +93,8 @@ var LogbookDialog = {
         me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeSmall()
             .setTranslation( # Set translation for align ListView with headers row
-                canvas.DefaultStyle.widgets.ListView.PADDING,
-                canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT
+                canvas.DefaultStyle.widgets["list-view"].PADDING,
+                canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             )
             .setFontName(LogbookDialog.FONT_NAME)
             .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
@@ -250,7 +250,7 @@ var LogbookDialog = {
     reDrawHeadersContent: func() {
         me.headersContent.removeAllChildren();
 
-        var x = canvas.DefaultStyle.widgets.ListView.PADDING * 2;
+        var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
         var column = 0;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
@@ -261,7 +261,7 @@ var LogbookDialog = {
 
             var rowGroup = me.headersContent.createChild("group");
             rowGroup.setTranslation(x, 0);
-            var rect = rowGroup.rect(0, 0, me.getColumnWidth(column), canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT);
+            var rect = rowGroup.rect(0, 0, me.getColumnWidth(column), canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
             me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(column, text));
@@ -430,7 +430,7 @@ var LogbookDialog = {
         buttonBox.addStretch(1);
 
         me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets.ListView.PADDING);
+        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
     },
 
     #

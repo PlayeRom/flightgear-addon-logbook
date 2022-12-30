@@ -82,7 +82,7 @@ gui.widgets.ListView = {
         var me = gui.Widget.new(gui.widgets.ListView);
         me._cfg = Config.new(cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "ListView", me._cfg));
+        me._setView(style.createWidget(parent, "list-view", me._cfg));
 
         # The items of the list
         me._items = [];

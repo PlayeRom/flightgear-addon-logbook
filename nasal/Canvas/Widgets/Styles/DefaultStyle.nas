@@ -12,7 +12,7 @@
 #
 # ListView widget View
 #
-DefaultStyle.widgets.ListView = {
+DefaultStyle.widgets["list-view"] = {
     PADDING     : 10,
     ITEM_HEIGHT : 28,
 
@@ -24,7 +24,7 @@ DefaultStyle.widgets.ListView = {
     # @return void
     #
     new: func(parent, cfg) {
-        me._root = parent.createChild("group", "ListView");
+        me._root = parent.createChild("group", "list-view");
 
         me._titleElement = nil;
         me._itemElements = [];
@@ -266,7 +266,7 @@ DefaultStyle.widgets.ListView = {
             ? me._drawContentLoading(model)
             : me._drawContentItems(model);
 
-        model.setLayoutMinimumSize([50, DefaultStyle.widgets.ListView.ITEM_HEIGHT]);
+        model.setLayoutMinimumSize([50, DefaultStyle.widgets["list-view"].ITEM_HEIGHT]);
         model.setLayoutSizeHint([model._size[0], y]);
     },
 
@@ -296,7 +296,7 @@ DefaultStyle.widgets.ListView = {
             me._root.setTranslation(me._xTranslation, me._yTranslation);
         }
 
-        var x = DefaultStyle.widgets.ListView.PADDING;
+        var x = DefaultStyle.widgets["list-view"].PADDING;
         var y = 0;
 
         me._itemElements = [];
@@ -305,7 +305,7 @@ DefaultStyle.widgets.ListView = {
             var group = me._createBarGroup(y);
             me._titleElement = me._createText(model, group, x, me._getTextYOffset(), model._title);
 
-            y += int(DefaultStyle.widgets.ListView.ITEM_HEIGHT + DefaultStyle.widgets.ListView.ITEM_HEIGHT / 4);
+            y += int(DefaultStyle.widgets["list-view"].ITEM_HEIGHT + DefaultStyle.widgets["list-view"].ITEM_HEIGHT / 4);
         }
 
         var index = 0;
@@ -338,13 +338,13 @@ DefaultStyle.widgets.ListView = {
                 if (itemsCount > 0) {
                     var height = me._itemElements[itemsCount - 1].maxHeight;
 
-                    y += height > DefaultStyle.widgets.ListView.ITEM_HEIGHT
+                    y += height > DefaultStyle.widgets["list-view"].ITEM_HEIGHT
                         ? (height + me._getHeightItemPadding(model))
-                        : DefaultStyle.widgets.ListView.ITEM_HEIGHT;
+                        : DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
                 }
             }
             else {
-                y += DefaultStyle.widgets.ListView.ITEM_HEIGHT;
+                y += DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
             }
 
             index += 1;
@@ -389,7 +389,7 @@ DefaultStyle.widgets.ListView = {
         # Create temporary text element for get his height
         # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
         # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
-        var height = DefaultStyle.widgets.ListView.ITEM_HEIGHT;
+        var height = DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
         if (model._isUseTextMaxWidth) {
             var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), item)
                 .setMaxWidth(me._columnsWidth[0]);
@@ -442,7 +442,7 @@ DefaultStyle.widgets.ListView = {
         }
 
         var rectHeight = hash.maxHeight == 0
-            ? DefaultStyle.widgets.ListView.ITEM_HEIGHT
+            ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             : hash.maxHeight + me._getHeightItemPadding(model);
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
@@ -506,7 +506,7 @@ DefaultStyle.widgets.ListView = {
                 0,
                 0,
                 model._size[0] - (me._xTranslation == nil ? 0 : (me._xTranslation * 2)),
-                math.max(textHeight, DefaultStyle.widgets.ListView.ITEM_HEIGHT)
+                math.max(textHeight, DefaultStyle.widgets["list-view"].ITEM_HEIGHT)
             )
             .setColorFill(me._backgroundColor);
     },

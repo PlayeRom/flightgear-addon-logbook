@@ -146,7 +146,7 @@ var FilterSelector = {
         var paddingMultiplier = 2;
         var count = me.items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
-        var windowHeight = int(count * canvas.DefaultStyle.widgets.ListView.ITEM_HEIGHT + (FilterSelector.PADDING * paddingMultiplier));
+        var windowHeight = int(count * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT + (FilterSelector.PADDING * paddingMultiplier));
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
