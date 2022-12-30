@@ -17,7 +17,9 @@ var File = {
     # Constants
     #
     LOGBOOK_FILE     : "logbook-v%s.csv",
-    FILE_VERSION     : "3",
+    FILE_VERSION     : "4",
+
+    # Column indexes:
     INDEX_DATE       : 0,
     INDEX_TIME       : 1,
     INDEX_AIRCRAFT   : 2,
@@ -26,7 +28,7 @@ var File = {
     INDEX_CALLSIGN   : 5,
     INDEX_FROM       : 6,
     INDEX_TO         : 7,
-    INDEX_LANDINGS   : 8,
+    INDEX_LANDING    : 8,
     INDEX_CRASH      : 9,
     INDEX_DAY        : 10,
     INDEX_NIGHT      : 11,
@@ -38,7 +40,7 @@ var File = {
     INDEX_NOTE       : 17,
 
     TOTAL_FORMATS        : [
-        "%d",   # landings
+        "%d",   # landing
         "%d",   # crash
         "%.2f", # day
         "%.2f", # night
@@ -101,7 +103,7 @@ var File = {
     # @return void
     #
     resetTotals: func() {
-        # Total amount of Landings, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
+        # Total amount of Landing, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
         me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     },
 
@@ -113,6 +115,7 @@ var File = {
 
         var olderReleases = [
             # Keep the order from the newest to oldest
+            "3",
             "2",
             "1.0.1", # nothing has changed from v.1.0.0, so 1.0.0 = 1.1.0
             "1.0.0",
@@ -124,17 +127,23 @@ var File = {
                 if (oldVersion == "1.0.1" or oldVersion == "1.0.0") {
                     # If there is no version 2 file, but older ones exist, migrate to version 2 first
                     var file_v2 = me.getPathToFile("2");
-                    if (!me.exists(file_v2)) {
-                        me.fileMigration.migrateToFileVersion_2(oldFile, file_v2);
+                    me.fileMigration.migrateToFileVersion_2(oldFile, file_v2);
 
-                        # Prepare variables to next migration
-                        oldFile = file_v2;
-                        oldVersion = "2";
-                    }
+                    # Prepare variables to next migration
+                    oldFile = file_v2;
+                    oldVersion = "2";
                 }
 
                 if (oldVersion == "2") {
-                    me.fileMigration.migrateToFileVersion_3(oldFile, me.filePath);
+                    var file_v3 = me.getPathToFile("3");
+                    me.fileMigration.migrateToFileVersion_3(oldFile, file_v3);
+                    # Prepare variables to next migration
+                    oldFile = file_v3;
+                    oldVersion = "3";
+                }
+
+                if (oldVersion == "3") {
+                    me.fileMigration.migrateToFileVersion_4(oldFile, me.filePath);
                 }
 
                 return true;
@@ -186,7 +195,7 @@ var File = {
                'Callsign,' ~
                'From,' ~
                'To,' ~
-               'Landings,' ~
+               'Landing,' ~
                'Crash,' ~
                'Day,' ~
                'Night,' ~
@@ -247,7 +256,7 @@ var File = {
             logData.callsign,
             logData.from,
             logData.to,
-            logData.landings,
+            logData.printLanding(),
             logData.printCrash(),
             logData.day,
             logData.night,
@@ -505,7 +514,7 @@ var File = {
         items[headerIndex] = value;
         me.allData.vector[rowIndex].fromVector(items);
 
-        var recalcTotals = headerIndex >= File.INDEX_LANDINGS and headerIndex <= File.INDEX_MAX_ALT;
+        var recalcTotals = headerIndex >= File.INDEX_LANDING and headerIndex <= File.INDEX_MAX_ALT;
         var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
         me.saveAllData(recalcTotals, resetFilters);
     },
@@ -607,14 +616,14 @@ var File = {
     countTotals: func(items) {
         var index = 0;
         foreach (var text; items) {
-            if (index >= File.INDEX_LANDINGS and
+            if (index >= File.INDEX_LANDING and
                 index <= File.INDEX_FUEL
             ) {
-                me.totals[index - File.INDEX_LANDINGS] += (text == "" ? 0 : text);
+                me.totals[index - File.INDEX_LANDING] += (text == "" ? 0 : text);
             }
             else if (index == File.INDEX_MAX_ALT) {
-                if (text > me.totals[index - File.INDEX_LANDINGS]) {
-                    me.totals[index - File.INDEX_LANDINGS] = text;
+                if (text > me.totals[index - File.INDEX_LANDING]) {
+                    me.totals[index - File.INDEX_LANDING] = text;
                 }
             }
 

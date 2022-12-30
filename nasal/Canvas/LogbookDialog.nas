@@ -28,7 +28,7 @@ var LogbookDialog = {
          80, #  5 - callsign
          55, #  6 - from
          55, #  7 - to
-         55, #  8 - landings
+         55, #  8 - landing
          55, #  9 - crash
          50, # 10 - day
          50, # 11 - night
@@ -346,7 +346,7 @@ var LogbookDialog = {
     # @return string
     #
     getReplaceHeaderText: func(column, text) {
-        if (column == File.INDEX_LANDINGS) {
+        if (column == File.INDEX_LANDING) {
             text = "Land.";
         }
 
@@ -609,9 +609,9 @@ var LogbookDialog = {
     handleSelectedRowAfterReloadData: func() {
         # Check if the selected row should still be selected.
         var highlightedIndex = me.listView.getHighlightingRow();
-        if (highlightedIndex == nil or 
-            highlightedIndex < 0 or 
-            highlightedIndex >= size(me.data) or 
+        if (highlightedIndex == nil or
+            highlightedIndex < 0 or
+            highlightedIndex >= size(me.data) or
             me.data[highlightedIndex].allDataIndex != me.allDataIndexSelected
         ) {
             me.listView.removeHighlightingRow();

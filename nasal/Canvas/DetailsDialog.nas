@@ -208,7 +208,7 @@ var DetailsDialog = {
 
         var start = 0;
         if (me.isTotals) {
-            start = File.INDEX_LANDINGS;
+            start = File.INDEX_LANDING;
         }
 
         forindex (var index; headers[start:]) {

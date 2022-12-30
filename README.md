@@ -57,7 +57,7 @@ The following information is logged into the file:
 6. **Callsign** – your callsign set for multiplayer.
 7. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
 8. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
-9. **Landings** – number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+9. **Landing** – if you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, this field will be left blank.
 10. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
 11. **Day** – the number of hours spent flying during the day.
 12. **Night** – number of hours spent flying during the night.
@@ -82,7 +82,7 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 
 ### Data filtering
 
-The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landings" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
+The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landing" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "Default All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
 
 After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
 
@@ -179,7 +179,7 @@ Do pliku logowane są następujące informacje:
 6. **Callsign** ‒ Twój callsign ustawiony dla multiplayer.
 7. **From** ‒ kod ICAO lotniska, z którego wystartowałeś. Jeśli startujesz od razu w powietrzu, pole to pozostanie puste.
 8. **To** ‒ kod ICAO lotniska, na którym wylądowałeś. Jeśli nie wylądowałeś (np. zamykając FG w locie) lub lądując w miejscu przygodnym, pole to pozostanie puste.
-9. **Landings** ‒ ilość wykonanych lądowań. Jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, zostanie tu wpisane 0.
+9. **Landing** ‒ jeśli wylądowałeś, gdziekolwiek, zostanie tu wpisane 1. Gdy lot zakończył się bez lądowania lub dodatek nie był w stanie wykryć prawidłowego lądowania, pole to pozostanie puste.
 10. **Crash** – jeśli dodatek rozpozna katastrofę lotniczą, zostanie tutaj wpisane 1, w przeciwnym wypadku, pole to pozostanie puste.
 11. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
 12. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
@@ -204,7 +204,7 @@ Każdy wpis w dzienniku można najechać myszką i kliknąć. Wówczas otworzy s
 
 ### Filtrowanie danych
 
-Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Date" (jako rok), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landings" i "Crash". Aby użyć filtrowania należy najechać kursorem myszy na nazwę kolumny (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych itd. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
+Dodatek umożliwia filtrowanie niektórych kolumn w głównym oknie dziennika. W tej chwili możesz filtrować po kolumnach "Date" (jako rok), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landing" i "Crash". Aby użyć filtrowania należy najechać kursorem myszy na nazwę kolumny (podświetli się) i kliknąć na nią. Pokaże się nowe okno z wyborem wartości. Dla filtrowania po kolumnie "Aircraft" będą to identyfikatory statków powietrznych, którymi już latałeś. Dla filtrowania po kolumnie "Type" będą to nazwy typów statków powietrznych itd. Każde okno z filtrami, ma także pozycję "Default All", co oznacza że filtr zostanie wyłączony i zostaną pokazanie wszystkie pozycje. Po włączeniu filtra, przy filtrowanej kolumnie pokaże się znak `(!)` ostrzegający o użyciu filtra.
 
 Po użyciu filtra, rząd "Totals" także zostanie zaktualizowany, biorąc pod uwagę przefiltrowane dane. W ten sposób możesz zobaczyć statystyki dla konkretnego samolotu czy typów samolotów.
 

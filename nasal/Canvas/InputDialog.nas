@@ -275,14 +275,8 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (me.header == "Landings") {
-            if (!me.validateDigit(value)) {
-                gui.popupTip("The allowed value is a digit.");
-                return false;
-            }
-        }
-        else if (me.header == "Crash") {
-            if (!me.validateCrash(value)) {
+        else if (me.header == "Landing" or me.header == "Crash") {
+            if (!me.validateBoolean(value)) {
                 gui.popupTip("The allowed value are 1 or 0 (or empty).");
                 return false;
             }
@@ -357,15 +351,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateDigit: func(value) {
-        return string.match(value, "[0-9]");
-    },
-
-    #
-    # @param string value
-    # @return bool
-    #
-    validateCrash: func(value) {
+    validateBoolean: func(value) {
         return value == "1" or value == "0" or value == "";
     },
 

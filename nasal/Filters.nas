@@ -29,7 +29,7 @@ var Filters = {
         me.data[File.INDEX_CALLSIGN] = std.Vector.new();
         me.data[File.INDEX_FROM]     = std.Vector.new();
         me.data[File.INDEX_TO]       = std.Vector.new();
-        me.data[File.INDEX_LANDINGS] = std.Vector.new();
+        me.data[File.INDEX_LANDING]  = std.Vector.new();
         me.data[File.INDEX_CRASH]    = std.Vector.new();
 
         # Vector of FilterData objects
@@ -171,7 +171,7 @@ var Filters = {
         else if (column == File.INDEX_CALLSIGN) return "Callsign filter";
         else if (column == File.INDEX_FROM)     return "From filter";
         else if (column == File.INDEX_TO)       return "To filter";
-        else if (column == File.INDEX_LANDINGS) return "Landings filter";
+        else if (column == File.INDEX_LANDING)  return "Landing filter";
         else if (column == File.INDEX_CRASH)    return "Crash filter";
 
         return "Filter";

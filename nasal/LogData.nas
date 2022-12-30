@@ -29,7 +29,7 @@ var LogData = {
         me.callsign     = "";    # Pilot callsign
         me.from         = "";    # ICAO departure airport (if take-off from the ground)
         me.to           = "";    # ICAO destination airport (if landed)
-        me.landings     = 0;     # Number of landings
+        me.landing      = false; # 1 means that aircraft landed
         me.crash        = false; # 1 means that aircraft crashed
         me.day          = 0.0;   # Total flight time during the day (hours)
         me.night        = 0.0;   # Total flight time during the night (hours)
@@ -162,10 +162,19 @@ var LogData = {
     # @return me
     #
     setLanding: func() {
-        me.landings = 1;
+        me.landing = true;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setLanding = 1");
 
         return me;
+    },
+
+    #
+    # Get landing flag state as a value to save to the file
+    #
+    # @return string
+    #
+    printLanding: func() {
+        return me.landing ? "1" : "";
     },
 
     #
@@ -321,7 +330,7 @@ var LogData = {
         append(vector, me.callsign);
         append(vector, me.from);
         append(vector, me.to);
-        append(vector, me.landings);
+        append(vector, me.printLanding());
         append(vector, me.printCrash());
         append(vector, sprintf("%.02f", me.day));
         append(vector, sprintf("%.02f", me.night));
@@ -350,7 +359,7 @@ var LogData = {
         me.callsign     = items[File.INDEX_CALLSIGN];
         me.from         = items[File.INDEX_FROM];
         me.to           = items[File.INDEX_TO];
-        me.landings     = items[File.INDEX_LANDINGS];
+        me.landing      = items[File.INDEX_LANDING] == 1;
         me.crash        = items[File.INDEX_CRASH] == 1;
         me.day          = items[File.INDEX_DAY];
         me.night        = items[File.INDEX_NIGHT];
@@ -374,7 +383,7 @@ var LogData = {
         else if (index == File.INDEX_CALLSIGN) return me.callsign;
         else if (index == File.INDEX_FROM)     return me.from;
         else if (index == File.INDEX_TO)       return me.to;
-        else if (index == File.INDEX_LANDINGS) return me.landings;
+        else if (index == File.INDEX_LANDING)  return me.printLanding();
         else if (index == File.INDEX_CRASH)    return me.printCrash();
 
         return nil;
@@ -395,7 +404,7 @@ var LogData = {
         clone.callsign     = me.callsign;
         clone.from         = me.from;
         clone.to           = me.to;
-        clone.landings     = me.landings;
+        clone.landing      = me.landing;
         clone.crash        = me.crash;
         clone.day          = me.day;
         clone.night        = me.night;

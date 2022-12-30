@@ -88,7 +88,7 @@ The following information is logged into the file:
 
 8. To - the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
 
-9. Landings - number of landings made. If you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
+9. Landing - if you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, a 0 will be entered here.
 
 10. Crash - if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
 
