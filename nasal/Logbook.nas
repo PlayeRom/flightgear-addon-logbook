@@ -63,13 +63,15 @@ var Logbook = {
 
         me.propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
+        var runListenerOnInit = true;
+
         setlistener("/sim/presets/airport-id", func(node) {
-            me.initStartAirport();
-        }, true);
+            me.initStartAirport(node);
+        }, runListenerOnInit);
 
         setlistener("/sim/presets/onground", func(node) {
             var oldOnGround = me.onGround;
-            me.onGround = node.getValue(); # 1 - on ground, 0 - in air
+            me.onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
             logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
 
             # User probably used the "Location" -> "in air" or change airport even during a flight
@@ -84,12 +86,12 @@ var Logbook = {
         setlistener("/sim/freeze/master", func(node) {
             me.isSimPaused = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me.isSimPaused);
-        }, true);
+        }, runListenerOnInit);
 
         setlistener("/sim/replay/replay-state", func(node) {
             me.isReplayMode = node.getBoolValue();
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me.isReplayMode);
-        }, true);
+        }, runListenerOnInit);
 
         setlistener("/sim/signals/exit", func(node) {
             if (node.getBoolValue()) {
@@ -141,18 +143,15 @@ var Logbook = {
     #
     # @return void
     #
-    initStartAirport: func() {
-        me.startAirportIcao = getprop("/sim/presets/airport-id");
+    initStartAirport: func(node) {
+        me.startAirportIcao = node.getValue();
 
         # Note: when user will use --lat, --lon then startAirportIcao is an empty string,
         # try to get nearest airport for space shuttle only
         if (me.spaceShuttle.isPreLaunch() and (me.startAirportIcao == nil or me.startAirportIcao == "")) {
             # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
             me.startAirportIcao = me.airport.getNearestIcao(9000);
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - init startAirportIcao changed to nearest = ", me.startAirportIcao);
         }
-
-        # logprint(MY_LOG_LEVEL, "Logbook Add-on - init startAirportIcao = ", me.startAirportIcao);
     },
 
     #
@@ -219,7 +218,6 @@ var Logbook = {
         if (me.landingGear.checkWow(me.onGround)) {
             if (me.onGround) {
                 # Our state is on the ground and all wheels are in the air - we have takte-off
-                # logprint(LOG_ALERT, "Logbook Add-on - takeoff detected");
                 me.wowSec += 1;
                 logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me.wowSec);
                 if (me.wowSec > 2) {
@@ -268,6 +266,8 @@ var Logbook = {
             # We don't log UFO, FG Video Assistant
             return;
         }
+
+        logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
 
         me.recovery.start(me, me.recoveryCallback);
 
@@ -319,12 +319,13 @@ var Logbook = {
         me.logData.setDistance(me.getDistance());
 
         if (landed) {
-            logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
+            # Use max distance as 6000 m (Schiphol need 6 km)
+            var icao = me.airport.getNearestIcao(6000);
 
             if (me.crashDetector.isOrientationOK()) {
+                logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
+
                 me.logData.setLanding();
-                # Use max distance as 6000 m (Schiphol need 6 km)
-                var icao = me.airport.getNearestIcao(6000);
                 me.logData.setTo(icao);
             }
 
