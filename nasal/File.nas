@@ -247,7 +247,7 @@ var File = {
     #
     saveItem: func(file, logData) {
         io.write(file, sprintf(
-            "%s,%s,\"%s\",%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+            "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,

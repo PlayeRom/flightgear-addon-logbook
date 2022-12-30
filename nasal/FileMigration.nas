@@ -191,7 +191,7 @@ var FileMigration = {
                    'Note';
         }, func(items) {
             return sprintf(
-                "%s,%s,\"%s\",%s,%s,%s,%s,%s,%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+                "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
                 items[0],  # date
                 items[1],  # time
                 items[2],  # aircraft
@@ -200,7 +200,7 @@ var FileMigration = {
                 items[5],  # callsign
                 items[6],  # from
                 items[7],  # to
-                items[8],  # landing
+                items[8] == 1 ? "1" : "",  # landing
                 items[9],  # crash
                 items[10], # day
                 items[11], # night
