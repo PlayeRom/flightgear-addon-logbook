@@ -108,6 +108,9 @@ gui.widgets.ListView = {
         # If it's set on true, then ListView widget was recognized items as a complex structure with multicolumns
         me._isComplexItems = 0;
 
+        #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
+        me._placeholder = nil;
+
         return me;
     },
 
@@ -320,6 +323,17 @@ gui.widgets.ListView = {
     #
     setClipByBoundingBox: func(boundingBox) {
         me._view.setClipByBoundingBox(me, boundingBox);
+        return me;
+    },
+
+    #
+    # Set the placeholder text to use when a cell has an empty string value
+    #
+    # @param string|nil placeholder
+    # @return me
+    #
+    setEmptyPlaceholder: func(placeholder) {
+        me._placeholder = placeholder;
         return me;
     },
 };

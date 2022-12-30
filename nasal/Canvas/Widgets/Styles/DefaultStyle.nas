@@ -276,6 +276,7 @@ DefaultStyle.widgets.ListView = {
     #
     _drawContentLoading: func(model) {
         me._loadingText = me._createText(
+            model,
             me._root,
             int(model._size[0] / 2),
             int(model._size[1] / 2),
@@ -302,7 +303,7 @@ DefaultStyle.widgets.ListView = {
 
         if (model._title != nil) {
             var group = me._createBarGroup(y);
-            me._titleElement = me._createText(group, x, me._getTextYOffset(), model._title);
+            me._titleElement = me._createText(model, group, x, me._getTextYOffset(), model._title);
 
             y += int(DefaultStyle.widgets.ListView.ITEM_HEIGHT + DefaultStyle.widgets.ListView.ITEM_HEIGHT / 4);
         }
@@ -390,7 +391,7 @@ DefaultStyle.widgets.ListView = {
         # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
         var height = DefaultStyle.widgets.ListView.ITEM_HEIGHT;
         if (model._isUseTextMaxWidth) {
-            var tempText = me._createText(hash.group, x, me._getTextYOffset(), item)
+            var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), item)
                 .setMaxWidth(me._columnsWidth[0]);
 
             height = tempText.getSize()[1];
@@ -402,7 +403,7 @@ DefaultStyle.widgets.ListView = {
 
         hash.rect = me._createRectangle(model, hash.group, height + me._getHeightItemPadding(model));
 
-        hash.text = me._createText(hash.group, x, me._getTextYOffset(), item);
+        hash.text = me._createText(model, hash.group, x, me._getTextYOffset(), item);
         if (model._isUseTextMaxWidth) {
             hash.text.setMaxWidth(me._columnsWidth[0]);
         }
@@ -426,7 +427,7 @@ DefaultStyle.widgets.ListView = {
         # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
         # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
         if (model._isUseTextMaxWidth) {
-            var tempText = me._createText(hash.group, x, me._getTextYOffset(), "temp");
+            var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), "temp");
             forindex (var columnIndex; me._columnsWidth) {
                 tempText
                     .setText(item.data[columnIndex])
@@ -448,7 +449,7 @@ DefaultStyle.widgets.ListView = {
         forindex (var columnIndex; me._columnsWidth) {
             var columnWidth = me._getColumnWidth(columnIndex);
 
-            var text = me._createText(hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
+            var text = me._createText(model, hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
             if (model._isUseTextMaxWidth) {
                 text.setMaxWidth(columnWidth);
             }
@@ -511,13 +512,18 @@ DefaultStyle.widgets.ListView = {
     },
 
     #
+    # @param hash model
     # @param hash context - Parent element
     # @param int x, y
     # @param string text
     # @param string alignment
     # @return hash - Text element
     #
-    _createText: func(context, x, y, text, alignment = "left-baseline") {
+    _createText: func(model, context, x, y, text, alignment = "left-baseline") {
+        if (model._placeholder != nil and string.trim(text) == "") {
+            text = model._placeholder;
+        }
+
         return context.createChild("text")
             .setFont(me._fontName)
             .setFontSize(me._fontSize)
