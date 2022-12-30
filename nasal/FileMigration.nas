@@ -72,7 +72,7 @@ var FileMigration = {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~
-                   'Type,' ~
+                   'Type,' ~      # <- new column
                    'Callsign,' ~
                    'From,' ~
                    'To,' ~
@@ -122,7 +122,7 @@ var FileMigration = {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~
-                   'Variant,' ~
+                   'Variant,' ~   # <- new column
                    'Type,' ~
                    'Callsign,' ~
                    'From,' ~
@@ -179,7 +179,7 @@ var FileMigration = {
                    'Callsign,' ~
                    'From,' ~
                    'To,' ~
-                   'Landing,' ~ # Landings to Landin
+                   'Landing,' ~ # Landings to Landing
                    'Crash,' ~
                    'Day,' ~
                    'Night,' ~
