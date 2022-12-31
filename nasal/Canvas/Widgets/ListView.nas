@@ -64,7 +64,54 @@
 #             ]
 #         },
 #     ]);
+#############################################################################################
+# The simplest use case with multiple columns and images in the columns:
+#############################################################################################
+# Notes for images:
+# 1. All images will have the same height, default 64 px. To change this value, use setImgHeight().
+# 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImgAspectRatio().
+# 3. ListView doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
+#    just pass a larger value for the column by using setColumnsWidth() method.
 #
+# listView
+#     .setClickCallback(func(index) {
+#         gui.popupTip("Clicked on row " ~ index);
+#     })
+#     .setColumnsWidth([150, 150, 150])
+#     .setItems([
+#         {
+#             types: [
+#                 "string",
+#                 "string",
+#                 "image", # <- indicate that 3rd column is an image
+#             ],
+#             data: [
+#                 "Row 1 column 1",
+#                 "Row 1 column 2",
+#                 "Textures/Splash1.png", # <- path to the image instead of text
+#             ],
+#         },
+#         {
+#             types: [
+#                 "string",
+#                 "image", # <- indicate that 2nd column is an image
+#                 "string",
+#             ],
+#             data: [
+#                 "Row 2 column 1",
+#                 "Textures/Splash2.png", # <- path to the image instead of text
+#                 "Row 2 column 3",
+#             ],
+#         },
+#         {
+#             # There is no need to include "types", since there is a string in all columns.
+#             data: [
+#                 "Row 3 column 1",
+#                 "Row 3 column 2",
+#                 "Row 3 column 3",
+#             ],
+#         },
+#     ]);
 
 #
 # ListView widget Model
@@ -110,6 +157,12 @@ gui.widgets.ListView = {
 
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
         me._placeholder = nil;
+
+        # Images height, default 64 px.
+        me._imgHeight = 64;
+
+        # Aspect ratio of image width. The image width will be = _imgHeight * _imgAspectRatio.
+        me._imgAspectRatio = 1.3333;
 
         return me;
     },
@@ -334,6 +387,28 @@ gui.widgets.ListView = {
     #
     setEmptyPlaceholder: func(placeholder) {
         me._placeholder = placeholder;
+        return me;
+    },
+
+    #
+    # Set height of images in pixels
+    #
+    # @param int height
+    # @return me
+    #
+    setImgHeight: func(height) {
+        me._imgHeight = height;
+        return me;
+    },
+
+    #
+    # Set aspect ratio of images. The width of the image will be = _imgHeight * _imgAspectRatio.
+    #
+    # @param double aspectRatio
+    # @return me
+    #
+    setImgAspectRatio: func(aspectRatio) {
+        me._imgAspectRatio = aspectRatio;
         return me;
     },
 };

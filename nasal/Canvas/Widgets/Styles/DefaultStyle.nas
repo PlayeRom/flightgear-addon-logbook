@@ -107,13 +107,15 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.text) == "vector") {
-                foreach (var text; hash.text) {
-                    text.setColor(color);
+            if (typeof(hash.elem) == "vector") {
+                foreach (var elem; hash.elem) {
+                    if (elem.getType() == "text") {
+                        elem.setColor(color);
+                    }
                 }
             }
-            else {
-                hash.text.setColor(color);
+            else if (hash.elem.getType() == "text") {
+                hash.elem.setColor(color);
             }
         }
 
@@ -168,13 +170,15 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.text) == "vector") {
-                foreach (var text; hash.text) {
-                    text.setColor(color);
+            if (typeof(hash.elem) == "vector") {
+                foreach (var elem; hash.elem) {
+                    if (elem.getType() == "text") {
+                        elem.setFontSize(fontSize);
+                    }
                 }
             }
-            else {
-                hash.text.setFontSize(fontSize);
+            else if (hash.elem.getType() == "text") {
+                hash.elem.setFontSize(fontSize);
             }
         }
 
@@ -198,13 +202,15 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.text) == "vector") {
-                foreach (var text; hash.text) {
-                    text.setFont(color);
+            if (typeof(hash.elem) == "vector") {
+                foreach (var elem; hash.elem) {
+                    if (elem.getType() == "text") {
+                        elem.setFont(color);
+                    }
                 }
             }
-            else {
-                hash.text.setFont(font);
+            else if (hash.elem.getType() == "text") {
+                hash.elem.setFont(font);
             }
         }
 
@@ -333,19 +339,12 @@ DefaultStyle.widgets["list-view"] = {
             }();
 
             # Since the text can wrap, you need to take the height of the last text and add it to the height of the content.
-            if (model._isUseTextMaxWidth) {
-                var itemsCount = size(me._itemElements);
-                if (itemsCount > 0) {
-                    var height = me._itemElements[itemsCount - 1].maxHeight;
+            var itemsCount = size(me._itemElements);
+            height = me._itemElements[itemsCount - 1].maxHeight;
 
-                    y += height > DefaultStyle.widgets["list-view"].ITEM_HEIGHT
-                        ? (height + me._getHeightItemPadding(model))
-                        : DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
-                }
-            }
-            else {
-                y += DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
-            }
+            y += height > DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+                ? (height + me._getHeightItemPadding(height))
+                : DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
 
             index += 1;
         }
@@ -401,11 +400,11 @@ DefaultStyle.widgets["list-view"] = {
             tempText.del();
         }
 
-        hash.rect = me._createRectangle(model, hash.group, height + me._getHeightItemPadding(model));
+        hash.rect = me._createRectangle(model, hash.group, height + me._getHeightItemPadding(hash.maxHeight));
 
-        hash.text = me._createText(model, hash.group, x, me._getTextYOffset(), item);
+        hash.elem = me._createText(model, hash.group, x, me._getTextYOffset(), item);
         if (model._isUseTextMaxWidth) {
-            hash.text.setMaxWidth(me._columnsWidth[0]);
+            hash.elem.setMaxWidth(me._columnsWidth[0]);
         }
 
         append(me._itemElements, hash);
@@ -421,7 +420,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     _createComplexRow: func(model, item, x, y) {
         var hash = me._createBar(y);
-        hash.text = [];
+        hash.elem = [];
 
         # Create temporary text elements to get their height
         # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
@@ -429,37 +428,72 @@ DefaultStyle.widgets["list-view"] = {
         if (model._isUseTextMaxWidth) {
             var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), "temp");
             forindex (var columnIndex; me._columnsWidth) {
-                tempText
-                    .setText(item.data[columnIndex])
-                    .setMaxWidth(me._getColumnWidth(columnIndex));
+                if (item["types"] == nil or (item["types"] != nil and item.types[columnIndex] == "string")) {
+                    # If item has not declared "type" then assume that it's a string
+                    tempText
+                        .setText(item.data[columnIndex])
+                        .setMaxWidth(me._getColumnWidth(columnIndex));
 
-                var height = tempText.getSize()[1];
-                if (height > hash.maxHeight) {
-                    hash.maxHeight = height;
+                    var height = tempText.getSize()[1];
+                    if (height > hash.maxHeight) {
+                        hash.maxHeight = height;
+                    }
                 }
             }
             tempText.del();
         }
 
+        if (hash.maxHeight < model._imgHeight) {
+            if (me._isImageInRow(item)) {
+                hash.maxHeight = model._imgHeight;
+            }
+        }
+
         var rectHeight = hash.maxHeight == 0
             ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
-            : hash.maxHeight + me._getHeightItemPadding(model);
+            : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
         forindex (var columnIndex; me._columnsWidth) {
             var columnWidth = me._getColumnWidth(columnIndex);
 
-            var text = me._createText(model, hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
-            if (model._isUseTextMaxWidth) {
-                text.setMaxWidth(columnWidth);
-            }
+            if (item["types"] == nil or (item["types"] != nil and item.types[columnIndex] == "string")) {
+                var text = me._createText(model, hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
+                if (model._isUseTextMaxWidth) {
+                    text.setMaxWidth(columnWidth);
+                }
 
-            append(hash.text, text);
+                append(hash.elem, text);
+            }
+            else if (item["types"] != nil and item.types[columnIndex] == "image") {
+                var image = hash.group.createChild("image")
+                    .setFile(item.data[columnIndex])
+                    .setTranslation(x, me._getHeightItemPadding(hash.maxHeight) / 2)
+                    .setSize(int(model._imgHeight * model._imgAspectRatio), model._imgHeight);
+
+                append(hash.elem, image);
+            }
 
             x += columnWidth;
         }
 
         append(me._itemElements, hash);
+    },
+
+    #
+    # @param hash item
+    # @return bool
+    #
+    _isImageInRow: func(item) {
+        if (item["types"] != nil) {
+            foreach (var type; item.types) {
+                if (type == "image") {
+                    return 1;
+                }
+            }
+        }
+
+        return 0;
     },
 
     #
@@ -480,7 +514,7 @@ DefaultStyle.widgets["list-view"] = {
         var hash = {
             group     : me._createBarGroup(y),
             rect      : nil,
-            text      : nil, # vector of text element, or single text element
+            elem      : nil, # vector of text/image element, or single text element
             maxHeight : 0,   # max text height in this row
         };
 
@@ -553,15 +587,13 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
+    # @param int maxHeight - Max height of conent
     # @return double
     #
-    _getHeightItemPadding: func(model) {
-        if (model._isUseTextMaxWidth) {
-            return me._fontSize;
-        }
-
-        return 0;
+    _getHeightItemPadding: func(maxHeight) {
+        return maxHeight == 0
+            ? 0 # we have single text line, no need add padding
+            : me._fontSize;
     },
 
     #
@@ -579,13 +611,13 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.text) == "vector") {
-                foreach (var text; hash.text) {
-                    text.del();
+            if (typeof(hash.elem) == "vector") {
+                foreach (var elem; hash.elem) {
+                    elem.del();
                 }
             }
             else {
-                hash.text.del();
+                hash.elem.del();
             }
 
             hash.rect.del();
