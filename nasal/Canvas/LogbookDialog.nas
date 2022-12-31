@@ -149,6 +149,14 @@ var LogbookDialog = {
             }
         }));
 
+        me.listeners.append(setlistener("/devices/status/mice/mouse/button", func(node) {
+            if (node.getBoolValue()) {
+                # Mouse was clicked somewhere in the sim, close my popups dialogs
+                me.filterSelector.hide();
+                me.detailsDialog.inputDialog.filterSelector.hide();
+            }
+        }));
+
         return me;
     },
 
@@ -651,6 +659,8 @@ var LogbookDialog = {
             var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
 
             me.setHighlightingRow(hash.allDataIndex, index);
+
+            me.filterSelector.hide();
 
             var isTotals = hash.allDataIndex == -1;  # -1 is using for Totals row
             me.detailsDialog.show(me, hash, isTotals);

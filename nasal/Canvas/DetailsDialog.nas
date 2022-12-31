@@ -261,6 +261,8 @@ var DetailsDialog = {
                 me.listView.removeHighlightingRow();
                 me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
 
+                me.inputDialog.filterSelector.hide();
+
                 var headers = me.file.getHeadersData();
                 me.inputDialog.show(me, me.dataRow.allDataIndex, headers[index], me.dataRow.data[index]);
             }
