@@ -351,6 +351,10 @@ var Logbook = {
         me.wowSec = 0;
 
         me.recovery.clear();
+
+        if (me.logbookDialog.isWindowVisible()) {
+            me.logbookDialog.reloadData();
+        }
     },
 
     #
