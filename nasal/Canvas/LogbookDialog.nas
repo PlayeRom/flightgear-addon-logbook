@@ -158,7 +158,10 @@ var LogbookDialog = {
     # @return void
     #
     reloadLogbookListenerCallback: func() {
-        if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted") == true) {
+        if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted")) {
+            # User deleted entry
+
+            # Back deleted flag to false value
             setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
             # Check index of last page
@@ -169,15 +172,12 @@ var LogbookDialog = {
                 me.startIndex = newIndex;
             }
 
-            # User deleted entry, hide details window, it MUST be before me.reloadData();
+            # Hide details window with deleted entry, it MUST be call before me.reloadData();
             me.detailsDialog.hide();
+        }
 
-            me.reloadData();
-        }
-        else {
-            # Reload after edit data
-            me.reloadData();
-        }
+        # Reload after edit/delete data
+        me.reloadData();
     },
 
     #
