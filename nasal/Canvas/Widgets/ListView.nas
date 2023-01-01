@@ -68,8 +68,8 @@
 # The simplest use case with multiple columns and images in the columns:
 #############################################################################################
 # Notes for images:
-# 1. All images will have the same height, default 64 px. To change this value, use setImgHeight().
-# 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImgAspectRatio().
+# 1. All images will have the same height, default 64 px. To change this value, use setImageHeight().
+# 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImageAspectRatio().
 # 3. ListView doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
 #    just pass a larger value for the column by using setColumnsWidth() method.
 #
@@ -396,7 +396,7 @@ gui.widgets.ListView = {
     # @param int height
     # @return me
     #
-    setImgHeight: func(height) {
+    setImageHeight: func(height) {
         me._imgHeight = height;
         return me;
     },
@@ -407,7 +407,7 @@ gui.widgets.ListView = {
     # @param double aspectRatio
     # @return me
     #
-    setImgAspectRatio: func(aspectRatio) {
+    setImageAspectRatio: func(aspectRatio) {
         me._imgAspectRatio = aspectRatio;
         return me;
     },
