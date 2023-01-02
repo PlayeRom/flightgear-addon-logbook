@@ -43,17 +43,14 @@ var Airport = {
     # @return hash|nil - hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
     getNearestAirportDistanceM: func() {
-        var icao = getprop("/sim/airport/closest-airport-id");
-        if (icao != nil and icao != "") {
-            var airport = airportinfo(icao);
-            if (airport != nil) {
-                var aircraftCoord = geo.aircraft_position();
-                var airportCoord = geo.Coord.new().set_latlon(airport.lat, airport.lon);
-                return {
-                    'distanceM' : airportCoord.distance_to(aircraftCoord),
-                    'icao'      : icao,
-                };
-            }
+        var nearestAirport = airportinfo();
+        if (nearestAirport != nil) {
+            var aircraftCoord = geo.aircraft_position();
+            var airportCoord = geo.Coord.new().set_latlon(nearestAirport.lat, nearestAirport.lon);
+            return {
+                'distanceM' : airportCoord.distance_to(aircraftCoord),
+                'icao'      : nearestAirport.id,
+            };
         }
 
         return nil;
