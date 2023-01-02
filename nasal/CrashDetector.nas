@@ -58,10 +58,12 @@ var CrashDetector = {
     #
     # Check differents values
     #
+    # @param bool withOrientation - Set false for exclude isOrientationOK,
+    #                               needed for space shuttle where pitch is 90 degree for takeoff
     # @return bool
     #
-    isCrash: func() {
-        return !me.isOrientationOK() or
+    isCrash: func(withOrientation = 1) {
+        return (withOrientation and !me.isOrientationOK()) or
             me.isGForceAbnormal() or
             me.isSimCrashedFlag() or
             me.isC172PBrokenGear() or

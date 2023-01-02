@@ -144,11 +144,10 @@ var Logbook = {
 
         # Note: when user will use --lat, --lon then startAirportIcao is an empty string
         if (startAirportIcao == "" or startAirportIcao == nil) {
-            # Try to get nearest airport for space shuttle only
-            var maxDistance = me.spaceShuttle.isPreLaunch()
+            # Try to get nearest airport
+            var maxDistance = me.spaceShuttle.isLaunched()
                 ? 9000  # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
                 : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
-            }
 
             return me.airport.getNearestIcao(maxDistance);
         }
@@ -217,7 +216,7 @@ var Logbook = {
 
         me.crashDetector.startGForce(me.onGround);
 
-        if (me.landingGear.checkWow(me.onGround) and !me.crashDetector.isCrash()) {
+        if (me.landingGear.checkWow(me.onGround) and !me.crashDetector.isCrash(false)) {
             if (me.onGround) {
                 # Our state is on the ground and all wheels are in the air - we have takte-off
                 me.wowSec += 1;
