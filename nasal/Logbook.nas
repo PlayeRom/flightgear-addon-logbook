@@ -65,10 +65,6 @@ var Logbook = {
 
         var runListenerOnInit = true;
 
-        setlistener("/sim/presets/airport-id", func(node) {
-            me.initStartAirport(node);
-        }, runListenerOnInit);
-
         setlistener("/sim/presets/onground", func(node) {
             var oldOnGround = me.onGround;
             me.onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
@@ -141,17 +137,23 @@ var Logbook = {
     },
 
     #
-    # @return void
+    # @return string - ICAO code or empty
     #
-    initStartAirport: func(node) {
-        me.startAirportIcao = node.getValue();
+    getStartAirport: func() {
+        var startAirportIcao = getprop("/sim/presets/airport-id");
 
-        # Note: when user will use --lat, --lon then startAirportIcao is an empty string,
-        # try to get nearest airport for space shuttle only
-        if (me.spaceShuttle.isPreLaunch() and (me.startAirportIcao == nil or me.startAirportIcao == "")) {
-            # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
-            me.startAirportIcao = me.airport.getNearestIcao(9000);
+        # Note: when user will use --lat, --lon then startAirportIcao is an empty string
+        if (startAirportIcao == "" or startAirportIcao == nil) {
+            # Try to get nearest airport for space shuttle only
+            var maxDistance = me.spaceShuttle.isPreLaunch()
+                ? 9000  # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
+                : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
+            }
+
+            return me.airport.getNearestIcao(maxDistance);
         }
+
+        return startAirportIcao;
     },
 
     #
@@ -215,7 +217,7 @@ var Logbook = {
 
         me.crashDetector.startGForce(me.onGround);
 
-        if (me.landingGear.checkWow(me.onGround)) {
+        if (me.landingGear.checkWow(me.onGround) and !me.crashDetector.isCrash()) {
             if (me.onGround) {
                 # Our state is on the ground and all wheels are in the air - we have takte-off
                 me.wowSec += 1;
@@ -284,7 +286,7 @@ var Logbook = {
         me.startOdometer = getprop("/instrumentation/gps/odometer");
 
         if (me.onGround or me.spaceShuttle.isLaunched()) {
-            me.logData.setFrom(me.startAirportIcao);
+            me.logData.setFrom(me.getStartAirport());
         }
 
         me.environment.resetCounters();
@@ -319,13 +321,13 @@ var Logbook = {
         me.logData.setDistance(me.getDistance());
 
         if (landed) {
-            # Use max distance as 6000 m (Schiphol need 6 km)
-            var icao = me.airport.getNearestIcao(6000);
-
             if (me.crashDetector.isOrientationOK()) {
                 logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
 
                 me.logData.setLanding();
+
+                # Use max distance as 6000 m (Schiphol need 6 km)
+                var icao = me.airport.getNearestIcao(6000);
                 me.logData.setTo(icao);
             }
 
@@ -333,7 +335,6 @@ var Logbook = {
             me.onGround = true;
             me.landingGear.recognizeGears(me.onGround);
             me.initAltAglThreshold();
-            me.startAirportIcao = icao; # Set a new potential airport to next take off
         }
 
         me.logData.setDay(me.environment.getDayHours());
@@ -344,6 +345,8 @@ var Logbook = {
         if (crashed) {
             logprint(LOG_ALERT, "Logbook Add-on - crash detected");
             me.logData.setCrash();
+
+            me.onGround = true;
         }
 
         me.file.saveData(me.logData);
