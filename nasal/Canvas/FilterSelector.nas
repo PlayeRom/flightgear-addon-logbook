@@ -143,10 +143,9 @@ var FilterSelector = {
     # @return void
     #
     recalculateWindowHeight: func() {
-        var paddingMultiplier = 2;
         var count = me.items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
-        var windowHeight = int(count * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT + (FilterSelector.PADDING * paddingMultiplier));
+        var windowHeight = int(count * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
@@ -215,10 +214,10 @@ var FilterSelector = {
         me.vbox.clear();
 
         var margins = {
-            "left"   : FilterSelector.PADDING,
-            "top"    : FilterSelector.PADDING,
-            "right"  : 0,
-            "bottom" : FilterSelector.PADDING,
+            left   : 0,
+            top    : 0,
+            right  : 0,
+            bottom : 0,
         };
         me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
