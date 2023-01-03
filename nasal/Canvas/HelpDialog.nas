@@ -46,7 +46,12 @@ var HelpDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        var margins = {"left": HelpDialog.PADDING, "top": HelpDialog.PADDING, "right": 0, "bottom": 0};
+        var margins = {
+            left   : HelpDialog.PADDING,
+            top    : HelpDialog.PADDING,
+            right  : 0,
+            bottom : 0,
+        };
         me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch

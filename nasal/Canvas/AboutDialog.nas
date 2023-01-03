@@ -36,7 +36,12 @@ var AboutDialog = {
 
         me.setPositionOnCenter();
 
-        var margins = {"left": AboutDialog.PADDING, "top": AboutDialog.PADDING, "right": 0, "bottom": 0};
+        var margins = {
+            left   : AboutDialog.PADDING,
+            top    : AboutDialog.PADDING,
+            right  : 0,
+            bottom : 0,
+        };
         me.scrollData = me.createScrollArea(nil, margins);
 
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch

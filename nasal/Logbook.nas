@@ -97,7 +97,7 @@ var Logbook = {
         });
 
         me.isInitialized = false;
-        me.fdmInit = me.fdmInitialized();
+        me.fdmInitListener = me.fdmInitialized();
 
         return me;
     },
@@ -125,7 +125,7 @@ var Logbook = {
             func(node) {
                 if (me.isInitialized) {
                     # We don't need this listener any more
-                    removelistener(me.fdmInit);
+                    removelistener(me.fdmInitListener);
                 } else if (node.getValue()) {
                     # Run initLogbook with 5 sec delay to stabilize the aircraft
                     me.delayInit.singleShot = true;

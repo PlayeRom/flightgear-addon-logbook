@@ -55,10 +55,10 @@ var DetailsDialog = {
         me.canvas.set("background", me.style.CANVAS_BG);
 
         var margins = {
-            "left"   : canvas.DefaultStyle.widgets["list-view"].PADDING,
-            "top"    : canvas.DefaultStyle.widgets["list-view"].PADDING,
-            "right"  : 0,
-            "bottom" : 0,
+            left   : canvas.DefaultStyle.widgets["list-view"].PADDING,
+            top    : canvas.DefaultStyle.widgets["list-view"].PADDING,
+            right  : 0,
+            bottom : 0,
         };
         me.scrollData = me.createScrollArea(me.style.LIST_BG, margins);
         me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
