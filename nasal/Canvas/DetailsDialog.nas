@@ -48,6 +48,7 @@ var DetailsDialog = {
         me.isTotals        = false;
         me.parentDataIndex = nil;
         me.file            = file;
+        me.btnDelete       = nil;
         me.inputDialog     = InputDialog.new(settings);
         me.deleteDialog    = ConfirmationDialog.new(settings, "Delete entry log");
         me.deleteDialog.setLabel("Do you really want to delete this entry?");
@@ -110,7 +111,7 @@ var DetailsDialog = {
             }
         );
 
-        var btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me.btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
@@ -123,7 +124,7 @@ var DetailsDialog = {
         buttonBox.addStretch(3);
         buttonBox.addItem(btnClose);
         buttonBox.addStretch(1);
-        buttonBox.addItem(btnDelete);
+        buttonBox.addItem(me.btnDelete);
         buttonBox.addStretch(1);
 
         me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
@@ -168,6 +169,8 @@ var DetailsDialog = {
         me.parent = parent;
         me.dataRow = data;
         me.isTotals = isTotals;
+
+        me.btnDelete.setEnabled(!me.isTotals);
 
         me.inputDialog.hide();
         me.deleteDialog.hide();
