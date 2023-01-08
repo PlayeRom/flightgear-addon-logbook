@@ -63,7 +63,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # retrun void
+    # @retrun void
     #
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
         # Add extra column "Type" (as aircraft type) after "Aircraft" column
@@ -113,7 +113,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # retrun void
+    # @retrun void
     #
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
         # Add extra column "Variant" (as aircraft variant) after "Aircraft" column
@@ -165,7 +165,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # retrun void
+    # @retrun void
     #
     migrateToFileVersion_4: func(oldFilePath, newFilePath) {
         # Rename "Landings" to "Landing", add quotes for "Aircraft" column
