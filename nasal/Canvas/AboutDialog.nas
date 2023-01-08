@@ -50,12 +50,6 @@ var AboutDialog = {
 
         me.drawScrollable();
 
-        # var buttonBoxRepo = me.drawBottomBar("Open the repository website...", func() {
-        #     fgcommand("open-browser", props.Node.new({"url" : addon.codeRepositoryUrl}));
-        # });
-        # me.vbox.addItem(buttonBoxRepo);
-        # me.vbox.addSpacing(10);
-
         var buttonBoxClose = me.drawBottomBar("Close", func() { me.window.hide(); });
         me.vbox.addSpacing(10);
         me.vbox.addItem(buttonBoxClose);
