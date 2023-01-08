@@ -44,7 +44,7 @@ var Logbook = {
 
         me.wowSec        = 0;
         me.mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me.update);
-        me.delayInit     = maketimer(5, me, me.initLogbook);
+        me.delayInit     = maketimer(2, me, me.initLogbook);
 
         me.logData       = nil;
         me.environment   = Environment.new(me.settings);
@@ -65,6 +65,19 @@ var Logbook = {
 
         var runListenerOnInit = true;
 
+        setlistener("/sim/signals/fdm-initialized", func(node) {
+            # This listener will be called after first run the sim and every time after reposition the aircraft
+            # (by changeing the airport or start in the air in the sim) and after restart the sim
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
+
+            if (node.getBoolValue()) {
+                # Run initLogbook with delay to stabilize the aircraft
+                # (e.g. Twin Otter on Wheels and seaplanes needs it)
+                me.delayInit.singleShot = 1;
+                me.delayInit.start();
+            }
+        });
+
         setlistener("/sim/presets/onground", func(node) {
             var oldOnGround = me.onGround;
             me.onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
@@ -76,7 +89,7 @@ var Logbook = {
                 me.stopLogging(false);
             }
 
-            me.initLogbook();
+            # me.initLogbook(); # initLogbook will be run in "/sim/signals/fdm-initialized"
         });
 
         setlistener("/sim/freeze/master", func(node) {
@@ -96,9 +109,6 @@ var Logbook = {
             }
         });
 
-        me.isInitialized = false;
-        me.fdmInitListener = me.fdmInitialized();
-
         return me;
     },
 
@@ -112,28 +122,6 @@ var Logbook = {
         me.crashDetector.del();
         me.recovery.del();
         me.logbookDialog.del();
-    },
-
-    #
-    # Initialize logbook after FDM initialized
-    #
-    # @return int - listener ID
-    #
-    fdmInitialized: func() {
-        return setlistener(
-            "/sim/signals/fdm-initialized",
-            func(node) {
-                if (me.isInitialized) {
-                    # We don't need this listener any more
-                    removelistener(me.fdmInitListener);
-                } else if (node.getValue()) {
-                    # Run initLogbook with 5 sec delay to stabilize the aircraft
-                    me.delayInit.singleShot = true;
-                    me.delayInit.start();
-                }
-            },
-            true # call directly on initialize because we may already have FDM initialized before the add-on starts
-        );
     },
 
     #
@@ -173,8 +161,6 @@ var Logbook = {
         # Start to watch WoW of gears
         me.wowSec = 0;
         me.mainTimer.start();
-
-        me.isInitialized = true;
     },
 
     #
