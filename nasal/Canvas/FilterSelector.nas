@@ -121,7 +121,7 @@ var FilterSelector = {
     # @param bool withDefaultAll
     # @return me
     #
-    setItems: func(items, withDefaultAll = 1) {
+    setItems: func(items, withDefaultAll = true) {
         me.items.clear();
 
         if (withDefaultAll) {
