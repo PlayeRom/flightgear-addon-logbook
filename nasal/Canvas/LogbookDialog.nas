@@ -572,7 +572,7 @@ var LogbookDialog = {
     # @param hash filter - FilterData object as {"index": column index, "value": "text"}
     # @return void
     #
-    reloadData: func(withHeaders = 1, filter = nil) {
+    reloadData: func(withHeaders = true, filter = nil) {
         if (filter != nil) {
             if (!me.filters.applyFilter(filter)) {
                 # The filter did not change anything, so there is nothing to reload

@@ -225,7 +225,7 @@ var File = {
     # @param bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
     # @return void
     #
-    saveData: func(logData, onlyIO = 0) {
+    saveData: func(logData, onlyIO = false) {
         var file = io.open(me.filePath, "a");
         me.saveItem(file, logData);
         io.close(file);

@@ -24,7 +24,7 @@ var Dialog = {
     # @param func|nil onResizeWidth - callback call when width of window was changed
     # @return me
     #
-    new: func(settings, width, height, title, resize = 0, onResizeWidth = nil) {
+    new: func(settings, width, height, title, resize = false, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
         me.addon    = addons.getAddon(ADDON_ID);
@@ -180,7 +180,7 @@ var Dialog = {
     # @param bool withRedraw
     # @return void
     #
-    hide: func(withRedraw = 1) {
+    hide: func(withRedraw = true) {
         me.window.hide();
     },
 

@@ -147,13 +147,13 @@ gui.widgets.ListView = {
         me._highlightingRowIndex = nil;
 
         # If it's set on true, then "Loading..." text is displaying instead of list
-        me._isLoading = 0;
+        me._isLoading = false;
 
         # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
-        me._isUseTextMaxWidth = 0;
+        me._isUseTextMaxWidth = false;
 
         # If it's set on true, then ListView widget was recognized items as a complex structure with multicolumns
-        me._isComplexItems = 0;
+        me._isComplexItems = false;
 
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
         me._placeholder = nil;
@@ -282,13 +282,13 @@ gui.widgets.ListView = {
     # @param bool disableLoading
     # @return me
     #
-    setItems: func(items, disableLoading = 1) {
+    setItems: func(items, disableLoading = true) {
         if (disableLoading) {
-            me._isLoading = 0;
+            me._isLoading = false;
         }
 
         me._items = items;
-        me._isComplexItems = size(me._items) > 0 ? typeof(me._items[0]) == "hash" : 0;
+        me._isComplexItems = size(me._items) > 0 ? typeof(me._items[0]) == "hash" : false;
         me._view.reDrawContent(me);
 
         return me;
@@ -336,7 +336,7 @@ gui.widgets.ListView = {
     # @return me
     #
     enableLoading: func() {
-        me._isLoading = 1;
+        me._isLoading = true;
         me._view.reDrawContent(me);
         return me;
     },
@@ -347,7 +347,7 @@ gui.widgets.ListView = {
     # @return me
     #
     disableLoading: func() {
-        me._isLoading = 0;
+        me._isLoading = false;
         me._view.reDrawContent(me);
         return me;
     },
@@ -366,7 +366,7 @@ gui.widgets.ListView = {
     # @return me
     #
     useTextMaxWidth: func() {
-        me._isUseTextMaxWidth = 1;
+        me._isUseTextMaxWidth = true;
         return me;
     },
 

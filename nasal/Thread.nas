@@ -47,7 +47,7 @@ var Thread = {
     # @param bool isLockByGlobal
     # @return bool
     #
-    run: func(threadFunc, objCallback, callback, isLockByGlobal = 1) {
+    run: func(threadFunc, objCallback, callback, isLockByGlobal = true) {
         if (isLockByGlobal and g_isThreadPending) {
             return false;
         }
