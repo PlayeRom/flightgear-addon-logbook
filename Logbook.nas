@@ -42,7 +42,26 @@ var g_isThreadPending = false;
 # @return void
 #
 var init = func(addon) {
-    g_Logbook = Logbook.new(addon);
+    # Disable Logbook menu because we have to load data first in thread
+    gui.menuEnable("logbook-addon", false);
+
+    # Disable others menus because of delayTimer
+    gui.menuEnable("logbook-addon-help", false);
+    gui.menuEnable("logbook-addon-about", false);
+
+    # Delay loading of the whole addon so as not to break the MCDUs for aircraft like A320, A330. The point is that, 
+    # for example, the A320 hard-coded the texture index from /canvas/by-index/texture[15]. But this add-on creates its 
+    # canavas textures earlier than the airplane, which will cause that at index 15 there will be no MCDU texture but 
+    # the texture from the add-on. So thanks to this delay, the textures of the plane will be created first, and then 
+    # the textures of this add-on.
+    var delayTimer = maketimer(3, func() {
+        g_Logbook = Logbook.new(addon);
+        
+        gui.menuEnable("logbook-addon-help", true);
+        gui.menuEnable("logbook-addon-about", true);
+    });
+    delayTimer.singleShot = true;
+    delayTimer.start();
 };
 
 #

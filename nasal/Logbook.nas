@@ -28,9 +28,6 @@ var Logbook = {
     new: func(addon) {
         var me = { parents: [Logbook] };
 
-        # Disable Logbook menu because we have to load data first in thread
-        gui.menuEnable("logbook-addon", false);
-
         me.settings      = Settings.new(addon);
 
         # Auxiliary variables
@@ -73,7 +70,7 @@ var Logbook = {
             if (node.getBoolValue()) {
                 # Run initLogbook with delay to stabilize the aircraft
                 # (e.g. Twin Otter on Wheels and seaplanes needs it)
-                me.delayInit.singleShot = 1;
+                me.delayInit.singleShot = true;
                 me.delayInit.start();
             }
         });
