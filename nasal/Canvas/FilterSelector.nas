@@ -37,7 +37,7 @@ var FilterSelector = {
                 settings,
                 FilterSelector.WINDOW_WIDTH,
                 FilterSelector.WINDOW_HEIGHT,
-                "Logbook About"
+                "Filter selector"
             ),
         ] };
 
@@ -150,6 +150,8 @@ var FilterSelector = {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
 
+        # TODO: For FG 2020.4 using window.setSize cause problems with canvas that it's destroyed. Looks like a bug on
+        # the FG side, there were no problems before. I noticed the problem in early January 2023.
         me.window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
 
         # Check whether the selector window does not go outside the screen at the bottom, if so, move it up
