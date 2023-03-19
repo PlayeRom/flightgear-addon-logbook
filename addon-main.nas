@@ -58,8 +58,16 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Settings",
         "nasal/SpaceShuttle",
         "nasal/Thread",
-        "Logbook",
     ];
+
+    if (!isFGNextVersion()) {
+        # Nasal in next version is support `true` and `false` keywords but previous FG versions not,
+        # so for them add Boolean.nas file
+        append(modules, "Boolean");
+    }
+
+    # Boolean.nas must be before Logbook.nas
+    append(modules, "Logbook");
 
     loadVectorOfModules(addon, modules, "logbook");
 
@@ -71,6 +79,15 @@ var loadExtraNasalFiles = func(addon) {
 
     loadVectorOfModules(addon, widgets, "canvas");
 };
+
+#
+# @return bool Return true if running on FG version 2020.4 (next branch)
+#
+var isFGNextVersion = func() {
+    var fgversion = getprop("/sim/version/flightgear");
+    var (major, minor, patch) = split(".", fgversion);
+    return major >= 2020 and minor >= 4;
+}
 
 #
 # @param hash addon - addons.Addon object
