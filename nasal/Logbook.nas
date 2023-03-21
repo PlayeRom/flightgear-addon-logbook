@@ -73,7 +73,7 @@ var Logbook = {
                 me.delayInit.singleShot = true;
                 me.delayInit.start();
             }
-        });
+        }, runListenerOnInit);
 
         setlistener("/sim/presets/onground", func(node) {
             var oldOnGround = me.onGround;
