@@ -4,7 +4,7 @@ FlightGear Logbook Add-on
 
 # =============== EN ===============
 
-This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any interference, just add an add-on to FlightGear.
+This add-on automatically keeps a log of your flights, saving each flight to a CSV file. It does not require any additional user action, just add an add-on to FlightGear.
 
 ## Installation
 
@@ -15,7 +15,7 @@ Installation is standard:
 
 ## How it's working?
 
-The add-on tries to automatically detect if an aircraft has taken off by checking the Weight of Wheels. Then the add-on starts collecting information about the flight. This means that if you are parked, taxiing, etc., it is not yet included in the flight log. If you are in the air, the add-on tries to detect if you have landed also by testing Weight of Wheels. Thus, logging takes place from the moment the aircraft is lifted off the ground until it is put back on the ground.
+The add-on tries to automatically detect if an aircraft has taken off by checking the Weight on Wheels. Then the add-on starts collecting information about the flight. This means that if you are parked, taxiing, etc., it is not yet included in the flight log. If you are in the air, the add-on tries to detect if you have landed also by testing Weight on Wheels. Thus, logging takes place from the moment the aircraft is lifted off the ground until it is put back on the ground.
 
 If the aircraft has no wheels, only the floats, then the add-on will also try to recognize if the floats are resisting the water (if the aircraft uses JSBSim), thus recognizing whether you are in the air or not.
 
@@ -23,7 +23,7 @@ The add-on also recognizes the moment of launch of the Space Shuttle from the st
 
 ## Logbook file
 
-You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v2.csv`, where `$FG_HOME` on Windows is:
+You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v4.csv`, where `$FG_HOME` on Windows is:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
@@ -38,10 +38,10 @@ You can always open it and edit by any Spreadsheet program like LibreOffice Calc
 The following information is logged into the file:
 
 1. **Date** – aircraft take-off date. This is the date taken from your OS, not the date in the simulator. I decided I'd know when I flew in my own time zone, in front of my own computer, rather than what the UTC or local time was in the simulation, which would not be valuable. If you have a different opinion and reasonable arguments, let me know.
-2. **Time** – aircraft take-off time. As for **Date** this is the time taken from the OS.
+2. **Time** – aircraft take-off time. As with **Date** this is the time taken from the OS.
 3. **Aircraft** – the code name of the aircraft.
 4. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in several variants, such as the default "Cessna 172P", which includes different variants like "Cessna 172P Float". If you select "Cessna 172P," you will see `c172p` in the **Aircraft** as well as **Variant** column. If you select the float variant ("Cessna 172P Float"), you will see `c172p` in the **Aircraft** column, but `c172p-float` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
-5. **Type** – aircraft type as a one of following value:
+5. **Type** – aircraft type as one of following values:
     * "heli" (helicopter),
     * "balloon" (also airship),
     * "space" (space ship),
@@ -77,7 +77,7 @@ At the very bottom there is a row of buttons, mainly for moving through the log 
 Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, you have the same information here as in the main window, except:
 
 1. ICAO airport codes include their names in parentheses.
-2. With numerical data, you have given the units in which these values are presented with conversions to other units.
+2. With numerical data, you are given the units in which these values are presented with conversions to other units.
 3. At the very bottom you have an additional `Note` field, which is not displayed in the main window, due to the possibility of placing any length of text here.
 
 ### Data filtering
@@ -98,21 +98,21 @@ Before each saving of a single change, the add-on creates a copy of the original
 
 ### Recovery mode
 
-This add-on includes a mechanism to save the current flight status to a separate file `recovery.csv` every minute. If FlightGear unexpectedly close due to an error, this file will be read on reboot and an entry from this file will be moved to the main log file. In this way, no flight, even aborted, should be lost.
+This add-on includes a mechanism to save the current flight status to a separate file `recovery.csv` every minute. If FlightGear unexpectedly closes due to an error, this file will be read on reboot and an entry from this file will be moved to the main log file. In this way, no flight, even aborted, should be lost.
 
 ## NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
 2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery.csv` file. The data in the `recovery.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted.
-3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
+3. To count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing by the add-on .
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
-5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
+5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing detection pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
 6. Helicopters should also be supported, although I have not tested all of them.
 7. The add-on supports JSBSim-based watercraft, although I have not tested all of them.
 8. The add-on supports the Space Shuttle.
 9. Flights with UFO will not be logged.
 10. Pausing the simulation or turning on the replay mode stops the flight statistics from being added to the log.
-11. As for fuel burn, the add-on does not take into account the change in the amount of fuel during the flight. When you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
+11. As for fuel burn, the add-on does not take in-flight refueling into account. If you change the amount of fuel during the flight, the result in the **Fuel** column will be incorrect. So try to avoid it and refuel the aircraft before the flight.
 12. Supported FG versions from 2020.1.
 13. The minimum resolution for using the GUI is 1366x768.
 
@@ -126,18 +126,18 @@ Logbook is an Open Source project and it is licensed under the GNU Public Licens
 
 # =============== PL ===============
 
-Dodatek ten automatycznie prowadzi dziennik naszych lotów, zapisując każdy odbyty lot do pliku CSV. Nie wymaga to żadnej ingerencji, wystarczy dodać wtyczkę do FlightGeara.
+Dodatek ten automatycznie prowadzi dziennik naszych lotów, zapisując każdy odbyty lot do pliku CSV. Nie wymaga to od użytkownika żadnych czynności, wystarczy dodać wtyczkę do FlightGeara.
 
 ## Instalacja
 
 Instalacja jest standardowa:
 
-1. Pobierz dodatek z repozytorim i rozpokauj go do dowolnego katalogu.
-2. W Laucherze przejdź do zakładki „Dodatki”. Kliknij przycisk „Dodaj” w sekcji „Katalogi dodatkowych modułów” i wybierz folder z rozpakowanym katalogiem dodatku „Logbook” (lub dodaj opcję wiersza poleceń: `--addon=ścieżka`) i kliknij „Lećmy!”.
+1. Pobierz dodatek z repozytorium i rozpakuj go do dowolnego katalogu.
+2. W Launcherze przejdź do zakładki „Dodatki”. Kliknij przycisk „Dodaj” w sekcji „Katalogi dodatkowych modułów” i wybierz folder z rozpakowanym katalogiem dodatku „Logbook” (lub dodaj opcję wiersza poleceń: `--addon=ścieżka`) i kliknij „Lećmy!”.
 
 ## Jak to działa?
 
-Dodatek stara się automatycznie wykryć czy statek powietrzny wystartował, poprzez sprawdzenie Weight of Wheels. Wtedy dodatek rozpoczyna zbieranie informacji o locie. Oznacza to, że jeśli stoimy zaparkowani, kołujemy itp. to jeszcze nie jest wliczane do dziennika lotów. Jeśli jesteśmy w powietrzu, to dodatek stara się wykryć czy wylądowaliśmy także testując Weight of Wheels. Zatem logowanie następuje od chwili oderwania statku powietrznego od ziemi, do posadzenia go na ziemi z powrotem.
+Dodatek stara się automatycznie wykryć czy statek powietrzny wystartował, poprzez sprawdzenie Weight on Wheels. Wtedy dodatek rozpoczyna zbieranie informacji o locie. Oznacza to, że jeśli stoimy zaparkowani, kołujemy itp. to ten czas jeszcze nie jest wliczany do dziennika lotów. Jeśli jesteśmy w powietrzu, to dodatek stara się wykryć czy wylądowaliśmy także testując Weight on Wheels. Zatem logowanie następuje od chwili oderwania statku powietrznego od ziemi, do posadzenia go na ziemi z powrotem.
 
 Jeśli samolot nie ma kół tylko pływaki, to dodatek także postara się rozpoznać, czy pływaki stawiają opór wodzie (o ile samolot wykorzystuje JSBSim), tym samym rozpoznając czy jesteśmy w powietrzu czy nie.
 
@@ -145,7 +145,7 @@ Dodatek rozpoznaje także moment startu Wahadłowca Kosmicznego z pozycji starto
 
 ## Plik logbooka
 
-Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v2.csv`, gdzie `$FG_HOME` pod Windows to:
+Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.logbook/logbook-v4.csv`, gdzie `$FG_HOME` pod Windows to:
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
@@ -163,9 +163,9 @@ Do pliku logowane są następujące informacje:
 2. **Time** ‒ czas startu statku powietrznego. Podobnie jak dla **Date** jest to czas pobrany z systemu operacyjnego.
 3. **Aircraft** ‒ nazwa kodowa statku powietrznego.
 4. **Variant** ‒ nazwa kodowa statku powietrznego jako jego wariant. Niektóre samoloty dostępne są w kilku wariantach, np. domyślna "Cessna 172P", która zawiera różne warianty jak np. "Cessna 172P Float". Jeśli wybierzesz "Cessna 172P", to w kolumnie **Aircraft** jak i **Variant**  zobaczysz `c172p`. Jeśli wybierzesz wariant z pływakami ("Cessna 172P Float"), to w kolumnie **Aircraft** zobaczysz `c172p`, ale w kolumnie **Variant** `c172p-float`. W ten sposób masz główną grupę samolotu w kolumnie **Aircraft** oraz jego warianty w kolumnie **Variant**. Dzięki temu będziesz mógł wydobyć statystyki **Totals** dla ogólnej grupy samolotu bez znaczenia w jakim wariancie (filtrując po **Aircraft**), jak i precyzyjniej dla konkretnego wariantu danego samolotu (filtrując po **Variant**).
-5. **Type** ‒ typ statku powietrznego jako jeden z następujących wartości:
+5. **Type** ‒ typ statku powietrznego jako jedna z następujących wartości:
     * "heli" (śmigłowiec),
-    * "balloon" (także sterowiec),
+    * "balloon" (balon, także sterowiec),
     * "space" (statek kosmiczny),
     * "seaplane" (wodnosamolot),
     * "military" (wojskowy),
