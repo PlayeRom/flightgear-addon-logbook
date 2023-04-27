@@ -82,7 +82,7 @@ var Logbook = {
 
             # User probably used the "Location" -> "in air" or change airport even during a flight
             if (!oldOnGround and me.onGround) {
-                # I was in the air, now I'm in the ground, try to stop logging
+                # I was in the air, now I'm on the ground, try to stop logging
                 me.stopLogging(false);
             }
 
