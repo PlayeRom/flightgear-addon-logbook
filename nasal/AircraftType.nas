@@ -17,7 +17,7 @@ var AircraftType = {
     # Constants
     #
     HELICOPTER : "heli",
-    BALLOON    : "balloon",   # including airsips (zeppelins)
+    BALLOON    : "balloon",   # including airships (zeppelins)
     SPACE      : "space",
     SEAPLANE   : "seaplane",  # including amphibious
     MILITARY   : "military",
