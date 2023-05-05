@@ -35,6 +35,8 @@ var Logbook = {
         me.startOdometer = 0.0; # distance at takeoff
         me.onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
         logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
+        me.addonHints    = props.globals.getNode("/sim/addon-hints/Logbook");
+        if (me.addonHints != nil) {logprint(MY_LOG_LEVEL, "Logbook Add-on - init HINTS NODE = ", me.addonHints.getName());}
         me.initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
         me.isSimPaused   = false;
         me.isReplayMode  = false;
@@ -146,7 +148,7 @@ var Logbook = {
     # @return void
     #
     initLogbook: func() {
-        me.landingGear.recognizeGears(me.onGround);
+        me.landingGear.recognizeGears(me.onGround, me.addonHints);
 
         me.initAltAglThreshold();
 
@@ -315,7 +317,7 @@ var Logbook = {
 
             # We know it's landed, so reset some states like detect the landing gear again in case it will takeoff again.
             me.onGround = true;
-            me.landingGear.recognizeGears(me.onGround);
+            me.landingGear.recognizeGears(me.onGround, me.addonHints);
             me.initAltAglThreshold();
         }
 
