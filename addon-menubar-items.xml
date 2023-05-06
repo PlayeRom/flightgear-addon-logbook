@@ -39,6 +39,7 @@
             </item>
             <item>
                 <label>Help</label>
+                <name>logbook-addon-help</name>
                 <binding>
                     <command>nasal</command>
                     <script>logbook.g_Logbook.showHelpDialog();</script>
@@ -46,6 +47,7 @@
             </item>
             <item>
                 <label>About</label>
+                <name>logbook-addon-about</name>
                 <binding>
                     <command>nasal</command>
                     <script>logbook.g_Logbook.showAboutDialog();</script>
