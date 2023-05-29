@@ -21,9 +21,10 @@ var LandingGear = {
     #
     # Constructor
     #
+    # @param node|null addonHintsNode - reference to "/sim/addon-hints/Logbook" node or null
     # @return me
     #
-    new: func () {
+    new: func (addonHintsNode) {
         var me = { parents: [LandingGear] };
 
         me.gearIndexes = [];
@@ -31,6 +32,8 @@ var LandingGear = {
         # Used to count seconds during landing without landing gear recognition
         me.landingCountSec = 0;
         me.landingAmount = 0;
+
+        me.addonHintsNode = addonHintsNode;
 
         return me;
     },
@@ -41,45 +44,67 @@ var LandingGear = {
     # @param bool onGround - If true then aircraft start on the ground, otherwise in air
     # @return int - nuber of found wheels/landing gears
     #
-    recognizeGears: func(onGround, addonHints) {
+    recognizeGears: func(onGround) {
         me.resetLandingWithNoGearRecognized();
 
         me.gearIndexes = [];
 
-        if (addonHints != nil) {
-            # We use landing-gear hints directly from the model.
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - hints node detected");
-            me.loopThroughHints(addonHints, func(index) {
-                #logprint(MY_LOG_LEVEL, "Logbook Add-on - HINT CALLBACK: ", index);
-                append(me.gearIndexes, index);
-            });
+        if (!me.recognizeGearsByAddonHints()) {
+            # Gears not loaded from hints, try to find gears by "/gear/gear[n]/wow" or float
 
-            if (size(me.gearIndexes) > 0) {
-                # at least one gear hint was found
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - using landing gear hints provided by model");
-                return size(me.gearIndexes);
-            } else {
-                logprint(LOG_ALERT, "Logbook Add-on: hints node present, but no landing gear hints detected");
-            }
-        }
+            if (onGround) {
+                # We are on the ground, so we can count the gears from "/gear/gear[n]/wow" property
+                me.loopThroughGears(func(index) {
+                    logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: landing gear found at index = ", index);
+                    append(me.gearIndexes, index);
+                });
 
-        if (onGround) {
-            # We are on the ground, so we can count the gears from "/gear/gear[n]/wow" property
-            me.loopThroughGears(func(index) {
-                logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: landing gear found at index = ", index);
-                append(me.gearIndexes, index);
-            });
-
-            if (size(me.gearIndexes) == 0) {
-                # No landing gear found, check floats
-                if (me.isFloatsDragOnWater()) {
-                    logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: floats detected");
-                    append(me.gearIndexes, LandingGear.GEAR_FLOATS);
+                if (size(me.gearIndexes) == 0) {
+                    # No landing gear found, check floats
+                    if (me.isFloatsDragOnWater()) {
+                        logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: floats detected");
+                        append(me.gearIndexes, LandingGear.GEAR_FLOATS);
+                    }
                 }
             }
         }
 
         return size(me.gearIndexes);
+    },
+
+    #
+    # Recognize and count landing gears by addon hints. The hints should be specify in the following way:
+    # <sim>
+    #     <addon-hints>
+    #         <Logbook>
+    #             <landing-gear-idx type="int">0</landing-gear-idx>
+    #             <landing-gear-idx type="int">1</landing-gear-idx>
+    #         </Logbook>
+    #     </addon-hints>
+    # </sim>
+    #
+    # @return bool - Return true if gears have been loaded from the hints
+    #
+    recognizeGearsByAddonHints: func() {
+        if (me.addonHintsNode != nil) {
+            # We use landing-gear hints directly from the model.
+            foreach (var landingGearIdx; me.addonHintsNode.getChildren("landing-gear-idx")) {
+                var value = landingGearIdx.getValue();
+                if (value) {
+                    append(me.gearIndexes, value);
+                }
+            }
+
+            if (size(me.gearIndexes) > 0) {
+                # at least one gear hint was found
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - using landing gear hints provided by model");
+                return true;
+            }
+
+            logprint(LOG_ALERT, "Logbook Add-on: hints node present, but no landing gear hints detected");
+        }
+
+        return false;
     },
 
     #
@@ -235,20 +260,6 @@ var LandingGear = {
             if (wow != nil and wow.getValue()) {
                 callback(gear.getIndex());
             }
-        }
-    },
-
-    #
-    # Loop through all landing gear hint properties
-    #
-    # @param hintsNode - valid reference to "/sim/addon-hints/Logbook" node
-    # @param func callback - function called with a value of a found landing-gear-idx child node
-    # @return void
-    #
-    loopThroughHints: func(hintsNode, callback) {
-        foreach (var hint; hintsNode.getChildren("landing-gear-idx")) {
-            var value = hint.getValue();
-            callback(value);
         }
     },
 

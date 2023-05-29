@@ -35,8 +35,10 @@ var Logbook = {
         me.startOdometer = 0.0; # distance at takeoff
         me.onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
         logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
-        me.addonHints    = props.globals.getNode("/sim/addon-hints/Logbook");
-        if (me.addonHints != nil) {logprint(MY_LOG_LEVEL, "Logbook Add-on - init HINTS NODE = ", me.addonHints.getName());}
+        me.addonHintsNode = props.globals.getNode("/sim/addon-hints/Logbook");
+        if (me.addonHintsNode != nil) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - init HINTS NODE = ", me.addonHintsNode.getName());
+        }
         me.initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
         me.isSimPaused   = false;
         me.isReplayMode  = false;
@@ -47,7 +49,7 @@ var Logbook = {
 
         me.logData       = nil;
         me.environment   = Environment.new(me.settings);
-        me.landingGear   = LandingGear.new();
+        me.landingGear   = LandingGear.new(me.addonHintsNode);
         me.filters       = Filters.new();
         me.file          = File.new(addon, me.filters);
         me.spaceShuttle  = SpaceShuttle.new();
@@ -148,7 +150,7 @@ var Logbook = {
     # @return void
     #
     initLogbook: func() {
-        me.landingGear.recognizeGears(me.onGround, me.addonHints);
+        me.landingGear.recognizeGears(me.onGround);
 
         me.initAltAglThreshold();
 
@@ -317,7 +319,7 @@ var Logbook = {
 
             # We know it's landed, so reset some states like detect the landing gear again in case it will takeoff again.
             me.onGround = true;
-            me.landingGear.recognizeGears(me.onGround, me.addonHints);
+            me.landingGear.recognizeGears(me.onGround);
             me.initAltAglThreshold();
         }
 
