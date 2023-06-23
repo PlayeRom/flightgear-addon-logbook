@@ -116,6 +116,36 @@ This add-on includes a mechanism to save the current flight status to a separate
 12. Supported FG versions from 2020.1.
 13. The minimum resolution for using the GUI is 1366x768.
 
+## Landing gear hints
+
+If this add-on has a problem with recognizing the landing gear correctly, then you can put the appropriate properties to indicate which indexes from `/gear/gear[index]` are used by the aircraft.
+
+The structure of the property to be passed to FlightGear is as follows:
+
+```xml
+<PropertyList>
+    <sim>
+        <addon-hints>
+            <Logbook>
+                <landing-gear-idx type="int">12</landing-gear-idx>
+                <landing-gear-idx type="int">13</landing-gear-idx>
+            </Logbook>
+        </addon-hints>
+    </sim>
+</PropertyList>
+```
+
+Each `<landing-gear-idx>` tag should contain an integer indicating the index of the `/gear/gear` property array. Thus, `<landing-gear-idx>` with values of 12 and 13, indicate that the aircraft uses `/gear/gear[12]` and `/gear/gear[13]`.
+
+These properties can be add in a number of ways, such as by placing them in the aircraft files, or by using command line options:
+
+```bash
+--prop:int:/sim/addon-hints/Logbook/landing-gear-idx[0]=12
+--prop:int:/sim/addon-hints/Logbook/landing-gear-idx[1]=13
+```
+
+Thanks to MariuszXC for this feature.
+
 ## Authors
 
 - Roman "PlayeRom" Ludwicki
@@ -237,6 +267,36 @@ Dodatek ten zawiera mechanizm zapisywania co minutę aktualnego stanu lotu do os
 11. Co do spalania paliwa, dodatek nie uwzględnia zmiany ilości paliwa podczas lotu. Gdy zmienisz ilość paliwa podczas lotu, rezultat w kolumnie **Fuel** będzie błędny. Zatem staraj się tego unikać i tankuj samolot przed lotem.
 12. Wspierane wersje FG od 2020.1.
 13. Minimalna wersja rozdzielczości dla używanie GUI to 1366x768.
+
+## Wskazówki co do podwozia
+
+Jeśli dodatek ten ma problem z prawidłowym rozpoznaniem podwozia, to możesz umieścić odpowiednie właściwości, które wskażą, jakie indeksy z `/gear/gear[index]` są używane przez dany statek powietrzny.
+
+Struktura właściwości, którą należy przekazać do FlightGeara, wygląda następująco:
+
+```xml
+<PropertyList>
+    <sim>
+        <addon-hints>
+            <Logbook>
+                <landing-gear-idx type="int">12</landing-gear-idx>
+                <landing-gear-idx type="int">13</landing-gear-idx>
+            </Logbook>
+        </addon-hints>
+    </sim>
+</PropertyList>
+```
+
+Każdy znacznik `<landing-gear-idx>` powinien zawierać liczbę całkowitą wskazujacą na indeks tablicy `/gear/gear`. Zatem `<landing-gear-idx>` z wartościami 12 i 13, wskazują że statek powietrzny używa `/gear/gear[12]` oraz `/gear/gear[13]`.
+
+Właściwości te można przekazać na wiele sposób, np. poprzez umieszczenie ich w plikach statku powietrznego, albo poprzez użycie opcji wiersza poleceń:
+
+```bash
+--prop:int:/sim/addon-hints/Logbook/landing-gear-idx[0]=0
+--prop:int:/sim/addon-hints/Logbook/landing-gear-idx[1]=1
+```
+
+Podziękowania dla MariuszXC za tę funkcję.
 
 ## Autorzy
 
