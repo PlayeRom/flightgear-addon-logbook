@@ -37,6 +37,15 @@ var Settings = {
     },
 
     #
+    # Destructor
+    #
+    # @return void
+    #
+    del: func() {
+        me.save();
+    },
+
+    #
     # @return hash - node object with data to save/load
     #
     getSaveNode: func() {
@@ -90,5 +99,17 @@ var Settings = {
         }
 
         return isRealTimeDuration;
+    },
+
+    #
+    # @return bool
+    #
+    isSoundEnabled: func() {
+        var isSoundEnabled = getprop(me.propToSave ~ "/settings/sound-enabled");
+        if (isSoundEnabled == nil) {
+            return true;
+        }
+
+        return isSoundEnabled;
     },
 };

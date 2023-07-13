@@ -27,14 +27,13 @@ var DetailsDialog = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @param hash file - File object
     # @return me
     #
-    new: func(settings, file) {
+    new: func(file) {
         var me = { parents: [
             DetailsDialog,
-            Dialog.new(settings, DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
+            Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
         ] };
 
         # Override window del method for hide InputDialog and ConfirmationDialog
@@ -49,8 +48,8 @@ var DetailsDialog = {
         me.parentDataIndex = nil;
         me.file            = file;
         me.btnDelete       = nil;
-        me.inputDialog     = InputDialog.new(settings);
-        me.deleteDialog    = ConfirmationDialog.new(settings, "Delete entry log");
+        me.inputDialog     = InputDialog.new();
+        me.deleteDialog    = ConfirmationDialog.new("Delete entry log");
         me.deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
@@ -261,6 +260,8 @@ var DetailsDialog = {
     listViewCallback: func(index) {
         if (!g_isThreadPending) {
             if (me.dataRow.allDataIndex > -1) { # -1 is using for Totals row
+                g_Sound.play('paper');
+
                 me.listView.removeHighlightingRow();
                 me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
 

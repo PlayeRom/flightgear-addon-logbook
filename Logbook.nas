@@ -18,6 +18,16 @@ var MY_LOG_LEVEL = LOG_INFO;
 var ADDON_ID = "org.flightgear.addons.logbook";
 
 #
+# Global object of Settings
+#
+var g_Settings = nil;
+
+#
+# Global object of Sound
+#
+var g_Sound = nil;
+
+#
 # Global object of Logbook
 #
 var g_Logbook = nil;
@@ -42,6 +52,9 @@ var init = func(addon) {
     gui.menuEnable("logbook-addon-help", false);
     gui.menuEnable("logbook-addon-about", false);
 
+    g_Settings = Settings.new(addon);
+    g_Sound    = Sound.new(addon);
+
     # Delay loading of the whole addon so as not to break the MCDUs for aircraft like A320, A330. The point is that,
     # for example, the A320 hard-coded the texture index from /canvas/by-index/texture[15]. But this add-on creates its
     # canavas textures earlier than the airplane, which will cause that at index 15 there will be no MCDU texture but
@@ -65,5 +78,13 @@ var init = func(addon) {
 var uninit = func() {
     if (g_Logbook != nil) {
         g_Logbook.del();
+    }
+
+    if (g_Sound != nil) {
+        g_Sound.del();
+    }
+
+    if (g_Settings != nil) {
+        g_Settings.del();
     }
 };

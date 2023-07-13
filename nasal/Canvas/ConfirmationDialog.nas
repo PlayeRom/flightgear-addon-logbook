@@ -22,15 +22,13 @@ var ConfirmationDialog = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @param string title
     # @return me
     #
-    new: func(settings, title) {
+    new: func(title) {
         var me = { parents: [
             ConfirmationDialog,
             Dialog.new(
-                settings,
                 ConfirmationDialog.WINDOW_WIDTH,
                 ConfirmationDialog.WINDOW_HEIGHT,
                 title
@@ -109,6 +107,8 @@ var ConfirmationDialog = {
     # @return void
     #
     actionPositive: func() {
+        g_Sound.play('delete');
+
         if (me.parentObj == nil) {
             call(Dialog.hide, [], me);
         }

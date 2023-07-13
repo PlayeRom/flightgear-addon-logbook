@@ -58,6 +58,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Settings",
         "nasal/SpaceShuttle",
         "nasal/Thread",
+        "nasal/Sound",
     ];
 
     if (!isFGNextVersion()) {

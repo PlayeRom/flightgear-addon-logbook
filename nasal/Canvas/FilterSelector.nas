@@ -27,14 +27,12 @@ var FilterSelector = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @return me
     #
-    new: func (settings) {
+    new: func () {
         var me = { parents: [
             FilterSelector,
             Dialog.new(
-                settings,
                 FilterSelector.WINDOW_WIDTH,
                 FilterSelector.WINDOW_HEIGHT,
                 "Filter selector"
@@ -261,6 +259,8 @@ var FilterSelector = {
     # @return void
     #
     listViewCallback: func(index) {
+        g_Sound.play('paper');
+
         var text = me.items.vector[index];
 
         call(me.callback, [me.columnIndex, text], me.objCallback);

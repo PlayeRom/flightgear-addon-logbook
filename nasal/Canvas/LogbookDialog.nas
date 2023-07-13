@@ -44,17 +44,15 @@ var LogbookDialog = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @param hash file - File object
     # @param hash filters - Filters object
     # @return me
     #
-    new: func(settings, file, filters) {
+    new: func(file, filters) {
         var me = {
             parents : [
                 LogbookDialog,
                 Dialog.new(
-                    settings,
                     LogbookDialog.WINDOW_WIDTH,
                     LogbookDialog.WINDOW_HEIGHT,
                     "Logbook"
@@ -83,10 +81,10 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.detailsDialog  = DetailsDialog.new(settings, file);
-        me.helpDialog     = HelpDialog.new(settings);
-        me.aboutDialog    = AboutDialog.new(settings);
-        me.filterSelector = FilterSelector.new(settings);
+        me.detailsDialog  = DetailsDialog.new(file);
+        me.helpDialog     = HelpDialog.new();
+        me.aboutDialog    = AboutDialog.new();
+        me.filterSelector = FilterSelector.new();
 
         me.drawHeaders();
 
@@ -215,6 +213,8 @@ var LogbookDialog = {
             return;
         }
 
+        g_Sound.play('paper');
+
         # We need to redraw the headers too, because when the window was created,
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(true);
@@ -325,6 +325,7 @@ var LogbookDialog = {
 
         rowGroup.addEventListener("click", func(event) {
             if (!g_isThreadPending) {
+                g_Sound.play('paper');
                 me.filterSelector
                     .setItems(items)
                     .setColumnIndex(index)
@@ -451,12 +452,14 @@ var LogbookDialog = {
             return;
         }
 
+        g_Sound.play('paper');
+
         me.style = me.style.NAME == "dark"
             ? me.getStyle().light
             : me.getStyle().dark;
 
-        me.settings.setDarkMode(me.style.NAME == "dark");
-        me.settings.save();
+        g_Settings.setDarkMode(me.style.NAME == "dark");
+        g_Settings.save();
 
         me.toggleBgImage();
 
@@ -501,6 +504,8 @@ var LogbookDialog = {
         }
 
         if (me.startIndex != 0) {
+            g_Sound.play('paper');
+
             me.startIndex = 0;
             me.filterSelector.hide();
             me.detailsDialog.hide();
@@ -519,6 +524,8 @@ var LogbookDialog = {
         }
 
         if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
+            g_Sound.play('paper');
+
             me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
             me.filterSelector.hide();
             me.detailsDialog.hide();
@@ -537,6 +544,8 @@ var LogbookDialog = {
         }
 
         if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
+            g_Sound.play('paper');
+
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
             me.filterSelector.hide();
             me.detailsDialog.hide();
@@ -559,6 +568,8 @@ var LogbookDialog = {
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
+            g_Sound.play('paper');
+
             me.filterSelector.hide();
             me.detailsDialog.hide();
             me.reloadData(false);
@@ -656,6 +667,8 @@ var LogbookDialog = {
     #
     listViewCallback: func(index) {
         if (!g_isThreadPending) {
+            g_Sound.play('paper');
+
             var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
 
             me.setHighlightingRow(hash.allDataIndex, index);

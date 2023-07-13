@@ -28,8 +28,6 @@ var Logbook = {
     new: func(addon) {
         var me = { parents: [Logbook] };
 
-        me.settings      = Settings.new(addon);
-
         # Auxiliary variables
         me.startFuel     = 0.0; # amount of fuel at takeoff
         me.startOdometer = 0.0; # distance at takeoff
@@ -48,7 +46,7 @@ var Logbook = {
         me.delayInit     = maketimer(2, me, me.initLogbook);
 
         me.logData       = nil;
-        me.environment   = Environment.new(me.settings);
+        me.environment   = Environment.new();
         me.landingGear   = LandingGear.new(me.addonHintsNode);
         me.filters       = Filters.new();
         me.file          = File.new(addon, me.filters);
@@ -57,7 +55,7 @@ var Logbook = {
         me.airport       = Airport.new();
         me.recovery      = Recovery.new(addon, me.file);
         me.aircraft      = Aircraft.new();
-        me.logbookDialog = LogbookDialog.new(me.settings, me.file, me.filters);
+        me.logbookDialog = LogbookDialog.new(me.file, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);

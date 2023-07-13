@@ -19,8 +19,9 @@
                 <addon-devel>
                     <save>
                         <settings>
-                            <dark-style type="bool">0</dark-style>
-                            <real-time-duration type="bool">1</real-time-duration>
+                            <dark-style type="bool">false</dark-style>
+                            <real-time-duration type="bool">true</real-time-duration>
+                            <sound-enabled type="bool">true</sound-enabled>
                         </settings>
                     </save>
 

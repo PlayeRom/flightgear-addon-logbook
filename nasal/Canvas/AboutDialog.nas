@@ -23,13 +23,12 @@ var AboutDialog = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @return me
     #
-    new: func(settings) {
+    new: func() {
         var me = { parents: [
             AboutDialog,
-            Dialog.new(settings, AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
+            Dialog.new(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
         me.bgImage.hide();

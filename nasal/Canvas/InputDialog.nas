@@ -22,13 +22,12 @@ var InputDialog = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @return me
     #
-    new: func(settings) {
+    new: func() {
         var me = { parents: [
             InputDialog,
-            Dialog.new(settings, InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
+            Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
         ] };
 
         # Override window del method for close FilterSelector
@@ -46,7 +45,7 @@ var InputDialog = {
         me.parent          = nil;
         me.value           = nil;
 
-        me.filterSelector = FilterSelector.new(settings);
+        me.filterSelector = FilterSelector.new();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
@@ -207,6 +206,8 @@ var InputDialog = {
         if (!me.validate(value)) {
             return;
         }
+
+        g_Sound.play('paper');
 
         me.hide();
 

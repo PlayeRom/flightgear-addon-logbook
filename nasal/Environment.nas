@@ -22,13 +22,12 @@ var Environment = {
     #
     # Constructor
     #
-    # @param hash settings - Settings object
     # @return me
     #
-    new: func (settings) {
+    new: func () {
         var me = { parents: [Environment] };
 
-        me.isRealTimeDuration = settings.isRealTimeDuration();
+        me.isRealTimeDuration = g_Settings.isRealTimeDuration();
         me.dayCounter         = 0;
         me.nightCounter       = 0;
         me.instrumentCounter  = 0;
