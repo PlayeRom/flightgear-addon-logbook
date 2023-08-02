@@ -25,16 +25,18 @@ var Environment = {
     # @return me
     #
     new: func () {
-        var me = { parents: [Environment] };
+        var me = { parents: [
+            Environment,
+            BaseCounter.new(
+                func()               { me.onResetCounters(); },
+                func(diffElapsedSec) { me.onUpdate(diffElapsedSec); }
+            ),
+        ] };
 
-        me.isRealTimeDuration = g_Settings.isRealTimeDuration();
         me.dayCounter         = 0;
         me.nightCounter       = 0;
         me.instrumentCounter  = 0;
         me.maxAlt             = 0.0;
-        me.lastElapsedSec     = me.isRealTimeDuration ? 0 : me.getElapsedSec();
-        me.isReplayMode       = false;
-        me.isRunning          = false;
 
         me.propAltFt          = props.globals.getNode("/position/altitude-ft");
 
@@ -80,31 +82,20 @@ var Environment = {
     #
     # @return void
     #
-    resetCounters: func() {
+    onResetCounters: func() {
         me.dayCounter        = 0;
         me.nightCounter      = 0;
         me.instrumentCounter = 0;
         me.maxAlt            = 0.0;
-        me.lastElapsedSec    = me.isRealTimeDuration ? 0 : me.getElapsedSec();
-        me.isRunning         = true;
     },
 
     #
     # Update all environment counters
     #
+    # @param double diffElapsedSec
     # @return void
     #
-    update: func () {
-        if (!me.isRunning) {
-            return;
-        }
-
-        var currentElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
-
-        var diffElapsedSec = me.isRealTimeDuration
-            ? Logbook.MAIN_TIMER_INTERVAL
-            : (currentElapsedSec - me.lastElapsedSec);
-
+    onUpdate: func (diffElapsedSec) {
         me.isNight()
             ? (me.nightCounter += diffElapsedSec)
             : (me.dayCounter   += diffElapsedSec);
@@ -117,8 +108,6 @@ var Environment = {
         if (alt > me.maxAlt) {
             me.maxAlt = alt;
         }
-
-        me.lastElapsedSec = currentElapsedSec;
     },
 
     #
@@ -176,26 +165,5 @@ var Environment = {
     #
     getMaxAlt: func() {
         return me.maxAlt;
-    },
-
-    #
-    # Get elapsed time in seconds in simulation.
-    # The "/sim/time/elapsed-sec" property is count automatically and also paused when sim is paused.
-    #
-    # @return double
-    #
-    getElapsedSec: func() {
-        return getprop("/sim/time/elapsed-sec");
-    },
-
-    #
-    # Set replay mode flag. If true then sim is in replay mode and the counters should not be updated.
-    # The problem is that elapsed-sec in reply mode is continuing counting, so we have to handle it manually.
-    #
-    # @param bool isReplayMode
-    # @return void
-    #
-    setReplayMode: func(isReplayMode) {
-        me.isReplayMode = isReplayMode;
     },
 };

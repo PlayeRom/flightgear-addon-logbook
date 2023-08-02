@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1280,
+    WINDOW_WIDTH         : 1360,
     WINDOW_HEIGHT        : 680,
     MAX_DATA_ITEMS       : 20,
     COLUMNS_WIDTH        : [
@@ -28,15 +28,17 @@ var LogbookDialog = {
          80, #  5 - callsign
          55, #  6 - from
          55, #  7 - to
-         55, #  8 - landing
-         55, #  9 - crash
+         50, #  8 - landing
+         50, #  9 - crash
          50, # 10 - day
          50, # 11 - night
          50, # 12 - instrument
-         65, # 13 - duration
-         65, # 14 - distance
-         80, # 15 - fuel
-         70, # 16 - max alt
+         50, # 13 - multiplayer
+         50, # 14 - swift
+         60, # 15 - duration
+         60, # 16 - distance
+         80, # 17 - fuel
+         70, # 18 - max alt
     ],
     FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
     FONT_SIZE            : 12,
@@ -259,12 +261,14 @@ var LogbookDialog = {
         me.headersContent.removeAllChildren();
 
         var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
-        var column = 0;
+        var column = -1;
         var headers = me.file.getHeadersData();
         foreach (var text; headers) {
-            if (column == size(headers) - 1) {
+            column += 1;
+
+            if (column == File.INDEX_NOTE) {
                 # Don't show Note column
-                break;
+                continue;
             }
 
             var rowGroup = me.headersContent.createChild("group");
@@ -283,7 +287,6 @@ var LogbookDialog = {
             );
 
             x += me.getColumnWidth(column);
-            column += 1;
         }
     },
 
@@ -365,6 +368,10 @@ var LogbookDialog = {
 
         if (column == File.INDEX_INSTRUMENT) {
             return "Instr.";
+        }
+
+        if (column == File.INDEX_MULTIPLAYER) {
+            return "Multip.";
         }
 
         return text;

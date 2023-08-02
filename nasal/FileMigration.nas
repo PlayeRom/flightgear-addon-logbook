@@ -213,4 +213,60 @@ var FileMigration = {
             );
         });
     },
+
+    #
+    # @param string oldFilePath
+    # @param string newFilePath
+    # @retrun void
+    #
+    migrateToFileVersion_5: func(oldFilePath, newFilePath) {
+        # Add new columns for multiplayer durations
+
+        me.doMigrate(oldFilePath, newFilePath, func() {
+            return 'Date,' ~
+                   'Time,' ~
+                   'Aircraft,' ~
+                   'Variant,' ~
+                   'Type,' ~
+                   'Callsign,' ~
+                   'From,' ~
+                   'To,' ~
+                   'Landing,' ~
+                   'Crash,' ~
+                   'Day,' ~
+                   'Night,' ~
+                   'Instrument,' ~
+                   'Multiplayer,' ~ # <- new column, flight duration with multiplayer
+                   'Swift,' ~       # <- new column, flight duration with connection to swift
+                   'Duration,' ~
+                   'Distance,' ~
+                   'Fuel,' ~
+                   '"Max Alt",' ~
+                   'Note';
+        }, func(items) {
+            return sprintf(
+                "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+                items[0],  # date
+                items[1],  # time
+                items[2],  # aircraft
+                items[3],  # variant
+                items[4],  # type
+                items[5],  # callsign
+                items[6],  # from
+                items[7],  # to
+                items[8] == 1 ? "1" : "",  # landing
+                items[9],  # crash
+                items[10], # day
+                items[11], # night
+                items[12], # instrument
+                0.0,       # multiplayer
+                0.0,       # swift
+                items[13], # duration
+                items[14], # distance
+                items[15], # fuel
+                items[16], # maxAlt
+                items[17]  # note
+            );
+        });
+    },
 };

@@ -17,7 +17,7 @@ var File = {
     # Constants
     #
     LOGBOOK_FILE     : "logbook-v%s.csv",
-    FILE_VERSION     : "4",
+    FILE_VERSION     : "5",
 
     # Column indexes:
     INDEX_DATE       : 0,
@@ -33,11 +33,13 @@ var File = {
     INDEX_DAY        : 10,
     INDEX_NIGHT      : 11,
     INDEX_INSTRUMENT : 12,
-    INDEX_DURATION   : 13,
-    INDEX_DISTANCE   : 14,
-    INDEX_FUEL       : 15,
-    INDEX_MAX_ALT    : 16,
-    INDEX_NOTE       : 17,
+    INDEX_MULTIPLAYER: 13,
+    INDEX_SWIFT      : 14,
+    INDEX_DURATION   : 15,
+    INDEX_DISTANCE   : 16,
+    INDEX_FUEL       : 17,
+    INDEX_MAX_ALT    : 18,
+    INDEX_NOTE       : 19,
 
     TOTAL_FORMATS        : [
         "%d",   # landing
@@ -45,6 +47,8 @@ var File = {
         "%.2f", # day
         "%.2f", # night
         "%.2f", # instrument
+        "%.2f", # multiplayer
+        "%.2f", # swift
         "%.2f", # duration
         "%.2f", # distance
         "%.0f", # fuel
@@ -103,8 +107,20 @@ var File = {
     # @return void
     #
     resetTotals: func() {
-        # Total amount of Landing, Crash, Day, Night, Instrument, Duration, Distance, Fuel, Max Alt
-        me.totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        # Total amount
+        me.totals = [
+            0, # Landing
+            0, # Crash
+            0, # Day
+            0, # Night
+            0, # Instrument
+            0, # Multiplayer
+            0, # Swift
+            0, # Duration
+            0, # Distance
+            0, # Fuel
+            0, # Max Alt
+        ];
     },
 
     #
@@ -115,6 +131,7 @@ var File = {
 
         var olderReleases = [
             # Keep the order from the newest to oldest
+            "4",
             "3",
             "2",
             "1.0.1", # nothing has changed from v.1.0.0, so 1.0.0 = 1.1.0
@@ -143,7 +160,15 @@ var File = {
                 }
 
                 if (oldVersion == "3") {
-                    me.fileMigration.migrateToFileVersion_4(oldFile, me.filePath);
+                    var file_v4 = me.getPathToFile("4");
+                    me.fileMigration.migrateToFileVersion_4(oldFile, file_v4);
+                    # Prepare variables to next migration
+                    oldFile = file_v4;
+                    oldVersion = "4";
+                }
+
+                if (oldVersion == "4") {
+                    me.fileMigration.migrateToFileVersion_5(oldFile, me.filePath);
                 }
 
                 return true;
@@ -200,6 +225,8 @@ var File = {
                'Day,' ~
                'Night,' ~
                'Instrument,' ~
+               'Multiplayer,' ~
+               'Swift,' ~
                'Duration,' ~
                'Distance,' ~
                'Fuel,' ~
@@ -247,7 +274,7 @@ var File = {
     #
     saveItem: func(file, logData) {
         io.write(file, sprintf(
-            "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+            "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,
@@ -261,6 +288,8 @@ var File = {
             logData.day,
             logData.night,
             logData.instrument,
+            logData.multiplayer,
+            logData.swift,
             logData.duration,
             logData.distance,
             logData.fuel,
@@ -449,7 +478,7 @@ var File = {
         append(me.loadedData, {
             allDataIndex : -1,
             data         : [
-                "",
+                "", # <- empty columns before "Totals:" text
                 "",
                 "",
                 "",
@@ -616,19 +645,40 @@ var File = {
     countTotals: func(items) {
         var index = 0;
         foreach (var text; items) {
-            if (index >= File.INDEX_LANDING and
-                index <= File.INDEX_FUEL
-            ) {
-                me.totals[index - File.INDEX_LANDING] += (text == "" ? 0 : text);
-            }
-            else if (index == File.INDEX_MAX_ALT) {
-                if (text > me.totals[index - File.INDEX_LANDING]) {
-                    me.totals[index - File.INDEX_LANDING] = text;
+            var totalIndex = me.getTotalIndexFromColumnIndex(index);
+            if (totalIndex != -1) {
+                if (index == File.INDEX_MAX_ALT) {
+                    if (text > me.totals[totalIndex]) {
+                        me.totals[totalIndex] = text;
+                    }
+                }
+                else {
+                    me.totals[totalIndex] += (text == "" ? 0 : text);
                 }
             }
 
             index += 1;
         }
+    },
+
+    #
+    # @param int columnIndex
+    # @return int
+    #
+    getTotalIndexFromColumnIndex: func(columnIndex) {
+             if (columnIndex == File.INDEX_LANDING)     return 0; # me.totals[0]
+        else if (columnIndex == File.INDEX_CRASH)       return 1; # me.totals[1] etc.
+        else if (columnIndex == File.INDEX_DAY)         return 2;
+        else if (columnIndex == File.INDEX_NIGHT)       return 3;
+        else if (columnIndex == File.INDEX_INSTRUMENT)  return 4;
+        else if (columnIndex == File.INDEX_MULTIPLAYER) return 5;
+        else if (columnIndex == File.INDEX_SWIFT)       return 6;
+        else if (columnIndex == File.INDEX_DURATION)    return 7;
+        else if (columnIndex == File.INDEX_DISTANCE)    return 8;
+        else if (columnIndex == File.INDEX_FUEL)        return 9;
+        else if (columnIndex == File.INDEX_MAX_ALT)     return 10;
+
+        return -1; # error
     },
 
     #

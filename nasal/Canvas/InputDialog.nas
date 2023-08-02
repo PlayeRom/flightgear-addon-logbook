@@ -285,6 +285,8 @@ var InputDialog = {
         else if (me.header == "Day" or
                  me.header == "Night" or
                  me.header == "Instrument" or
+                 me.header == "Multiplayer" or
+                 me.header == "Swift" or
                  me.header == "Duration" or
                  me.header == "Distance" or
                  me.header == "Fuel"
@@ -361,7 +363,12 @@ var InputDialog = {
     # @return bool
     #
     validateDecimal: func(value) {
-        for (var i = 0; i < size(value); i += 1) {
+        var length = size(value);
+        if (length == 0) {
+            return false;
+        }
+
+        for (var i = 0; i < length; i += 1) {
             if (!string.isdigit(value[i]) and value[i] != `.`) {
                 return false;
             }
@@ -375,7 +382,12 @@ var InputDialog = {
     # @return bool
     #
     validateNumber: func(value) {
-        for (var i = 0; i < size(value); i += 1) {
+        var length = size(value);
+        if (length == 0) {
+            return false;
+        }
+
+        for (var i = 0; i < length; i += 1) {
             if (!string.isdigit(value[i])) {
                 return false;
             }

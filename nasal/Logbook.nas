@@ -47,6 +47,7 @@ var Logbook = {
 
         me.logData       = nil;
         me.environment   = Environment.new();
+        me.multiplayer   = Multiplayer.new();
         me.landingGear   = LandingGear.new(me.addonHintsNode);
         me.filters       = Filters.new();
         me.file          = File.new(addon, me.filters);
@@ -185,6 +186,7 @@ var Logbook = {
         }
 
         me.environment.update();
+        me.multiplayer.update();
 
         if (me.spaceShuttle.isLiftOff()) {
             logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
@@ -274,6 +276,7 @@ var Logbook = {
         }
 
         me.environment.resetCounters();
+        me.multiplayer.resetCounters();
 
         me.onGround = false;
 
@@ -325,6 +328,9 @@ var Logbook = {
         me.logData.setNight(me.environment.getNightHours());
         me.logData.setInstrument(me.environment.getInstrumentHours());
         me.logData.setMaxAlt(me.environment.getMaxAlt());
+
+        me.logData.setMultiplayer(me.multiplayer.getMultiplayerHours());
+        me.logData.setSwift(me.multiplayer.getSwiftHours());
 
         if (crashed) {
             logprint(LOG_ALERT, "Logbook Add-on - crash detected");
@@ -378,6 +384,9 @@ var Logbook = {
         recoveryData.setNight(me.environment.getNightHours());
         recoveryData.setInstrument(me.environment.getInstrumentHours());
         recoveryData.setMaxAlt(me.environment.getMaxAlt());
+
+        recoveryData.setMultiplayer(me.multiplayer.getMultiplayerHours());
+        recoveryData.setSwift(me.multiplayer.getSwiftHours());
 
         me.recovery.save(recoveryData);
     },

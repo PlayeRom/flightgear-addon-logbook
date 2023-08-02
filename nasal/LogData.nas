@@ -34,6 +34,8 @@ var LogData = {
         me.day          = 0.0;   # Total flight time during the day (hours)
         me.night        = 0.0;   # Total flight time during the night (hours)
         me.instrument   = 0.0;   # Total flight time during the IMC (hours)
+        me.multiplayer  = 0.0;   # Total flight time in multiplayer mode (hours)
+        me.swift        = 0.0;   # Total flight time with connection to swift (hours)
         me.duration     = 0.0;   # Total flight time as sum of day and night (hours)
         me.distance     = 0.0;   # The distance traveled during the flight in nautical miles
         me.fuel         = 0.0;   # Amount of fuel used in US gallons
@@ -240,6 +242,32 @@ var LogData = {
     },
 
     #
+    # Set the total flight time in multiplayer mode (hours)
+    #
+    # @param double multiplayer - Total flight time in multiplayer mode (hours)
+    # @return me
+    #
+    setMultiplayer: func(multiplayer) {
+        me.multiplayer = multiplayer;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMultiplayer = ", multiplayer);
+
+        return me;
+    },
+
+    #
+    # Set the total flight time with connection to swift (hours)
+    #
+    # @param double multiplayer - Total flight time with connection to swift (hours)
+    # @return me
+    #
+    setSwift: func(swift) {
+        me.swift = swift;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSwift = ", swift);
+
+        return me;
+    },
+
+    #
     # Set the total flight time as sum of day and night
     # @return me
     #
@@ -335,6 +363,8 @@ var LogData = {
         append(vector, sprintf("%.02f", me.day));
         append(vector, sprintf("%.02f", me.night));
         append(vector, sprintf("%.02f", me.instrument));
+        append(vector, sprintf("%.02f", me.multiplayer));
+        append(vector, sprintf("%.02f", me.swift));
         append(vector, sprintf("%.02f", me.duration));
         append(vector, sprintf("%.02f", me.distance));
         append(vector, sprintf("%.02f", me.fuel));
@@ -364,6 +394,8 @@ var LogData = {
         me.day          = items[File.INDEX_DAY];
         me.night        = items[File.INDEX_NIGHT];
         me.instrument   = items[File.INDEX_INSTRUMENT];
+        me.multiplayer  = items[File.INDEX_MULTIPLAYER];
+        me.swift        = items[File.INDEX_SWIFT];
         me.duration     = items[File.INDEX_DURATION];
         me.distance     = items[File.INDEX_DISTANCE];
         me.fuel         = items[File.INDEX_FUEL];
@@ -409,6 +441,8 @@ var LogData = {
         clone.day          = me.day;
         clone.night        = me.night;
         clone.instrument   = me.instrument;
+        clone.multiplayer  = me.multiplayer;
+        clone.swift        = me.swift;
         clone.duration     = me.duration;
         clone.distance     = me.distance;
         clone.fuel         = me.fuel;

@@ -17,7 +17,7 @@ var DetailsDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 600,
-    WINDOW_HEIGHT : 600,
+    WINDOW_HEIGHT : 660,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     COLUMNS_WIDTH : [
         120, # header
