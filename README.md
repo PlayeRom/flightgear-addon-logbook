@@ -62,11 +62,13 @@ The following information is logged into the file:
 11. **Day** – the number of hours spent flying during the day.
 12. **Night** – number of hours spent flying during the night.
 13. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-14. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The **Instrument** is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
-15. **Distance** – total distance flown from take-off to landing, in nautical miles.
-16. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
-17. **Max Alt** – maximum altitude, in feet, reached during flight.
-18. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
+14. **Multiplayer** – the number of flight hours when connecting to a multiplayer server.
+15. **Swift** – number of flight hours when connecting to swift.
+16. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The **Instrument** is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+17. **Distance** – total distance flown from take-off to landing, in nautical miles.
+18. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
+19. **Max Alt** – maximum altitude, in feet, reached during flight.
+20. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
@@ -214,11 +216,13 @@ Do pliku logowane są następujące informacje:
 11. **Day** ‒ ilość godzin spędzonych w czasie lotu podczas dnia.
 12. **Night** ‒ ilość godzin spędzonych w czasie lotu podczas nocy.
 13. **Instrument** ‒ ilość godzin spędzonych w czasie lotu podczas warunków IMC (Instrument Meteorological Conditions).
-14. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  **Instrument** jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
-15. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
-16. **Fuel** ‒ łączna ilość spalonego paliwa podczas lotu, w galonach amerykańskich.
-17. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
-18. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
+14. **Multiplayer** ‒ ilość godzin lotu podczas połączenia do serwera multiplayer.
+15. **Swift** ‒ ilość godzin lotu podczas połączenia do swift.
+16. **Duration** ‒ łączny czas trwania lotu w godzinach, jako suma **Day** i **Night**.  **Instrument** jest tutaj nie sumowany, jako że po prostu liczony jest osobno, niezależnie od tego czy był dzień czy noc. **Duration** liczony jest w czasie rzeczywistym, to znaczy, że jeśli przyśpieszysz lub zwolnisz czas symulacji, nie będzie to miało wpływu.
+17. **Distance** ‒ łączny dystans pokonany od startu do lądowania, w milach morskich.
+18. **Fuel** ‒ łączna ilość spalonego paliwa podczas lotu, w galonach amerykańskich.
+19. **Max Alt** ‒ maksymalna wysokość w stopach, osiągnięta podczas lotu.
+20. **Note** ‒ notatki, domyślnie pełna nazwa statku powietrznego.
 
 ## Przeglądanie dziennika
 
