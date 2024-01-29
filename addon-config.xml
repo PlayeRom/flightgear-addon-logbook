@@ -51,7 +51,7 @@ You will find the CSV file in the `$FG_HOME/Export/Addons/org.flightgear.addons.
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
-and on Linux/MacOS:
+and on Linux/macOS:
 
 `/home/{user name}/.fgfs/`
                         </paragraph>

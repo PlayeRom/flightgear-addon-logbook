@@ -27,7 +27,7 @@ You will find the CSV file in the directory `$FG_HOME/Export/Addons/org.flightge
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
-and on Linux/MacOS:
+and on Linux/macOS:
 
 `/home/{user name}/.fgfs/`
 
@@ -181,7 +181,7 @@ Plik CSV znajdziesz w katalogu `$FG_HOME/Export/Addons/org.flightgear.addons.log
 
 `C:\Users\{user name}\AppData\Roaming\flightgear.org\`
 
-pod Linuxem/MacOS-em:
+pod Linuxem/macOS-em:
 
 `/home/{user name}/.fgfs/`
 
