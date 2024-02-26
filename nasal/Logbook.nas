@@ -128,16 +128,17 @@ var Logbook = {
     # @return string - ICAO code or empty
     #
     getStartAirport: func() {
-        var startAirportIcao = getprop("/sim/presets/airport-id");
 
-        # Note: when user will use --lat, --lon then startAirportIcao is an empty string
+        # Try to get nearest airport
+        var maxDistance = me.spaceShuttle.isLaunched()
+            ? 9000  # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
+            : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
+
+        var startAirportIcao = me.airport.getNearestIcao(maxDistance);
+
         if (startAirportIcao == "" or startAirportIcao == nil) {
-            # Try to get nearest airport
-            var maxDistance = me.spaceShuttle.isLaunched()
-                ? 9000  # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
-                : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
-
-            return me.airport.getNearestIcao(maxDistance);
+            # Note: when user will use --lat, --lon then startAirportIcao is an empty string
+            startAirportIcao = getprop("/sim/presets/airport-id");
         }
 
         return startAirportIcao;
