@@ -138,7 +138,7 @@ var Dialog = {
     },
 
     #
-    # @param hash cGroup - Pareent object as ScrollArea widget
+    # @param hash cGroup - Parent object as ScrollArea widget
     # @param string|nil font - Font file name
     # @param int|nil - Font size
     # @param string|nil alignment - Content alignment value

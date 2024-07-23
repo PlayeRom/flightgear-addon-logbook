@@ -63,7 +63,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # @retrun void
+    # @return void
     #
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
         # Add extra column "Type" (as aircraft type) after "Aircraft" column
@@ -92,7 +92,7 @@ var FileMigration = {
                 items[0],            # date
                 items[1],            # time
                 items[2],            # aircraft
-                AircraftType.OTHERS, # aircraftType - we dont know the type, so set "others"
+                AircraftType.OTHERS, # aircraftType - we don't know the type, so set "others"
                 items[3],            # callsign
                 items[4],            # from
                 items[5],            # to
@@ -113,7 +113,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # @retrun void
+    # @return void
     #
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
         # Add extra column "Variant" (as aircraft variant) after "Aircraft" column
@@ -165,7 +165,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # @retrun void
+    # @return void
     #
     migrateToFileVersion_4: func(oldFilePath, newFilePath) {
         # Rename "Landings" to "Landing", add quotes for "Aircraft" column
@@ -217,7 +217,7 @@ var FileMigration = {
     #
     # @param string oldFilePath
     # @param string newFilePath
-    # @retrun void
+    # @return void
     #
     migrateToFileVersion_5: func(oldFilePath, newFilePath) {
         # Add new columns for multiplayer durations

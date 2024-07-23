@@ -307,7 +307,7 @@ var LogData = {
     #
     # Set the max altitude
     #
-    # @param double maxAlt - max altitude in feets
+    # @param double maxAlt - max altitude in feet
     # @return me
     #
     setMaxAlt: func (maxAlt) {

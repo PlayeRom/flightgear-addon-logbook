@@ -150,7 +150,7 @@ var AircraftType = {
     #
     # Serach group of tags
     #
-    # @param hash itemsToSearch - Hash with 2 key "or" and "and" inficated to the vectors of tags.
+    # @param hash itemsToSearch - Hash with 2 key "or" and "and" indicated to the vectors of tags.
     #       Vector of "or" means that this function return true if at least one is found.
     #       Vector of "and" means that this function return true if all of them are found.
     #       Both vectors ("or" and "and") are working with "or" logic.
@@ -179,7 +179,7 @@ var AircraftType = {
     },
 
     #
-    # Manual assignment of the type of known aircrafts
+    # Manual assignment of the type of known aircraft
     #
     # @return string
     #

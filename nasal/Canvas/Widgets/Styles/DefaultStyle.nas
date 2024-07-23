@@ -365,12 +365,12 @@ DefaultStyle.widgets["list-view"] = {
     #
     _createRow: func(model, item, x, y) {
         if (model._isComplexItems) {
-            # model._items is a vactor of hash, each hash has "data" key with vector of strings
+            # model._items is a vector of hash, each hash has "data" key with vector of strings
             me._createComplexRow(model, item, x, y);
             return;
         }
 
-        # model._items is a vactor of strings
+        # model._items is a vector of strings
         me._createSimpleRow(model, item, x, y);
     },
 
@@ -587,7 +587,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param int maxHeight - Max height of conent
+    # @param int maxHeight - Max height of content
     # @return double
     #
     _getHeightItemPadding: func(maxHeight) {

@@ -56,7 +56,7 @@ var CrashDetector = {
     },
 
     #
-    # Check differents values
+    # Check different values
     #
     # @param bool withOrientation - Set false for exclude isOrientationOK,
     #                               needed for space shuttle where pitch is 90 degree for takeoff
@@ -90,7 +90,7 @@ var CrashDetector = {
     },
 
     #
-    # Reutrn true if possible crash occured
+    # Return true if possible crash occurred
     #
     # @param bool onGround
     # @return bool

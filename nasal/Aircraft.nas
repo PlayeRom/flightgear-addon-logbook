@@ -27,11 +27,11 @@ var Aircraft = {
     #
     # @return string
     #
-    getAirctaftPrimary: func() {
-        var dirSplitted = split("/", utf8.substr(getprop("/sim/aircraft-dir"), 0));
-        var length = size(dirSplitted);
+    getAircraftPrimary: func() {
+        var dirSplit = split("/", utf8.substr(getprop("/sim/aircraft-dir"), 0));
+        var length = size(dirSplit);
         if (length > 0) {
-            return dirSplitted[length - 1];
+            return dirSplit[length - 1];
         }
 
         return me.getAircraftId();

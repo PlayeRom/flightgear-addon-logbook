@@ -97,7 +97,7 @@ var File = {
 
     #
     # @param string version
-    # retrun string - full path to file
+    # return string - full path to file
     #
     getPathToFile: func(version) {
         return me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, version);

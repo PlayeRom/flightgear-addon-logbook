@@ -131,7 +131,7 @@ var Logbook = {
 
         # Try to get nearest airport
         var maxDistance = me.spaceShuttle.isLaunched()
-            ? 9000  # Max distance to 9 km, neede by Space Shuttle startd from Launch Pad 39A
+            ? 9000  # Max distance to 9 km, needed by Space Shuttle started from Launch Pad 39A
             : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
 
         return me.airport.getNearestIcao(maxDistance);
@@ -148,7 +148,7 @@ var Logbook = {
         me.initAltAglThreshold();
 
         if (!me.onGround and !me.spaceShuttle.isPreLaunch()) {
-            # We start in air, start logging immediatly
+            # We start in air, start logging immediately
             me.startLogging();
         }
 
@@ -158,7 +158,7 @@ var Logbook = {
     },
 
     #
-    # Initialize alitutde AGL threshold
+    # Initialize altitude AGL threshold
     #
     # @return void
     #
@@ -199,12 +199,12 @@ var Logbook = {
 
         if (me.landingGear.checkWow(me.onGround) and !me.crashDetector.isCrash(false)) {
             if (me.onGround) {
-                # Our state is on the ground and all wheels are in the air - we have takte-off
+                # Our state is on the ground and all wheels are in the air - we have take-off
                 me.wowSec += 1;
                 logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me.wowSec);
                 if (me.wowSec > 2) {
-                    # We recognise that we taken off after testing WoW for 3 seconds.
-                    # This is to not recognise the takeoff when we bounce off the ground.
+                    # We recognize that we taken off after testing WoW for 3 seconds.
+                    # This is to not recognize the takeoff when we bounce off the ground.
                     me.startLogging();
                     me.wowSec = 0;
                 }
@@ -214,8 +214,8 @@ var Logbook = {
                 me.wowSec += 1;
                 logprint(MY_LOG_LEVEL, "Logbook Add-on - landing detected, wowSec = ", me.wowSec);
                 if (me.wowSec > 2) {
-                    # We recognise that we landed after maintaining WoW for 3 seconds.
-                    # This is to not recognise the landing when we bounce off the ground.
+                    # We recognize that we landed after maintaining WoW for 3 seconds.
+                    # This is to not recognize the landing when we bounce off the ground.
                     me.stopLogging(true);
                     me.wowSec = 0;
                 }
@@ -256,7 +256,7 @@ var Logbook = {
         me.logData = LogData.new();
         me.logData.setDate(me.environment.getDateString());
         me.logData.setTime(me.environment.getTimeString());
-        me.logData.setAircraft(me.aircraft.getAirctaftPrimary());
+        me.logData.setAircraft(me.aircraft.getAircraftPrimary());
         me.logData.setVariant(aircraftId);
         me.logData.setAircraftType(me.aircraftType);
         me.logData.setNote(getprop("/sim/description"));
@@ -293,7 +293,7 @@ var Logbook = {
         me.recovery.stop();
         me.crashDetector.stopGForce();
 
-        # Some aircrafts report a correct landing despite landing on a ridge, so we do an additional crash check
+        # Some aircraft report a correct landing despite landing on a ridge, so we do an additional crash check
         if (landed and me.crashDetector.isCrash()) {
             crashed = true; # force crash state
         }

@@ -74,7 +74,7 @@ var SpaceShuttle = {
     },
 
     #
-    # Return true if the Shuttle carshed or any gear is broken.
+    # Return true if the Shuttle crashed or any gear is broken.
     #
     # @return bool
     #

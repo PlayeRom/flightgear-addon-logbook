@@ -291,7 +291,7 @@ Struktura właściwości, którą należy przekazać do FlightGeara, wygląda na
 </PropertyList>
 ```
 
-Każdy znacznik `<landing-gear-idx>` powinien zawierać liczbę całkowitą wskazujacą na indeks tablicy `/gear/gear`. Zatem `<landing-gear-idx>` z wartościami 12 i 13, wskazują że statek powietrzny używa `/gear/gear[12]` oraz `/gear/gear[13]`.
+Każdy znacznik `<landing-gear-idx>` powinien zawierać liczbę całkowitą wskazującą na indeks tablicy `/gear/gear`. Zatem `<landing-gear-idx>` z wartościami 12 i 13, wskazują że statek powietrzny używa `/gear/gear[12]` oraz `/gear/gear[13]`.
 
 Właściwości te można przekazać na wiele sposób, np. poprzez umieszczenie ich w plikach statku powietrznego, albo poprzez użycie opcji wiersza poleceń:
 

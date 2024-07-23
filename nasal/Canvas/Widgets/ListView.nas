@@ -152,7 +152,7 @@ gui.widgets.ListView = {
         # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
         me._isUseTextMaxWidth = 0;
 
-        # If it's set on true, then ListView widget was recognized items as a complex structure with multicolumns
+        # If it's set on true, then ListView widget was recognized items as a complex structure with multi-columns
         me._isComplexItems = 0;
 
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
@@ -330,7 +330,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # Enable disaplying "Loading..." text instead of list. For set the "Loading..." text on the center of list view
+    # Enable displaying "Loading..." text instead of list. For set the "Loading..." text on the center of list view
     # please call setMaxRows first.
     #
     # @return me
@@ -342,7 +342,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # Disable disaplying "Loading..." text and redraw content for displaying list
+    # Disable displaying "Loading..." text and redraw content for displaying list
     #
     # @return me
     #

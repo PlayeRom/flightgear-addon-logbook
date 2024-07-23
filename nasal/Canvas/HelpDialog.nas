@@ -71,7 +71,7 @@ var HelpDialog = {
     },
 
     #
-    # Reszie collback from parent Dialog
+    # Resize callback from parent Dialog
     #
     # @param int width
     # @return void

@@ -42,7 +42,7 @@ var LandingGear = {
     # Recognize and count landing gears if possible
     #
     # @param bool onGround - If true then aircraft start on the ground, otherwise in air
-    # @return int - nuber of found wheels/landing gears
+    # @return int - number of found wheels/landing gears
     #
     recognizeGears: func(onGround) {
         me.resetLandingWithNoGearRecognized();
