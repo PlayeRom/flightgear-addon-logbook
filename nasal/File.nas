@@ -236,7 +236,7 @@ var File = {
 
     #
     # Check that file already exists.
-    # From FG 2020.4 (next) we have io.exists() but for older versions we have to write it ourselves.
+    # From FG 2024.x we have io.exists() but for older versions we have to write it ourselves.
     #
     # @param string path
     # @return bool

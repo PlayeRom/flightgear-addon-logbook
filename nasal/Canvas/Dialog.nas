@@ -79,7 +79,7 @@ var Dialog = {
         window.del = func() {
             # This method will be call after click on (X) button in canvas top
             # bar and here we want hide the window only.
-            # FG next version provide destroy_on_close, but for 2020.3.x it's
+            # FG 2024.x version provide destroy_on_close, but for 2020.3.x it's
             # unavailable, so we are handling it manually by this trick.
             call(Dialog.hide, [], self);
         };

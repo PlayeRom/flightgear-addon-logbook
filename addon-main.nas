@@ -63,8 +63,8 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Sound",
     ];
 
-    if (!isFGNextVersion()) {
-        # Nasal in next version is support `true` and `false` keywords but previous FG versions not,
+    if (!isFG2024Version()) {
+        # Nasal in 2024.x version is support `true` and `false` keywords but previous FG versions not,
         # so for them add Boolean.nas file
         append(modules, "Boolean");
     }
@@ -84,12 +84,12 @@ var loadExtraNasalFiles = func(addon) {
 };
 
 #
-# @return bool Return true if running on FG version 2020.4 (next branch)
+# @return bool Return true if running on FG version 2024.x
 #
-var isFGNextVersion = func() {
+var isFG2024Version = func() {
     var fgversion = getprop("/sim/version/flightgear");
     var (major, minor, patch) = split(".", fgversion);
-    return major >= 2020 and minor >= 4;
+    return major >= 2024;
 }
 
 #
