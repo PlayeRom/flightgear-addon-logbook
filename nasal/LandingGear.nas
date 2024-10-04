@@ -24,7 +24,7 @@ var LandingGear = {
     # @param node|null addonHintsNode - reference to "/sim/addon-hints/Logbook" node or null
     # @return me
     #
-    new: func (addonHintsNode) {
+    new: func(addonHintsNode) {
         var me = { parents: [LandingGear] };
 
         me.gearIndexes = [];

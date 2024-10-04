@@ -34,7 +34,7 @@ var AircraftType = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [AircraftType] };
 
         me.tagsNode = props.globals.getNode("/sim/tags");
@@ -85,8 +85,8 @@ var AircraftType = {
             var aircraftId = Aircraft.getAircraftId();
             if (aircraftId == "dhc6") {
                 var desc = getprop("/sim/description");
-                if (string.match(desc, "*Wheels") or
-                    string.match(desc, "*Skis")
+                if (   string.match(desc, "*Wheels")
+                    or string.match(desc, "*Skis")
                 ) {
                     return AircraftType.TURBOPROP;
                 }
@@ -117,22 +117,22 @@ var AircraftType = {
             return AircraftType.BIZJET;
         }
 
-        if (me.searchTag({"or" : ["jet", "turbojet"], "and" : ["passenger", "4-engine"]}) or
-            me.searchTag({"or" : [],                  "and" : ["passenger", "four-engine"]}) or
-            me.searchTag({"or" : [],                  "and" : ["passenger", "6-engine"]}) or
-            me.searchTag({"or" : [],                  "and" : ["passenger", "six-engine"]})
+        if (   me.searchTag({"or" : ["jet", "turbojet"], "and" : ["passenger", "4-engine"]})
+            or me.searchTag({"or" : [],                  "and" : ["passenger", "four-engine"]})
+            or me.searchTag({"or" : [],                  "and" : ["passenger", "6-engine"]})
+            or me.searchTag({"or" : [],                  "and" : ["passenger", "six-engine"]})
         ) {
             return AircraftType.AIRLINER;
         }
 
-        if (me.searchTag({"or" : [], "and" : ["piston", "single-engine"]}) or
-            me.searchTag({"or" : [], "and" : ["piston", "1-engine"]}) or
-            me.searchTag({"or" : [], "and" : ["propeller", "single-engine"]}) or
-            me.searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
+        if (   me.searchTag({"or" : [], "and" : ["piston", "single-engine"]})
+            or me.searchTag({"or" : [], "and" : ["piston", "1-engine"]})
+            or me.searchTag({"or" : [], "and" : ["propeller", "single-engine"]})
+            or me.searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
         ) {
             var aircraftId = Aircraft.getAircraftId();
-            if (string.match(aircraftId, "*-float") or # for c172p
-                string.match(aircraftId, "*-amphibious")
+            if (   string.match(aircraftId, "*-float") # for c172p
+                or string.match(aircraftId, "*-amphibious")
             ) {
                 return AircraftType.SEAPLANE;
             }
@@ -186,17 +186,17 @@ var AircraftType = {
     manualSelection: func() {
         var aircraftId = Aircraft.getAircraftId();
 
-        if (substr(aircraftId, 0, 5) == "ask21" or # ask21, ask21mi, ask21-jsb, ask21mi-jsb
-            aircraftId == "Perlan2" or
-            aircraftId == "horsa" or
-            aircraftId == "bocian" or
-            aircraftId == "sportster"
+        if (substr(aircraftId, 0, 5) == "ask21" # ask21, ask21mi, ask21-jsb, ask21mi-jsb
+            or aircraftId == "Perlan2"
+            or aircraftId == "horsa"
+            or aircraftId == "bocian"
+            or aircraftId == "sportster"
         ) {
             return AircraftType.GLIDER;
         }
 
-        if (string.match(aircraftId, "Embraer[0-9][0-9][0-9]") or # Embraer170, Embraer175, Embraer190, Embraer195
-            aircraftId == "EmbraerLineage1000"
+        if (string.match(aircraftId, "Embraer[0-9][0-9][0-9]") # Embraer170, Embraer175, Embraer190, Embraer195
+            or aircraftId == "EmbraerLineage1000"
         ) {
             return AircraftType.AIRLINER;
         }

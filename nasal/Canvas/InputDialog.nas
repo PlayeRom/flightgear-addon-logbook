@@ -238,7 +238,9 @@ var InputDialog = {
     #
     validate: func(value) {
         for (var i = 0; i < size(value); i += 1) {
-            if (value[i] == `,` or value[i] == `"`) { #"# <- Fix syntax coloring in Visual Code
+            if (   value[i] == `,`
+                or value[i] == `"` #"# <- Fix syntax coloring in Visual Code
+            ) {
                 gui.popupTip("Please don't use `,` and `\"` as these are special characters for the CSV file.");
                 return false;
             }
@@ -276,20 +278,22 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (me.header == "Landing" or me.header == "Crash") {
+        else if (  me.header == "Landing" 
+                or me.header == "Crash"
+        ) {
             if (!me.validateBoolean(value)) {
                 gui.popupTip("The allowed value are 1 or 0 (or empty).");
                 return false;
             }
         }
-        else if (me.header == "Day" or
-                 me.header == "Night" or
-                 me.header == "Instrument" or
-                 me.header == "Multiplayer" or
-                 me.header == "Swift" or
-                 me.header == "Duration" or
-                 me.header == "Distance" or
-                 me.header == "Fuel"
+        else if (   me.header == "Day"
+                 or me.header == "Night"
+                 or me.header == "Instrument"
+                 or me.header == "Multiplayer"
+                 or me.header == "Swift"
+                 or me.header == "Duration"
+                 or me.header == "Distance"
+                 or me.header == "Fuel"
         ) {
             if (!me.validateDecimal(value)) {
                 gui.popupTip("The allowed value is decimal number.");
@@ -328,7 +332,9 @@ var InputDialog = {
     #
     validateVariant: func(value) {
         for (var i = 0; i < size(value); i += 1) {
-            if (value[i] == `.` or value[i] == ` `) {
+            if (   value[i] == `.` 
+                or value[i] == ` `
+            ) {
                 return false;
             }
         }
@@ -355,7 +361,9 @@ var InputDialog = {
     # @return bool
     #
     validateBoolean: func(value) {
-        return value == "1" or value == "0" or value == "";
+        return value == "1" 
+            or value == "0" 
+            or value == "";
     },
 
     #

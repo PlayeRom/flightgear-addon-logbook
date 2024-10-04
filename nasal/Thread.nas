@@ -19,7 +19,7 @@ var Thread = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         return {
             parents     : [Thread],
             timer       : nil,

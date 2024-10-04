@@ -20,7 +20,7 @@ var SpaceShuttle = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [SpaceShuttle] };
 
         me.preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
@@ -79,8 +79,8 @@ var SpaceShuttle = {
     # @return bool
     #
     isCrashed: func() {
-        return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false) or
-                me.isGearBroken();
+        return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false)
+            or me.isGearBroken();
     },
 
     #
@@ -89,8 +89,8 @@ var SpaceShuttle = {
     # @return bool
     #
     isGearBroken: func() {
-        return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0 or
-               getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0 or
-               getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0
+        return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0
+            or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0
+            or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0
     },
 };

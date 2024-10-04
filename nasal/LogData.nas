@@ -18,7 +18,7 @@ var LogData = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [LogData] };
 
         me.date         = "";    # Take-off date (real)
@@ -51,7 +51,7 @@ var LogData = {
     # @param string date - Take-off date
     # @return me
     #
-    setDate: func (date) {
+    setDate: func(date) {
         me.date = date;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setDate = ", date);
 
@@ -73,7 +73,7 @@ var LogData = {
     # @param string time - Take-off time
     # @return me
     #
-    setTime: func (time) {
+    setTime: func(time) {
         me.time = time;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setTime = ", time);
 
@@ -86,7 +86,7 @@ var LogData = {
     # @param string aircraft
     # @return me
     #
-    setAircraft: func (aircraft) {
+    setAircraft: func(aircraft) {
         me.aircraft = aircraft;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
 
@@ -99,7 +99,7 @@ var LogData = {
     # @param string aircraftId
     # @return me
     #
-    setVariant: func (aircraftId) {
+    setVariant: func(aircraftId) {
         me.variant = aircraftId;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setVariant = ", me.variant);
 
@@ -112,7 +112,7 @@ var LogData = {
     # @param string type
     # @return me
     #
-    setAircraftType: func (type) {
+    setAircraftType: func(type) {
         me.aircraftType = type;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraftType);
 
@@ -284,7 +284,7 @@ var LogData = {
     # @param double distance - distance traveled during the flight in nautical miles
     # @return me
     #
-    setDistance: func (distance) {
+    setDistance: func(distance) {
         me.distance = distance;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setDistance = ", distance);
 
@@ -297,7 +297,7 @@ var LogData = {
     # @param double fuel - amount of fuel used
     # @return me
     #
-    setFuel: func (fuel) {
+    setFuel: func(fuel) {
         me.fuel = fuel;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setFuel = ", fuel);
 
@@ -310,7 +310,7 @@ var LogData = {
     # @param double maxAlt - max altitude in feet
     # @return me
     #
-    setMaxAlt: func (maxAlt) {
+    setMaxAlt: func(maxAlt) {
         me.maxAlt = maxAlt;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxAlt = ", maxAlt);
 
@@ -323,7 +323,7 @@ var LogData = {
     # @param string note - note
     # @return me
     #
-    setNote: func (note) {
+    setNote: func(note) {
         me.note = me.getCsvSafeText(note);
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", me.note);
 

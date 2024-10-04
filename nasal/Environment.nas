@@ -24,7 +24,7 @@ var Environment = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [
             Environment,
             BaseCounter.new(
@@ -95,7 +95,7 @@ var Environment = {
     # @param double diffElapsedSec
     # @return void
     #
-    onUpdate: func (diffElapsedSec) {
+    onUpdate: func(diffElapsedSec) {
         me.isNight()
             ? (me.nightCounter += diffElapsedSec)
             : (me.dayCounter   += diffElapsedSec);
@@ -116,9 +116,9 @@ var Environment = {
     # @return bool
     #
     isNight: func() {
-        return me.propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD and
-               me.propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD and
-               me.propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
+        return  me.propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD 
+            and me.propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD 
+            and me.propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
     },
 
     #
@@ -127,8 +127,8 @@ var Environment = {
     # @return bool
     #
     isIMC: func() {
-        return me.propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY or
-               me.propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
+        return me.propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY
+            or me.propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
     },
 
     #

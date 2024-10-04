@@ -24,7 +24,7 @@ var CrashDetector = {
     # @param hash spaceShuttle - SpaceShuttle object
     # @return me
     #
-    new: func (spaceShuttle) {
+    new: func(spaceShuttle) {
         var me = { parents: [CrashDetector] };
 
         me.spaceShuttle = spaceShuttle;
@@ -63,12 +63,12 @@ var CrashDetector = {
     # @return bool
     #
     isCrash: func(withOrientation = 1) {
-        return (withOrientation and !me.isOrientationOK()) or
-            me.isGForceAbnormal() or
-            me.isSimCrashedFlag() or
-            me.isC172PBrokenGear() or
-            me.isC172PBrokenWing() or
-            me.spaceShuttle.isCrashed();
+        return (withOrientation and !me.isOrientationOK())
+            or me.isGForceAbnormal()
+            or me.isSimCrashedFlag()
+            or me.isC172PBrokenGear()
+            or me.isC172PBrokenWing()
+            or me.spaceShuttle.isCrashed();
     },
 
     #
@@ -110,11 +110,11 @@ var CrashDetector = {
 
         var aircraftCoord = geo.aircraft_position();
 
-        if (me.lastAircraftCoord != nil and
-            me.lastAircraftAltAgl != nil and
-            sprintf("%.5f", aircraftCoord.lat()) == sprintf("%.5f", me.lastAircraftCoord.lat()) and
-            sprintf("%.5f", aircraftCoord.lon()) == sprintf("%.5f", me.lastAircraftCoord.lon()) and
-            sprintf("%.2f", getprop("/position/altitude-agl-ft")) == sprintf("%.2f", me.lastAircraftAltAgl)
+        if (me.lastAircraftCoord != nil
+            and me.lastAircraftAltAgl != nil
+            and sprintf("%.5f", aircraftCoord.lat()) == sprintf("%.5f", me.lastAircraftCoord.lat())
+            and sprintf("%.5f", aircraftCoord.lon()) == sprintf("%.5f", me.lastAircraftCoord.lon())
+            and sprintf("%.2f", getprop("/position/altitude-agl-ft")) == sprintf("%.2f", me.lastAircraftAltAgl)
         ) {
             # The position and altitude relative to the ground is exactly the same,
             # I assume that even an outstanding helicopter pilot in hover makes a tiny difference :)
@@ -135,8 +135,8 @@ var CrashDetector = {
     # @return bool
     #
     isOrientationOK: func() {
-        return math.abs(getprop("/orientation/roll-deg"))  < 30 and
-               math.abs(getprop("/orientation/pitch-deg")) < 30;
+        return  math.abs(getprop("/orientation/roll-deg"))  < 30
+            and math.abs(getprop("/orientation/pitch-deg")) < 30;
     },
 
     #
@@ -168,9 +168,8 @@ var CrashDetector = {
             return false;
         }
 
-        return
-            me.propWingLeft.getValue()  >= 1.0 or
-            me.propWingRight.getValue() >= 1.0;
+        return me.propWingLeft.getValue()  >= 1.0
+            or me.propWingRight.getValue() >= 1.0;
     },
 
     #

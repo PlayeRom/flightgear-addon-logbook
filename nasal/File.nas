@@ -62,7 +62,7 @@ var File = {
     # @param hash filters - Filters object
     # @return me
     #
-    new: func (addon, filters) {
+    new: func(addon, filters) {
         var me = {
             parents : [File],
             addon   : addon,
@@ -398,7 +398,7 @@ var File = {
             # We have not used the thread here, but we must point out that it has ended
             g_isThreadPending = false;
 
-            call(me.callback, [me.loadedData, me.withHeaders], me.objCallback);
+            me.loadDataRangeThreadFinish();
         }
         else {
             # Run more complex loop with filters in a separate thread

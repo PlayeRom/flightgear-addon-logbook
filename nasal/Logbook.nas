@@ -244,7 +244,8 @@ var Logbook = {
         }
 
         var aircraftId = me.aircraft.getAircraftId();
-        if (aircraftId == "ufo" or aircraftId == "mibs") {
+
+        if (me.aircraft.isUfo(aircraftId)) {
             # We don't log UFO, FG Video Assistant
             return;
         }

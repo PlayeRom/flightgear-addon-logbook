@@ -19,7 +19,7 @@ var FileMigration = {
     # @param hash file - File object
     # @return me
     #
-    new: func (file) {
+    new: func(file) {
         var me = { parents: [FileMigration] };
 
         me.file = file;

@@ -319,7 +319,7 @@ DefaultStyle.widgets["list-view"] = {
             me._createRow(model, item, x, y);
 
             # TODO: event listeners should be move to model
-            func () {
+            func() {
                 var innerIndex = index;
                 me._itemElements[innerIndex].group.addEventListener("mouseenter", func {
                     if (model._highlightingRowIndex != innerIndex) {
@@ -428,7 +428,7 @@ DefaultStyle.widgets["list-view"] = {
         if (model._isUseTextMaxWidth) {
             var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), "temp");
             forindex (var columnIndex; me._columnsWidth) {
-                if (item["types"] == nil or (item["types"] != nil and item.types[columnIndex] == "string")) {
+                if (item["types"] == nil or item.types[columnIndex] == "string") {
                     # If item has not declared "type" then assume that it's a string
                     tempText
                         .setText(item.data[columnIndex])
@@ -457,7 +457,7 @@ DefaultStyle.widgets["list-view"] = {
         forindex (var columnIndex; me._columnsWidth) {
             var columnWidth = me._getColumnWidth(columnIndex);
 
-            if (item["types"] == nil or (item["types"] != nil and item.types[columnIndex] == "string")) {
+            if (item["types"] == nil or item.types[columnIndex] == "string") {
                 var text = me._createText(model, hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
                 if (model._isUseTextMaxWidth) {
                     text.setMaxWidth(columnWidth);
@@ -465,7 +465,7 @@ DefaultStyle.widgets["list-view"] = {
 
                 append(hash.elem, text);
             }
-            else if (item["types"] != nil and item.types[columnIndex] == "image") {
+            else if (item.types[columnIndex] == "image") {
                 var image = hash.group.createChild("image")
                     .setFile(item.data[columnIndex])
                     .setTranslation(x, me._getHeightItemPadding(hash.maxHeight) / 2)
@@ -571,17 +571,9 @@ DefaultStyle.widgets["list-view"] = {
     # @return int
     #
     _getTextYOffset: func() {
-        if (me._fontSize == 12) {
-            return 16;
-        }
-
-        if (me._fontSize == 14) {
-            return 17;
-        }
-
-        if (me._fontSize == 16) {
-            return 18;
-        }
+             if (me._fontSize == 12) return 16;
+        else if (me._fontSize == 14) return 17;
+        else if (me._fontSize == 16) return 18;
 
         return 0;
     },

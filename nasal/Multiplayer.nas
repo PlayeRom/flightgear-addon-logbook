@@ -18,7 +18,7 @@ var Multiplayer = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [
             Multiplayer,
             BaseCounter.new(
@@ -52,7 +52,7 @@ var Multiplayer = {
     # @param double diffElapsedSec
     # @return void
     #
-    onUpdate: func (diffElapsedSec) {
+    onUpdate: func(diffElapsedSec) {
         if (me.isMultiplayerOnline()) {
             me.multiplayerCounter += diffElapsedSec;
         }

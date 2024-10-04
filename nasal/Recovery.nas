@@ -26,7 +26,7 @@ var Recovery = {
     # @param file - File object
     # @return me
     #
-    new: func (addon, file) {
+    new: func(addon, file) {
         var me = {
             parents     : [Recovery],
             file        : file,

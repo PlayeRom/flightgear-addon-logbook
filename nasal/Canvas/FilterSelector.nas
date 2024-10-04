@@ -29,7 +29,7 @@ var FilterSelector = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         var me = { parents: [
             FilterSelector,
             Dialog.new(

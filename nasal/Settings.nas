@@ -25,7 +25,7 @@ var Settings = {
     # @param hash addon - addons.Addon object
     # @return me
     #
-    new: func (addon) {
+    new: func(addon) {
         var me = { parents: [Settings] };
 
         me.file = addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);

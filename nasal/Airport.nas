@@ -18,7 +18,7 @@ var Airport = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         return { parents: [Airport] };
     },
 

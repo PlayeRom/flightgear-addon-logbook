@@ -635,10 +635,10 @@ var LogbookDialog = {
     handleSelectedRowAfterReloadData: func() {
         # Check if the selected row should still be selected.
         var highlightedIndex = me.listView.getHighlightingRow();
-        if (highlightedIndex == nil or
-            highlightedIndex < 0 or
-            highlightedIndex >= size(me.data) or
-            me.data[highlightedIndex].allDataIndex != me.allDataIndexSelected
+        if (   highlightedIndex == nil
+            or highlightedIndex < 0
+            or highlightedIndex >= size(me.data)
+            or me.data[highlightedIndex].allDataIndex != me.allDataIndexSelected
         ) {
             me.listView.removeHighlightingRow();
         }

@@ -332,9 +332,9 @@ var DetailsDialog = {
     # @return string
     #
     addCommaSeparator: func(column, value) {
-        if (column == File.INDEX_DISTANCE or
-            column == File.INDEX_FUEL or
-            column == File.INDEX_MAX_ALT
+        if (   column == File.INDEX_DISTANCE
+            or column == File.INDEX_FUEL
+            or column == File.INDEX_MAX_ALT
         ) {
             return me.getValueWithCommaSeparator(value);
         }

@@ -18,7 +18,7 @@ var Aircraft = {
     #
     # @return me
     #
-    new: func () {
+    new: func() {
         return { parents: [Aircraft] };
     },
 
@@ -85,5 +85,16 @@ var Aircraft = {
         }
 
         return aircraft;
+    },
+
+    #
+    # Return true when aircraftId is UFO or FG Video Assistant
+    #
+    # @param string aircraftId
+    # @return bool
+    #
+    isUfo: func(aircraftId) {
+        return aircraftId == "ufo" 
+            or aircraftId == "mibs";
     },
 };

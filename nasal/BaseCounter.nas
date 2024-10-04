@@ -20,7 +20,7 @@ var BaseCounter = {
     # @param func onUpdate
     # @return me
     #
-    new: func (onResetCounters, onUpdate) {
+    new: func(onResetCounters, onUpdate) {
         var me = { parents: [BaseCounter] };
 
         me.onResetCountersCallback = onResetCounters;
@@ -54,7 +54,7 @@ var BaseCounter = {
     #
     # @return void
     #
-    update: func () {
+    update: func() {
         if (!me.isRunning) {
             return;
         }
