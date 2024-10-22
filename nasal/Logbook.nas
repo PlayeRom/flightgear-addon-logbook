@@ -67,7 +67,7 @@ var Logbook = {
 
         setlistener("/sim/signals/fdm-initialized", func(node) {
             # This listener will be called after first run the sim and every time after reposition the aircraft
-            # (by changeing the airport or start in the air in the sim) and after restart the sim
+            # (by changing the airport or start in the air in the sim) and after restart the sim
             logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
 
             if (node.getBoolValue()) {
