@@ -68,6 +68,13 @@ var Aircraft = {
         var hangarPatterns = [
             "org.flightgear.fgaddon.stable_????.*",
             "org.flightgear.fgaddon.trunk.*",
+            "de.djgummikuh.hangar.octal450.*",
+            "de.djgummikuh.hangar.fgmembers.*",
+            "de.djgummikuh.hangar.oprf.*",
+            "de.djgummikuh.hangar.*",
+            "com.gitlab.fg_shfsn.hangar.*",
+            "www.daveshangar.org.*",
+            "www.seahorsecorral.org.*",
         ];
 
         foreach (var pattern; hangarPatterns) {
@@ -94,7 +101,7 @@ var Aircraft = {
     # @return bool
     #
     isUfo: func(aircraftId) {
-        return aircraftId == "ufo" 
+        return aircraftId == "ufo"
             or aircraftId == "mibs";
     },
 };
