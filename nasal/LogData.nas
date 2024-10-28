@@ -39,7 +39,7 @@ var LogData = {
         me.duration     = 0.0;   # Total flight time as sum of day and night (hours)
         me.distance     = 0.0;   # The distance traveled during the flight in nautical miles
         me.fuel         = 0.0;   # Amount of fuel used in US gallons
-        me.maxAlt       = 0.0;   # The maximum altitude reached during the flight in feets
+        me.maxAlt       = 0.0;   # The maximum altitude reached during the flight in feet
         me.note         = "";    # Full aircraft name as default
 
         return me;

@@ -200,7 +200,7 @@ var DetailsDialog = {
     },
 
     #
-    # Perapre columns data for ListView
+    # Prepare columns data for ListView
     #
     # @param vector data
     # @return vector
@@ -347,10 +347,10 @@ var DetailsDialog = {
     # @return string
     #
     getValueWithCommaSeparator: func(value) {
-        var splitted   = split(".", value);
-        var strToCheck = splitted[0];
-        var newValue   = strToCheck;
-        var length     = size(strToCheck);
+        var numberParts = split(".", value);
+        var strToCheck  = numberParts[0];
+        var newValue    = strToCheck;
+        var length      = size(strToCheck);
         if (length > 3) {
             newValue = "";
             var modulo = math.mod(length, 3);
@@ -367,8 +367,8 @@ var DetailsDialog = {
             }
         }
 
-        if (size(splitted) == 2) {
-            return newValue ~ "." ~ splitted[1];
+        if (size(numberParts) == 2) {
+            return newValue ~ "." ~ numberParts[1];
         }
 
         return newValue;

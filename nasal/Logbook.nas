@@ -113,7 +113,7 @@ var Logbook = {
     },
 
     #
-    # Uninitialize Logbook module
+    # Destructor
     #
     # @return void
     #

@@ -16,7 +16,7 @@ var CrashDetector = {
     #
     # Constants
     #
-    GFORCE_INTERVAL : 0.2,
+    G_FORCE_INTERVAL: 0.2,
 
     #
     # Constructor
@@ -39,9 +39,9 @@ var CrashDetector = {
         me.propGForce = props.globals.getNode("/accelerations/pilot-gdamped");
         me.lastGForces = std.Vector.new();
 
-        me.timerGForce = maketimer(CrashDetector.GFORCE_INTERVAL, me, me.gForceCallback);
+        me.timerGForce = maketimer(CrashDetector.G_FORCE_INTERVAL, me, me.gForceCallback);
 
-        me.maxGForceSize = int(12 * (1 / CrashDetector.GFORCE_INTERVAL)); # from last 12 seconds
+        me.maxGForceSize = int(12 * (1 / CrashDetector.G_FORCE_INTERVAL)); # from last 12 seconds
 
         return me;
     },

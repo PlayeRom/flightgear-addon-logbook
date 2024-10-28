@@ -43,7 +43,7 @@ var Recovery = {
     },
 
     #
-    # Uninitialize Recovery module
+    # Destructor
     #
     # @return void
     #

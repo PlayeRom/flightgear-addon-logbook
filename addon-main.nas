@@ -85,8 +85,8 @@ var loadExtraNasalFiles = func(addon) {
 # @return bool  Return true if running on FG version 2024.x and later
 #
 var isFG2024Version = func() {
-    var fgversion = getprop("/sim/version/flightgear");
-    var (major, minor, patch) = split(".", fgversion);
+    var fgVersion = getprop("/sim/version/flightgear");
+    var (major, minor, patch) = split(".", fgVersion);
     return major >= 2024;
 }
 

@@ -236,8 +236,8 @@ var LandingGear = {
     # @return bool - Return true if drag force detected.
     #
     isFloatsDragOnWater: func() {
-        var fdragLbs = getprop("/fdm/jsbsim/hydro/fdrag-lbs");
-        return fdragLbs != nil and fdragLbs > 0;
+        var fDragLbs = getprop("/fdm/jsbsim/hydro/fdrag-lbs");
+        return fDragLbs != nil and fDragLbs > 0;
     },
 
     #
