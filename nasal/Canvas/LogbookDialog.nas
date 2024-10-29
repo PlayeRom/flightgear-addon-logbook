@@ -119,6 +119,12 @@ var LogbookDialog = {
                 var index = getprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index");
                 if (me.storage.deleteLog(index)) {
                     me.listView.enableLoading();
+
+                    if (me.storage.isStorageSQLite()) {
+                        # Get signal to reload data
+                        setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
+                        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+                    }
                 }
             }
         }));
@@ -135,6 +141,11 @@ var LogbookDialog = {
 
                 if (me.storage.editData(index, header, value)) {
                     me.listView.enableLoading();
+
+                    if (me.storage.isStorageSQLite()) {
+                        # Get signal to reload data
+                        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+                    }
                 }
             }
         }));
@@ -341,13 +352,14 @@ var LogbookDialog = {
     },
 
     #
-    # @param int filterId
-    # @param string value
+    # @param  int  columnIndex
+    # @param  string  dbColumnName
+    # @param  string  value
     # @return void
     #
-    filterSelectorCallback: func(filterId, value) {
+    filterSelectorCallback: func(columnIndex, dbColumnName, value) {
         me.detailsDialog.hide();
-        me.reloadData(true, FilterData.new(filterId, value));
+        me.reloadData(true, FilterData.new(columnIndex, dbColumnName, value));
     },
 
     #

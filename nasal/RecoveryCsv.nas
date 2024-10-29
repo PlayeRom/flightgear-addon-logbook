@@ -10,10 +10,10 @@
 #
 
 #
-# The Recovery class saves the current flight status to a separate file every minute.
+# The RecoveryCsv class saves the current flight status to a separate file every minute.
 # When FG crashes, the recovery file data will be rewritten to the main log file on restart.
 #
-var Recovery = {
+var RecoveryCsv = {
     #
     # Constants
     #
@@ -28,13 +28,14 @@ var Recovery = {
     #
     new: func(addon, storage) {
         var me = {
-            parents     : [Recovery],
+            parents     : [RecoveryCsv],
             storage     : storage,
             objCallback : nil,
             callback    : nil,
+            recordId    : nil, # not used for CSV, but needed to unify calls with SQLite
         };
 
-        me.filePath = addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, StorageCsv.FILE_VERSION);
+        me.filePath = addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
         me.timer    = maketimer(60, me, me.update);
 
         me.restore();
@@ -88,7 +89,7 @@ var Recovery = {
     #
     save: func(logData) {
         var file = io.open(me.filePath, "w");
-        me.storage.saveItem(file, logData);
+        me.storage.addItem(logData, file);
         io.close(file);
     },
 
@@ -119,7 +120,7 @@ var Recovery = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me.storage.saveData(logData, true);
+                me.storage.saveLogData(logData, nil, true);
 
                 me.clear();
             }

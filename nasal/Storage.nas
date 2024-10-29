@@ -10,7 +10,7 @@
 #
 
 #
-# Storage facade class to save logbook data
+# Storage facade class to save logbook data to CSV or SQLite, depend of FG version
 #
 var Storage = {
     #
@@ -25,30 +25,63 @@ var Storage = {
             parents : [Storage],
             addon   : addon,
             filters : filters,
-            handler : StorageCsv.new(addon, filters),
         };
+
+        # TODO: drop support for StorageCsv when 2024 will be widely used
+        me.handler = Utils.isFG2024Version()
+            ? StorageSQLite.new(addon, filters)
+            : StorageCsv.new(addon, filters);
 
         return me;
     },
 
     #
-    # Store log data to logbook file
+    # Destructor
     #
-    # @param hash logData - LogData object
-    # @param bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
     # @return void
     #
-    saveData: func(logData, onlyIO = 0) {
-        me.handler.saveData(logData, onlyIO);
+    del: func() {
+        me.handler.del();
     },
 
     #
-    # @param hash file - file handler
+    # @return True if Storage is working on SQLite DB, if on a CSV file then false
+    #
+    isStorageSQLite: func() {
+        return me.handler.parents[0] == StorageSQLite;
+    },
+
+    #
+    # Store log data to logbook file/DB
+    #
+    # @param  hash  logData  LogData object
+    # @param  int  id|nill  Record ID for SQLite storage
+    # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
+    #                       without rest of stuff (used only for CSV recovery)
+    # @return void
+    #
+    saveLogData: func(logData, id = nil, onlyIO = 0) {
+        me.handler.saveLogData(logData, id, onlyIO);
+    },
+
+    #
+    # @param hash handler|nil - file/db handler, if nil the internal storage handler will be used
     # @param hash logData - LogData object
     # @return void
     #
-    saveItem: func(file, logData) {
-        me.handler.saveItem(file, logData);
+    addItem: func(logData, handler = nil) {
+        me.handler.addItem(logData, handler);
+    },
+
+    #
+    # @param  hash  logData  LogData object
+    # @param  int  id  Record ID
+    # @return void
+    #
+    updateItem: func(logData, id) {
+        if (me.isStorageSQLite()) {
+            me.handler.updateItem(logData, id);
+        }
     },
 
     #

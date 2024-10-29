@@ -96,8 +96,17 @@ var StorageCsv = {
     },
 
     #
+    # Destructor
+    #
+    # @return void
+    #
+    del: func() {
+        #
+    },
+
+    #
     # @param string version
-    # return string - full path to file
+    # @return string - full path to file
     #
     getPathToFile: func(version) {
         return me.addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
@@ -237,13 +246,15 @@ var StorageCsv = {
     #
     # Store log data to logbook file
     #
-    # @param hash logData - LogData object
-    # @param bool onlyIO - Set true for execute only I/O operation on the file, without rest of stuff
+    # @param  hash  logData  LogData object
+    # @param  int  id|nill  Record ID for SQLite storage
+    # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
+    #                       without rest of stuff (used only for CSV recovery)
     # @return void
     #
-    saveData: func(logData, onlyIO = 0) {
+    saveLogData: func(logData, id = nil, onlyIO = 0) {
         var file = io.open(me.filePath, "a");
-        me.saveItem(file, logData);
+        me.addItem(logData, file);
         io.close(file);
 
         if (!onlyIO) {
@@ -257,18 +268,18 @@ var StorageCsv = {
     },
 
     #
-    # @param hash file - file handler
     # @param hash logData - LogData object
+    # @param hash file - file handler
     # @return void
     #
-    saveItem: func(file, logData) {
+    addItem: func(logData, file) {
         io.write(file, sprintf(
             "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
             logData.date,
             logData.time,
             logData.aircraft,
             logData.variant,
-            logData.aircraftType,
+            logData.aircraft_type,
             logData.callsign,
             logData.from,
             logData.to,
@@ -282,7 +293,7 @@ var StorageCsv = {
             logData.duration,
             logData.distance,
             logData.fuel,
-            logData.maxAlt,
+            logData.max_alt,
             logData.note
         ));
     },
@@ -507,7 +518,7 @@ var StorageCsv = {
             return false;
         }
 
-        var headerIndex = me.getHeaderIndex(header, me.headersData);
+        var headerIndex = me.getHeaderIndex(header);
         if (headerIndex == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
             return false;
@@ -573,7 +584,7 @@ var StorageCsv = {
 
         # Save data
         foreach (var logData; me.allData.vector) {
-            me.saveItem(file, logData);
+            me.addItem(logData, file);
 
             if (recalcTotals) {
                 me.countTotals(logData.toVector());
@@ -595,16 +606,15 @@ var StorageCsv = {
     # Search header by text in given vector and return index of it
     #
     # @param string headerText
-    # @param vector headersData
     # @return int|nil
     #
-    getHeaderIndex: func(headerText, headersData) {
+    getHeaderIndex: func(headerText) {
         if (g_isThreadPending) {
             return nil;
         }
 
         var index = 0;
-        foreach (var text; headersData) {
+        foreach (var text; me.headersData) {
             if (text == headerText) {
                 return index;
             }

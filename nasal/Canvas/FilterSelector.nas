@@ -261,7 +261,9 @@ var FilterSelector = {
 
         var text = me.items.vector[index];
 
-        call(me.callback, [me.columnIndex, text], me.objCallback);
+        var dbColumnName = StorageSQLite.getColumnNameByIndex(me.columnIndex);
+
+        call(me.callback, [me.columnIndex, dbColumnName, text], me.objCallback);
         me.hide();
     },
 };

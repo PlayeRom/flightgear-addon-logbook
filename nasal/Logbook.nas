@@ -54,7 +54,11 @@ var Logbook = {
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
-        me.recovery      = Recovery.new(addon, me.storage);
+
+        me.recovery      = me.storage.isStorageSQLite()
+            ? RecoverySQLite.new(addon, me.storage)
+            : RecoveryCsv.new(addon, me.storage);
+
         me.aircraft      = Aircraft.new();
         me.logbookDialog = LogbookDialog.new(me.storage, me.filters);
 
@@ -122,6 +126,7 @@ var Logbook = {
         me.crashDetector.del();
         me.recovery.del();
         me.logbookDialog.del();
+        me.storage.del();
     },
 
     #
@@ -334,7 +339,7 @@ var Logbook = {
             me.onGround = true;
         }
 
-        me.storage.saveData(me.logData);
+        me.storage.saveLogData(me.logData, me.recovery.recordId);
         me.logData = nil;
         me.wowSec = 0;
 

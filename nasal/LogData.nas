@@ -18,29 +18,51 @@ var LogData = {
     #
     # @return me
     #
-    new: func() {
+    new: func(
+        date         = "",  # Take-off date (real)
+        time         = "",  # Take-off time (real)
+        aircraft     = "",  # Primary aircraft from dir (/sim/aircraft-dir)
+        variant      = "",  # Aircraft ID as a variant (/sim/aircraft)
+        aircraftType = "",  # Aircraft type
+        callsign     = "",  # Pilot callsign
+        from         = "",  # ICAO departure airport (if take-off from the ground)
+        to           = "",  # ICAO destination airport (if landed)
+        landing      = 0,   # 1 means that aircraft landed
+        crash        = 0,   # 1 means that aircraft crashed
+        day          = 0.0, # Total flight time during the day (hours)
+        night        = 0.0, # Total flight time during the night (hours)
+        instrument   = 0.0, # Total flight time during the IMC (hours)
+        multiplayer  = 0.0, # Total flight time in multiplayer mode (hours)
+        swift        = 0.0, # Total flight time with connection to swift (hours)
+        duration     = 0.0, # Total flight time as sum of day and night (hours)
+        distance     = 0.0, # The distance traveled during the flight in nautical miles
+        fuel         = 0.0, # Amount of fuel used in US gallons
+        maxAlt       = 0.0, # The maximum altitude reached during the flight in feet
+        note         = "",  # Full aircraft name as default
+    ) {
         var me = { parents: [LogData] };
 
-        me.date         = "";    # Take-off date (real)
-        me.time         = "";    # Take-off time (real)
-        me.aircraft     = "";    # Primary aircraft from dir (/sim/aircraft-dir)
-        me.variant      = "";    # Aircraft ID as a variant (/sim/aircraft)
-        me.aircraftType = "";    # Aircraft type
-        me.callsign     = "";    # Pilot callsign
-        me.from         = "";    # ICAO departure airport (if take-off from the ground)
-        me.to           = "";    # ICAO destination airport (if landed)
-        me.landing      = false; # 1 means that aircraft landed
-        me.crash        = false; # 1 means that aircraft crashed
-        me.day          = 0.0;   # Total flight time during the day (hours)
-        me.night        = 0.0;   # Total flight time during the night (hours)
-        me.instrument   = 0.0;   # Total flight time during the IMC (hours)
-        me.multiplayer  = 0.0;   # Total flight time in multiplayer mode (hours)
-        me.swift        = 0.0;   # Total flight time with connection to swift (hours)
-        me.duration     = 0.0;   # Total flight time as sum of day and night (hours)
-        me.distance     = 0.0;   # The distance traveled during the flight in nautical miles
-        me.fuel         = 0.0;   # Amount of fuel used in US gallons
-        me.maxAlt       = 0.0;   # The maximum altitude reached during the flight in feet
-        me.note         = "";    # Full aircraft name as default
+        # Member names the same as in the database!
+        me.date          = date;
+        me.time          = time;
+        me.aircraft      = aircraft;
+        me.variant       = variant;
+        me.aircraft_type = aircraftType;
+        me.callsign      = callsign;
+        me.from          = from;
+        me.to            = to;
+        me.landing       = landing;
+        me.crash         = crash;
+        me.day           = day;
+        me.night         = night;
+        me.instrument    = instrument;
+        me.multiplayer   = multiplayer;
+        me.swift         = swift;
+        me.duration      = duration;
+        me.distance      = distance;
+        me.fuel          = fuel;
+        me.max_alt       = maxAlt;
+        me.note          = note;
 
         return me;
     },
@@ -113,8 +135,8 @@ var LogData = {
     # @return me
     #
     setAircraftType: func(type) {
-        me.aircraftType = type;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraftType);
+        me.aircraft_type = type;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraft_type);
 
         return me;
     },
@@ -311,7 +333,7 @@ var LogData = {
     # @return me
     #
     setMaxAlt: func(maxAlt) {
-        me.maxAlt = maxAlt;
+        me.max_alt = maxAlt;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxAlt = ", maxAlt);
 
         return me;
@@ -354,7 +376,7 @@ var LogData = {
         append(vector, me.time);
         append(vector, me.aircraft);
         append(vector, me.variant);
-        append(vector, me.aircraftType);
+        append(vector, me.aircraft_type);
         append(vector, me.callsign);
         append(vector, me.from);
         append(vector, me.to);
@@ -368,7 +390,7 @@ var LogData = {
         append(vector, sprintf("%.02f", me.duration));
         append(vector, sprintf("%.02f", me.distance));
         append(vector, sprintf("%.02f", me.fuel));
-        append(vector, sprintf("%.0f", me.maxAlt));
+        append(vector, sprintf("%.0f", me.max_alt));
         append(vector, me.note);
 
         return vector;
@@ -381,26 +403,38 @@ var LogData = {
     # @return void
     #
     fromVector: func(items) {
-        me.date         = items[StorageCsv.INDEX_DATE];
-        me.time         = items[StorageCsv.INDEX_TIME];
-        me.aircraft     = items[StorageCsv.INDEX_AIRCRAFT];
-        me.variant      = items[StorageCsv.INDEX_VARIANT];
-        me.aircraftType = items[StorageCsv.INDEX_TYPE];
-        me.callsign     = items[StorageCsv.INDEX_CALLSIGN];
-        me.from         = items[StorageCsv.INDEX_FROM];
-        me.to           = items[StorageCsv.INDEX_TO];
-        me.landing      = items[StorageCsv.INDEX_LANDING] == 1;
-        me.crash        = items[StorageCsv.INDEX_CRASH] == 1;
-        me.day          = items[StorageCsv.INDEX_DAY];
-        me.night        = items[StorageCsv.INDEX_NIGHT];
-        me.instrument   = items[StorageCsv.INDEX_INSTRUMENT];
-        me.multiplayer  = items[StorageCsv.INDEX_MULTIPLAYER];
-        me.swift        = items[StorageCsv.INDEX_SWIFT];
-        me.duration     = items[StorageCsv.INDEX_DURATION];
-        me.distance     = items[StorageCsv.INDEX_DISTANCE];
-        me.fuel         = items[StorageCsv.INDEX_FUEL];
-        me.maxAlt       = items[StorageCsv.INDEX_MAX_ALT];
-        me.note         = items[StorageCsv.INDEX_NOTE];
+        me.date          = items[StorageCsv.INDEX_DATE];
+        me.time          = items[StorageCsv.INDEX_TIME];
+        me.aircraft      = items[StorageCsv.INDEX_AIRCRAFT];
+        me.variant       = items[StorageCsv.INDEX_VARIANT];
+        me.aircraft_type = items[StorageCsv.INDEX_TYPE];
+        me.callsign      = items[StorageCsv.INDEX_CALLSIGN];
+        me.from          = items[StorageCsv.INDEX_FROM];
+        me.to            = items[StorageCsv.INDEX_TO];
+        me.landing       = items[StorageCsv.INDEX_LANDING] == 1;
+        me.crash         = items[StorageCsv.INDEX_CRASH] == 1;
+        me.day           = items[StorageCsv.INDEX_DAY];
+        me.night         = items[StorageCsv.INDEX_NIGHT];
+        me.instrument    = items[StorageCsv.INDEX_INSTRUMENT];
+        me.multiplayer   = items[StorageCsv.INDEX_MULTIPLAYER];
+        me.swift         = items[StorageCsv.INDEX_SWIFT];
+        me.duration      = items[StorageCsv.INDEX_DURATION];
+        me.distance      = items[StorageCsv.INDEX_DISTANCE];
+        me.fuel          = items[StorageCsv.INDEX_FUEL];
+        me.max_alt       = items[StorageCsv.INDEX_MAX_ALT];
+        me.note          = items[StorageCsv.INDEX_NOTE];
+    },
+
+    #
+    # Apply given hash to this object
+    #
+    # @param  hash  row
+    # @return void
+    #
+    fromDb: func(row) {
+        foreach (var key; keys(row)) {
+            me[key] = row[key];
+        }
     },
 
     #
@@ -411,7 +445,7 @@ var LogData = {
              if (index == StorageCsv.INDEX_DATE)     return me.getYear();
         else if (index == StorageCsv.INDEX_AIRCRAFT) return me.aircraft;
         else if (index == StorageCsv.INDEX_VARIANT)  return me.variant;
-        else if (index == StorageCsv.INDEX_TYPE)     return me.aircraftType;
+        else if (index == StorageCsv.INDEX_TYPE)     return me.aircraft_type;
         else if (index == StorageCsv.INDEX_CALLSIGN) return me.callsign;
         else if (index == StorageCsv.INDEX_FROM)     return me.from;
         else if (index == StorageCsv.INDEX_TO)       return me.to;
@@ -427,28 +461,27 @@ var LogData = {
     # @return hash - LogData object
     #
     getClone: func() {
-        var clone = LogData.new();
-        clone.date         = me.date;
-        clone.time         = me.time;
-        clone.aircraft     = me.aircraft;
-        clone.variant      = me.variant;
-        clone.aircraftType = me.aircraftType;
-        clone.callsign     = me.callsign;
-        clone.from         = me.from;
-        clone.to           = me.to;
-        clone.landing      = me.landing;
-        clone.crash        = me.crash;
-        clone.day          = me.day;
-        clone.night        = me.night;
-        clone.instrument   = me.instrument;
-        clone.multiplayer  = me.multiplayer;
-        clone.swift        = me.swift;
-        clone.duration     = me.duration;
-        clone.distance     = me.distance;
-        clone.fuel         = me.fuel;
-        clone.maxAlt       = me.maxAlt;
-        clone.note         = me.note;
-
-        return clone;
+        return LogData.new(
+            me.date,
+            me.time,
+            me.aircraft,
+            me.variant,
+            me.aircraft_type,
+            me.callsign,
+            me.from,
+            me.to,
+            me.landing,
+            me.crash,
+            me.day,
+            me.night,
+            me.instrument,
+            me.multiplayer,
+            me.swift,
+            me.duration,
+            me.distance,
+            me.fuel,
+            me.max_alt,
+            me.note,
+        );
     },
 };

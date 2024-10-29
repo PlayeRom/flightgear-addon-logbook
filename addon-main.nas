@@ -35,7 +35,8 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
-        "nasal/StorageCsv", # Must be before LogbookDialog
+        "nasal/StorageCsv", # Must be before Storage
+        "nasal/StorageSQLite", # Must be before Storage
         "nasal/Storage", # Must be before LogbookDialog
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
@@ -58,7 +59,8 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/LandingGear",
         "nasal/LogData",
         "nasal/Logbook",
-        "nasal/Recovery",
+        "nasal/RecoveryCsv",
+        "nasal/RecoverySQLite",
         "nasal/Settings",
         "nasal/SpaceShuttle",
         "nasal/Thread",
