@@ -42,4 +42,15 @@ var Utils = {
         var (major, minor, patch) = split(".", fgVersion);
         return major >= 2024;
     },
+
+    #
+    # Check if the given string contains a space
+    #
+    # @param  string  text
+    # @return bool
+    #
+    isSpace: func(text) {
+        var parts = split(" ", text);
+        return size(parts) > 1;
+    },
 };

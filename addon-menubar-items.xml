@@ -35,7 +35,16 @@
 
             <item>
                 <label>---------------------</label>
-                <enabled>false</enabled>
+                <enabled type="bool">false</enabled>
+            </item>
+            <item>
+                <label>Export Logbook to CSV</label>
+                <name>logbook-addon-export-csv</name>
+                <enabled type="bool">false</enabled>
+                <binding>
+                    <command>nasal</command>
+                    <script>logbook.g_Logbook.storage.exportToCsv();</script>
+                </binding>
             </item>
             <item>
                 <label>Help</label>

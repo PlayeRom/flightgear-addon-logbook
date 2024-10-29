@@ -32,6 +32,10 @@ var Storage = {
             ? StorageSQLite.new(addon, filters)
             : StorageCsv.new(addon, filters);
 
+        if (me.isStorageSQLite()) {
+            gui.menuEnable("logbook-addon-export-csv", true);
+        }
+
         return me;
     },
 
@@ -147,5 +151,19 @@ var Storage = {
     #
     deleteLog: func(index) {
         return me.handler.deleteLog(index);
+    },
+
+    #
+    # Export logbook from SQLite to CSV file
+    #
+    # @return void
+    #
+    exportToCsv: func() {
+        if (me.isStorageSQLite()) {
+            me.handler.exportToCsv();
+        }
+        else {
+            gui.popupTip("This option is available only for version 2024.1 and later");
+        }
     },
 };
