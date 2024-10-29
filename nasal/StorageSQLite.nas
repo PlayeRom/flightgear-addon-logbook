@@ -110,6 +110,11 @@ var StorageSQLite = {
         ];
     },
 
+    #
+    # Open DB connection, create table if not exist and import data from CSV file
+    #
+    # @return void
+    #
     openDb: func() {
         me.closeDb();
 
@@ -121,6 +126,9 @@ var StorageSQLite = {
         }
     },
 
+    #
+    # Close DB connection
+    #
     closeDb: func() {
         if (me.dbHandler != nil) {
             sqlite.close(me.dbHandler);
@@ -128,12 +136,22 @@ var StorageSQLite = {
         }
     },
 
+    #
+    # Check if the table in the database exists
+    #
+    # @return bool  True if the table already exists
+    #
     isTableExist: func() {
         var query = sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", StorageSQLite.TABLE_NAME);
         var result = sqlite.exec(me.dbHandler, query);
         return size(result) > 0;
     },
 
+    #
+    # Create a `logbooks` table in the database
+    #
+    # @return void
+    #
     createTable: func() {
         var columns = [
             { name: "id",            type: "INTEGER PRIMARY KEY" },
@@ -310,6 +328,8 @@ var StorageSQLite = {
     },
 
     #
+    # Insert LogData into database
+    #
     # @param  hash  logData  LogData object
     # @param  hash  db|nil  DB handler or nil
     # @return int|nil  ID of new record, or nil
@@ -352,6 +372,8 @@ var StorageSQLite = {
         return nil;
     },
 
+    #
+    # Update record with given ID
     #
     # @param  hash  logData  LogData object
     # @param  int  id  Record ID
@@ -448,13 +470,15 @@ var StorageSQLite = {
     },
 
     #
+    # Update given filter with data from DB
+    #
     # @param  string  columnName
     # @param  int  dataIndex
     # @return void
     #
     updateFilterData: func(columnName, dataIndex) {
         if (dataIndex == StorageCsv.INDEX_DATE) {
-            columnName = "strftime('%Y', " ~ columnName ~ ")"; # get only a year from date column
+            columnName = "strftime('%Y', " ~ columnName ~ ")"; # get only a year from `date` column
         }
 
         # COLLATE NOCASE - ignore case sensitivity during sorting
