@@ -10,9 +10,9 @@
 #
 
 #
-# FileMigration class
+# MigrationCsv class
 #
-var FileMigration = {
+var MigrationCsv = {
     #
     # Constructor
     #
@@ -20,7 +20,7 @@ var FileMigration = {
     # @return me
     #
     new: func(storage) {
-        var me = { parents: [FileMigration] };
+        var me = { parents: [MigrationCsv] };
 
         me.storage = storage;
 

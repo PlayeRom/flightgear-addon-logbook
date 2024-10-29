@@ -71,7 +71,6 @@ var StorageCsv = {
 
         me.filePath      = me.getPathToFile(StorageCsv.FILE_VERSION);
         me.addonNodePath = me.addon.node.getPath();
-        me.fileMigration = nil;
         me.loadedData    = [];
         me.headersData   = [];
         me.withHeaders   = true;
@@ -136,7 +135,7 @@ var StorageCsv = {
     # @return bool - Return true if migration was done
     #
     migrateVersion: func() {
-        me.fileMigration = FileMigration.new(me);
+        var migrationCsv = MigrationCsv.new(me);
 
         var olderReleases = [
             # Keep the order from the newest to oldest
@@ -153,7 +152,7 @@ var StorageCsv = {
                 if (oldVersion == "1.0.1" or oldVersion == "1.0.0") {
                     # If there is no version 2 file, but older ones exist, migrate to version 2 first
                     var file_v2 = me.getPathToFile("2");
-                    me.fileMigration.migrateToFileVersion_2(oldFile, file_v2);
+                    migrationCsv.migrateToFileVersion_2(oldFile, file_v2);
 
                     # Prepare variables to next migration
                     oldFile = file_v2;
@@ -162,7 +161,7 @@ var StorageCsv = {
 
                 if (oldVersion == "2") {
                     var file_v3 = me.getPathToFile("3");
-                    me.fileMigration.migrateToFileVersion_3(oldFile, file_v3);
+                    migrationCsv.migrateToFileVersion_3(oldFile, file_v3);
                     # Prepare variables to next migration
                     oldFile = file_v3;
                     oldVersion = "3";
@@ -170,14 +169,14 @@ var StorageCsv = {
 
                 if (oldVersion == "3") {
                     var file_v4 = me.getPathToFile("4");
-                    me.fileMigration.migrateToFileVersion_4(oldFile, file_v4);
+                    migrationCsv.migrateToFileVersion_4(oldFile, file_v4);
                     # Prepare variables to next migration
                     oldFile = file_v4;
                     oldVersion = "4";
                 }
 
                 if (oldVersion == "4") {
-                    me.fileMigration.migrateToFileVersion_5(oldFile, me.filePath);
+                    migrationCsv.migrateToFileVersion_5(oldFile, me.filePath);
                 }
 
                 return true;
