@@ -16,7 +16,7 @@ var FilterData = {
     #
     # Constructor
     #
-    # @param int index - Column index as File.INDEX_[...]
+    # @param int index - Column index as StorageCsv.INDEX_[...]
     # @param string value
     # @return me
     #
@@ -29,7 +29,7 @@ var FilterData = {
     },
 
     #
-    # @param int index - Column index as File.INDEX_[...]
+    # @param int index - Column index as StorageCsv.INDEX_[...]
     # @param string value
     # @return bool
     #

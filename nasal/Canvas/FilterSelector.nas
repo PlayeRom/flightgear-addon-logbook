@@ -160,9 +160,9 @@ var FilterSelector = {
     },
 
     #
-    # Set column index of filter as File.INDEX_[...]
+    # Set column index of filter as StorageCsv.INDEX_[...]
     #
-    # @param int index - Column index as File.INDEX_[...] of column
+    # @param int index - Column index as StorageCsv.INDEX_[...] of column
     # @return me
     #
     setColumnIndex: func(index) {

@@ -50,13 +50,13 @@ var Logbook = {
         me.multiplayer   = Multiplayer.new();
         me.landingGear   = LandingGear.new(me.addonHintsNode);
         me.filters       = Filters.new();
-        me.file          = File.new(addon, me.filters);
+        me.storage       = Storage.new(addon, me.filters);
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
-        me.recovery      = Recovery.new(addon, me.file);
+        me.recovery      = Recovery.new(addon, me.storage);
         me.aircraft      = Aircraft.new();
-        me.logbookDialog = LogbookDialog.new(me.file, me.filters);
+        me.logbookDialog = LogbookDialog.new(me.storage, me.filters);
 
         me.aircraftType = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
@@ -334,7 +334,7 @@ var Logbook = {
             me.onGround = true;
         }
 
-        me.file.saveData(me.logData);
+        me.storage.saveData(me.logData);
         me.logData = nil;
         me.wowSec = 0;
 

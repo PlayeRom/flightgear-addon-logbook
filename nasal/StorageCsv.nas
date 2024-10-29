@@ -3,16 +3,16 @@
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2022 Roman Ludwicki
+# Copyright (C) 2024 Roman Ludwicki
 #
 # Logbook is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# File class to save data to the logbook CSV file
+# StorageCsv class to save logbook data to CSV file
 #
-var File = {
+var StorageCsv = {
     #
     # Constants
     #
@@ -64,12 +64,12 @@ var File = {
     #
     new: func(addon, filters) {
         var me = {
-            parents : [File],
+            parents : [StorageCsv],
             addon   : addon,
             filters : filters,
         };
 
-        me.filePath      = me.getPathToFile(File.FILE_VERSION);
+        me.filePath      = me.getPathToFile(StorageCsv.FILE_VERSION);
         me.addonNodePath = me.addon.node.getPath();
         me.fileMigration = nil;
         me.loadedData    = [];
@@ -100,7 +100,7 @@ var File = {
     # return string - full path to file
     #
     getPathToFile: func(version) {
-        return me.addon.storagePath ~ "/" ~ sprintf(File.LOGBOOK_FILE, version);
+        return me.addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
     },
 
     #
@@ -140,7 +140,7 @@ var File = {
 
         foreach (var oldVersion; olderReleases) {
             var oldFile = me.getPathToFile(oldVersion);
-            if (me.exists(oldFile)) {
+            if (Utils.fileExists(oldFile)) {
                 if (oldVersion == "1.0.1" or oldVersion == "1.0.0") {
                     # If there is no version 2 file, but older ones exist, migrate to version 2 first
                     var file_v2 = me.getPathToFile("2");
@@ -199,7 +199,7 @@ var File = {
     # @return void
     #
     saveHeaders: func() {
-        if (!me.exists(me.filePath)) {
+        if (!Utils.fileExists(me.filePath)) {
             if (!me.migrateVersion()) {
                 var file = io.open(me.filePath, "a");
                 io.write(file, me.getHeaderLine() ~ "\n");
@@ -232,17 +232,6 @@ var File = {
                'Fuel,' ~
                '"Max Alt",' ~
                'Note';
-    },
-
-    #
-    # Check that file already exists.
-    # From FG 2024.x we have io.exists() but for older versions we have to write it ourselves.
-    #
-    # @param string path
-    # @return bool
-    #
-    exists: func(path) {
-        return io.stat(path) != nil;
     },
 
     #
@@ -324,10 +313,10 @@ var File = {
             }
 
             if (me.totalLines == -1) { # headers
-                me.headersData = split(",", me.removeQuotes(line));
+                me.headersData = split(",", Utils.removeQuotes(line));
             }
             else { # data
-                var items = split(",", me.removeQuotes(line));
+                var items = split(",", Utils.removeQuotes(line));
 
                 var logData = LogData.new();
                 logData.fromVector(items);
@@ -492,7 +481,7 @@ var File = {
         forindex (var index; me.totals) {
             append(
                 me.loadedData[size(me.loadedData) - 1].data,
-                sprintf(File.TOTAL_FORMATS[index], me.totals[index])
+                sprintf(StorageCsv.TOTAL_FORMATS[index], me.totals[index])
             );
         }
     },
@@ -543,7 +532,7 @@ var File = {
         items[headerIndex] = value;
         me.allData.vector[rowIndex].fromVector(items);
 
-        var recalcTotals = headerIndex >= File.INDEX_LANDING and headerIndex <= File.INDEX_MAX_ALT;
+        var recalcTotals = headerIndex >= StorageCsv.INDEX_LANDING and headerIndex <= StorageCsv.INDEX_MAX_ALT;
         var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
         me.saveAllData(recalcTotals, resetFilters);
     },
@@ -627,16 +616,6 @@ var File = {
     },
 
     #
-    # Remove all quotes from given text and return a new text without quotes
-    #
-    # @param string text
-    # @return string
-    #
-    removeQuotes: func(text) {
-        return string.replace(text, '"', '');
-    },
-
-    #
     # Increase values in me.totals vector with given items data
     #
     # @param vector items
@@ -647,7 +626,7 @@ var File = {
         foreach (var text; items) {
             var totalIndex = me.getTotalIndexFromColumnIndex(index);
             if (totalIndex != -1) {
-                if (index == File.INDEX_MAX_ALT) {
+                if (index == StorageCsv.INDEX_MAX_ALT) {
                     if (text > me.totals[totalIndex]) {
                         me.totals[totalIndex] = text;
                     }
@@ -666,17 +645,17 @@ var File = {
     # @return int
     #
     getTotalIndexFromColumnIndex: func(columnIndex) {
-             if (columnIndex == File.INDEX_LANDING)     return 0; # me.totals[0]
-        else if (columnIndex == File.INDEX_CRASH)       return 1; # me.totals[1] etc.
-        else if (columnIndex == File.INDEX_DAY)         return 2;
-        else if (columnIndex == File.INDEX_NIGHT)       return 3;
-        else if (columnIndex == File.INDEX_INSTRUMENT)  return 4;
-        else if (columnIndex == File.INDEX_MULTIPLAYER) return 5;
-        else if (columnIndex == File.INDEX_SWIFT)       return 6;
-        else if (columnIndex == File.INDEX_DURATION)    return 7;
-        else if (columnIndex == File.INDEX_DISTANCE)    return 8;
-        else if (columnIndex == File.INDEX_FUEL)        return 9;
-        else if (columnIndex == File.INDEX_MAX_ALT)     return 10;
+             if (columnIndex == StorageCsv.INDEX_LANDING)     return 0; # me.totals[0]
+        else if (columnIndex == StorageCsv.INDEX_CRASH)       return 1; # me.totals[1] etc.
+        else if (columnIndex == StorageCsv.INDEX_DAY)         return 2;
+        else if (columnIndex == StorageCsv.INDEX_NIGHT)       return 3;
+        else if (columnIndex == StorageCsv.INDEX_INSTRUMENT)  return 4;
+        else if (columnIndex == StorageCsv.INDEX_MULTIPLAYER) return 5;
+        else if (columnIndex == StorageCsv.INDEX_SWIFT)       return 6;
+        else if (columnIndex == StorageCsv.INDEX_DURATION)    return 7;
+        else if (columnIndex == StorageCsv.INDEX_DISTANCE)    return 8;
+        else if (columnIndex == StorageCsv.INDEX_FUEL)        return 9;
+        else if (columnIndex == StorageCsv.INDEX_MAX_ALT)     return 10;
 
         return -1; # error
     },
@@ -687,7 +666,7 @@ var File = {
     # @return int
     #
     getTotalLines: func() {
-        me.totalLines;
+        return me.totalLines;
     },
 
     #
@@ -696,7 +675,7 @@ var File = {
     # @return vector
     #
     getHeadersData: func() {
-        me.headersData;
+        return me.headersData;
     },
 
     #

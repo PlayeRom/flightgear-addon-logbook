@@ -22,15 +22,15 @@ var Filters = {
         var me = { parents: [Filters] };
 
         me.data = {};
-        me.data[File.INDEX_DATE]     = std.Vector.new();
-        me.data[File.INDEX_AIRCRAFT] = std.Vector.new();
-        me.data[File.INDEX_VARIANT]  = std.Vector.new();
-        me.data[File.INDEX_TYPE]     = std.Vector.new();
-        me.data[File.INDEX_CALLSIGN] = std.Vector.new();
-        me.data[File.INDEX_FROM]     = std.Vector.new();
-        me.data[File.INDEX_TO]       = std.Vector.new();
-        me.data[File.INDEX_LANDING]  = std.Vector.new();
-        me.data[File.INDEX_CRASH]    = std.Vector.new();
+        me.data[StorageCsv.INDEX_DATE]     = std.Vector.new();
+        me.data[StorageCsv.INDEX_AIRCRAFT] = std.Vector.new();
+        me.data[StorageCsv.INDEX_VARIANT]  = std.Vector.new();
+        me.data[StorageCsv.INDEX_TYPE]     = std.Vector.new();
+        me.data[StorageCsv.INDEX_CALLSIGN] = std.Vector.new();
+        me.data[StorageCsv.INDEX_FROM]     = std.Vector.new();
+        me.data[StorageCsv.INDEX_TO]       = std.Vector.new();
+        me.data[StorageCsv.INDEX_LANDING]  = std.Vector.new();
+        me.data[StorageCsv.INDEX_CRASH]    = std.Vector.new();
 
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
@@ -164,15 +164,15 @@ var Filters = {
     # @return string
     #
     getFilterTitleByColumnIndex: func(column) {
-             if (column == File.INDEX_DATE)     return "Date filter";
-        else if (column == File.INDEX_AIRCRAFT) return "Aircraft filter";
-        else if (column == File.INDEX_VARIANT)  return "Variant filter";
-        else if (column == File.INDEX_TYPE)     return "Type filter";
-        else if (column == File.INDEX_CALLSIGN) return "Callsign filter";
-        else if (column == File.INDEX_FROM)     return "From filter";
-        else if (column == File.INDEX_TO)       return "To filter";
-        else if (column == File.INDEX_LANDING)  return "Landing filter";
-        else if (column == File.INDEX_CRASH)    return "Crash filter";
+             if (column == StorageCsv.INDEX_DATE)     return "Date filter";
+        else if (column == StorageCsv.INDEX_AIRCRAFT) return "Aircraft filter";
+        else if (column == StorageCsv.INDEX_VARIANT)  return "Variant filter";
+        else if (column == StorageCsv.INDEX_TYPE)     return "Type filter";
+        else if (column == StorageCsv.INDEX_CALLSIGN) return "Callsign filter";
+        else if (column == StorageCsv.INDEX_FROM)     return "From filter";
+        else if (column == StorageCsv.INDEX_TO)       return "To filter";
+        else if (column == StorageCsv.INDEX_LANDING)  return "Landing filter";
+        else if (column == StorageCsv.INDEX_CRASH)    return "Crash filter";
 
         return "Filter";
     },

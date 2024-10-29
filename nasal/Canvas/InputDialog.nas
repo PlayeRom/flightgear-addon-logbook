@@ -166,7 +166,7 @@ var InputDialog = {
     actionTypeSelect: func() {
         me.filterSelector
             .setItems(AircraftType.getVector(), false)
-            .setColumnIndex(File.INDEX_TYPE)
+            .setColumnIndex(StorageCsv.INDEX_TYPE)
             .setPosition(
                 getprop("/devices/status/mice/mouse/x") or 0,
                 getprop("/devices/status/mice/mouse/y") or 0
@@ -278,7 +278,7 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (  me.header == "Landing" 
+        else if (  me.header == "Landing"
                 or me.header == "Crash"
         ) {
             if (!me.validateBoolean(value)) {
@@ -332,7 +332,7 @@ var InputDialog = {
     #
     validateVariant: func(value) {
         for (var i = 0; i < size(value); i += 1) {
-            if (   value[i] == `.` 
+            if (   value[i] == `.`
                 or value[i] == ` `
             ) {
                 return false;
@@ -361,8 +361,8 @@ var InputDialog = {
     # @return bool
     #
     validateBoolean: func(value) {
-        return value == "1" 
-            or value == "0" 
+        return value == "1"
+            or value == "0"
             or value == "";
     },
 

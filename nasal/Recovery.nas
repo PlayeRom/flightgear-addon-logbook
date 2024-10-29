@@ -23,18 +23,18 @@ var Recovery = {
     # Constructor
     #
     # @param hash addon - addons.Addon object
-    # @param file - File object
+    # @param storage - Storage object
     # @return me
     #
-    new: func(addon, file) {
+    new: func(addon, storage) {
         var me = {
             parents     : [Recovery],
-            file        : file,
+            storage     : storage,
             objCallback : nil,
             callback    : nil,
         };
 
-        me.filePath = addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, File.FILE_VERSION);
+        me.filePath = addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, StorageCsv.FILE_VERSION);
         me.timer    = maketimer(60, me, me.update);
 
         me.restore();
@@ -88,7 +88,7 @@ var Recovery = {
     #
     save: func(logData) {
         var file = io.open(me.filePath, "w");
-        me.file.saveItem(file, logData);
+        me.storage.saveItem(file, logData);
         io.close(file);
     },
 
@@ -109,22 +109,22 @@ var Recovery = {
     # @return void
     #
     restore: func() {
-        if (me.file.exists(me.filePath)) {
+        if (Utils.fileExists(me.filePath)) {
             var file = io.open(me.filePath, "r");
             var line = io.readln(file);
             io.close(file);
 
             if (line != nil) {
-                var items = split(",", me.file.removeQuotes(line));
+                var items = split(",", Utils.removeQuotes(line));
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me.file.saveData(logData, true);
+                me.storage.saveData(logData, true);
 
                 me.clear();
             }
         }
 
-        me.file.loadAllData();
+        me.storage.loadAllData();
     },
 };

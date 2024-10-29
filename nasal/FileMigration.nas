@@ -16,13 +16,13 @@ var FileMigration = {
     #
     # Constructor
     #
-    # @param hash file - File object
+    # @param hash storage - Storage object
     # @return me
     #
-    new: func(file) {
+    new: func(storage) {
         var me = { parents: [FileMigration] };
 
-        me.file = file;
+        me.storage = storage;
 
         return me;
     },
@@ -49,7 +49,7 @@ var FileMigration = {
                 io.write(fileNew, headerLineCallback() ~ "\n");
             }
             else { # data
-                var items = split(",", me.file.removeQuotes(line));
+                var items = split(",", Utils.removeQuotes(line));
                 io.write(fileNew, dataRowCallback(items));
             }
 

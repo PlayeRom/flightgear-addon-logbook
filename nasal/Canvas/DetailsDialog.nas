@@ -27,10 +27,10 @@ var DetailsDialog = {
     #
     # Constructor
     #
-    # @param hash file - File object
+    # @param hash storage - Storage object
     # @return me
     #
-    new: func(file) {
+    new: func(storage) {
         var me = { parents: [
             DetailsDialog,
             Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
@@ -46,7 +46,7 @@ var DetailsDialog = {
         me.dataRow         = nil;
         me.isTotals        = false;
         me.parentDataIndex = nil;
-        me.file            = file;
+        me.storage         = storage;
         me.btnDelete       = nil;
         me.inputDialog     = InputDialog.new();
         me.deleteDialog    = ConfirmationDialog.new("Delete entry log");
@@ -206,17 +206,17 @@ var DetailsDialog = {
     # @return vector
     #
     getListViewRows: func(data) {
-        var headers = me.file.getHeadersData();
+        var headers = me.storage.getHeadersData();
         var rowsData = [];
 
         var start = 0;
         if (me.isTotals) {
-            start = File.INDEX_LANDING;
+            start = StorageCsv.INDEX_LANDING;
         }
 
         forindex (var index; headers[start:]) {
             var shiftIndex = index + start;
-            if (me.isTotals and shiftIndex == File.INDEX_NOTE) {
+            if (me.isTotals and shiftIndex == StorageCsv.INDEX_NOTE) {
                 break;
             }
 
@@ -241,7 +241,7 @@ var DetailsDialog = {
     #
     reload: func() {
         if (me.parentDataIndex != nil) {
-            me.dataRow = me.file.getLogData(me.parentDataIndex);
+            me.dataRow = me.storage.getLogData(me.parentDataIndex);
             if (me.dataRow == nil) {
                 call(DetailsDialog.hide, [false], me);
                 return;
@@ -267,7 +267,7 @@ var DetailsDialog = {
 
                 me.inputDialog.filterSelector.hide();
 
-                var headers = me.file.getHeadersData();
+                var headers = me.storage.getHeadersData();
                 me.inputDialog.show(me, me.dataRow.allDataIndex, headers[index], me.dataRow.data[index]);
             }
         }
@@ -279,7 +279,7 @@ var DetailsDialog = {
     # @return string
     #
     getExtraText: func(column, value) {
-        if ((column == File.INDEX_FROM or column == File.INDEX_TO) and value != "") {
+        if ((column == StorageCsv.INDEX_FROM or column == StorageCsv.INDEX_TO) and value != "") {
             var airport = airportinfo(value);
             if (airport != nil) {
                 return "(" ~ airport.name ~ ")";
@@ -288,7 +288,7 @@ var DetailsDialog = {
             return "";
         }
 
-        if (column >= File.INDEX_DAY and column <= File.INDEX_DURATION) {
+        if (column >= StorageCsv.INDEX_DAY and column <= StorageCsv.INDEX_DURATION) {
             var digits = split(".", value);
             if (size(digits) < 2) {
                 # something is wrong
@@ -298,7 +298,7 @@ var DetailsDialog = {
             return sprintf("hours (%d:%02.0f)", digits[0], (digits[1] / 100) * 60);
         }
 
-        if (column == File.INDEX_DISTANCE) {
+        if (column == StorageCsv.INDEX_DISTANCE) {
             var inMeters = value * globals.NM2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
@@ -308,12 +308,12 @@ var DetailsDialog = {
             return sprintf("nm (%.0f m)", inMeters);
         }
 
-        if (column == File.INDEX_FUEL) {
+        if (column == StorageCsv.INDEX_FUEL) {
             var liters = sprintf("%.02f", value * globals.GAL2L);
             return sprintf("US gallons (%s l)", me.getValueWithCommaSeparator(liters));
         }
 
-        if (column == File.INDEX_MAX_ALT) {
+        if (column == StorageCsv.INDEX_MAX_ALT) {
             var inMeters = value * globals.FT2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
@@ -332,9 +332,9 @@ var DetailsDialog = {
     # @return string
     #
     addCommaSeparator: func(column, value) {
-        if (   column == File.INDEX_DISTANCE
-            or column == File.INDEX_FUEL
-            or column == File.INDEX_MAX_ALT
+        if (   column == StorageCsv.INDEX_DISTANCE
+            or column == StorageCsv.INDEX_FUEL
+            or column == StorageCsv.INDEX_MAX_ALT
         ) {
             return me.getValueWithCommaSeparator(value);
         }

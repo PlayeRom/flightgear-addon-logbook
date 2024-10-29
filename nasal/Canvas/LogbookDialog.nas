@@ -46,11 +46,11 @@ var LogbookDialog = {
     #
     # Constructor
     #
-    # @param hash file - File object
+    # @param hash storage - Storage object
     # @param hash filters - Filters object
     # @return me
     #
-    new: func(file, filters) {
+    new: func(storage, filters) {
         var me = {
             parents : [
                 LogbookDialog,
@@ -60,7 +60,7 @@ var LogbookDialog = {
                     "Logbook"
                 ),
             ],
-            file    : file,
+            storage : storage,
             filters : filters,
         };
 
@@ -83,7 +83,7 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.detailsDialog  = DetailsDialog.new(file);
+        me.detailsDialog  = DetailsDialog.new(storage);
         me.helpDialog     = HelpDialog.new();
         me.aboutDialog    = AboutDialog.new();
         me.filterSelector = FilterSelector.new();
@@ -117,7 +117,7 @@ var LogbookDialog = {
                 setprop(node.getPath(), false);
 
                 var index = getprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index");
-                if (me.file.deleteLog(index)) {
+                if (me.storage.deleteLog(index)) {
                     me.listView.enableLoading();
                 }
             }
@@ -133,7 +133,7 @@ var LogbookDialog = {
                 var header = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-header");
                 var value  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value");
 
-                if (me.file.editData(index, header, value)) {
+                if (me.storage.editData(index, header, value)) {
                     me.listView.enableLoading();
                 }
             }
@@ -173,7 +173,7 @@ var LogbookDialog = {
             setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
             # Check index of last page
-            var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+            var pages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
             var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
             if (me.startIndex > newIndex) {
                 # We exceed the maximum index, so set a new one
@@ -262,11 +262,11 @@ var LogbookDialog = {
 
         var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
         var column = -1;
-        var headers = me.file.getHeadersData();
+        var headers = me.storage.getHeadersData();
         foreach (var text; headers) {
             column += 1;
 
-            if (column == File.INDEX_NOTE) {
+            if (column == StorageCsv.INDEX_NOTE) {
                 # Don't show Note column
                 continue;
             }
@@ -305,7 +305,7 @@ var LogbookDialog = {
     # @param hash rect - rectangle canvas object
     # @param vector|nil items - Items for FilterSelector
     # @param string|nil title - FilterSelector title dialog
-    # @param int|nil index - Column index as File.INDEX_[...]
+    # @param int|nil index - Column index as StorageCsv.INDEX_[...]
     # @return void
     #
     setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
@@ -358,7 +358,7 @@ var LogbookDialog = {
     # @return string
     #
     getReplaceHeaderText: func(column, text) {
-        if (column == File.INDEX_LANDING) {
+        if (column == StorageCsv.INDEX_LANDING) {
             text = "Land.";
         }
 
@@ -366,11 +366,11 @@ var LogbookDialog = {
             return text ~ " (!)";
         }
 
-        if (column == File.INDEX_INSTRUMENT) {
+        if (column == StorageCsv.INDEX_INSTRUMENT) {
             return "Instr.";
         }
 
-        if (column == File.INDEX_MULTIPLAYER) {
+        if (column == StorageCsv.INDEX_MULTIPLAYER) {
             return "Multip.";
         }
 
@@ -550,7 +550,7 @@ var LogbookDialog = {
             return;
         }
 
-        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.file.getTotalLines()) {
+        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.storage.getTotalLines()) {
             g_Sound.play('paper');
 
             me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
@@ -571,7 +571,7 @@ var LogbookDialog = {
         }
 
         var old = me.startIndex;
-        var pages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+        var pages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
         me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
         if (old != me.startIndex) {
@@ -603,7 +603,7 @@ var LogbookDialog = {
 
         me.listView.enableLoading();
 
-        me.file.loadDataRange(me, me.reloadDataCallback, me.startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
+        me.storage.loadDataRange(me, me.reloadDataCallback, me.startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
     },
 
     #
@@ -662,8 +662,8 @@ var LogbookDialog = {
     #
     setPaging: func() {
         var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
-        var maxPages = math.ceil(me.file.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
-        me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.file.getTotalLines()));
+        var maxPages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
+        me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.storage.getTotalLines()));
     },
 
     #

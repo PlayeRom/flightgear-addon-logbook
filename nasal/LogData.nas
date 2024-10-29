@@ -381,26 +381,26 @@ var LogData = {
     # @return void
     #
     fromVector: func(items) {
-        me.date         = items[File.INDEX_DATE];
-        me.time         = items[File.INDEX_TIME];
-        me.aircraft     = items[File.INDEX_AIRCRAFT];
-        me.variant      = items[File.INDEX_VARIANT];
-        me.aircraftType = items[File.INDEX_TYPE];
-        me.callsign     = items[File.INDEX_CALLSIGN];
-        me.from         = items[File.INDEX_FROM];
-        me.to           = items[File.INDEX_TO];
-        me.landing      = items[File.INDEX_LANDING] == 1;
-        me.crash        = items[File.INDEX_CRASH] == 1;
-        me.day          = items[File.INDEX_DAY];
-        me.night        = items[File.INDEX_NIGHT];
-        me.instrument   = items[File.INDEX_INSTRUMENT];
-        me.multiplayer  = items[File.INDEX_MULTIPLAYER];
-        me.swift        = items[File.INDEX_SWIFT];
-        me.duration     = items[File.INDEX_DURATION];
-        me.distance     = items[File.INDEX_DISTANCE];
-        me.fuel         = items[File.INDEX_FUEL];
-        me.maxAlt       = items[File.INDEX_MAX_ALT];
-        me.note         = items[File.INDEX_NOTE];
+        me.date         = items[StorageCsv.INDEX_DATE];
+        me.time         = items[StorageCsv.INDEX_TIME];
+        me.aircraft     = items[StorageCsv.INDEX_AIRCRAFT];
+        me.variant      = items[StorageCsv.INDEX_VARIANT];
+        me.aircraftType = items[StorageCsv.INDEX_TYPE];
+        me.callsign     = items[StorageCsv.INDEX_CALLSIGN];
+        me.from         = items[StorageCsv.INDEX_FROM];
+        me.to           = items[StorageCsv.INDEX_TO];
+        me.landing      = items[StorageCsv.INDEX_LANDING] == 1;
+        me.crash        = items[StorageCsv.INDEX_CRASH] == 1;
+        me.day          = items[StorageCsv.INDEX_DAY];
+        me.night        = items[StorageCsv.INDEX_NIGHT];
+        me.instrument   = items[StorageCsv.INDEX_INSTRUMENT];
+        me.multiplayer  = items[StorageCsv.INDEX_MULTIPLAYER];
+        me.swift        = items[StorageCsv.INDEX_SWIFT];
+        me.duration     = items[StorageCsv.INDEX_DURATION];
+        me.distance     = items[StorageCsv.INDEX_DISTANCE];
+        me.fuel         = items[StorageCsv.INDEX_FUEL];
+        me.maxAlt       = items[StorageCsv.INDEX_MAX_ALT];
+        me.note         = items[StorageCsv.INDEX_NOTE];
     },
 
     #
@@ -408,15 +408,15 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByIndex: func(index) {
-             if (index == File.INDEX_DATE)     return me.getYear();
-        else if (index == File.INDEX_AIRCRAFT) return me.aircraft;
-        else if (index == File.INDEX_VARIANT)  return me.variant;
-        else if (index == File.INDEX_TYPE)     return me.aircraftType;
-        else if (index == File.INDEX_CALLSIGN) return me.callsign;
-        else if (index == File.INDEX_FROM)     return me.from;
-        else if (index == File.INDEX_TO)       return me.to;
-        else if (index == File.INDEX_LANDING)  return me.printLanding();
-        else if (index == File.INDEX_CRASH)    return me.printCrash();
+             if (index == StorageCsv.INDEX_DATE)     return me.getYear();
+        else if (index == StorageCsv.INDEX_AIRCRAFT) return me.aircraft;
+        else if (index == StorageCsv.INDEX_VARIANT)  return me.variant;
+        else if (index == StorageCsv.INDEX_TYPE)     return me.aircraftType;
+        else if (index == StorageCsv.INDEX_CALLSIGN) return me.callsign;
+        else if (index == StorageCsv.INDEX_FROM)     return me.from;
+        else if (index == StorageCsv.INDEX_TO)       return me.to;
+        else if (index == StorageCsv.INDEX_LANDING)  return me.printLanding();
+        else if (index == StorageCsv.INDEX_CRASH)    return me.printCrash();
 
         return nil;
     },

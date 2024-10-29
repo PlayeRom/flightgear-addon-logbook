@@ -94,7 +94,7 @@ var HelpDialog = {
             var isHeader = math.mod(node.getIndex(), 2) == 0;
             var text = me.scrollDataContent.createChild("text")
                 .setText(node.getIndex() == 1
-                    ? sprintf(node.getValue(), File.FILE_VERSION)
+                    ? sprintf(node.getValue(), StorageCsv.FILE_VERSION)
                     : node.getValue()
                 )
                 .setTranslation(x, y)
