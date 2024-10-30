@@ -64,7 +64,7 @@ var LogbookDialog = {
             filters : filters,
         };
 
-        me.addonNodePath = me.addon.node.getPath();
+        me.addonNodePath = g_Addon.node.getPath();
 
         me.setPositionOnCenter();
 

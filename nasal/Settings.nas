@@ -22,14 +22,13 @@ var Settings = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @return me
     #
-    new: func(addon) {
+    new: func() {
         var me = { parents: [Settings] };
 
-        me.file = addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
-        me.propToSave = addon.node.getPath() ~ "/addon-devel/save";
+        me.file = g_Addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
+        me.propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
 
         me.load();
 

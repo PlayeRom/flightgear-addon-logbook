@@ -22,10 +22,9 @@ var Logbook = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @return me
     #
-    new: func(addon) {
+    new: func() {
         var me = { parents: [Logbook] };
 
         # Auxiliary variables
@@ -50,14 +49,14 @@ var Logbook = {
         me.multiplayer   = Multiplayer.new();
         me.landingGear   = LandingGear.new(me.addonHintsNode);
         me.filters       = Filters.new();
-        me.storage       = Storage.new(addon, me.filters);
+        me.storage       = Storage.new(me.filters);
         me.spaceShuttle  = SpaceShuttle.new();
         me.crashDetector = CrashDetector.new(me.spaceShuttle);
         me.airport       = Airport.new();
 
         me.recovery      = me.storage.isStorageSQLite()
-            ? RecoverySQLite.new(addon, me.storage)
-            : RecoveryCsv.new(addon, me.storage);
+            ? RecoverySQLite.new(me.storage)
+            : RecoveryCsv.new(me.storage);
 
         me.aircraft      = Aircraft.new();
         me.logbookDialog = LogbookDialog.new(me.storage, me.filters);

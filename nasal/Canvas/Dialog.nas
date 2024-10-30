@@ -26,7 +26,6 @@ var Dialog = {
     new: func(width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
-        me.addon    = addons.getAddon(ADDON_ID);
         me.width    = width;
         me.height   = height;
 

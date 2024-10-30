@@ -22,11 +22,10 @@ var RecoveryCsv = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @param storage - Storage object
     # @return me
     #
-    new: func(addon, storage) {
+    new: func(storage) {
         var me = {
             parents     : [RecoveryCsv],
             storage     : storage,
@@ -35,7 +34,7 @@ var RecoveryCsv = {
             recordId    : nil, # not used for CSV, but needed to unify calls with SQLite
         };
 
-        me.filePath = addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
+        me.filePath = g_Addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
         me.timer    = maketimer(60, me, me.update);
 
         me.restore();

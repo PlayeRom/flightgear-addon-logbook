@@ -17,11 +17,10 @@ var RecoverySQLite = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @param storage - Storage object
     # @return me
     #
-    new: func(addon, storage) {
+    new: func(storage) {
         var me = {
             parents     : [RecoverySQLite],
             storage     : storage,

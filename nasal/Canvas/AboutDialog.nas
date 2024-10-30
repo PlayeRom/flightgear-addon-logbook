@@ -77,14 +77,14 @@ var AboutDialog = {
         vBoxLayout.addItem(me.getLabel(
             sprintf(
                 "%s version %s - September 30, 2024",
-                me.addon.name,
-                me.addon.version.str()
+                g_Addon.name,
+                g_Addon.version.str()
             )
         ));
 
         vBoxLayout.addItem(me.getLabel("Written by:"));
 
-        foreach (var author; me.addon.authors) {
+        foreach (var author; g_Addon.authors) {
             vBoxLayout.addItem(me.getLabel(sprintf("%s", author.name)));
         }
 
@@ -92,7 +92,7 @@ var AboutDialog = {
             .setText("Open the repository website...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({"url" : me.addon.codeRepositoryUrl}));
+                fgcommand("open-browser", props.Node.new({"url" : g_Addon.codeRepositoryUrl}));
             });
 
         vBoxLayout.addItem(btnRepo);

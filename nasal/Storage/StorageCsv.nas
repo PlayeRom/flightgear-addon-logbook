@@ -58,19 +58,17 @@ var StorageCsv = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @param hash filters - Filters object
     # @return me
     #
-    new: func(addon, filters) {
+    new: func(filters) {
         var me = {
             parents : [StorageCsv],
-            addon   : addon,
             filters : filters,
         };
 
         me.filePath      = me.getPathToFile(StorageCsv.FILE_VERSION);
-        me.addonNodePath = me.addon.node.getPath();
+        me.addonNodePath = g_Addon.node.getPath();
         me.loadedData    = [];
         me.headersData   = [];
         me.withHeaders   = true;
@@ -108,7 +106,7 @@ var StorageCsv = {
     # @return string - full path to file
     #
     getPathToFile: func(version) {
-        return me.addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
+        return g_Addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
     },
 
     #

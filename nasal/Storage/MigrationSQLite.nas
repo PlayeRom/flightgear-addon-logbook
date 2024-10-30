@@ -16,19 +16,24 @@ var MigrationSQLite = {
     #
     # Constructor
     #
-    # @param  hash  db  DB handler
+    # @param  hash  storageSQLite  StorageSQLite object
     # @return me
     #
-    new: func(db) {
+    new: func(storageSQLite) {
         var me = { parents: [MigrationSQLite] };
 
-        me.db = db;
+        me.dbHandler = storageSQLite.dbHandler;
 
         me.migrations = {
-            # TODO: add name and func as a next migration, example:
-            # "2024-10-30-migration-name": func {
-            #     # TODO: add migration code here
-            # },
+            "M2024_10_30_08_44_CreateMigrationsTable": func() {
+                var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storageSQLite);
+                migration.up();
+            },
+            "M2024_10_30_31_01_CreateLogbooksTable": func() {
+                var migration = M2024_10_30_31_01_CreateLogbooksTable.new(storageSQLite);
+                migration.up();
+            },
+            # Add next migration here...
         };
 
         return me;
@@ -40,9 +45,11 @@ var MigrationSQLite = {
     #
     # @return void
     #
-    doMigration: func() {
+    migrate: func() {
         foreach (var migrationName; keys(me.migrations)) {
             if (!me.isMigrationExists(migrationName)) {
+                logprint(LOG_ALERT, "Logbook Add-on - call migration: ", migrationName);
+
                 me.migrations[migrationName]();
 
                 me.confirmMigration(migrationName);
@@ -51,23 +58,43 @@ var MigrationSQLite = {
     },
 
     #
+    # Check if the table in the database exists
+    #
+    # @return bool  True if the table already exists
+    #
+    isTableExist: func(tableName) {
+        var query = sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", tableName);
+        var result = sqlite.exec(me.dbHandler, query);
+        return size(result);
+    },
+
+    #
+    # Check if the specified migration has already been invoked
+    #
     # @param  string  migrationName
     # @return bool
     #
     isMigrationExists: func(migrationName) {
+        if (!me.isTableExist(StorageSQLite.TABLE_MIGRATIONS)) {
+            # We don't even have the migrations table yet, this is when we first run it
+            return false;
+        }
+
         var query = sprintf("SELECT * FROM `%s` WHERE `migration` = ?", StorageSQLite.TABLE_MIGRATIONS);
-        var stmt = sqlite.prepare(me.db, query);
-        var rows = sqlite.exec(me.db, stmt, migrationName);
+        var stmt = sqlite.prepare(me.dbHandler, query);
+        var rows = sqlite.exec(me.dbHandler, stmt, migrationName);
         return size(rows);
     },
 
+    #
+    # Save the migration name to the migrations table to confirm that the migration was invoked
     #
     # @param  string  migrationName
     # @return void
     #
     confirmMigration: func(migrationName) {
         var query = sprintf("INSERT INTO `%s` VALUES (NULL, ?)", StorageSQLite.TABLE_MIGRATIONS);
-        var stmt = sqlite.prepare(me.db, query);
-        sqlite.exec(me.db, stmt, migrationName);
+        var stmt = sqlite.prepare(me.dbHandler, query);
+        sqlite.exec(me.dbHandler, stmt, migrationName);
     },
 };

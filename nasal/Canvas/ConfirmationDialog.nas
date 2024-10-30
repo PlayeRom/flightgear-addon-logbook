@@ -39,7 +39,7 @@ var ConfirmationDialog = {
 
         me.logIndex      = nil;
         me.parentObj     = nil;
-        me.addonNodePath = me.addon.node.getPath();
+        me.addonNodePath = g_Addon.node.getPath();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);

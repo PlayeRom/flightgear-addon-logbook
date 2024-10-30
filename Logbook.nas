@@ -18,6 +18,11 @@ var MY_LOG_LEVEL = LOG_INFO;
 var ADDON_ID = "org.flightgear.addons.logbook";
 
 #
+# Global object of addons.Addon
+#
+var g_Addon = nil;
+
+#
 # Global object of Settings
 #
 var g_Settings = nil;
@@ -45,6 +50,8 @@ var g_isThreadPending = false;
 # @return void
 #
 var init = func(addon) {
+    g_Addon = addon;
+
     # Disable Logbook menu because we have to load data first in thread
     gui.menuEnable("logbook-addon", false);
 
@@ -52,8 +59,8 @@ var init = func(addon) {
     gui.menuEnable("logbook-addon-help", false);
     gui.menuEnable("logbook-addon-about", false);
 
-    g_Settings = Settings.new(addon);
-    g_Sound    = Sound.new(addon);
+    g_Settings = Settings.new();
+    g_Sound    = Sound.new();
 
     # Delay loading of the whole addon so as not to break the MCDUs for aircraft like A320, A330. The point is that,
     # for example, the A320 hard-coded the texture index from /canvas/by-index/texture[15]. But this add-on creates its
@@ -61,7 +68,7 @@ var init = func(addon) {
     # the texture from the add-on. So thanks to this delay, the textures of the plane will be created first, and then
     # the textures of this add-on.
     var delayTimer = maketimer(3, func() {
-        g_Logbook = Logbook.new(addon);
+        g_Logbook = Logbook.new();
 
         gui.menuEnable("logbook-addon-help", true);
         gui.menuEnable("logbook-addon-about", true);

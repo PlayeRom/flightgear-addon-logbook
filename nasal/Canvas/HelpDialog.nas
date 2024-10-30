@@ -62,7 +62,7 @@ var HelpDialog = {
         );
 
         me.helpTexts = std.Vector.new();
-        me.propHelpText = props.globals.getNode(me.addon.node.getPath() ~ "/addon-devel/help-text");
+        me.propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
 
         me.reDrawTexts(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
         me.drawBottomBar();

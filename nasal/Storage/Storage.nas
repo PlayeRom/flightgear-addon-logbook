@@ -16,21 +16,19 @@ var Storage = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @param hash filters - Filters object
     # @return me
     #
-    new: func(addon, filters) {
+    new: func(filters) {
         var me = {
             parents : [Storage],
-            addon   : addon,
             filters : filters,
         };
 
         # TODO: drop support for StorageCsv when 2024 will be widely used
         me.handler = Utils.isFG2024Version()
-            ? StorageSQLite.new(addon, filters)
-            : StorageCsv.new(addon, filters);
+            ? StorageSQLite.new(filters)
+            : StorageCsv.new(filters);
 
         if (me.isStorageSQLite()) {
             gui.menuEnable("logbook-addon-export-csv", true);

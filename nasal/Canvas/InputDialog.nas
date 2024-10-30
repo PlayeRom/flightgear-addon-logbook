@@ -38,7 +38,7 @@ var InputDialog = {
 
         me.bgImage.hide();
 
-        me.addonNodePath = me.addon.node.getPath();
+        me.addonNodePath = g_Addon.node.getPath();
 
         me.allDataIndex    = nil; # index of log entry in whole CSV file
         me.header          = nil; # header name

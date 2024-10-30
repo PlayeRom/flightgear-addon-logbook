@@ -23,14 +23,12 @@ var StorageSQLite = {
     #
     # Constructor
     #
-    # @param hash addon - addons.Addon object
     # @param hash filters - Filters object
     # @return me
     #
-    new: func(addon, filters) {
+    new: func(filters) {
         var me = {
             parents : [StorageSQLite],
-            addon   : addon,
             filters : filters,
         };
 
@@ -86,7 +84,7 @@ var StorageSQLite = {
     # @return string  Full path to sqlite file
     #
     getPathToFile: func() {
-        return me.addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
+        return g_Addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
     },
 
     #
@@ -119,13 +117,7 @@ var StorageSQLite = {
 
         me.dbHandler = sqlite.open(me.filePath);
 
-        if (!me.isTableExist()) {
-            me.createTableLogbooks();
-            me.createTableMigrations();
-            me.importCsvToDb();
-        }
-
-        MigrationSQLite.new(me.dbHandler).doMigration();
+        MigrationSQLite.new(me).migrate();
     },
 
     #
@@ -136,120 +128,6 @@ var StorageSQLite = {
             sqlite.close(me.dbHandler);
             me.dbHandler = nil;
         }
-    },
-
-    #
-    # Check if the table in the database exists
-    #
-    # @return bool  True if the table already exists
-    #
-    isTableExist: func() {
-        var query = sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", StorageSQLite.TABLE_LOGBOOKS);
-        var result = sqlite.exec(me.dbHandler, query);
-        return size(result) > 0;
-    },
-
-    #
-    # Create a `logbooks` table in the database
-    #
-    # @return void
-    #
-    createTableLogbooks: func() {
-        var columns = [
-            { name: "id",            type: "INTEGER PRIMARY KEY" },
-            { name: "date",          type: "TEXT" },
-            { name: "time",          type: "TEXT" },
-            { name: "aircraft",      type: "TEXT" },
-            { name: "variant",       type: "TEXT" },
-            { name: "aircraft_type", type: "TEXT" },
-            { name: "callsign",      type: "TEXT" },
-            { name: "from",          type: "TEXT" },
-            { name: "to",            type: "TEXT" },
-            { name: "landing",       type: "INTEGER" },
-            { name: "crash",         type: "INTEGER" },
-            { name: "day",           type: "REAL" },
-            { name: "night",         type: "REAL" },
-            { name: "instrument",    type: "REAL" },
-            { name: "multiplayer",   type: "REAL" },
-            { name: "swift",         type: "REAL" },
-            { name: "duration",      type: "REAL" },
-            { name: "distance",      type: "REAL" },
-            { name: "fuel",          type: "REAL" },
-            { name: "max_alt",       type: "REAL" },
-            { name: "note",          type: "TEXT" },
-        ];
-
-        me.createTable(StorageSQLite.TABLE_LOGBOOKS, columns);
-    },
-
-    #
-    # Create a `migrations` table in the database
-    #
-    # @return void
-    #
-    createTableMigrations: func() {
-        var columns = [
-            { name: "id",        type: "INTEGER PRIMARY KEY" },
-            { name: "migration", type: "TEXT" },
-        ];
-
-        me.createTable(StorageSQLite.TABLE_MIGRATIONS, columns);
-    },
-
-    #
-    # Create table in the database
-    #
-    # @param  string  tableName
-    # @param  hash  columns  Vector of hashes with column `name` and `type`
-    # @return void
-    #
-    createTable: func(tableName, columns) {
-        var queryCols = "";
-        foreach (var item; columns) {
-            if (size(queryCols)) {
-                queryCols ~= ", ";
-            }
-
-            queryCols ~= sprintf("`%s` %s", item.name, item.type);
-        }
-
-        var query = sprintf("CREATE TABLE %s (%s)", tableName, queryCols);
-        sqlite.exec(me.dbHandler, query);
-    },
-
-    #
-    # Import data from CSV file to DB
-    #
-    # @return void
-    #
-    importCsvToDb: func() {
-        var csvFile = me.addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, StorageCsv.FILE_VERSION);
-        if (!Utils.fileExists(csvFile)) {
-            logprint(LOG_ALERT, "Logbook Add-on, importCsvToDb failed, file \"", csvFile, "\" doesn't exist");
-            return;
-        }
-
-        var file = io.open(csvFile, "r");
-
-        var counter = -1; # from -1 for don't count the headers
-        while ((line = io.readln(file)) != nil) {
-            if (line == "" or line == nil) {
-                continue; # skip empty row
-            }
-
-            if (counter > -1) { # skip headers
-                var items = split(",", Utils.removeQuotes(line));
-
-                var logData = LogData.new();
-                logData.fromVector(items);
-
-                me.addItem(logData);
-            }
-
-            counter += 1;
-        }
-
-        io.close(file);
     },
 
     #
@@ -274,7 +152,7 @@ var StorageSQLite = {
         var minute = getprop("/sim/time/real/minute");
         var second = getprop("/sim/time/real/second");
 
-        var csvFile = sprintf("%s/logbook-export-%d-%02d-%02d-%02d-%02d-%02d.csv", me.addon.storagePath, year, month, day, hour, minute, second);
+        var csvFile = sprintf("%s/logbook-export-%d-%02d-%02d-%02d-%02d-%02d.csv", g_Addon.storagePath, year, month, day, hour, minute, second);
 
         var file = io.open(csvFile, "w");
 
