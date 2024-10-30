@@ -29,8 +29,8 @@ var MigrationSQLite = {
                 var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storageSQLite);
                 migration.up();
             },
-            "M2024_10_30_31_01_CreateLogbooksTable": func() {
-                var migration = M2024_10_30_31_01_CreateLogbooksTable.new(storageSQLite);
+            "M2024_10_30_13_01_CreateLogbooksTable": func() {
+                var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storageSQLite);
                 migration.up();
             },
             # Add next migration here...

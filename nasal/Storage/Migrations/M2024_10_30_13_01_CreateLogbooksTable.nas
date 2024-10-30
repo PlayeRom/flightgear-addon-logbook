@@ -9,7 +9,7 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
-var M2024_10_30_31_01_CreateLogbooksTable = {
+var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # Constructor
     #
@@ -19,7 +19,7 @@ var M2024_10_30_31_01_CreateLogbooksTable = {
     new: func(storageSQLite) {
         return {
             parents : [
-                M2024_10_30_31_01_CreateLogbooksTable,
+                M2024_10_30_13_01_CreateLogbooksTable,
                 MigrationBase.new(storageSQLite.dbHandler),
             ],
             storageSQLite: storageSQLite,

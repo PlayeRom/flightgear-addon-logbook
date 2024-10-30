@@ -37,7 +37,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Utils",
         "nasal/Storage/Migrations/MigrationBase",
         "nasal/Storage/Migrations/M2024_10_30_08_44_CreateMigrationsTable",
-        "nasal/Storage/Migrations/M2024_10_30_31_01_CreateLogbooksTable",
+        "nasal/Storage/Migrations/M2024_10_30_13_01_CreateLogbooksTable",
         "nasal/Storage/MigrationCsv",
         "nasal/Storage/MigrationSQLite",
         "nasal/Storage/StorageCsv",
