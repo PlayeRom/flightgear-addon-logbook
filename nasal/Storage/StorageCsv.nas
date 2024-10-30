@@ -64,30 +64,30 @@ var StorageCsv = {
     new: func(filters) {
         var me = {
             parents : [StorageCsv],
-            filters : filters,
+            _filters: filters,
         };
 
-        me.filePath      = me.getPathToFile(StorageCsv.FILE_VERSION);
-        me.addonNodePath = g_Addon.node.getPath();
-        me.loadedData    = [];
-        me.headersData   = [];
-        me.withHeaders   = true;
-        me.allData       = std.Vector.new();
+        me._filePath      = me._getPathToFile(StorageCsv.FILE_VERSION);
+        me._addonNodePath = g_Addon.node.getPath();
+        me._loadedData    = [];
+        me._headersData   = [];
+        me._withHeaders   = true;
+        me._allData       = std.Vector.new();
 
         # Temporary filtered data as a cache for optimized viewing of large logs
-        me.cachedData    = std.Vector.new();
+        me._cachedData    = std.Vector.new();
 
-        me.totals        = [];
-        me.resetTotals();
+        me._totals        = [];
+        me._resetTotals();
 
         # Total lines in CSV file (without headers)
-        me.totalLines    = -1;
+        me._totalLines    = -1;
 
-        me.saveHeaders();
+        me._saveHeaders();
 
         # Callback for return results of loadDataRange
-        me.objCallback = nil;
-        me.callback    = func;
+        me._objCallback = nil;
+        me._callback    = func;
 
         return me;
     },
@@ -105,16 +105,16 @@ var StorageCsv = {
     # @param string version
     # @return string - full path to file
     #
-    getPathToFile: func(version) {
+    _getPathToFile: func(version) {
         return g_Addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
     },
 
     #
     # @return void
     #
-    resetTotals: func() {
+    _resetTotals: func() {
         # Total amount
-        me.totals = [
+        me._totals = [
             0, # Landing
             0, # Crash
             0, # Day
@@ -132,7 +132,7 @@ var StorageCsv = {
     #
     # @return bool - Return true if migration was done
     #
-    migrateVersion: func() {
+    _migrateVersion: func() {
         var migrationCsv = MigrationCsv.new();
 
         var olderReleases = [
@@ -145,11 +145,11 @@ var StorageCsv = {
         ];
 
         foreach (var oldVersion; olderReleases) {
-            var oldFile = me.getPathToFile(oldVersion);
+            var oldFile = me._getPathToFile(oldVersion);
             if (Utils.fileExists(oldFile)) {
                 if (oldVersion == "1.0.1" or oldVersion == "1.0.0") {
                     # If there is no version 2 file, but older ones exist, migrate to version 2 first
-                    var file_v2 = me.getPathToFile("2");
+                    var file_v2 = me._getPathToFile("2");
                     migrationCsv.migrateToFileVersion_2(oldFile, file_v2);
 
                     # Prepare variables to next migration
@@ -158,7 +158,7 @@ var StorageCsv = {
                 }
 
                 if (oldVersion == "2") {
-                    var file_v3 = me.getPathToFile("3");
+                    var file_v3 = me._getPathToFile("3");
                     migrationCsv.migrateToFileVersion_3(oldFile, file_v3);
                     # Prepare variables to next migration
                     oldFile = file_v3;
@@ -166,7 +166,7 @@ var StorageCsv = {
                 }
 
                 if (oldVersion == "3") {
-                    var file_v4 = me.getPathToFile("4");
+                    var file_v4 = me._getPathToFile("4");
                     migrationCsv.migrateToFileVersion_4(oldFile, file_v4);
                     # Prepare variables to next migration
                     oldFile = file_v4;
@@ -174,7 +174,7 @@ var StorageCsv = {
                 }
 
                 if (oldVersion == "4") {
-                    migrationCsv.migrateToFileVersion_5(oldFile, me.filePath);
+                    migrationCsv.migrateToFileVersion_5(oldFile, me._filePath);
                 }
 
                 return true;
@@ -191,7 +191,7 @@ var StorageCsv = {
     # @param string newFile
     # @return void
     #
-    copyFile: func(oldFile, newFile) {
+    _copyFile: func(oldFile, newFile) {
         var content = io.readfile(oldFile);
 
         var file = io.open(newFile, "w");
@@ -204,11 +204,11 @@ var StorageCsv = {
     #
     # @return void
     #
-    saveHeaders: func() {
-        if (!Utils.fileExists(me.filePath)) {
-            if (!me.migrateVersion()) {
-                var file = io.open(me.filePath, "a");
-                io.write(file, me.getHeaderLine() ~ "\n");
+    _saveHeaders: func() {
+        if (!Utils.fileExists(me._filePath)) {
+            if (!me._migrateVersion()) {
+                var file = io.open(me._filePath, "a");
+                io.write(file, me._getHeaderLine() ~ "\n");
                 io.close(file);
             }
         }
@@ -217,7 +217,7 @@ var StorageCsv = {
     #
     # @return string
     #
-    getHeaderLine: func() {
+    _getHeaderLine: func() {
         return 'Date,' ~
                'Time,' ~
                'Aircraft,' ~
@@ -250,17 +250,17 @@ var StorageCsv = {
     # @return void
     #
     saveLogData: func(logData, id = nil, onlyIO = 0) {
-        var file = io.open(me.filePath, "a");
+        var file = io.open(me._filePath, "a");
         me.addItem(logData, file);
         io.close(file);
 
         if (!onlyIO) {
-            me.allData.append(logData);
-            me.filters.append(logData);
-            me.filters.sort();
-            me.totalLines += 1;
-            me.countTotals(logData.toVector());
-            me.filters.dirty = true;
+            me._allData.append(logData);
+            me._filters.append(logData);
+            me._filters.sort();
+            me._totalLines += 1;
+            me._countTotals(logData.toVector());
+            me._filters.dirty = true;
         }
     },
 
@@ -299,29 +299,29 @@ var StorageCsv = {
     # @return void
     #
     loadAllData: func() {
-        thread.newthread(func { me.loadAllDataThread(); });
+        thread.newthread(func { me._loadAllData(); });
     },
 
     #
     # @return void
     #
-    loadAllDataThread: func() {
-        me.allData.clear();
-        me.cachedData.clear();
-        me.filters.clear();
-        me.resetTotals();
+    _loadAllData: func() {
+        me._allData.clear();
+        me._cachedData.clear();
+        me._filters.clear();
+        me._resetTotals();
 
-        var file = io.open(me.filePath, "r");
+        var file = io.open(me._filePath, "r");
 
-        me.totalLines = -1; # don't count the headers
+        me._totalLines = -1; # don't count the headers
         var line = nil;
         while ((line = io.readln(file)) != nil) {
             if (line == "" or line == nil) { # skip empty row
                 continue;
             }
 
-            if (me.totalLines == -1) { # headers
-                me.headersData = split(",", Utils.removeQuotes(line));
+            if (me._totalLines == -1) { # headers
+                me._headersData = split(",", Utils.removeQuotes(line));
             }
             else { # data
                 var items = split(",", Utils.removeQuotes(line));
@@ -329,26 +329,26 @@ var StorageCsv = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me.countTotals(items);
+                me._countTotals(items);
 
-                me.filters.append(logData);
-                me.allData.append(logData);
+                me._filters.append(logData);
+                me._allData.append(logData);
 
-                me.cachedData.append({
-                    allDataIndex : me.totalLines,
+                me._cachedData.append({
+                    allDataIndex : me._totalLines,
                     logData      : logData,
                 });
             }
 
-            me.totalLines += 1;
+            me._totalLines += 1;
         }
 
         io.close(file);
 
-        me.filters.sort();
+        me._filters.sort();
 
         # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
-        me.filters.dirty = false;
+        me._filters.dirty = false;
 
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon", true);
@@ -365,20 +365,20 @@ var StorageCsv = {
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
-        me.objCallback = objCallback;
-        me.callback    = callback;
-        me.withHeaders = withHeaders;
+        me._objCallback = objCallback;
+        me._callback    = callback;
+        me._withHeaders = withHeaders;
 
-        if (!me.filters.dirty and me.cachedData.size() > 0) {
+        if (!me._filters.dirty and me._cachedData.size() > 0) {
             # Use a faster loop because we know that nothing has changed in the data
 
-            me.loadedData = [];
+            me._loadedData = [];
             var counter = 0;
 
-            foreach (var hash; me.cachedData.vector[start:]) {
+            foreach (var hash; me._cachedData.vector[start:]) {
                 var vectorLogData = hash.logData.toVector();
                 if (counter < count) {
-                    append(me.loadedData, {
+                    append(me._loadedData, {
                         allDataIndex : hash.allDataIndex,
                         data         : vectorLogData,
                     });
@@ -390,19 +390,19 @@ var StorageCsv = {
             }
 
             # Add totals row to the end
-            me.appendTotalsRow();
+            me._appendTotalsRow();
 
             # We have not used the thread here, but we must point out that it has ended
             g_isThreadPending = false;
 
-            me.loadDataRangeThreadFinish();
+            me._loadDataRangeThreadFinish();
         }
         else {
             # Run more complex loop with filters in a separate thread
             Thread.new().run(
-                func { me.loadDataRangeThread(start, count); },
+                func { me._loadDataRange(start, count); },
                 me,
-                me.loadDataRangeThreadFinish,
+                me._loadDataRangeThreadFinish,
                 false
             );
         }
@@ -413,33 +413,33 @@ var StorageCsv = {
     # @param int count - How many rows should be returned
     # @return void
     #
-    loadDataRangeThread: func(start, count) {
-        me.loadedData = [];
+    _loadDataRange: func(start, count) {
+        me._loadedData = [];
 
         var counter = 0;
 
         # Use a more complex loop because we know we have to recalculate everything from scratch
 
         var allDataIndex = 0;
-        me.cachedData.clear();
-        me.resetTotals();
-        me.totalLines = 0;
+        me._cachedData.clear();
+        me._resetTotals();
+        me._totalLines = 0;
 
-        foreach (var logData; me.allData.vector) {
+        foreach (var logData; me._allData.vector) {
             var vectorLogData = logData.toVector();
-            if (me.filters.isAllowedByFilter(logData)) {
-                if (me.totalLines >= start and counter < count) {
-                    append(me.loadedData, {
+            if (me._filters.isAllowedByFilter(logData)) {
+                if (me._totalLines >= start and counter < count) {
+                    append(me._loadedData, {
                         allDataIndex : allDataIndex,
                         data         : vectorLogData,
                     });
                     counter += 1;
                 }
 
-                me.totalLines += 1;
-                me.countTotals(vectorLogData);
+                me._totalLines += 1;
+                me._countTotals(vectorLogData);
 
-                me.cachedData.append({
+                me._cachedData.append({
                     allDataIndex : allDataIndex,
                     logData      : logData,
                 });
@@ -449,21 +449,21 @@ var StorageCsv = {
         }
 
         # Add totals row to the end
-        me.appendTotalsRow();
+        me._appendTotalsRow();
 
-        me.filters.dirty = false;
+        me._filters.dirty = false;
 
         g_isThreadPending = false;
     },
 
     #
-    # Callback function when the loadDataRangeThread finishes work
+    # Callback function when the _loadDataRange finishes work
     #
     # @return void
     #
-    loadDataRangeThreadFinish: func() {
+    _loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me.callback, [me.loadedData, me.withHeaders], me.objCallback);
+        call(me._callback, [me._loadedData, me._withHeaders], me._objCallback);
     },
 
     #
@@ -471,8 +471,8 @@ var StorageCsv = {
     #
     # @return void
     #
-    appendTotalsRow: func() {
-        append(me.loadedData, {
+    _appendTotalsRow: func() {
+        append(me._loadedData, {
             allDataIndex : -1,
             data         : [
                 "", # <- empty columns before "Totals:" text
@@ -486,10 +486,10 @@ var StorageCsv = {
             ],
         });
 
-        forindex (var index; me.totals) {
+        forindex (var index; me._totals) {
             append(
-                me.loadedData[size(me.loadedData) - 1].data,
-                sprintf(StorageCsv.TOTAL_FORMATS[index], me.totals[index])
+                me._loadedData[size(me._loadedData) - 1].data,
+                sprintf(StorageCsv.TOTAL_FORMATS[index], me._totals[index])
             );
         }
     },
@@ -510,21 +510,21 @@ var StorageCsv = {
             return false;
         }
 
-        if (rowIndex < 0 or rowIndex >= me.allData.size()) {
+        if (rowIndex < 0 or rowIndex >= me._allData.size()) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, index out of range");
             return false;
         }
 
-        var headerIndex = me.getHeaderIndex(header);
+        var headerIndex = me._getHeaderIndex(header);
         if (headerIndex == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
             return false;
         }
 
         return Thread.new().run(
-            func { me.editDataThread(rowIndex, header, value, headerIndex); },
+            func { me._editData(rowIndex, header, value, headerIndex); },
             me,
-            me.editThreadFinish
+            me._editThreadFinish
         );
     },
 
@@ -535,14 +535,14 @@ var StorageCsv = {
     # @param int headerIndex
     # @return void
     #
-    editDataThread: func(rowIndex, header, value, headerIndex) {
-        var items = me.allData.vector[rowIndex].toVector();
+    _editData: func(rowIndex, header, value, headerIndex) {
+        var items = me._allData.vector[rowIndex].toVector();
         items[headerIndex] = value;
-        me.allData.vector[rowIndex].fromVector(items);
+        me._allData.vector[rowIndex].fromVector(items);
 
         var recalcTotals = headerIndex >= StorageCsv.INDEX_LANDING and headerIndex <= StorageCsv.INDEX_MAX_ALT;
-        var resetFilters = me.filters.isColumnIndexFiltered(headerIndex);
-        me.saveAllData(recalcTotals, resetFilters);
+        var resetFilters = me._filters.isColumnIndexFiltered(headerIndex);
+        me._saveAllData(recalcTotals, resetFilters);
     },
 
     #
@@ -550,11 +550,11 @@ var StorageCsv = {
     #
     # @return void
     #
-    editThreadFinish: func() {
+    _editThreadFinish: func() {
         gui.popupTip("The change has been saved!");
 
         # Get signal to reload data
-        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
     },
 
     #
@@ -562,40 +562,40 @@ var StorageCsv = {
     # @param bool resetFilters - Set true for reload filters, because data can changed
     # @return void
     #
-    saveAllData: func(recalcTotals, resetFilters) {
+    _saveAllData: func(recalcTotals, resetFilters) {
         # Do backup
-        me.copyFile(me.filePath, me.filePath ~ ".bak");
+        me._copyFile(me._filePath, me._filePath ~ ".bak");
 
-        var file = io.open(me.filePath, "w");
+        var file = io.open(me._filePath, "w");
 
         # Save headers
-        io.write(file, me.getHeaderLine() ~ "\n");
+        io.write(file, me._getHeaderLine() ~ "\n");
 
         if (recalcTotals) {
-            me.resetTotals();
+            me._resetTotals();
         }
 
         if (resetFilters) {
-            me.filters.clear();
+            me._filters.clear();
         }
 
         # Save data
-        foreach (var logData; me.allData.vector) {
+        foreach (var logData; me._allData.vector) {
             me.addItem(logData, file);
 
             if (recalcTotals) {
-                me.countTotals(logData.toVector());
+                me._countTotals(logData.toVector());
             }
 
             if (resetFilters) {
-                me.filters.append(logData);
+                me._filters.append(logData);
             }
         }
 
         io.close(file);
 
         if (resetFilters) {
-            me.filters.sort();
+            me._filters.sort();
         }
     },
 
@@ -605,13 +605,13 @@ var StorageCsv = {
     # @param string headerText
     # @return int|nil
     #
-    getHeaderIndex: func(headerText) {
+    _getHeaderIndex: func(headerText) {
         if (g_isThreadPending) {
             return nil;
         }
 
         var index = 0;
-        foreach (var text; me.headersData) {
+        foreach (var text; me._headersData) {
             if (text == headerText) {
                 return index;
             }
@@ -623,23 +623,23 @@ var StorageCsv = {
     },
 
     #
-    # Increase values in me.totals vector with given items data
+    # Increase values in me._totals vector with given items data
     #
     # @param vector items
     # @return void
     #
-    countTotals: func(items) {
+    _countTotals: func(items) {
         var index = 0;
         foreach (var text; items) {
-            var totalIndex = me.getTotalIndexFromColumnIndex(index);
+            var totalIndex = me._getTotalIndexFromColumnIndex(index);
             if (totalIndex != -1) {
                 if (index == StorageCsv.INDEX_MAX_ALT) {
-                    if (text > me.totals[totalIndex]) {
-                        me.totals[totalIndex] = text;
+                    if (text > me._totals[totalIndex]) {
+                        me._totals[totalIndex] = text;
                     }
                 }
                 else {
-                    me.totals[totalIndex] += (text == "" ? 0 : text);
+                    me._totals[totalIndex] += (text == "" ? 0 : text);
                 }
             }
 
@@ -651,9 +651,9 @@ var StorageCsv = {
     # @param int columnIndex
     # @return int
     #
-    getTotalIndexFromColumnIndex: func(columnIndex) {
-             if (columnIndex == StorageCsv.INDEX_LANDING)     return 0; # me.totals[0]
-        else if (columnIndex == StorageCsv.INDEX_CRASH)       return 1; # me.totals[1] etc.
+    _getTotalIndexFromColumnIndex: func(columnIndex) {
+             if (columnIndex == StorageCsv.INDEX_LANDING)     return 0; # me._totals[0]
+        else if (columnIndex == StorageCsv.INDEX_CRASH)       return 1; # me._totals[1] etc.
         else if (columnIndex == StorageCsv.INDEX_DAY)         return 2;
         else if (columnIndex == StorageCsv.INDEX_NIGHT)       return 3;
         else if (columnIndex == StorageCsv.INDEX_INSTRUMENT)  return 4;
@@ -673,7 +673,7 @@ var StorageCsv = {
     # @return int
     #
     getTotalLines: func() {
-        return me.totalLines;
+        return me._totalLines;
     },
 
     #
@@ -682,7 +682,7 @@ var StorageCsv = {
     # @return vector
     #
     getHeadersData: func() {
-        return me.headersData;
+        return me._headersData;
     },
 
     #
@@ -692,7 +692,7 @@ var StorageCsv = {
     # @return hash|nil
     #
     getLogData: func(index) {
-        if (index == nil or index < 0 or index >= me.allData.size()) {
+        if (index == nil or index < 0 or index >= me._allData.size()) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
@@ -704,7 +704,7 @@ var StorageCsv = {
 
         return {
             allDataIndex : index,
-            data         : me.allData.vector[index].toVector()
+            data         : me._allData.vector[index].toVector()
         };
     },
 
@@ -713,15 +713,15 @@ var StorageCsv = {
     # @return bool
     #
     deleteLog: func(index) {
-        if (index < 0 or index >= me.allData.size()) {
+        if (index < 0 or index >= me._allData.size()) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - index out of range in deleteLog");
             return false;
         }
 
         return Thread.new().run(
-            func { me.deleteLogThread(index); },
+            func { me._deleteLog(index); },
             me,
-            me.deleteThreadFinish
+            me._deleteThreadFinish
         );
     },
 
@@ -729,14 +729,14 @@ var StorageCsv = {
     # @param int index - Index to delete
     # @return void
     #
-    deleteLogThread: func(index) {
-        me.allData.pop(index);
+    _deleteLog: func(index) {
+        me._allData.pop(index);
 
-        me.totalLines -= 1;
+        me._totalLines -= 1;
 
         var recalcTotals = true;
         var resetFilters = true;
-        me.saveAllData(recalcTotals, resetFilters);
+        me._saveAllData(recalcTotals, resetFilters);
     },
 
     #
@@ -744,11 +744,11 @@ var StorageCsv = {
     #
     # @return void
     #
-    deleteThreadFinish: func() {
+    _deleteThreadFinish: func() {
         gui.popupTip("The log has been deleted!");
 
         # Get signal to reload data
-        setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
-        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+        setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
+        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
     },
 };

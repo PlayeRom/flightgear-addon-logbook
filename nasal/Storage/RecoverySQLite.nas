@@ -23,16 +23,16 @@ var RecoverySQLite = {
     new: func(storage) {
         var me = {
             parents     : [RecoverySQLite],
-            storage     : storage,
-            objCallback : nil,
-            callback    : nil,
-            recordId    : nil,
-            inserted    : false,
+            _storage    : storage,
+            _objCallback: nil,
+            _callback   : nil,
+            _recordId   : nil,
+            _inserted   : false,
         };
 
-        me.timer = maketimer(60, me, me.update);
+        me._timer = maketimer(60, me, me._update);
 
-        me.storage.loadAllData();
+        me._storage.loadAllData();
 
         return me;
     },
@@ -56,16 +56,16 @@ var RecoverySQLite = {
 
         me.clear();
 
-        me.objCallback = objCallback;
-        me.callback = callback;
-        me.timer.start();
+        me._objCallback = objCallback;
+        me._callback = callback;
+        me._timer.start();
     },
 
     #
     # @return void
     #
     stop: func() {
-        me.timer.stop();
+        me._timer.stop();
     },
 
     #
@@ -73,8 +73,8 @@ var RecoverySQLite = {
     #
     # @return void
     #
-    update: func() {
-        call(me.callback, [], me.objCallback);
+    _update: func() {
+        call(me._callback, [], me._objCallback);
     },
 
     #
@@ -84,18 +84,18 @@ var RecoverySQLite = {
     # @return void
     #
     save: func(logData) {
-        if (me.recordId == nil) {
+        if (me._recordId == nil) {
             # insert
-            if (!me.inserted) {
+            if (!me._inserted) {
                 # The inserted protects us from making more than one insert,
                 # if there is no ID after the first insert then something is broken
-                me.recordId = me.storage.addItem(logData);
-                me.inserted = true;
+                me._recordId = me._storage.addItem(logData);
+                me._inserted = true;
             }
         }
         else {
             # update
-            me.storage.updateItem(logData, me.recordId);
+            me._storage.updateItem(logData, me._recordId);
         }
     },
 
@@ -105,7 +105,14 @@ var RecoverySQLite = {
     # @return void
     #
     clear: func() {
-        me.recordId = nil;
-        me.inserted = false;
+        me._recordId = nil;
+        me._inserted = false;
+    },
+
+    #
+    # @return int|nil
+    #
+    getRecordId: func() {
+        return me._recordId;
     },
 };

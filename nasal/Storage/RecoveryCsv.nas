@@ -28,16 +28,15 @@ var RecoveryCsv = {
     new: func(storage) {
         var me = {
             parents     : [RecoveryCsv],
-            storage     : storage,
-            objCallback : nil,
-            callback    : nil,
-            recordId    : nil, # not used for CSV, but needed to unify calls with SQLite
+            _storage    : storage,
+            _objCallback: nil,
+            _callback   : nil,
         };
 
-        me.filePath = g_Addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
-        me.timer    = maketimer(60, me, me.update);
+        me._filePath = g_Addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
+        me._timer    = maketimer(60, me, me._update);
 
-        me.restore();
+        me._restore();
 
         return me;
     },
@@ -59,16 +58,16 @@ var RecoveryCsv = {
     start: func(objCallback, callback) {
         me.stop();
 
-        me.objCallback = objCallback;
-        me.callback = callback;
-        me.timer.start();
+        me._objCallback = objCallback;
+        me._callback = callback;
+        me._timer.start();
     },
 
     #
     # @return void
     #
     stop: func() {
-        me.timer.stop();
+        me._timer.stop();
     },
 
     #
@@ -76,8 +75,8 @@ var RecoveryCsv = {
     #
     # @return void
     #
-    update: func() {
-        call(me.callback, [], me.objCallback);
+    _update: func() {
+        call(me._callback, [], me._objCallback);
     },
 
     #
@@ -87,8 +86,8 @@ var RecoveryCsv = {
     # @return void
     #
     save: func(logData) {
-        var file = io.open(me.filePath, "w");
-        me.storage.addItem(logData, file);
+        var file = io.open(me._filePath, "w");
+        me._storage.addItem(logData, file);
         io.close(file);
     },
 
@@ -98,8 +97,17 @@ var RecoveryCsv = {
     # @return void
     #
     clear: func() {
-        var file = io.open(me.filePath, "w");
+        var file = io.open(me._filePath, "w");
         io.close(file);
+    },
+
+    #
+    # Not used for CSV, but needed to unify calls with SQLite
+    #
+    # @return nil
+    #
+    getRecordId: func() {
+        return nil;
     },
 
     #
@@ -108,9 +116,9 @@ var RecoveryCsv = {
     #
     # @return void
     #
-    restore: func() {
-        if (Utils.fileExists(me.filePath)) {
-            var file = io.open(me.filePath, "r");
+    _restore: func() {
+        if (Utils.fileExists(me._filePath)) {
+            var file = io.open(me._filePath, "r");
             var line = io.readln(file);
             io.close(file);
 
@@ -119,12 +127,12 @@ var RecoveryCsv = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me.storage.saveLogData(logData, nil, true);
+                me._storage.saveLogData(logData, nil, true);
 
                 me.clear();
             }
         }
 
-        me.storage.loadAllData();
+        me._storage.loadAllData();
     },
 };

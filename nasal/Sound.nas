@@ -26,7 +26,7 @@ var Sound = {
         # Read sounds from addon path:
         var addonSoundsPath = g_Addon.basePath ~ '/FGData/Sounds';
 
-        me.samples = {
+        me._samples = {
             'paper' : props.Node.new({
                 path   : addonSoundsPath,
                 file   : 'paper.wav',
@@ -63,6 +63,6 @@ var Sound = {
             return false;
         }
 
-        return fgcommand('play-audio-sample', me.samples[sampleName]);
+        return fgcommand('play-audio-sample', me._samples[sampleName]);
     },
 };

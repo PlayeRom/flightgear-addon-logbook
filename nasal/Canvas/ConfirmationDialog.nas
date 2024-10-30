@@ -37,15 +37,15 @@ var ConfirmationDialog = {
 
         me.bgImage.hide();
 
-        me.logIndex      = nil;
-        me.parentObj     = nil;
-        me.addonNodePath = g_Addon.node.getPath();
+        me._logIndex      = nil;
+        me._parentObj     = nil;
+        me._addonNodePath = g_Addon.node.getPath();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
 
-        me.label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: 1});
-        me.vbox.addItem(me.label);
+        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: 1});
+        me.vbox.addItem(me._label);
 
         var buttonBox = canvas.HBoxLayout.new();
         me.vbox.addItem(buttonBox);
@@ -53,12 +53,12 @@ var ConfirmationDialog = {
         buttonBox.addStretch(1);
         var btnOK = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
-            .listen("clicked", func { me.actionPositive(); }
+            .listen("clicked", func { me._actionPositive(); }
         );
 
         var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Cancel")
-            .listen("clicked", func { me.actionNegative(); }
+            .listen("clicked", func { me._actionNegative(); }
         );
 
         buttonBox.addItem(btnOK);
@@ -86,7 +86,7 @@ var ConfirmationDialog = {
     # @return void
     #
     setLabel: func(label) {
-        me.label.setText(label);
+        me._label.setText(label);
     },
 
     #
@@ -95,8 +95,8 @@ var ConfirmationDialog = {
     # @return void
     #
     show: func(logIndex, parentObj = nil) {
-        me.logIndex = logIndex;
-        me.parentObj = parentObj;
+        me._logIndex = logIndex;
+        me._parentObj = parentObj;
 
         call(Dialog.show, [], me);
     },
@@ -106,21 +106,21 @@ var ConfirmationDialog = {
     #
     # @return void
     #
-    actionPositive: func() {
+    _actionPositive: func() {
         g_Sound.play('delete');
 
-        if (me.parentObj == nil) {
+        if (me._parentObj == nil) {
             call(Dialog.hide, [], me);
         }
         else {
             # Also hide immediately the parent window that called ConfirmationDialog.
             # In our case, it will be DetailsDialog.
-            call(me.parentObj.hide, [], me.parentObj);
+            call(me._parentObj.hide, [], me._parentObj);
         }
 
         # Set index to properties and trigger action listener
-        setprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index", me.logIndex);
-        setprop(me.addonNodePath ~ "/addon-devel/action-delete-entry", true);
+        setprop(me._addonNodePath ~ "/addon-devel/action-delete-entry-index", me._logIndex);
+        setprop(me._addonNodePath ~ "/addon-devel/action-delete-entry", true);
     },
 
     #
@@ -128,7 +128,7 @@ var ConfirmationDialog = {
     #
     # @return void
     #
-    actionNegative: func() {
+    _actionNegative: func() {
         call(Dialog.hide, [], me);
     },
 };

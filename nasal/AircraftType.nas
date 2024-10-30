@@ -37,7 +37,7 @@ var AircraftType = {
     new: func() {
         var me = { parents: [AircraftType] };
 
-        me.tagsNode = props.globals.getNode("/sim/tags");
+        me._tagsNode = props.globals.getNode("/sim/tags");
 
         return me;
     },
@@ -48,12 +48,12 @@ var AircraftType = {
     # @return string
     #
     getType: func() {
-        var type = me.getTypeByTags();
+        var type = me._getTypeByTags();
         if (type != AircraftType.OTHERS) {
             return type;
         }
 
-        return me.manualSelection();
+        return me._manualSelection();
     },
 
     #
@@ -61,25 +61,25 @@ var AircraftType = {
     #
     # @return string
     #
-    getTypeByTags: func() {
-        if (me.tagsNode == nil) {
+    _getTypeByTags: func() {
+        if (me._tagsNode == nil) {
             # No tags, nothing to check
             return AircraftType.OTHERS;
         }
 
-        if (me.searchTag({"or" : ["helicopter"], "and" : []})) {
+        if (me._searchTag({"or" : ["helicopter"], "and" : []})) {
             return AircraftType.HELICOPTER;
         }
 
-        if (me.searchTag({"or" : ["balloon", "airship"], "and" : []})) {
+        if (me._searchTag({"or" : ["balloon", "airship"], "and" : []})) {
             return AircraftType.BALLOON;
         }
 
-        if (me.searchTag({"or" : ["spaceship"], "and" : []})) {
+        if (me._searchTag({"or" : ["spaceship"], "and" : []})) {
             return AircraftType.SPACE;
         }
 
-        if (me.searchTag({"or" : ["seaplane", "amphibious"], "and" : []})) {
+        if (me._searchTag({"or" : ["seaplane", "amphibious"], "and" : []})) {
             # Handle exception where the aircraft has multiple versions i.e. with wheels and floats,
             # but tags are the same for all versions so it finds the seaplane when it has wheels.
             var aircraftId = Aircraft.getAircraftId();
@@ -101,34 +101,34 @@ var AircraftType = {
             return AircraftType.SEAPLANE;
         }
 
-        if (me.searchTag({"or" : ["fighter", "interceptor", "combat", "bomber", "tanker", "carrier"], "and" : []})) { # cargo, transport?
+        if (me._searchTag({"or" : ["fighter", "interceptor", "combat", "bomber", "tanker", "carrier"], "and" : []})) { # cargo, transport?
             return AircraftType.MILITARY;
         }
 
-        if (me.searchTag({"or" : ["glider"], "and" : []})) {
+        if (me._searchTag({"or" : ["glider"], "and" : []})) {
             return AircraftType.GLIDER;
         }
 
-        if (me.searchTag({"or" : ["turboprop"], "and" : []})) {
+        if (me._searchTag({"or" : ["turboprop"], "and" : []})) {
             return AircraftType.TURBOPROP;
         }
 
-        if (me.searchTag({"or" : ["bizjet"], "and" : ["business", "jet"]})) {
+        if (me._searchTag({"or" : ["bizjet"], "and" : ["business", "jet"]})) {
             return AircraftType.BIZJET;
         }
 
-        if (   me.searchTag({"or" : ["jet", "turbojet"], "and" : ["passenger", "4-engine"]})
-            or me.searchTag({"or" : [],                  "and" : ["passenger", "four-engine"]})
-            or me.searchTag({"or" : [],                  "and" : ["passenger", "6-engine"]})
-            or me.searchTag({"or" : [],                  "and" : ["passenger", "six-engine"]})
+        if (   me._searchTag({"or" : ["jet", "turbojet"], "and" : ["passenger", "4-engine"]})
+            or me._searchTag({"or" : [],                  "and" : ["passenger", "four-engine"]})
+            or me._searchTag({"or" : [],                  "and" : ["passenger", "6-engine"]})
+            or me._searchTag({"or" : [],                  "and" : ["passenger", "six-engine"]})
         ) {
             return AircraftType.AIRLINER;
         }
 
-        if (   me.searchTag({"or" : [], "and" : ["piston", "single-engine"]})
-            or me.searchTag({"or" : [], "and" : ["piston", "1-engine"]})
-            or me.searchTag({"or" : [], "and" : ["propeller", "single-engine"]})
-            or me.searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
+        if (   me._searchTag({"or" : [], "and" : ["piston", "single-engine"]})
+            or me._searchTag({"or" : [], "and" : ["piston", "1-engine"]})
+            or me._searchTag({"or" : [], "and" : ["propeller", "single-engine"]})
+            or me._searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
         ) {
             var aircraftId = Aircraft.getAircraftId();
             if (   string.match(aircraftId, "*-float") # for c172p
@@ -140,7 +140,7 @@ var AircraftType = {
             return AircraftType.GA_SINGLE;
         }
 
-        if (me.searchTag({"or" : ["piston", "propeller"], "and" : []})) {
+        if (me._searchTag({"or" : ["piston", "propeller"], "and" : []})) {
             return AircraftType.GA_MULTI;
         }
 
@@ -156,11 +156,11 @@ var AircraftType = {
     #       Both vectors ("or" and "and") are working with "or" logic.
     # @return bool - Return true if tag or group of tags is found
     #
-    searchTag: func(itemsToSearch) {
+    _searchTag: func(itemsToSearch) {
         var andCounter = 0;
         var andSize = size(itemsToSearch["and"]);
 
-        foreach (var tagNode; me.tagsNode.getChildren("tag")) {
+        foreach (var tagNode; me._tagsNode.getChildren("tag")) {
             var tag = tagNode.getValue();
             foreach (var search; itemsToSearch["or"]) {
                 if (search == tag) {
@@ -183,7 +183,7 @@ var AircraftType = {
     #
     # @return string
     #
-    manualSelection: func() {
+    _manualSelection: func() {
         var aircraftId = Aircraft.getAircraftId();
 
         if (substr(aircraftId, 0, 5) == "ask21" # ask21, ask21mi, ask21-jsb, ask21mi-jsb

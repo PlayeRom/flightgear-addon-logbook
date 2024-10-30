@@ -38,45 +38,45 @@ var InputDialog = {
 
         me.bgImage.hide();
 
-        me.addonNodePath = g_Addon.node.getPath();
+        me._addonNodePath = g_Addon.node.getPath();
 
-        me.allDataIndex    = nil; # index of log entry in whole CSV file
-        me.header          = nil; # header name
-        me.parent          = nil;
-        me.value           = nil;
+        me._allDataIndex    = nil; # index of log entry in whole CSV file
+        me._header          = nil; # header name
+        me._parent          = nil; # DetailsDialog
+        me._value           = nil;
 
-        me.filterSelector = FilterSelector.new();
+        me._filterSelector = FilterSelector.new();
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
 
-        me.label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: 1});
-        me.vbox.addItem(me.label);
+        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: 1});
+        me.vbox.addItem(me._label);
 
-        me.lineEdit = canvas.gui.widgets.LineEdit.new(me.group, canvas.style, {});
-        me.vbox.addItem(me.lineEdit);
-        me.lineEdit.setFocus();
+        me._lineEdit = canvas.gui.widgets.LineEdit.new(me.group, canvas.style, {});
+        me.vbox.addItem(me._lineEdit);
+        me._lineEdit.setFocus();
 
         var buttonBox = canvas.HBoxLayout.new();
         me.vbox.addItem(buttonBox);
 
-        me.btnTypeSelector = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnTypeSelector = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Select")
-            .listen("clicked", func { me.actionTypeSelect(); }
+            .listen("clicked", func { me._actionTypeSelect(); }
         );
-        me.btnTypeSelector.setVisible(false);
+        me._btnTypeSelector.setVisible(false);
 
         var btnOK = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Save")
-            .listen("clicked", func { me.actionSave(); }
+            .listen("clicked", func { me._actionSave(); }
         );
 
         var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Cancel")
-            .listen("clicked", func { me.actionCancel(); }
+            .listen("clicked", func { me._actionCancel(); }
         );
 
-        buttonBox.addItem(me.btnTypeSelector);
+        buttonBox.addItem(me._btnTypeSelector);
         buttonBox.addStretch(1);
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
@@ -93,7 +93,7 @@ var InputDialog = {
     # @return void
     #
     del: func() {
-        me.filterSelector.del();
+        me._filterSelector.del();
         call(Dialog.del, [], me);
     },
 
@@ -103,10 +103,10 @@ var InputDialog = {
     # @param string label
     # @return void
     #
-    setLabel: func(label) {
-        me.btnTypeSelector.setVisible(label == "Type");
+    _setLabel: func(label) {
+        me._btnTypeSelector.setVisible(label == "Type");
 
-        me.label.setText(label);
+        me._label.setText(label);
     },
 
     #
@@ -115,26 +115,27 @@ var InputDialog = {
     # @param string text
     # @return void
     #
-    setLineEdit: func(text) {
-        me.lineEdit.setText(text);
+    _setLineEdit: func(text) {
+        me._lineEdit.setText(text);
     },
 
     #
-    # @param hash parent
-    # @param int allDataIndex
-    # @param string label as a Header text
-    # @param string value to edit
+    # @param  hash  parent  DetailsDialog object
+    # @param  int  allDataIndex
+    # @param  string  label  Header text
+    # @param  string  value  Value to edit
     # @return void
     #
     show: func(parent, allDataIndex, label, value) {
-        me.parent       = parent;
-        me.allDataIndex = allDataIndex;
-        me.header       = label;
-        me.value        = value;
+        me._parent       = parent;
+        me._allDataIndex = allDataIndex;
+        me._header       = label;
+        me._value        = value;
 
-        me.setLabel(me.header);
-        me.setLineEdit(sprintf("%s", value));
-        me.lineEdit.setFocus();
+        me._setLabel(me._header);
+        me._setLineEdit(sprintf("%s", value));
+        me._lineEdit.setFocus();
+
         call(Dialog.show, [], me);
     },
 
@@ -142,12 +143,12 @@ var InputDialog = {
     # @return void
     #
     hide: func() {
-        if (me.parent != nil) {
+        if (me._parent != nil) {
             # Remove highlighted row in LogbookDialog
-            me.parent.listView.removeHighlightingRow();
+            me._parent.getListView().removeHighlightingRow();
         }
 
-        me.filterSelector.hide();
+        me._filterSelector.hide();
         call(Dialog.hide, [], me);
     },
 
@@ -156,15 +157,24 @@ var InputDialog = {
     # @return me
     #
     setStyle: func(style) {
-        me.filterSelector.setStyle(style);
+        me._filterSelector.setStyle(style);
         return me;
+    },
+
+    #
+    # Get FilterSelector dialog
+    #
+    # @return hash  FilterSelector object
+    #
+    getFilterSelector: func() {
+        return me._filterSelector;
     },
 
     #
     # @return void
     #
-    actionTypeSelect: func() {
-        me.filterSelector
+    _actionTypeSelect: func() {
+        me._filterSelector
             .setItems(AircraftType.getVector(), false)
             .setColumnIndex(StorageCsv.INDEX_TYPE)
             .setPosition(
@@ -172,7 +182,7 @@ var InputDialog = {
                 getprop("/devices/status/mice/mouse/y") or 0
             )
             .setTitle("Select aircraft type")
-            .setCallback(me, me.filterSelectorCallback)
+            .setCallback(me, me._filterSelectorCallback)
             .show();
     },
 
@@ -182,8 +192,8 @@ var InputDialog = {
     # @param  string  value
     # @return void
     #
-    filterSelectorCallback: func(filterId, dbColumnName, value) {
-        me.lineEdit.setText(value);
+    _filterSelectorCallback: func(filterId, dbColumnName, value) {
+        me._lineEdit.setText(value);
     },
 
     #
@@ -191,20 +201,20 @@ var InputDialog = {
     #
     # @return void
     #
-    actionSave: func() {
-        var value = me.lineEdit.text();
+    _actionSave: func() {
+        var value = me._lineEdit.text();
         if (value == nil) {
             value = "";
         }
 
-        if (cmp(value, me.value) == 0) {
+        if (cmp(value, me._value) == 0) {
             # Nothing changed, nothing to save
             me.hide();
             gui.popupTip("Nothing has changed");
             return;
         }
 
-        if (!me.validate(value)) {
+        if (!me._validate(value)) {
             return;
         }
 
@@ -213,10 +223,10 @@ var InputDialog = {
         me.hide();
 
         # Set values to properties and trigger action listener
-        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-index", me.allDataIndex);
-        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-header", me.header);
-        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value", value);
-        setprop(me.addonNodePath ~ "/addon-devel/action-edit-entry", true);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index", me._allDataIndex);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-header", me._header);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value", value);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry", true);
     },
 
     #
@@ -224,11 +234,11 @@ var InputDialog = {
     #
     # @return void
     #
-    actionCancel: func() {
+    _actionCancel: func() {
         me.hide();
 
         # Set property redraw-details for remove selected bar
-        setprop(me.addonNodePath ~ "/addon-devel/redraw-details", true);
+        setprop(me._addonNodePath ~ "/addon-devel/redraw-details", true);
     },
 
     #
@@ -237,7 +247,7 @@ var InputDialog = {
     # @param string value
     # @return bool - Return true if value is correct
     #
-    validate: func(value) {
+    _validate: func(value) {
         for (var i = 0; i < size(value); i += 1) {
             if (   value[i] == `,`
                 or value[i] == `"` #"# <- Fix syntax coloring in Visual Code
@@ -247,26 +257,26 @@ var InputDialog = {
             }
         }
 
-        if (me.header == "Date") {
-            if (!me.validateDate(value)) {
+        if (me._header == "Date") {
+            if (!me._validateDate(value)) {
                 gui.popupTip("Incorrect date");
                 return false;
             }
         }
-        else if (me.header == "Time") {
-            if (!me.validateTime(value)) {
+        else if (me._header == "Time") {
+            if (!me._validateTime(value)) {
                 gui.popupTip("Incorrect time");
                 return false;
             }
         }
-        else if (me.header == "Variant") {
-            if (!me.validateVariant(value)) {
+        else if (me._header == "Variant") {
+            if (!me._validateVariant(value)) {
                 gui.popupTip("Please don't use space or dot characters");
                 return false;
             }
         }
-        else if (me.header == "Type") {
-            if (!me.validateAircraftType(value)) {
+        else if (me._header == "Type") {
+            if (!me._validateAircraftType(value)) {
                 var msg = "Incorrect Aircraft Type. Allowed values are: ";
                 var types = "";
                 foreach (var type; AircraftType.getVector()) {
@@ -279,30 +289,30 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (  me.header == "Landing"
-                or me.header == "Crash"
+        else if (  me._header == "Landing"
+                or me._header == "Crash"
         ) {
-            if (!me.validateBoolean(value)) {
+            if (!me._validateBoolean(value)) {
                 gui.popupTip("The allowed value are 1 or 0 (or empty).");
                 return false;
             }
         }
-        else if (   me.header == "Day"
-                 or me.header == "Night"
-                 or me.header == "Instrument"
-                 or me.header == "Multiplayer"
-                 or me.header == "Swift"
-                 or me.header == "Duration"
-                 or me.header == "Distance"
-                 or me.header == "Fuel"
+        else if (   me._header == "Day"
+                 or me._header == "Night"
+                 or me._header == "Instrument"
+                 or me._header == "Multiplayer"
+                 or me._header == "Swift"
+                 or me._header == "Duration"
+                 or me._header == "Distance"
+                 or me._header == "Fuel"
         ) {
-            if (!me.validateDecimal(value)) {
+            if (!me._validateDecimal(value)) {
                 gui.popupTip("The allowed value is decimal number.");
                 return false;
             }
         }
-        else if (me.header == "Max Alt") {
-            if (!me.validateNumber(value)) {
+        else if (me._header == "Max Alt") {
+            if (!me._validateNumber(value)) {
                 gui.popupTip("The allowed value is a number.");
                 return false;
             }
@@ -315,7 +325,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateDate: func(value) {
+    _validateDate: func(value) {
         return string.match(value, "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]");
     },
 
@@ -323,7 +333,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateTime: func(value) {
+    _validateTime: func(value) {
         return string.match(value, "[0-9][0-9]:[0-9][0-9]");
     },
 
@@ -331,7 +341,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateVariant: func(value) {
+    _validateVariant: func(value) {
         for (var i = 0; i < size(value); i += 1) {
             if (   value[i] == `.`
                 or value[i] == ` `
@@ -347,7 +357,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateAircraftType: func(value) {
+    _validateAircraftType: func(value) {
         foreach (var type; AircraftType.getVector()) {
             if (type == value) {
                 return true;
@@ -361,7 +371,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateBoolean: func(value) {
+    _validateBoolean: func(value) {
         return value == "1"
             or value == "0"
             or value == "";
@@ -371,7 +381,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateDecimal: func(value) {
+    _validateDecimal: func(value) {
         var length = size(value);
         if (length == 0) {
             return false;
@@ -390,7 +400,7 @@ var InputDialog = {
     # @param string value
     # @return bool
     #
-    validateNumber: func(value) {
+    _validateNumber: func(value) {
         var length = size(value);
         if (length == 0) {
             return false;

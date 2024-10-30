@@ -23,18 +23,18 @@ var SpaceShuttle = {
     new: func() {
         var me = { parents: [SpaceShuttle] };
 
-        me.preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
-        me.ignition = false;
-        me.launched = false;
+        me._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
+        me._ignition = false;
+        me._launched = false;
 
-        if (me.preLaunch) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle preLaunch = ", me.preLaunch);
+        if (me._preLaunch) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle preLaunch = ", me._preLaunch);
             setlistener("/sim/config/shuttle/prelaunch-flag", func(node) {
-                me.preLaunch = node.getValue();
-                if (!me.preLaunch) {
+                me._preLaunch = node.getValue();
+                if (!me._preLaunch) {
                     # ignition
-                    me.ignition = true;
-                    logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle ignition = ", me.ignition);
+                    me._ignition = true;
+                    logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle ignition = ", me._ignition);
                 }
             });
         }
@@ -48,16 +48,16 @@ var SpaceShuttle = {
     # @return bool
     #
     isPreLaunch: func() {
-        return me.preLaunch;
+        return me._preLaunch;
     },
 
     #
     # @return bool
     #
     isLiftOff: func() {
-        if (me.ignition) {
-            me.ignition = false;
-            me.launched = true; # mark that we launched shuttle
+        if (me._ignition) {
+            me._ignition = false;
+            me._launched = true; # mark that we launched shuttle
             return true;
         }
 
@@ -70,7 +70,7 @@ var SpaceShuttle = {
     # @return bool
     #
     isLaunched: func() {
-        return me.launched;
+        return me._launched;
     },
 
     #
@@ -80,7 +80,7 @@ var SpaceShuttle = {
     #
     isCrashed: func() {
         return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false)
-            or me.isGearBroken();
+            or me._isGearBroken();
     },
 
     #
@@ -88,7 +88,7 @@ var SpaceShuttle = {
     #
     # @return bool
     #
-    isGearBroken: func() {
+    _isGearBroken: func() {
         return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0
             or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0
             or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0

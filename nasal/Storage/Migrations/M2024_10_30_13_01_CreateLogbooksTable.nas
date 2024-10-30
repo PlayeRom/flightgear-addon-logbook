@@ -20,9 +20,9 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
         return {
             parents : [
                 M2024_10_30_13_01_CreateLogbooksTable,
-                MigrationBase.new(storageSQLite.dbHandler),
+                MigrationBase.new(storageSQLite.getDbHandler()),
             ],
-            storageSQLite: storageSQLite,
+            _storageSQLite: storageSQLite,
         };
     },
 
@@ -95,7 +95,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me.storageSQLite.addItem(logData);
+                me._storageSQLite.addItem(logData);
             }
 
             counter += 1;

@@ -22,16 +22,16 @@ var Multiplayer = {
         var me = { parents: [
             Multiplayer,
             BaseCounter.new(
-                func()               { me.onResetCounters(); },
-                func(diffElapsedSec) { me.onUpdate(diffElapsedSec); }
+                func()               { me._onResetCounters(); },
+                func(diffElapsedSec) { me._onUpdate(diffElapsedSec); }
             ),
         ] };
 
-        me.multiplayerCounter = 0;
-        me.swiftCounter       = 0;
+        me._multiplayerCounter = 0;
+        me._swiftCounter       = 0;
 
-        me.propMultiplayer = nil;
-        me.propSwift       = nil;
+        me._propMultiplayer = nil;
+        me._propSwift       = nil;
 
         return me;
     },
@@ -41,9 +41,9 @@ var Multiplayer = {
     #
     # @return void
     #
-    onResetCounters: func() {
-        me.multiplayerCounter = 0;
-        me.swiftCounter       = 0;
+    _onResetCounters: func() {
+        me._multiplayerCounter = 0;
+        me._swiftCounter       = 0;
     },
 
     #
@@ -52,13 +52,13 @@ var Multiplayer = {
     # @param double diffElapsedSec
     # @return void
     #
-    onUpdate: func(diffElapsedSec) {
-        if (me.isMultiplayerOnline()) {
-            me.multiplayerCounter += diffElapsedSec;
+    _onUpdate: func(diffElapsedSec) {
+        if (me._isMultiplayerOnline()) {
+            me._multiplayerCounter += diffElapsedSec;
         }
 
-        if (me.isSwiftOnline()) {
-            me.swiftCounter += diffElapsedSec;
+        if (me._isSwiftOnline()) {
+            me._swiftCounter += diffElapsedSec;
         }
     },
 
@@ -67,12 +67,12 @@ var Multiplayer = {
     #
     # @return bool
     #
-    isMultiplayerOnline: func() {
-        if (me.propMultiplayer == nil) {
-            me.propMultiplayer = props.globals.getNode("/sim/multiplay/online");
+    _isMultiplayerOnline: func() {
+        if (me._propMultiplayer == nil) {
+            me._propMultiplayer = props.globals.getNode("/sim/multiplay/online");
         }
 
-        return me.propMultiplayer != nil and me.propMultiplayer.getBoolValue();
+        return me._propMultiplayer != nil and me._propMultiplayer.getBoolValue();
     },
 
     #
@@ -80,12 +80,12 @@ var Multiplayer = {
     #
     # @return bool
     #
-    isSwiftOnline: func() {
-        if (me.propSwift == nil) {
-            me.propSwift = props.globals.getNode("/sim/swift/serverRunning");
+    _isSwiftOnline: func() {
+        if (me._propSwift == nil) {
+            me._propSwift = props.globals.getNode("/sim/swift/serverRunning");
         }
 
-        return me.propSwift != nil and me.propSwift.getBoolValue();
+        return me._propSwift != nil and me._propSwift.getBoolValue();
     },
 
     #
@@ -94,7 +94,7 @@ var Multiplayer = {
     # @return double
     #
     getMultiplayerHours: func() {
-        return me.multiplayerCounter / 3600;
+        return me._multiplayerCounter / 3600;
     },
 
     #
@@ -103,6 +103,6 @@ var Multiplayer = {
     # @return double
     #
     getSwiftHours: func() {
-        return me.swiftCounter / 3600;
+        return me._swiftCounter / 3600;
     },
 };

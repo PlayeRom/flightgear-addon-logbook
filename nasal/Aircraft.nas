@@ -45,9 +45,9 @@ var Aircraft = {
     getAircraftId: func() {
         # When "/sim/aircraft" exists, this property contains the correct ID.
         # This is a case that can occur when an aircraft has multiple variants.
-        var aircraft = me.removeHangarName(getprop("/sim/aircraft"));
+        var aircraft = me._removeHangarName(getprop("/sim/aircraft"));
         return aircraft == nil
-            ? me.removeHangarName(getprop("/sim/aircraft-id"))
+            ? me._removeHangarName(getprop("/sim/aircraft-id"))
             : aircraft;
     },
 
@@ -57,7 +57,7 @@ var Aircraft = {
     # @param string|nil aircraft - Aircraft ID probably with hangar name
     # @return string|nil - Aircraft ID without hangar name
     #
-    removeHangarName: func(aircraft) {
+    _removeHangarName: func(aircraft) {
         if (aircraft == nil) {
             return nil;
         }

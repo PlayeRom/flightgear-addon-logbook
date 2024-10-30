@@ -28,24 +28,24 @@ var Environment = {
         var me = { parents: [
             Environment,
             BaseCounter.new(
-                func()               { me.onResetCounters(); },
-                func(diffElapsedSec) { me.onUpdate(diffElapsedSec); }
+                func()               { me._onResetCounters(); },
+                func(diffElapsedSec) { me._onUpdate(diffElapsedSec); }
             ),
         ] };
 
-        me.dayCounter         = 0;
-        me.nightCounter       = 0;
-        me.instrumentCounter  = 0;
-        me.maxAlt             = 0.0;
+        me._dayCounter         = 0;
+        me._nightCounter       = 0;
+        me._instrumentCounter  = 0;
+        me._maxAlt             = 0.0;
 
-        me.propAltFt          = props.globals.getNode("/position/altitude-ft");
+        me._propAltFt          = props.globals.getNode("/position/altitude-ft");
 
-        me.propSkyRed         = props.globals.getNode("/rendering/dome/sky/red");
-        me.propSkyGreen       = props.globals.getNode("/rendering/dome/sky/green");
-        me.propSkyBlue        = props.globals.getNode("/rendering/dome/sky/blue");
+        me._propSkyRed         = props.globals.getNode("/rendering/dome/sky/red");
+        me._propSkyGreen       = props.globals.getNode("/rendering/dome/sky/green");
+        me._propSkyBlue        = props.globals.getNode("/rendering/dome/sky/blue");
 
-        me.propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
-        me.propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
+        me._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
+        me._propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
 
         return me;
     },
@@ -82,11 +82,11 @@ var Environment = {
     #
     # @return void
     #
-    onResetCounters: func() {
-        me.dayCounter        = 0;
-        me.nightCounter      = 0;
-        me.instrumentCounter = 0;
-        me.maxAlt            = 0.0;
+    _onResetCounters: func() {
+        me._dayCounter        = 0;
+        me._nightCounter      = 0;
+        me._instrumentCounter = 0;
+        me._maxAlt            = 0.0;
     },
 
     #
@@ -95,18 +95,18 @@ var Environment = {
     # @param double diffElapsedSec
     # @return void
     #
-    onUpdate: func(diffElapsedSec) {
-        me.isNight()
-            ? (me.nightCounter += diffElapsedSec)
-            : (me.dayCounter   += diffElapsedSec);
+    _onUpdate: func(diffElapsedSec) {
+        me._isNight()
+            ? (me._nightCounter += diffElapsedSec)
+            : (me._dayCounter   += diffElapsedSec);
 
-        if (me.isIMC()) {
-            me.instrumentCounter += diffElapsedSec;
+        if (me._isIMC()) {
+            me._instrumentCounter += diffElapsedSec;
         }
 
-        var alt = me.propAltFt.getValue();
-        if (alt > me.maxAlt) {
-            me.maxAlt = alt;
+        var alt = me._propAltFt.getValue();
+        if (alt > me._maxAlt) {
+            me._maxAlt = alt;
         }
     },
 
@@ -115,10 +115,10 @@ var Environment = {
     #
     # @return bool
     #
-    isNight: func() {
-        return  me.propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD 
-            and me.propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD 
-            and me.propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
+    _isNight: func() {
+        return  me._propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD
+            and me._propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD
+            and me._propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
     },
 
     #
@@ -126,9 +126,9 @@ var Environment = {
     #
     # @return bool
     #
-    isIMC: func() {
-        return me.propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY
-            or me.propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
+    _isIMC: func() {
+        return me._propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY
+            or me._propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
     },
 
     #
@@ -137,7 +137,7 @@ var Environment = {
     # @return double
     #
     getDayHours: func() {
-        return me.dayCounter / 3600;
+        return me._dayCounter / 3600;
     },
 
     #
@@ -146,7 +146,7 @@ var Environment = {
     # @return double
     #
     getNightHours: func() {
-        return me.nightCounter / 3600;
+        return me._nightCounter / 3600;
     },
 
     #
@@ -155,7 +155,7 @@ var Environment = {
     # @return double
     #
     getInstrumentHours: func() {
-        return me.instrumentCounter / 3600;
+        return me._instrumentCounter / 3600;
     },
 
     #
@@ -164,6 +164,6 @@ var Environment = {
     # @return double
     #
     getMaxAlt: func() {
-        return me.maxAlt;
+        return me._maxAlt;
     },
 };

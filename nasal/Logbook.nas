@@ -28,43 +28,43 @@ var Logbook = {
         var me = { parents: [Logbook] };
 
         # Auxiliary variables
-        me.startFuel     = 0.0; # amount of fuel at takeoff
-        me.startOdometer = 0.0; # distance at takeoff
-        me.onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
-        me.addonHintsNode = props.globals.getNode("/sim/addon-hints/Logbook");
-        if (me.addonHintsNode != nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - init HINTS NODE = ", me.addonHintsNode.getName());
+        me._startFuel     = 0.0; # amount of fuel at takeoff
+        me._startOdometer = 0.0; # distance at takeoff
+        me._onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
+        me._addonHintsNode = props.globals.getNode("/sim/addon-hints/Logbook");
+        if (me._addonHintsNode != nil) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - init HINTS NODE = ", me._addonHintsNode.getName());
         }
-        me.initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
-        me.isSimPaused   = false;
-        me.isReplayMode  = false;
+        me._initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
+        me._isSimPaused   = false;
+        me._isReplayMode  = false;
 
-        me.wowSec        = 0;
-        me.mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me.update);
-        me.delayInit     = maketimer(2, me, me.initLogbook);
+        me._wowSec        = 0;
+        me._mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
+        me._delayInit     = maketimer(2, me, me._initLogbook);
 
-        me.logData       = nil;
-        me.environment   = Environment.new();
-        me.multiplayer   = Multiplayer.new();
-        me.landingGear   = LandingGear.new(me.addonHintsNode);
-        me.filters       = Filters.new();
-        me.storage       = Storage.new(me.filters);
-        me.spaceShuttle  = SpaceShuttle.new();
-        me.crashDetector = CrashDetector.new(me.spaceShuttle);
-        me.airport       = Airport.new();
+        me._logData       = nil;
+        me._environment   = Environment.new();
+        me._multiplayer   = Multiplayer.new();
+        me._landingGear   = LandingGear.new(me._addonHintsNode);
+        me._filters       = Filters.new();
+        me._storage       = Storage.new(me._filters);
+        me._spaceShuttle  = SpaceShuttle.new();
+        me._crashDetector = CrashDetector.new(me._spaceShuttle);
+        me._airport       = Airport.new();
 
-        me.recovery      = me.storage.isStorageSQLite()
-            ? RecoverySQLite.new(me.storage)
-            : RecoveryCsv.new(me.storage);
+        me._recovery      = me._storage.isStorageSQLite()
+            ? RecoverySQLite.new(me._storage)
+            : RecoveryCsv.new(me._storage);
 
-        me.aircraft      = Aircraft.new();
-        me.logbookDialog = LogbookDialog.new(me.storage, me.filters);
+        me._aircraft      = Aircraft.new();
+        me._logbookDialog = LogbookDialog.new(me._storage, me._filters);
 
-        me.aircraftType = AircraftType.new().getType();
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me.aircraftType);
+        me._aircraftType  = AircraftType.new().getType();
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);
 
-        me.propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
+        me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
         var runListenerOnInit = true;
 
@@ -74,41 +74,41 @@ var Logbook = {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
 
             if (node.getBoolValue()) {
-                # Run initLogbook with delay to stabilize the aircraft
+                # Run _initLogbook with delay to stabilize the aircraft
                 # (e.g. Twin Otter on Wheels and seaplanes needs it)
-                me.delayInit.singleShot = true;
-                me.delayInit.start();
+                me._delayInit.singleShot = true;
+                me._delayInit.start();
             }
         }, runListenerOnInit);
 
         setlistener("/sim/presets/onground", func(node) {
-            var oldOnGround = me.onGround;
-            me.onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me.onGround);
+            var oldOnGround = me._onGround;
+            me._onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
 
             # User probably used the "Location" -> "in air" or change airport even during a flight
-            if (!oldOnGround and me.onGround) {
+            if (!oldOnGround and me._onGround) {
                 # I was in the air, now I'm on the ground, try to stop logging
-                me.stopLogging(false);
+                me._stopLogging(false);
             }
 
-            # me.initLogbook(); # initLogbook will be run in "/sim/signals/fdm-initialized"
+            # me._initLogbook(); # _initLogbook will be run in "/sim/signals/fdm-initialized"
         });
 
         setlistener("/sim/freeze/master", func(node) {
-            me.isSimPaused = node.getBoolValue();
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me.isSimPaused);
+            me._isSimPaused = node.getBoolValue();
+            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me._isSimPaused);
         }, runListenerOnInit);
 
         setlistener("/sim/replay/replay-state", func(node) {
-            me.isReplayMode = node.getBoolValue();
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me.isReplayMode);
+            me._isReplayMode = node.getBoolValue();
+            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me._isReplayMode);
         }, runListenerOnInit);
 
         setlistener("/sim/signals/exit", func(node) {
             if (node.getBoolValue()) {
                 # sim is going to exit, save the logData
-                me.stopLogging(false);
+                me._stopLogging(false);
             }
         });
 
@@ -121,24 +121,23 @@ var Logbook = {
     # @return void
     #
     del: func() {
-        me.mainTimer.stop();
-        me.crashDetector.del();
-        me.recovery.del();
-        me.logbookDialog.del();
-        me.storage.del();
+        me._mainTimer.stop();
+        me._crashDetector.del();
+        me._recovery.del();
+        me._logbookDialog.del();
+        me._storage.del();
     },
 
     #
     # @return string - ICAO code or empty
     #
-    getStartAirport: func() {
-
+    _getStartAirport: func() {
         # Try to get nearest airport
-        var maxDistance = me.spaceShuttle.isLaunched()
+        var maxDistance = me._spaceShuttle.isLaunched()
             ? 9000  # Max distance to 9 km, needed by Space Shuttle started from Launch Pad 39A
             : 6000; # Use max distance as 6000 m (Schiphol need 6 km)
 
-        return me.airport.getNearestIcao(maxDistance);
+        return me._airport.getNearestIcao(maxDistance);
     },
 
     #
@@ -146,19 +145,19 @@ var Logbook = {
     #
     # @return void
     #
-    initLogbook: func() {
-        me.landingGear.recognizeGears(me.onGround);
+    _initLogbook: func() {
+        me._landingGear.recognizeGears(me._onGround);
 
-        me.initAltAglThreshold();
+        me._initAltAglThreshold();
 
-        if (!me.onGround and !me.spaceShuttle.isPreLaunch()) {
+        if (!me._onGround and !me._spaceShuttle.isPreLaunch()) {
             # We start in air, start logging immediately
-            me.startLogging();
+            me._startLogging();
         }
 
         # Start to watch WoW of gears
-        me.wowSec = 0;
-        me.mainTimer.start();
+        me._wowSec = 0;
+        me._mainTimer.start();
     },
 
     #
@@ -166,9 +165,9 @@ var Logbook = {
     #
     # @return void
     #
-    initAltAglThreshold: func() {
-        me.initAltAglFt = me.onGround
-            ? (me.propAltAglFt.getValue() + Logbook.ALT_AGL_FT_THRESHOLD)
+    _initAltAglThreshold: func() {
+        me._initAltAglFt = me._onGround
+            ? (me._propAltAglFt.getValue() + Logbook.ALT_AGL_FT_THRESHOLD)
             : Logbook.ALT_AGL_FT_THRESHOLD;
     },
 
@@ -177,62 +176,62 @@ var Logbook = {
     #
     # @return void
     #
-    update: func() {
-        if (me.isSimPaused or me.isReplayMode) {
-            me.crashDetector.stopGForce();
+    _update: func() {
+        if (me._isSimPaused or me._isReplayMode) {
+            me._crashDetector.stopGForce();
             return;
         }
 
-        me.environment.update();
-        me.multiplayer.update();
+        me._environment.update();
+        me._multiplayer.update();
 
-        if (me.spaceShuttle.isLiftOff()) {
+        if (me._spaceShuttle.isLiftOff()) {
             logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
-            me.startLogging();
+            me._startLogging();
             return;
         }
 
-        if (!me.onGround and me.propAltAglFt.getValue() > me.initAltAglFt) {
+        if (!me._onGround and me._propAltAglFt.getValue() > me._initAltAglFt) {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - update do nothing");
             # There's nothing to check for landing, we're too high
-            me.crashDetector.stopGForce();
+            me._crashDetector.stopGForce();
             return;
         }
 
-        me.crashDetector.startGForce(me.onGround);
+        me._crashDetector.startGForce(me._onGround);
 
-        if (me.landingGear.checkWow(me.onGround) and !me.crashDetector.isCrash(false)) {
-            if (me.onGround) {
+        if (me._landingGear.checkWow(me._onGround) and !me._crashDetector.isCrash(false)) {
+            if (me._onGround) {
                 # Our state is on the ground and all wheels are in the air - we have take-off
-                me.wowSec += 1;
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me.wowSec);
-                if (me.wowSec > 2) {
+                me._wowSec += 1;
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me._wowSec);
+                if (me._wowSec > 2) {
                     # We recognize that we taken off after testing WoW for 3 seconds.
                     # This is to not recognize the takeoff when we bounce off the ground.
-                    me.startLogging();
-                    me.wowSec = 0;
+                    me._startLogging();
+                    me._wowSec = 0;
                 }
             }
             else {
                 # Our state is in the air and all wheels are on the ground
-                me.wowSec += 1;
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - landing detected, wowSec = ", me.wowSec);
-                if (me.wowSec > 2) {
+                me._wowSec += 1;
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - landing detected, wowSec = ", me._wowSec);
+                if (me._wowSec > 2) {
                     # We recognize that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognize the landing when we bounce off the ground.
-                    me.stopLogging(true);
-                    me.wowSec = 0;
+                    me._stopLogging(true);
+                    me._wowSec = 0;
                 }
             }
 
             return;
         }
 
-        me.wowSec = 0;
+        me._wowSec = 0;
 
-        var isLogging = me.logData != nil;
-        if (isLogging and me.crashDetector.isCrashByTesting(me.onGround)) {
-            me.stopLogging(false, true);
+        var isLogging = me._logData != nil;
+        if (isLogging and me._crashDetector.isCrashByTesting(me._onGround)) {
+            me._stopLogging(false, true);
         }
     },
 
@@ -241,45 +240,45 @@ var Logbook = {
     #
     # @return void
     #
-    startLogging: func() {
-        if (me.logData != nil) {
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - startLogging: invalid state, it's trying to run start again without stop.");
+    _startLogging: func() {
+        if (me._logData != nil) {
+            # logprint(MY_LOG_LEVEL, "Logbook Add-on - _startLogging: invalid state, it's trying to run start again without stop.");
             return;
         }
 
-        var aircraftId = me.aircraft.getAircraftId();
+        var aircraftId = me._aircraft.getAircraftId();
 
-        if (me.aircraft.isUfo(aircraftId)) {
+        if (me._aircraft.isUfo(aircraftId)) {
             # We don't log UFO, FG Video Assistant
             return;
         }
 
         logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
 
-        me.recovery.start(me, me.recoveryCallback);
+        me._recovery.start(me, me._recoveryCallback);
 
-        me.logData = LogData.new();
-        me.logData.setDate(me.environment.getDateString());
-        me.logData.setTime(me.environment.getTimeString());
-        me.logData.setAircraft(me.aircraft.getAircraftPrimary());
-        me.logData.setVariant(aircraftId);
-        me.logData.setAircraftType(me.aircraftType);
-        me.logData.setNote(getprop("/sim/description"));
-        me.logData.setCallsign(getprop("/sim/multiplay/callsign"));
+        me._logData = LogData.new();
+        me._logData.setDate(me._environment.getDateString());
+        me._logData.setTime(me._environment.getTimeString());
+        me._logData.setAircraft(me._aircraft.getAircraftPrimary());
+        me._logData.setVariant(aircraftId);
+        me._logData.setAircraftType(me._aircraftType);
+        me._logData.setNote(getprop("/sim/description"));
+        me._logData.setCallsign(getprop("/sim/multiplay/callsign"));
 
-        me.startFuel     = getprop("/consumables/fuel/total-fuel-gal_us");
-        me.startOdometer = getprop("/instrumentation/gps/odometer");
+        me._startFuel     = getprop("/consumables/fuel/total-fuel-gal_us");
+        me._startOdometer = getprop("/instrumentation/gps/odometer");
 
-        if (me.onGround or me.spaceShuttle.isLaunched()) {
-            me.logData.setFrom(me.getStartAirport());
+        if (me._onGround or me._spaceShuttle.isLaunched()) {
+            me._logData.setFrom(me._getStartAirport());
         }
 
-        me.environment.resetCounters();
-        me.multiplayer.resetCounters();
+        me._environment.resetCounters();
+        me._multiplayer.resetCounters();
 
-        me.onGround = false;
+        me._onGround = false;
 
-        me.crashDetector.startGForce(me.onGround);
+        me._crashDetector.startGForce(me._onGround);
     },
 
     #
@@ -289,63 +288,63 @@ var Logbook = {
     # @param bool crashed - Set true when aircraft crashed
     # @return void
     #
-    stopLogging: func(landed, crashed = 0) {
-        if (me.logData == nil) {
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - stopLogging: invalid state, it's trying to run stop without running start.");
+    _stopLogging: func(landed, crashed = 0) {
+        if (me._logData == nil) {
+            # logprint(MY_LOG_LEVEL, "Logbook Add-on - _stopLogging: invalid state, it's trying to run stop without running start.");
             return;
         }
 
-        me.recovery.stop();
-        me.crashDetector.stopGForce();
+        me._recovery.stop();
+        me._crashDetector.stopGForce();
 
         # Some aircraft report a correct landing despite landing on a ridge, so we do an additional crash check
-        if (landed and me.crashDetector.isCrash()) {
+        if (landed and me._crashDetector.isCrash()) {
             crashed = true; # force crash state
         }
 
-        me.logData.setFuel(me.getFuel());
-        me.logData.setDistance(me.getDistance());
+        me._logData.setFuel(me._getFuel());
+        me._logData.setDistance(me._getDistance());
 
         if (landed) {
-            if (me.crashDetector.isOrientationOK()) {
+            if (me._crashDetector.isOrientationOK()) {
                 logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
 
-                me.logData.setLanding();
+                me._logData.setLanding();
 
                 # Use max distance as 6000 m (Schiphol need 6 km)
-                var icao = me.airport.getNearestIcao(6000);
-                me.logData.setTo(icao);
+                var icao = me._airport.getNearestIcao(6000);
+                me._logData.setTo(icao);
             }
 
             # We know it's landed, so reset some states like detect the landing gear again in case it will takeoff again.
-            me.onGround = true;
-            me.landingGear.recognizeGears(me.onGround);
-            me.initAltAglThreshold();
+            me._onGround = true;
+            me._landingGear.recognizeGears(me._onGround);
+            me._initAltAglThreshold();
         }
 
-        me.logData.setDay(me.environment.getDayHours());
-        me.logData.setNight(me.environment.getNightHours());
-        me.logData.setInstrument(me.environment.getInstrumentHours());
-        me.logData.setMaxAlt(me.environment.getMaxAlt());
+        me._logData.setDay(me._environment.getDayHours());
+        me._logData.setNight(me._environment.getNightHours());
+        me._logData.setInstrument(me._environment.getInstrumentHours());
+        me._logData.setMaxAlt(me._environment.getMaxAlt());
 
-        me.logData.setMultiplayer(me.multiplayer.getMultiplayerHours());
-        me.logData.setSwift(me.multiplayer.getSwiftHours());
+        me._logData.setMultiplayer(me._multiplayer.getMultiplayerHours());
+        me._logData.setSwift(me._multiplayer.getSwiftHours());
 
         if (crashed) {
             logprint(LOG_ALERT, "Logbook Add-on - crash detected");
-            me.logData.setCrash();
+            me._logData.setCrash();
 
-            me.onGround = true;
+            me._onGround = true;
         }
 
-        me.storage.saveLogData(me.logData, me.recovery.recordId);
-        me.logData = nil;
-        me.wowSec = 0;
+        me._storage.saveLogData(me._logData, me._recovery.getRecordId());
+        me._logData = nil;
+        me._wowSec = 0;
 
-        me.recovery.clear();
+        me._recovery.clear();
 
-        if (me.logbookDialog.isWindowVisible()) {
-            me.logbookDialog.reloadData();
+        if (me._logbookDialog.isWindowVisible()) {
+            me._logbookDialog.reloadData();
         }
     },
 
@@ -354,9 +353,9 @@ var Logbook = {
     #
     # @return double
     #
-    getFuel: func() {
+    _getFuel: func() {
         var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
-        return math.abs(me.startFuel - fuel);
+        return math.abs(me._startFuel - fuel);
     },
 
     #
@@ -364,9 +363,9 @@ var Logbook = {
     #
     # @return double
     #
-    getDistance: func() {
+    _getDistance: func() {
         var odometer = getprop("/instrumentation/gps/odometer");
-        return odometer - me.startOdometer;
+        return odometer - me._startOdometer;
     },
 
     #
@@ -374,20 +373,20 @@ var Logbook = {
     #
     # @return void
     #
-    recoveryCallback: func() {
-        var recoveryData = me.logData.getClone();
+    _recoveryCallback: func() {
+        var recoveryData = me._logData.getClone();
 
-        recoveryData.setFuel(me.getFuel());
-        recoveryData.setDistance(me.getDistance());
-        recoveryData.setDay(me.environment.getDayHours());
-        recoveryData.setNight(me.environment.getNightHours());
-        recoveryData.setInstrument(me.environment.getInstrumentHours());
-        recoveryData.setMaxAlt(me.environment.getMaxAlt());
+        recoveryData.setFuel(me._getFuel());
+        recoveryData.setDistance(me._getDistance());
+        recoveryData.setDay(me._environment.getDayHours());
+        recoveryData.setNight(me._environment.getNightHours());
+        recoveryData.setInstrument(me._environment.getInstrumentHours());
+        recoveryData.setMaxAlt(me._environment.getMaxAlt());
 
-        recoveryData.setMultiplayer(me.multiplayer.getMultiplayerHours());
-        recoveryData.setSwift(me.multiplayer.getSwiftHours());
+        recoveryData.setMultiplayer(me._multiplayer.getMultiplayerHours());
+        recoveryData.setSwift(me._multiplayer.getSwiftHours());
 
-        me.recovery.save(recoveryData);
+        me._recovery.save(recoveryData);
     },
 
     #
@@ -396,7 +395,7 @@ var Logbook = {
     # @return void
     #
     showLogbookDialog: func() {
-        me.logbookDialog.show();
+        me._logbookDialog.show();
     },
 
     #
@@ -405,7 +404,7 @@ var Logbook = {
     # @return void
     #
     showHelpDialog: func() {
-        me.logbookDialog.helpDialog.show();
+        me._logbookDialog.helpDialog.show();
     },
 
     #
@@ -414,6 +413,6 @@ var Logbook = {
     # @return void
     #
     showAboutDialog: func() {
-        me.logbookDialog.aboutDialog.show();
+        me._logbookDialog.aboutDialog.show();
     },
 };

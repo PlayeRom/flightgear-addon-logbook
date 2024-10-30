@@ -41,15 +41,15 @@ var AboutDialog = {
             right  : 0,
             bottom : 0,
         };
-        me.scrollData = me.createScrollArea(nil, margins);
+        me._scrollData = me.createScrollArea(nil, margins);
 
-        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
+        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
+        me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
-        me.drawScrollable();
+        me._drawScrollable();
 
-        var buttonBoxClose = me.drawBottomBar("Close", func() { me.window.hide(); });
+        var buttonBoxClose = me._drawBottomBar("Close", func() { me.window.hide(); });
         me.vbox.addSpacing(10);
         me.vbox.addItem(buttonBoxClose);
         me.vbox.addSpacing(10);
@@ -71,10 +71,10 @@ var AboutDialog = {
     #
     # @return void
     #
-    drawScrollable: func() {
+    _drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        vBoxLayout.addItem(me.getLabel(
+        vBoxLayout.addItem(me._getLabel(
             sprintf(
                 "%s version %s - September 30, 2024",
                 g_Addon.name,
@@ -82,13 +82,13 @@ var AboutDialog = {
             )
         ));
 
-        vBoxLayout.addItem(me.getLabel("Written by:"));
+        vBoxLayout.addItem(me._getLabel("Written by:"));
 
         foreach (var author; g_Addon.authors) {
-            vBoxLayout.addItem(me.getLabel(sprintf("%s", author.name)));
+            vBoxLayout.addItem(me._getLabel(sprintf("%s", author.name)));
         }
 
-        var btnRepo = canvas.gui.widgets.Button.new(me.scrollDataContent, canvas.style, {})
+        var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
             .setText("Open the repository website...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
@@ -97,15 +97,15 @@ var AboutDialog = {
 
         vBoxLayout.addItem(btnRepo);
 
-        me.scrollData.setLayout(vBoxLayout);
+        me._scrollData.setLayout(vBoxLayout);
     },
 
     #
     # @param string text - Label text
     # @return hash - Label widget
     #
-    getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me.scrollDataContent, canvas.style, {})
+    _getLabel: func(text) {
+        return canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
             .setText(text);
     },
 
@@ -114,7 +114,7 @@ var AboutDialog = {
     # @param func callback - function which will be executed after click the button
     # @return hash - HBoxLayout object with button
     #
-    drawBottomBar: func(label, callback) {
+    _drawBottomBar: func(label, callback) {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})

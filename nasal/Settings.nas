@@ -27,10 +27,10 @@ var Settings = {
     new: func() {
         var me = { parents: [Settings] };
 
-        me.file = g_Addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
-        me.propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
+        me._file = g_Addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
+        me._propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
 
-        me.load();
+        me._load();
 
         return me;
     },
@@ -48,7 +48,7 @@ var Settings = {
     # @return hash - node object with data to save/load
     #
     getSaveNode: func() {
-        return props.globals.getNode(me.propToSave);
+        return props.globals.getNode(me._propToSave);
     },
 
     #
@@ -56,8 +56,8 @@ var Settings = {
     #
     # @return void
     #
-    load: func() {
-        if (io.read_properties(me.file, me.getSaveNode()) == nil) {
+    _load: func() {
+        if (io.read_properties(me._file, me.getSaveNode()) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Load settings failed");
         }
     },
@@ -68,7 +68,7 @@ var Settings = {
     # @return void
     #
     save: func() {
-        if (io.write_properties(me.file, me.getSaveNode()) == nil) {
+        if (io.write_properties(me._file, me.getSaveNode()) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Save settings failed");
         }
     },
@@ -77,7 +77,7 @@ var Settings = {
     # @return bool
     #
     isDarkStyle: func() {
-        return getprop(me.propToSave ~ "/settings/dark-style") or false;
+        return getprop(me._propToSave ~ "/settings/dark-style") or false;
     },
 
     #
@@ -85,14 +85,14 @@ var Settings = {
     # @return void
     #
     setDarkMode: func(value) {
-        setprop(me.propToSave ~ "/settings/dark-style", value);
+        setprop(me._propToSave ~ "/settings/dark-style", value);
     },
 
     #
     # @return bool
     #
     isRealTimeDuration: func() {
-        var isRealTimeDuration = getprop(me.propToSave ~ "/settings/real-time-duration");
+        var isRealTimeDuration = getprop(me._propToSave ~ "/settings/real-time-duration");
         if (isRealTimeDuration == nil) {
             return true;
         }
@@ -104,7 +104,7 @@ var Settings = {
     # @return bool
     #
     isSoundEnabled: func() {
-        var isSoundEnabled = getprop(me.propToSave ~ "/settings/sound-enabled");
+        var isSoundEnabled = getprop(me._propToSave ~ "/settings/sound-enabled");
         if (isSoundEnabled == nil) {
             return true;
         }

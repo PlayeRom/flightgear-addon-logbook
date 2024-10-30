@@ -22,7 +22,7 @@ var MigrationBase = {
     new: func(dbHandler) {
         return {
             parents  : [MigrationBase],
-            dbHandler: dbHandler,
+            _dbHandler: dbHandler,
         };
     },
 
@@ -44,6 +44,6 @@ var MigrationBase = {
         }
 
         var query = sprintf("CREATE TABLE %s (%s)", tableName, queryCols);
-        sqlite.exec(me.dbHandler, query);
+        sqlite.exec(me._dbHandler, query);
     },
 };

@@ -22,10 +22,10 @@ var Thread = {
     new: func() {
         return {
             parents     : [Thread],
-            timer       : nil,
-            isPending   : false,
-            objCallback : nil,
-            callback    : func,
+            _timer       : nil,
+            _isPending   : false,
+            _objCallback : nil,
+            _callback    : func,
         };
     },
 
@@ -35,8 +35,8 @@ var Thread = {
     # @return void
     #
     del: func() {
-        if (me.timer != nil) {
-            me.timer.stop();
+        if (me._timer != nil) {
+            me._timer.stop();
         }
     },
 
@@ -52,19 +52,19 @@ var Thread = {
             return false;
         }
 
-        me.objCallback = objCallback;
-        me.callback = callback;
+        me._objCallback = objCallback;
+        me._callback = callback;
 
         g_isThreadPending = true;
-        me.isPending = true;
+        me._isPending = true;
 
         thread.newthread(func {
             threadFunc();
-            me.isPending = false;
+            me._isPending = false;
         });
 
-        me.timer = maketimer(0.1, me, me.checkEnd);
-        me.timer.start();
+        me._timer = maketimer(0.1, me, me._checkEnd);
+        me._timer.start();
 
         return true;
     },
@@ -74,16 +74,16 @@ var Thread = {
     #
     # @return void
     #
-    checkEnd: func() {
-        if (me.isPending) {
+    _checkEnd: func() {
+        if (me._isPending) {
             # Still working, skip it
             return;
         }
 
         # Stop yourself
-        me.timer.stop();
+        me._timer.stop();
 
         # Call the finish callback
-        call(me.callback, [], me.objCallback);
+        call(me._callback, [], me._objCallback);
     },
 };

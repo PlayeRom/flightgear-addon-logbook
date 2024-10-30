@@ -85,7 +85,7 @@ var LogData = {
     #
     # @return string
     #
-    getYear: func() {
+    _getYear: func() {
         return substr(me.date, 0, 4);
     },
 
@@ -346,7 +346,7 @@ var LogData = {
     # @return me
     #
     setNote: func(note) {
-        me.note = me.getCsvSafeText(note);
+        me.note = me._getCsvSafeText(note);
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", me.note);
 
         return me;
@@ -356,7 +356,7 @@ var LogData = {
     # @param string|nil text
     # @return string
     #
-    getCsvSafeText: func(text) {
+    _getCsvSafeText: func(text) {
         if (text == nil or text == "") {
             return "";
         }
@@ -442,7 +442,7 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByIndex: func(index) {
-             if (index == StorageCsv.INDEX_DATE)     return me.getYear();
+             if (index == StorageCsv.INDEX_DATE)     return me._getYear();
         else if (index == StorageCsv.INDEX_AIRCRAFT) return me.aircraft;
         else if (index == StorageCsv.INDEX_VARIANT)  return me.variant;
         else if (index == StorageCsv.INDEX_TYPE)     return me.aircraft_type;

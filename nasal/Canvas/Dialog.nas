@@ -16,24 +16,24 @@ var Dialog = {
     #
     # Constructor
     #
-    # @param int width - Initial width of window
-    # @param int height - Initial height of window
-    # @param string title - Title of window in the top bar
-    # @param bool resize - If true then user will be possible to resize the window
-    # @param func|nil onResizeWidth - callback call when width of window was changed
+    # @param  int  width  Initial width of window
+    # @param  int  height  Initial height of window
+    # @param  string  title  Title of window in the top bar
+    # @param  bool  resize  If true then user will be possible to resize the window
+    # @param  func|nil  onResizeWidth  Callback call when width of window was changed
     # @return me
     #
     new: func(width, height, title, resize = 0, onResizeWidth = nil) {
         var me = { parents: [Dialog] };
 
-        me.width    = width;
-        me.height   = height;
+        me._width  = width;
+        me._height = height;
 
         me.style = g_Settings.isDarkStyle()
             ? me.getStyle().dark
             : me.getStyle().light;
 
-        me.window = me.createCanvasWindow(width, height, title, resize);
+        me.window = me._createCanvasWindow(width, height, title, resize);
         me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
         me.group  = me.canvas.createGroup();
         me.vbox   = canvas.VBoxLayout.new();
@@ -47,10 +47,10 @@ var Dialog = {
         me.toggleBgImage();
 
         if (resize and onResizeWidth != nil) {
-            me.windowPropIndex = me.getWindowPropertyIndex(title);
-            if (me.windowPropIndex > -1) {
+            me._windowPropIndex = me._getWindowPropertyIndex(title);
+            if (me._windowPropIndex > -1) {
                 # Set listener for resize width of window
-                setlistener("/sim/gui/canvas/window[" ~ me.windowPropIndex ~ "]/content-size[0]", func(node) {
+                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]", func(node) {
                     onResizeWidth(node.getValue());
                 });
             }
@@ -60,13 +60,13 @@ var Dialog = {
     },
 
     #
-    # @param int width
-    # @param int height
-    # @param string title
-    # @param bool resize
-    # @return hash - canvas Window object
+    # @param  int  width
+    # @param  int  height
+    # @param  string  title
+    # @param  bool  resize
+    # @return hash  Canvas Window object
     #
-    createCanvasWindow: func(width, height, title, resize) {
+    _createCanvasWindow: func(width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
             .set("title", title)
             .setBool("resize", resize);
@@ -104,15 +104,15 @@ var Dialog = {
     #
     # Set position on center of screen
     #
-    # @param int|nil width, height - Dimension of window. If nil, the values provided by the constructor will be used.
+    # @param  int|nil  width, height  Dimension of window. If nil, the values provided by the constructor will be used.
     # @return void
     #
     setPositionOnCenter: func(width = nil, height = nil) {
         var screenW = me.getScreenWidth();
         var screenH = me.getScreenHeight();
 
-        var w = width  == nil ? me.width  : width;
-        var h = height == nil ? me.height : height;
+        var w = width  == nil ? me._width  : width;
+        var h = height == nil ? me._height : height;
 
         me.window.setPosition(
             int(screenW / 2 - w / 2),
@@ -121,9 +121,9 @@ var Dialog = {
     },
 
     #
-    # @param vector|nil bgColor
-    # @param hash|nil margins - Margins hash or nil
-    # @return hash - gui.widgets.ScrollArea object
+    # @param  vector|nil  bgColor
+    # @param  hash|nil  margins  Margins hash or nil
+    # @return hash  gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
@@ -137,11 +137,11 @@ var Dialog = {
     },
 
     #
-    # @param hash cGroup - Parent object as ScrollArea widget
-    # @param string|nil font - Font file name
-    # @param int|nil - Font size
-    # @param string|nil alignment - Content alignment value
-    # @return hash - content group of ScrollArea
+    # @param  hash  cGroup  Parent object as ScrollArea widget
+    # @param  string|nil  font  Font file name
+    # @param  int|nil fontSize  Font size
+    # @param  string|nil  alignment  Content alignment value
+    # @return hash  content group of ScrollArea
     #
     getScrollAreaContent: func(cGroup, font = nil, fontSize = nil, alignment = nil) {
         var scrollContent = cGroup.getContent();
@@ -174,7 +174,7 @@ var Dialog = {
     #
     # Hide canvas dialog
     #
-    # @param bool withRedraw
+    # @param  bool  withRedraw
     # @return void
     #
     hide: func(withRedraw = 1) {
@@ -217,10 +217,10 @@ var Dialog = {
     },
 
     #
-    # @param string title
-    # @return int - return index of window in property tree or -1 if not found.
+    # @param  string  title
+    # @return int  Return index of window in property tree or -1 if not found.
     #
-    getWindowPropertyIndex: func(title) {
+    _getWindowPropertyIndex: func(title) {
         var highest = -1; # We are looking for the highest index for support dev reload the add-on
         foreach (var window; props.globals.getNode("/sim/gui/canvas").getChildren("window")) {
             var propTitle = window.getChild("title");

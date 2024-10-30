@@ -29,13 +29,13 @@ var StorageSQLite = {
     new: func(filters) {
         var me = {
             parents : [StorageSQLite],
-            filters : filters,
+            _filters : filters,
         };
 
-        me.filePath      = me.getPathToFile();
-        me.dbHandler     = nil;
-        me.loadedData    = [];
-        me.headersData   = [
+        me._filePath    = me._getPathToFile();
+        me._dbHandler   = nil;
+        me._loadedData  = [];
+        me._headersData = [
             'Date',
             'Time',
             'Aircraft',
@@ -57,16 +57,16 @@ var StorageSQLite = {
             'Max Alt',
             'Note',
         ];
-        me.withHeaders   = true;
+        me._withHeaders = true;
 
-        me.totals        = [];
-        me.resetTotals();
+        me._totals      = [];
+        me._resetTotals();
 
-        me.openDb();
+        me._openDb();
 
         # Callback for return results of loadDataRange
-        me.objCallback = nil;
-        me.callback    = func;
+        me._objCallback = nil;
+        me._callback    = func;
 
         return me;
     },
@@ -77,22 +77,22 @@ var StorageSQLite = {
     # @return void
     #
     del: func() {
-        me.closeDb();
+        me._closeDb();
     },
 
     #
     # @return string  Full path to sqlite file
     #
-    getPathToFile: func() {
+    _getPathToFile: func() {
         return g_Addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
     },
 
     #
     # @return void
     #
-    resetTotals: func() {
+    _resetTotals: func() {
         # Total amount
-        me.totals = [
+        me._totals = [
             0, # Landing
             0, # Crash
             0, # Day
@@ -112,10 +112,10 @@ var StorageSQLite = {
     #
     # @return void
     #
-    openDb: func() {
-        me.closeDb();
+    _openDb: func() {
+        me._closeDb();
 
-        me.dbHandler = sqlite.open(me.filePath);
+        me._dbHandler = sqlite.open(me._filePath);
 
         MigrationSQLite.new(me).migrate();
     },
@@ -123,11 +123,18 @@ var StorageSQLite = {
     #
     # Close DB connection
     #
-    closeDb: func() {
-        if (me.dbHandler != nil) {
-            sqlite.close(me.dbHandler);
-            me.dbHandler = nil;
+    _closeDb: func() {
+        if (me._dbHandler != nil) {
+            sqlite.close(me._dbHandler);
+            me._dbHandler = nil;
         }
+    },
+
+    #
+    # @return ghost  DB handler object
+    #
+    getDbHandler: func() {
+        return me._dbHandler;
     },
 
     #
@@ -157,7 +164,7 @@ var StorageSQLite = {
         var file = io.open(csvFile, "w");
 
         var headerRow = "";
-        foreach (var header; me.headersData) {
+        foreach (var header; me._headersData) {
             if (headerRow != "") {
                 headerRow ~= ",";
             }
@@ -172,7 +179,7 @@ var StorageSQLite = {
         io.write(file, headerRow ~ "\n");
 
         var query = sprintf("SELECT * FROM %s", StorageSQLite.TABLE_LOGBOOKS);
-        foreach (var row; sqlite.exec(me.dbHandler, query)) {
+        foreach (var row; sqlite.exec(me._dbHandler, query)) {
             var logData = LogData.new();
             logData.fromDb(row);
 
@@ -221,14 +228,14 @@ var StorageSQLite = {
             : me.updateItem(logData, id); # update
 
         if (!onlyIO) {
-            me.filters.append(logData);
-            me.filters.sort();
+            me._filters.append(logData);
+            me._filters.sort();
 
             # Build where from filters
-            var where = me.getWhereQueryFilters();
-            me.updateTotalsValues(where);
+            var where = me._getWhereQueryFilters();
+            me._updateTotalsValues(where);
 
-            me.filters.dirty = true;
+            me._filters.dirty = true;
         }
     },
 
@@ -241,7 +248,7 @@ var StorageSQLite = {
     #
     addItem: func(logData, db = nil) {
         if (db == nil) {
-            db = me.dbHandler;
+            db = me._dbHandler;
         }
 
         var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_LOGBOOKS);
@@ -308,8 +315,8 @@ var StorageSQLite = {
                 `note` = ?
             WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
 
-        var stmt = sqlite.prepare(me.dbHandler, query);
-        sqlite.exec(me.dbHandler, stmt,
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        sqlite.exec(me._dbHandler, stmt,
             logData.date,
             logData.time,
             logData.aircraft,
@@ -340,7 +347,7 @@ var StorageSQLite = {
     # @param  hash  row  Row from table
     # @return vector
     #
-    dbRowToVector: func(row) {
+    _dbRowToVector: func(row) {
         var logData = LogData.new();
         logData.fromDb(row);
         return logData.toVector();
@@ -352,21 +359,21 @@ var StorageSQLite = {
     # @return void
     #
     loadAllData: func() {
-        me.filters.clear();
-        me.resetTotals();
+        me._filters.clear();
+        me._resetTotals();
 
-        me.updateFilterData("date", StorageCsv.INDEX_DATE);
-        me.updateFilterData("aircraft", StorageCsv.INDEX_AIRCRAFT);
-        me.updateFilterData("variant", StorageCsv.INDEX_VARIANT);
-        me.updateFilterData("aircraft_type", StorageCsv.INDEX_TYPE);
-        me.updateFilterData("callsign", StorageCsv.INDEX_CALLSIGN);
-        me.updateFilterData("`from`", StorageCsv.INDEX_FROM);
-        me.updateFilterData("`to`", StorageCsv.INDEX_TO);
-        me.updateFilterData("landing", StorageCsv.INDEX_LANDING);
-        me.updateFilterData("crash", StorageCsv.INDEX_CRASH);
+        me._updateFilterData("date", StorageCsv.INDEX_DATE);
+        me._updateFilterData("aircraft", StorageCsv.INDEX_AIRCRAFT);
+        me._updateFilterData("variant", StorageCsv.INDEX_VARIANT);
+        me._updateFilterData("aircraft_type", StorageCsv.INDEX_TYPE);
+        me._updateFilterData("callsign", StorageCsv.INDEX_CALLSIGN);
+        me._updateFilterData("`from`", StorageCsv.INDEX_FROM);
+        me._updateFilterData("`to`", StorageCsv.INDEX_TO);
+        me._updateFilterData("landing", StorageCsv.INDEX_LANDING);
+        me._updateFilterData("crash", StorageCsv.INDEX_CRASH);
 
         # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
-        me.filters.dirty = false;
+        me._filters.dirty = false;
 
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon", true);
@@ -384,7 +391,7 @@ var StorageSQLite = {
     # @param  int  count  How many rows should be returned, if -1 then don't use it
     # @return void
     #
-    updateFilterData: func(columnName, dataIndex, where = nil, start = -1, count = -1) {
+    _updateFilterData: func(columnName, dataIndex, where = nil, start = -1, count = -1) {
         if (dataIndex == StorageCsv.INDEX_DATE) {
             columnName = "strftime('%Y', " ~ columnName ~ ")"; # get only a year from `date` column
         }
@@ -406,17 +413,17 @@ var StorageSQLite = {
         }
 
         var query = sprintf(frm, columnName, StorageSQLite.TABLE_LOGBOOKS);
-        var rows = sqlite.exec(me.dbHandler, query);
+        var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows)) {
-            me.filters.data[dataIndex].clear();
+            me._filters.data[dataIndex].clear();
 
             foreach (var row; rows) {
                 var value = dataIndex == StorageCsv.INDEX_DATE
                     ? substr(row.value, 0, 4) # get year only
                     : row.value;
 
-                me.filters.data[dataIndex].append(value);
+                me._filters.data[dataIndex].append(value);
             }
         }
     },
@@ -432,63 +439,60 @@ var StorageSQLite = {
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
-        me.objCallback = objCallback;
-        me.callback    = callback;
-        me.withHeaders = withHeaders;
+        me._objCallback = objCallback;
+        me._callback    = callback;
+        me._withHeaders = withHeaders;
 
-        me.loadedData = [];
+        me._loadedData = [];
 
         # Build where from filters
-        var where = me.getWhereQueryFilters();
+        var where = me._getWhereQueryFilters();
 
         var query = sprintf("SELECT * FROM %s %s LIMIT %d OFFSET %d", StorageSQLite.TABLE_LOGBOOKS, where, count, start);
-        foreach (var row; sqlite.exec(me.dbHandler, query)) {
-            var vectorLogData = me.dbRowToVector(row);
-            append(me.loadedData, {
+        foreach (var row; sqlite.exec(me._dbHandler, query)) {
+            var vectorLogData = me._dbRowToVector(row);
+            append(me._loadedData, {
                 allDataIndex: row.id,
                 data        : vectorLogData,
             });
         }
 
-        me.updateTotalsValues(where);
+        me._updateTotalsValues(where);
 
         # Add totals row to the end
-        me.appendTotalsRow();
+        me._appendTotalsRow();
 
         # Update aircraft variants filter, to show only variant of selected aircraft
-        var aircraft = me.filters.getAppliedValueForFilter(StorageCsv.INDEX_AIRCRAFT);
+        var aircraft = me._filters.getAppliedValueForFilter(StorageCsv.INDEX_AIRCRAFT);
         if (aircraft == nil) {
             # Apply all variant values to filter
-            me.updateFilterData("variant", StorageCsv.INDEX_VARIANT);
+            me._updateFilterData("variant", StorageCsv.INDEX_VARIANT);
         }
         else {
             # Apply variant filters according to selected aircraft
             var where = { column: "aircraft", value: aircraft };
-            me.updateFilterData("variant", StorageCsv.INDEX_VARIANT, where, start, count);
+            me._updateFilterData("variant", StorageCsv.INDEX_VARIANT, where, start, count);
         }
 
-        # We have not used the thread here, but we must point out that it has ended
-        g_isThreadPending = false;
-
-        me.loadDataRangeThreadFinish();
+        me._loadDataRangeThreadFinish();
     },
 
     #
-    # Callback function when the loadDataRangeThread finishes work
+    # Callback function when the loadDataRange finishes work
     #
     # @return void
     #
-    loadDataRangeThreadFinish: func() {
+    _loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me.callback, [me.loadedData, me.withHeaders], me.objCallback);
+        call(me._callback, [me._loadedData, me._withHeaders], me._objCallback);
     },
 
     #
     # @return string
     #
-    getWhereQueryFilters: func() {
+    _getWhereQueryFilters: func() {
         var where = "";
-        foreach (var filterData; me.filters.appliedFilters.vector) {
+        foreach (var filterData; me._filters.appliedFilters.vector) {
             where ~= (size(where) == 0)
                 ? "WHERE "
                 : "AND ";
@@ -510,7 +514,7 @@ var StorageSQLite = {
     # @param  string  where  SQL query condition
     # @return void
     #
-    updateTotalsValues: func(where) {
+    _updateTotalsValues: func(where) {
         var query = sprintf("SELECT
                 SUM(landing) AS landing,
                 SUM(crash) AS crash,
@@ -524,7 +528,7 @@ var StorageSQLite = {
                 SUM(fuel) AS fuel,
                 MAX(max_alt) AS max_alt
             FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
-        var rows = sqlite.exec(me.dbHandler, query);
+        var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows) == 0) {
             return;
@@ -532,17 +536,17 @@ var StorageSQLite = {
 
         var row = rows[0];
 
-        me.totals[0]  = row.landing;
-        me.totals[1]  = row.crash;
-        me.totals[2]  = row.day;
-        me.totals[3]  = row.night;
-        me.totals[4]  = row.instrument;
-        me.totals[5]  = row.multiplayer;
-        me.totals[6]  = row.swift;
-        me.totals[7]  = row.duration;
-        me.totals[8]  = row.distance;
-        me.totals[9]  = row.fuel;
-        me.totals[10] = row.max_alt;
+        me._totals[0]  = row.landing;
+        me._totals[1]  = row.crash;
+        me._totals[2]  = row.day;
+        me._totals[3]  = row.night;
+        me._totals[4]  = row.instrument;
+        me._totals[5]  = row.multiplayer;
+        me._totals[6]  = row.swift;
+        me._totals[7]  = row.duration;
+        me._totals[8]  = row.distance;
+        me._totals[9]  = row.fuel;
+        me._totals[10] = row.max_alt;
     },
 
     #
@@ -550,8 +554,8 @@ var StorageSQLite = {
     #
     # @return void
     #
-    appendTotalsRow: func() {
-        append(me.loadedData, {
+    _appendTotalsRow: func() {
+        append(me._loadedData, {
             allDataIndex : -1,
             data         : [
                 "", # <- empty columns before "Totals:" text
@@ -565,10 +569,10 @@ var StorageSQLite = {
             ],
         });
 
-        forindex (var index; me.totals) {
+        forindex (var index; me._totals) {
             append(
-                me.loadedData[size(me.loadedData) - 1].data,
-                sprintf(StorageCsv.TOTAL_FORMATS[index], me.totals[index])
+                me._loadedData[size(me._loadedData) - 1].data,
+                sprintf(StorageCsv.TOTAL_FORMATS[index], me._totals[index])
             );
         }
     },
@@ -585,19 +589,15 @@ var StorageSQLite = {
             return false;
          }
 
-        if (g_isThreadPending) {
-            return false;
-        }
-
-        var columnName = me.getColumnNameByHeader(header);
+        var columnName = me._getColumnNameByHeader(header);
         if (columnName == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
             return false;
         }
 
         var query = sprintf("UPDATE %s SET %s = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
-        var stmt = sqlite.prepare(me.dbHandler, query);
-        sqlite.exec(me.dbHandler, stmt, value, id); # always returns an empty vector
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        sqlite.exec(me._dbHandler, stmt, value, id); # always returns an empty vector
 
         gui.popupTip("The change has been saved!");
 
@@ -610,11 +610,7 @@ var StorageSQLite = {
     # @param  string  header
     # @return int|nil
     #
-    getColumnNameByHeader: func(header) {
-        if (g_isThreadPending) {
-            return nil;
-        }
-
+    _getColumnNameByHeader: func(header) {
              if (header == "Data")        return "date";
         else if (header == "Time")        return "time";
         else if (header == "Aircraft")    return "aircraft";
@@ -677,10 +673,10 @@ var StorageSQLite = {
     #
     getTotalLines: func() {
         # Build where from filters
-        var where = me.getWhereQueryFilters();
+        var where = me._getWhereQueryFilters();
 
         var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
-        var rows = sqlite.exec(me.dbHandler, query);
+        var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows)) {
             return rows[0].count;
@@ -695,7 +691,7 @@ var StorageSQLite = {
     # @return vector
     #
     getHeadersData: func() {
-        return me.headersData;
+        return me._headersData;
     },
 
     #
@@ -710,15 +706,10 @@ var StorageSQLite = {
             return nil;
         }
 
-        if (g_isThreadPending) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
-            return nil;
-        }
-
         var query = sprintf("SELECT * FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
-        var stmt = sqlite.prepare(me.dbHandler, query);
+        var stmt = sqlite.prepare(me._dbHandler, query);
 
-        var rows = sqlite.exec(me.dbHandler, stmt, id);
+        var rows = sqlite.exec(me._dbHandler, stmt, id);
         if (size(rows) == 0) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, id(", id, ") out of range, return nil");
             return nil;
@@ -728,7 +719,7 @@ var StorageSQLite = {
 
         return {
             allDataIndex: row.id,
-            data        : me.dbRowToVector(row),
+            data        : me._dbRowToVector(row),
         };
     },
 
@@ -743,8 +734,8 @@ var StorageSQLite = {
         }
 
         var query = sprintf("DELETE FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
-        var stmt = sqlite.prepare(me.dbHandler, query);
-        sqlite.exec(me.dbHandler, stmt, id);
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        sqlite.exec(me._dbHandler, stmt, id);
 
         gui.popupTip("The log has been deleted!");
 

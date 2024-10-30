@@ -16,17 +16,16 @@ var Storage = {
     #
     # Constructor
     #
-    # @param hash filters - Filters object
+    # @param  hash  filters  Filters object
     # @return me
     #
     new: func(filters) {
         var me = {
             parents : [Storage],
-            filters : filters,
         };
 
         # TODO: drop support for StorageCsv when 2024 will be widely used
-        me.handler = Utils.isFG2024Version()
+        me._handler = Utils.isFG2024Version()
             ? StorageSQLite.new(filters)
             : StorageCsv.new(filters);
 
@@ -43,14 +42,14 @@ var Storage = {
     # @return void
     #
     del: func() {
-        me.handler.del();
+        me._handler.del();
     },
 
     #
     # @return True if Storage is working on SQLite DB, if on a CSV file then false
     #
     isStorageSQLite: func() {
-        return me.handler.parents[0] == StorageSQLite;
+        return me._handler.parents[0] == StorageSQLite;
     },
 
     #
@@ -63,7 +62,7 @@ var Storage = {
     # @return void
     #
     saveLogData: func(logData, id = nil, onlyIO = 0) {
-        me.handler.saveLogData(logData, id, onlyIO);
+        me._handler.saveLogData(logData, id, onlyIO);
     },
 
     #
@@ -72,7 +71,7 @@ var Storage = {
     # @return void
     #
     addItem: func(logData, handler = nil) {
-        me.handler.addItem(logData, handler);
+        me._handler.addItem(logData, handler);
     },
 
     #
@@ -82,7 +81,7 @@ var Storage = {
     #
     updateItem: func(logData, id) {
         if (me.isStorageSQLite()) {
-            me.handler.updateItem(logData, id);
+            me._handler.updateItem(logData, id);
         }
     },
 
@@ -90,7 +89,7 @@ var Storage = {
     # @return void
     #
     loadAllData: func() {
-        me.handler.loadAllData();
+        me._handler.loadAllData();
     },
 
     #
@@ -102,7 +101,7 @@ var Storage = {
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
-        me.handler.loadDataRange(objCallback, callback, start, count, withHeaders);
+        me._handler.loadDataRange(objCallback, callback, start, count, withHeaders);
     },
 
     #
@@ -112,7 +111,7 @@ var Storage = {
     # @return bool - Return true if successful
     #
     editData: func(rowIndex, header, value) {
-        return me.handler.editData(rowIndex, header, value);
+        return me._handler.editData(rowIndex, header, value);
     },
 
     #
@@ -121,7 +120,7 @@ var Storage = {
     # @return int
     #
     getTotalLines: func() {
-        return me.handler.getTotalLines();
+        return me._handler.getTotalLines();
     },
 
     #
@@ -130,7 +129,7 @@ var Storage = {
     # @return vector
     #
     getHeadersData: func() {
-        return me.handler.getHeadersData();
+        return me._handler.getHeadersData();
     },
 
     #
@@ -140,7 +139,7 @@ var Storage = {
     # @return hash|nil
     #
     getLogData: func(index) {
-        return me.handler.getLogData(index);
+        return me._handler.getLogData(index);
     },
 
     #
@@ -148,7 +147,7 @@ var Storage = {
     # @return bool
     #
     deleteLog: func(index) {
-        return me.handler.deleteLog(index);
+        return me._handler.deleteLog(index);
     },
 
     #
@@ -158,7 +157,7 @@ var Storage = {
     #
     exportToCsv: func() {
         if (me.isStorageSQLite()) {
-            me.handler.exportToCsv();
+            me._handler.exportToCsv();
         }
         else {
             gui.popupTip("This option is available only for version 2024.1 and later");

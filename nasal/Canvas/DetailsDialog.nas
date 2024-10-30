@@ -27,7 +27,7 @@ var DetailsDialog = {
     #
     # Constructor
     #
-    # @param hash storage - Storage object
+    # @param  hash  storage  Storage object
     # @return me
     #
     new: func(storage) {
@@ -42,15 +42,15 @@ var DetailsDialog = {
             call(DetailsDialog.hide, [], self);
         };
 
-        me.parent          = nil;
-        me.dataRow         = nil;
-        me.isTotals        = false;
-        me.parentDataIndex = nil;
-        me.storage         = storage;
-        me.btnDelete       = nil;
-        me.inputDialog     = InputDialog.new();
-        me.deleteDialog    = ConfirmationDialog.new("Delete entry log");
-        me.deleteDialog.setLabel("Do you really want to delete this entry?");
+        me._parent          = nil; # LogbookDialog object
+        me._dataRow         = nil;
+        me._isTotals        = false;
+        me._parentDataIndex = nil;
+        me._storage         = storage;
+        me._btnDelete       = nil;
+        me._inputDialog     = InputDialog.new();
+        me._deleteDialog    = ConfirmationDialog.new("Delete entry log");
+        me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
@@ -60,25 +60,25 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me.scrollData = me.createScrollArea(me.style.LIST_BG, margins);
-        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
-        me.scrollDataContent = me.getScrollAreaContent(me.scrollData);
+        me._scrollData = me.createScrollArea(me.style.LIST_BG, margins);
+        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
         var vBoxLayout = canvas.VBoxLayout.new();
-        me.listView = canvas.gui.widgets.ListView.new(me.scrollDataContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
             .setFontName(DetailsDialog.FONT_NAME)
             .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
-            .setClickCallback(me.listViewCallback, me)
+            .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()
             .setEmptyPlaceholder("-");
 
-        me.setListViewStyle();
+        me._setListViewStyle();
 
-        vBoxLayout.addItem(me.listView);
-        me.scrollData.setLayout(vBoxLayout);
+        vBoxLayout.addItem(me._listView);
+        me._scrollData.setLayout(vBoxLayout);
 
-        me.drawBottomBar();
+        me._drawBottomBar();
 
         me.setPositionOnCenter();
 
@@ -91,15 +91,22 @@ var DetailsDialog = {
     # @return void
     #
     del: func() {
-        me.inputDialog.del();
-        me.deleteDialog.del();
+        me._inputDialog.del();
+        me._deleteDialog.del();
         call(Dialog.del, [], me);
+    },
+
+    #
+    # @return ghost  ListView widget
+    #
+    getListView: func() {
+        return me._listView;
     },
 
     #
     # @return void
     #
-    drawBottomBar: func() {
+    _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
@@ -110,12 +117,12 @@ var DetailsDialog = {
             }
         );
 
-        me.btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
                 if (!g_isThreadPending) {
-                    me.deleteDialog.show(me.parentDataIndex, me);
+                    me._deleteDialog.show(me._parentDataIndex, me);
                 }
             }
         );
@@ -123,7 +130,7 @@ var DetailsDialog = {
         buttonBox.addStretch(3);
         buttonBox.addItem(btnClose);
         buttonBox.addStretch(1);
-        buttonBox.addItem(me.btnDelete);
+        buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
 
         me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
@@ -139,18 +146,18 @@ var DetailsDialog = {
         me.style = style;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.scrollData.setColorBackground(me.style.LIST_BG);
-        me.setListViewStyle();
+        me._scrollData.setColorBackground(me.style.LIST_BG);
+        me._setListViewStyle();
         me.toggleBgImage();
 
-        me.inputDialog.setStyle(style);
+        me._inputDialog.setStyle(style);
     },
 
     #
     # @return hash - ListView widget
     #
-    setListViewStyle: func() {
-        return me.listView
+    _setListViewStyle: func() {
+        return me._listView
             .setColorText(me.style.TEXT_COLOR)
             .setColorBackground(me.style.LIST_BG)
             .setColorHoverBackground(me.style.HOVER_BG);
@@ -159,24 +166,24 @@ var DetailsDialog = {
     #
     # Show canvas dialog
     #
-    # @param hash parent - LogbookDialog object
-    # @param hash data - {"allDataIndex": index, "data": vector}
-    # @param bool isTotals
+    # @param  hash  parent  LogbookDialog object
+    # @param  hash  data  {"allDataIndex": index, "data": vector}
+    # @param  bool  isTotals
     # @return void
     #
     show: func(parent, data, isTotals) {
-        me.parent = parent;
-        me.dataRow = data;
-        me.isTotals = isTotals;
+        me._parent = parent;
+        me._dataRow = data;
+        me._isTotals = isTotals;
 
-        me.btnDelete.setEnabled(!me.isTotals);
+        me._btnDelete.setEnabled(!me._isTotals);
 
-        me.inputDialog.hide();
-        me.deleteDialog.hide();
+        me._inputDialog.hide();
+        me._deleteDialog.hide();
 
-        me.parentDataIndex = me.dataRow.allDataIndex;
+        me._parentDataIndex = me._dataRow.allDataIndex;
 
-        me.listView.setItems(me.getListViewRows(me.dataRow.data));
+        me._listView.setItems(me._getListViewRows(me._dataRow.data));
 
         call(Dialog.show, [], me);
     },
@@ -187,15 +194,15 @@ var DetailsDialog = {
     # @return void
     #
     hide: func() {
-        if (me.parent != nil) {
+        if (me._parent != nil) {
             # Remove highlighted row in LogbookDialog
-            me.parent.listView.removeHighlightingRow();
-            me.parent.allDataIndexSelected = nil;
+            me._parent.getListView().removeHighlightingRow();
+            me._parent.allDataIndexSelected = nil;
         }
 
-        me.parentDataIndex = nil;
-        me.inputDialog.hide();
-        me.deleteDialog.hide();
+        me._parentDataIndex = nil;
+        me._inputDialog.hide();
+        me._deleteDialog.hide();
         call(Dialog.hide, [], me);
     },
 
@@ -205,18 +212,18 @@ var DetailsDialog = {
     # @param vector data
     # @return vector
     #
-    getListViewRows: func(data) {
-        var headers = me.storage.getHeadersData();
+    _getListViewRows: func(data) {
+        var headers = me._storage.getHeadersData();
         var rowsData = [];
 
         var start = 0;
-        if (me.isTotals) {
+        if (me._isTotals) {
             start = StorageCsv.INDEX_LANDING;
         }
 
         forindex (var index; headers[start:]) {
             var shiftIndex = index + start;
-            if (me.isTotals and shiftIndex == StorageCsv.INDEX_NOTE) {
+            if (me._isTotals and shiftIndex == StorageCsv.INDEX_NOTE) {
                 break;
             }
 
@@ -224,8 +231,8 @@ var DetailsDialog = {
                 data : [
                     sprintf("%10s:", headers[shiftIndex]),
                     sprintf("%s %s",
-                        me.addCommaSeparator(shiftIndex, data[shiftIndex]),
-                        me.getExtraText(shiftIndex, data[shiftIndex])
+                        me._addCommaSeparator(shiftIndex, data[shiftIndex]),
+                        me._getExtraText(shiftIndex, data[shiftIndex])
                     ),
                 ],
             });
@@ -240,14 +247,14 @@ var DetailsDialog = {
     # @return void
     #
     reload: func() {
-        if (me.parentDataIndex != nil) {
-            me.dataRow = me.storage.getLogData(me.parentDataIndex);
-            if (me.dataRow == nil) {
+        if (me._parentDataIndex != nil) {
+            me._dataRow = me._storage.getLogData(me._parentDataIndex);
+            if (me._dataRow == nil) {
                 call(DetailsDialog.hide, [false], me);
                 return;
             }
 
-            me.listView.setItems(me.getListViewRows(me.dataRow.data));
+            me._listView.setItems(me._getListViewRows(me._dataRow.data));
         }
     },
 
@@ -257,18 +264,18 @@ var DetailsDialog = {
     # @param int index
     # @return void
     #
-    listViewCallback: func(index) {
+    _listViewCallback: func(index) {
         if (!g_isThreadPending) {
-            if (me.dataRow.allDataIndex > -1) { # -1 is using for Totals row
+            if (me._dataRow.allDataIndex > -1) { # -1 is using for Totals row
                 g_Sound.play('paper');
 
-                me.listView.removeHighlightingRow();
-                me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+                me._listView.removeHighlightingRow();
+                me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
 
-                me.inputDialog.filterSelector.hide();
+                me._inputDialog.getFilterSelector().hide();
 
-                var headers = me.storage.getHeadersData();
-                me.inputDialog.show(me, me.dataRow.allDataIndex, headers[index], me.dataRow.data[index]);
+                var headers = me._storage.getHeadersData();
+                me._inputDialog.show(me, me._dataRow.allDataIndex, headers[index], me._dataRow.data[index]);
             }
         }
     },
@@ -278,7 +285,7 @@ var DetailsDialog = {
     # @param string value
     # @return string
     #
-    getExtraText: func(column, value) {
+    _getExtraText: func(column, value) {
         if ((column == StorageCsv.INDEX_FROM or column == StorageCsv.INDEX_TO) and value != "") {
             var airport = airportinfo(value);
             if (airport != nil) {
@@ -302,7 +309,7 @@ var DetailsDialog = {
             var inMeters = value * globals.NM2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
-                return sprintf("nm (%s km)", me.getValueWithCommaSeparator(km));
+                return sprintf("nm (%s km)", me._getValueWithCommaSeparator(km));
             }
 
             return sprintf("nm (%.0f m)", inMeters);
@@ -310,14 +317,14 @@ var DetailsDialog = {
 
         if (column == StorageCsv.INDEX_FUEL) {
             var liters = sprintf("%.02f", value * globals.GAL2L);
-            return sprintf("US gallons (%s l)", me.getValueWithCommaSeparator(liters));
+            return sprintf("US gallons (%s l)", me._getValueWithCommaSeparator(liters));
         }
 
         if (column == StorageCsv.INDEX_MAX_ALT) {
             var inMeters = value * globals.FT2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
-                return sprintf("ft MSL (%s km)", me.getValueWithCommaSeparator(km));
+                return sprintf("ft MSL (%s km)", me._getValueWithCommaSeparator(km));
             }
 
             return sprintf("ft MSL (%.0f m)", inMeters);
@@ -331,12 +338,12 @@ var DetailsDialog = {
     # @param string value
     # @return string
     #
-    addCommaSeparator: func(column, value) {
+    _addCommaSeparator: func(column, value) {
         if (   column == StorageCsv.INDEX_DISTANCE
             or column == StorageCsv.INDEX_FUEL
             or column == StorageCsv.INDEX_MAX_ALT
         ) {
-            return me.getValueWithCommaSeparator(value);
+            return me._getValueWithCommaSeparator(value);
         }
 
         return value;
@@ -346,7 +353,7 @@ var DetailsDialog = {
     # @param string value
     # @return string
     #
-    getValueWithCommaSeparator: func(value) {
+    _getValueWithCommaSeparator: func(value) {
         var numberParts = split(".", value);
         var strToCheck  = numberParts[0];
         var newValue    = strToCheck;

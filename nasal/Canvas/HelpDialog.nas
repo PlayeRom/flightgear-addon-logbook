@@ -34,7 +34,7 @@ var HelpDialog = {
                 HelpDialog.WINDOW_HEIGHT,
                 HelpDialog.TITLE,
                 true,
-                func(width) { me.onResizeWidth(width); }
+                func(width) { me._onResizeWidth(width); }
             ),
         ] };
 
@@ -50,24 +50,33 @@ var HelpDialog = {
             right  : 0,
             bottom : 0,
         };
-        me.scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
+        me._scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
-        me.vbox.addItem(me.scrollData, 1); # 2nd param = stretch
+        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
-        me.scrollDataContent = me.getScrollAreaContent(
-            me.scrollData,
+        me._scrollDataContent = me.getScrollAreaContent(
+            me._scrollData,
             "LiberationFonts/LiberationSans-Regular.ttf",
             16,
             "left-baseline"
         );
 
-        me.helpTexts = std.Vector.new();
-        me.propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
+        me._helpTexts = std.Vector.new();
+        me._propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
 
-        me.reDrawTexts(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
-        me.drawBottomBar();
+        me._reDrawTexts(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        me._drawBottomBar();
 
         return me;
+    },
+
+    #
+    # Destructor
+    #
+    # @return void
+    #
+    del: func() {
+        call(Dialog.del, [], me);
     },
 
     #
@@ -76,8 +85,8 @@ var HelpDialog = {
     # @param int width
     # @return void
     #
-    onResizeWidth: func(width) {
-        me.reDrawTexts(0, 0, width - (HelpDialog.PADDING * 2));
+    _onResizeWidth: func(width) {
+        me._reDrawTexts(0, 0, width - (HelpDialog.PADDING * 2));
     },
 
     #
@@ -86,13 +95,13 @@ var HelpDialog = {
     # @param int|nil maxWidth
     # @return void
     #
-    reDrawTexts: func(x, y, maxWidth = nil) {
-        me.scrollDataContent.removeAllChildren();
-        me.helpTexts.clear();
+    _reDrawTexts: func(x, y, maxWidth = nil) {
+        me._scrollDataContent.removeAllChildren();
+        me._helpTexts.clear();
 
-        foreach (var node; me.propHelpText.getChildren("paragraph")) {
+        foreach (var node; me._propHelpText.getChildren("paragraph")) {
             var isHeader = math.mod(node.getIndex(), 2) == 0;
-            var text = me.scrollDataContent.createChild("text")
+            var text = me._scrollDataContent.createChild("text")
                 .setText(node.getIndex() == 1
                     ? sprintf(node.getValue(), StorageCsv.FILE_VERSION)
                     : node.getValue()
@@ -112,14 +121,14 @@ var HelpDialog = {
 
             y += text.getSize()[1] + 10;
 
-            me.helpTexts.append(text);
+            me._helpTexts.append(text);
         }
     },
 
     #
     # @return hash - HBoxLayout object with button
     #
-    drawBottomBar: func() {
+    _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
@@ -140,15 +149,6 @@ var HelpDialog = {
     },
 
     #
-    # Destructor
-    #
-    # @return void
-    #
-    del: func() {
-        call(Dialog.del, [], me);
-    },
-
-    #
     # @param hash style
     # @return void
     #
@@ -156,9 +156,9 @@ var HelpDialog = {
         me.style = style;
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.scrollData.setColorBackground(me.style.CANVAS_BG);
+        me._scrollData.setColorBackground(me.style.CANVAS_BG);
 
-        foreach (var text; me.helpTexts.vector) {
+        foreach (var text; me._helpTexts.vector) {
             text.setColor(me.style.TEXT_COLOR);
         }
     },

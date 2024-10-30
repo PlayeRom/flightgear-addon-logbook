@@ -60,11 +60,11 @@ var LogbookDialog = {
                     "Logbook"
                 ),
             ],
-            storage : storage,
-            filters : filters,
+            _storage : storage,
+            _filters : filters,
         };
 
-        me.addonNodePath = g_Addon.node.getPath();
+        me._addonNodePath = g_Addon.node.getPath();
 
         me.setPositionOnCenter();
 
@@ -74,23 +74,21 @@ var LogbookDialog = {
             call(LogbookDialog.hide, [], self);
         };
 
-        me.startIndex           = 0;
-        me.data                 = [];
-        me.rowTotal             = nil;
-        me.headersContent       = nil;
-        me.dataContent          = nil;
+        me._startIndex          = 0;
+        me._data                = [];
+        me._headersContent      = nil;
         me.allDataIndexSelected = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me.detailsDialog  = DetailsDialog.new(storage);
-        me.helpDialog     = HelpDialog.new();
-        me.aboutDialog    = AboutDialog.new();
-        me.filterSelector = FilterSelector.new();
+        me._detailsDialog  = DetailsDialog.new(storage);
+        me._filterSelector = FilterSelector.new();
+        me.helpDialog      = HelpDialog.new();
+        me.aboutDialog     = AboutDialog.new();
 
-        me.drawHeaders();
+        me._drawHeaders();
 
-        me.listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
+        me._listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
             .setFontSizeSmall()
             .setTranslation( # Set translation for align ListView with headers row
                 canvas.DefaultStyle.widgets["list-view"].PADDING,
@@ -98,73 +96,73 @@ var LogbookDialog = {
             )
             .setFontName(LogbookDialog.FONT_NAME)
             .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
-            .setClickCallback(me.listViewCallback, me);
+            .setClickCallback(me._listViewCallback, me);
 
-        me.setListViewStyle();
+        me._setListViewStyle();
 
-        me.vbox.addItem(me.listView, 1); # 2nd param = stretch
+        me.vbox.addItem(me._listView, 1); # 2nd param = stretch
 
-        me.labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
-        me.btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
-        me.drawBottomBar();
+        me._labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+        me._btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._drawBottomBar();
 
-        me.listeners = std.Vector.new();
+        me._listeners = std.Vector.new();
 
         # User clicked delete entry
-        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
+        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
             if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                var index = getprop(me.addonNodePath ~ "/addon-devel/action-delete-entry-index");
-                if (me.storage.deleteLog(index)) {
-                    me.listView.enableLoading();
+                var index = getprop(me._addonNodePath ~ "/addon-devel/action-delete-entry-index");
+                if (me._storage.deleteLog(index)) {
+                    me._listView.enableLoading();
 
-                    if (me.storage.isStorageSQLite()) {
+                    if (me._storage.isStorageSQLite()) {
                         # Get signal to reload data
-                        setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
-                        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
+                        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
                     }
                 }
             }
         }));
 
         # User clicked edit
-        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/action-edit-entry", func(node) {
+        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/action-edit-entry", func(node) {
             if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                var index  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-index");
-                var header = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-header");
-                var value  = getprop(me.addonNodePath ~ "/addon-devel/action-edit-entry-value");
+                var index  = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index");
+                var header = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-header");
+                var value  = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value");
 
-                if (me.storage.editData(index, header, value)) {
-                    me.listView.enableLoading();
+                if (me._storage.editData(index, header, value)) {
+                    me._listView.enableLoading();
 
-                    if (me.storage.isStorageSQLite()) {
+                    if (me._storage.isStorageSQLite()) {
                         # Get signal to reload data
-                        setprop(me.addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
                     }
                 }
             }
         }));
 
         # Reload data dialog after edit or delete file operation
-        me.listeners.append(setlistener(me.addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
+        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
             if (node.getBoolValue()) {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                me.reloadLogbookListenerCallback();
+                me._reloadLogbookListenerCallback();
             }
         }));
 
-        me.listeners.append(setlistener("/devices/status/mice/mouse/button", func(node) {
+        me._listeners.append(setlistener("/devices/status/mice/mouse/button", func(node) {
             if (node.getBoolValue()) {
                 # Mouse was clicked somewhere in the sim, close my popups dialogs
-                me.filterSelector.hide();
-                me.detailsDialog.inputDialog.filterSelector.hide();
+                me._filterSelector.hide();
+                me._detailsDialog.inputDialog.getFilterSelector().hide();
             }
         }));
 
@@ -176,23 +174,23 @@ var LogbookDialog = {
     #
     # @return void
     #
-    reloadLogbookListenerCallback: func() {
-        if (getprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted")) {
+    _reloadLogbookListenerCallback: func() {
+        if (getprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted")) {
             # User deleted entry
 
             # Back deleted flag to false value
-            setprop(me.addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
+            setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
             # Check index of last page
-            var pages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+            var pages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
             var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
-            if (me.startIndex > newIndex) {
+            if (me._startIndex > newIndex) {
                 # We exceed the maximum index, so set a new one
-                me.startIndex = newIndex;
+                me._startIndex = newIndex;
             }
 
             # Hide details window with deleted entry, it MUST be call before me.reloadData();
-            me.detailsDialog.hide();
+            me._detailsDialog.hide();
         }
 
         # Reload after edit/delete data
@@ -205,14 +203,14 @@ var LogbookDialog = {
     # @return void
     #
     del: func() {
-        foreach (var listener; me.listeners.vector) {
+        foreach (var listener; me._listeners.vector) {
             removelistener(listener);
         }
 
-        me.detailsDialog.del();
+        me._detailsDialog.del();
+        me._filterSelector.del();
         me.helpDialog.del();
         me.aboutDialog.del();
-        me.filterSelector.del();
         call(Dialog.del, [], me);
     },
 
@@ -241,9 +239,16 @@ var LogbookDialog = {
     # @return void
     #
     hide: func() {
-        me.filterSelector.hide();
-        me.detailsDialog.hide();
+        me._filterSelector.hide();
+        me._detailsDialog.hide();
         call(Dialog.hide, [], me);
+    },
+
+    #
+    # @return ghost  ListView widget
+    #
+    getListView: func() {
+        return me._listView;
     },
 
     #
@@ -251,16 +256,16 @@ var LogbookDialog = {
     #
     # @return void
     #
-    drawHeaders: func() {
-        me.headersContent = me.group.createChild("group");
-        me.headersContent.setTranslation(0, 0);
-        me.headersContent
+    _drawHeaders: func() {
+        me._headersContent = me.group.createChild("group");
+        me._headersContent.setTranslation(0, 0);
+        me._headersContent
             .set("font", LogbookDialog.FONT_NAME)
             .set("character-size", LogbookDialog.FONT_SIZE)
             .set("alignment", "left-baseline");
 
         # There is no need to re-draw headers here because the data loads in a separate thread so we may not have them
-        # me.reDrawHeadersContent();
+        # me._reDrawHeadersContent();
     },
 
     #
@@ -268,12 +273,12 @@ var LogbookDialog = {
     #
     # @return void
     #
-    reDrawHeadersContent: func() {
-        me.headersContent.removeAllChildren();
+    _reDrawHeadersContent: func() {
+        me._headersContent.removeAllChildren();
 
         var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
         var column = -1;
-        var headers = me.storage.getHeadersData();
+        var headers = me._storage.getHeadersData();
         foreach (var text; headers) {
             column += 1;
 
@@ -282,22 +287,22 @@ var LogbookDialog = {
                 continue;
             }
 
-            var rowGroup = me.headersContent.createChild("group");
+            var rowGroup = me._headersContent.createChild("group");
             rowGroup.setTranslation(x, 0);
-            var rect = rowGroup.rect(0, 0, me.getColumnWidth(column), canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
+            var rect = rowGroup.rect(0, 0, me._getColumnWidth(column), canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-            me.drawText(rowGroup, 0, 20, me.getReplaceHeaderText(column, text));
+            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(column, text));
 
-            me.setMouseHoverHeadersListener(
+            me._setMouseHoverHeadersListener(
                 rowGroup,
                 rect,
-                me.filters.getFilterItemsByColumnIndex(column),
-                me.filters.getFilterTitleByColumnIndex(column),
+                me._filters.getFilterItemsByColumnIndex(column),
+                me._filters.getFilterTitleByColumnIndex(column),
                 column
             );
 
-            x += me.getColumnWidth(column);
+            x += me._getColumnWidth(column);
         }
     },
 
@@ -307,19 +312,19 @@ var LogbookDialog = {
     # @param int index
     # @return int
     #
-    getColumnWidth: func(index) {
+    _getColumnWidth: func(index) {
         return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
-    # @param hash rowGroup - canvas group
-    # @param hash rect - rectangle canvas object
-    # @param vector|nil items - Items for FilterSelector
-    # @param string|nil title - FilterSelector title dialog
-    # @param int|nil index - Column index as StorageCsv.INDEX_[...]
+    # @param  hash  rowGroup  Canvas group
+    # @param  hash  rect  Rectangle canvas object
+    # @param  vector|nil  items  Items for FilterSelector
+    # @param  string|nil  title  FilterSelector title dialog
+    # @param  int|nil  index  Column index as StorageCsv.INDEX_[...]
     # @return void
     #
-    setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
+    _setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
         if (items == nil or title == nil or index == nil) {
             # No filters for this column, skip it
             return;
@@ -340,12 +345,12 @@ var LogbookDialog = {
         rowGroup.addEventListener("click", func(event) {
             if (!g_isThreadPending) {
                 g_Sound.play('paper');
-                me.filterSelector
+                me._filterSelector
                     .setItems(items)
                     .setColumnIndex(index)
                     .setPosition(event.screenX, event.screenY)
                     .setTitle(title)
-                    .setCallback(me, me.filterSelectorCallback)
+                    .setCallback(me, me._filterSelectorCallback)
                     .show();
             }
         });
@@ -357,8 +362,8 @@ var LogbookDialog = {
     # @param  string  value
     # @return void
     #
-    filterSelectorCallback: func(columnIndex, dbColumnName, value) {
-        me.detailsDialog.hide();
+    _filterSelectorCallback: func(columnIndex, dbColumnName, value) {
+        me._detailsDialog.hide();
         me.reloadData(true, FilterData.new(columnIndex, dbColumnName, value));
     },
 
@@ -369,12 +374,12 @@ var LogbookDialog = {
     # @param string text
     # @return string
     #
-    getReplaceHeaderText: func(column, text) {
+    _getReplaceHeaderText: func(column, text) {
         if (column == StorageCsv.INDEX_LANDING) {
             text = "Land.";
         }
 
-        if (me.filters.isApplied(column)) {
+        if (me._filters.isApplied(column)) {
             return text ~ " (!)";
         }
 
@@ -392,12 +397,12 @@ var LogbookDialog = {
     #
     # Draw text
     #
-    # @param hash cGroup - Parent canvas group
-    # @param int x, y - Position of text
-    # @param string text - Text to draw
-    # @return hash - Text canvas element
+    # @param  hash  cGroup  Parent canvas group
+    # @param  int  x, y  Position of text
+    # @param  string  text  Text to draw
+    # @return hash  Text canvas element
     #
-    drawText: func(cGroup, x, y, text) {
+    _drawText: func(cGroup, x, y, text) {
         return cGroup.createChild("text")
             .setTranslation(x, y)
             .setColor(me.style.TEXT_COLOR)
@@ -409,35 +414,35 @@ var LogbookDialog = {
     #
     # @return void
     #
-    drawBottomBar: func() {
+    _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnFirst = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("|<<")
             .setFixedSize(75, 26)
-            .listen("clicked", func { me.first(); });
+            .listen("clicked", func { me._first(); });
 
         var btnPrev = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("<")
             .setFixedSize(75, 26)
-            .listen("clicked", func { me.prev(); });
+            .listen("clicked", func { me._prev(); });
 
-        me.setPaging();
+        me._setPaging();
 
         var btnNext = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText(">")
             .setFixedSize(75, 26)
-            .listen("clicked", func { me.next(); });
+            .listen("clicked", func { me._next(); });
 
         var btnLast = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText(">>|")
             .setFixedSize(75, 26)
-            .listen("clicked", func { me.last(); });
+            .listen("clicked", func { me._last(); });
 
-        me.btnStyle
-            .setText(me.getOppositeStyleName())
+        me._btnStyle
+            .setText(me._getOppositeStyleName())
             .setFixedSize(75, 26)
-            .listen("clicked", func { me.toggleStyle(); });
+            .listen("clicked", func { me._toggleStyle(); });
 
         var btnHelp = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("?")
@@ -448,12 +453,12 @@ var LogbookDialog = {
         buttonBox.addItem(btnFirst);
         buttonBox.addItem(btnPrev);
         buttonBox.addStretch(1);
-        buttonBox.addItem(me.labelPaging);
+        buttonBox.addItem(me._labelPaging);
         buttonBox.addStretch(1);
         buttonBox.addItem(btnNext);
         buttonBox.addItem(btnLast);
         buttonBox.addStretch(2);
-        buttonBox.addItem(me.btnStyle);
+        buttonBox.addItem(me._btnStyle);
         buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 
@@ -466,7 +471,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    toggleStyle: func() {
+    _toggleStyle: func() {
         if (g_isThreadPending) {
             return;
         }
@@ -483,21 +488,21 @@ var LogbookDialog = {
         me.toggleBgImage();
 
         me.canvas.set("background", me.style.CANVAS_BG);
-        me.btnStyle.setText(me.getOppositeStyleName());
-        me.setListViewStyle();
-        me.filterSelector.setStyle(me.style);
+        me._btnStyle.setText(me._getOppositeStyleName());
+        me._setListViewStyle();
+        me._filterSelector.setStyle(me.style);
 
         me.reloadData();
 
-        me.detailsDialog.setStyle(me.style);
+        me._detailsDialog.setStyle(me.style);
         me.helpDialog.setStyle(me.style);
     },
 
     #
     # @return void
     #
-    setListViewStyle: func() {
-        me.listView
+    _setListViewStyle: func() {
+        me._listView
             .setColorText(me.style.TEXT_COLOR)
             .setColorBackground(me.style.LIST_BG)
             .setColorHoverBackground(me.style.HOVER_BG);
@@ -506,7 +511,7 @@ var LogbookDialog = {
     #
     # @return string
     #
-    getOppositeStyleName: func() {
+    _getOppositeStyleName: func() {
         return me.style.NAME == "dark"
             ? me.getStyle().light.NAME
             : me.getStyle().dark.NAME;
@@ -517,17 +522,17 @@ var LogbookDialog = {
     #
     # @return void
     #
-    first: func() {
+    _first: func() {
         if (g_isThreadPending) {
             return;
         }
 
-        if (me.startIndex != 0) {
+        if (me._startIndex != 0) {
             g_Sound.play('paper');
 
-            me.startIndex = 0;
-            me.filterSelector.hide();
-            me.detailsDialog.hide();
+            me._startIndex = 0;
+            me._filterSelector.hide();
+            me._detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -537,17 +542,17 @@ var LogbookDialog = {
     #
     # @return void
     #
-    prev: func() {
+    _prev: func() {
         if (g_isThreadPending) {
             return;
         }
 
-        if (me.startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
+        if (me._startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
             g_Sound.play('paper');
 
-            me.startIndex -= LogbookDialog.MAX_DATA_ITEMS;
-            me.filterSelector.hide();
-            me.detailsDialog.hide();
+            me._startIndex -= LogbookDialog.MAX_DATA_ITEMS;
+            me._filterSelector.hide();
+            me._detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -557,17 +562,17 @@ var LogbookDialog = {
     #
     # @return void
     #
-    next: func() {
+    _next: func() {
         if (g_isThreadPending) {
             return;
         }
 
-        if (me.startIndex + LogbookDialog.MAX_DATA_ITEMS < me.storage.getTotalLines()) {
+        if (me._startIndex + LogbookDialog.MAX_DATA_ITEMS < me._storage.getTotalLines()) {
             g_Sound.play('paper');
 
-            me.startIndex += LogbookDialog.MAX_DATA_ITEMS;
-            me.filterSelector.hide();
-            me.detailsDialog.hide();
+            me._startIndex += LogbookDialog.MAX_DATA_ITEMS;
+            me._filterSelector.hide();
+            me._detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -577,20 +582,20 @@ var LogbookDialog = {
     #
     # @return void
     #
-    last: func() {
+    _last: func() {
         if (g_isThreadPending) {
             return;
         }
 
-        var old = me.startIndex;
-        var pages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
-        me.startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+        var old = me._startIndex;
+        var pages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
+        me._startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
 
-        if (old != me.startIndex) {
+        if (old != me._startIndex) {
             g_Sound.play('paper');
 
-            me.filterSelector.hide();
-            me.detailsDialog.hide();
+            me._filterSelector.hide();
+            me._detailsDialog.hide();
             me.reloadData(false);
         }
     },
@@ -598,69 +603,69 @@ var LogbookDialog = {
     #
     # Reload logbook data
     #
-    # @param bool withHeaders - Set true when headers/filters must be change too.
-    # @param hash filter - FilterData object as {"index": column index, "value": "text"}
+    # @param  bool  withHeaders  Set true when headers/filters must be change too.
+    # @param  hash  filter  FilterData object as {"index": column index, "value": "text"}
     # @return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
         if (filter != nil) {
-            if (!me.filters.applyFilter(filter)) {
+            if (!me._filters.applyFilter(filter)) {
                 # The filter did not change anything, so there is nothing to reload
                 return;
             }
 
             # Reset range
-            me.startIndex = 0;
+            me._startIndex = 0;
         }
 
-        me.listView.enableLoading();
+        me._listView.enableLoading();
 
-        me.storage.loadDataRange(me, me.reloadDataCallback, me.startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
+        me._storage.loadDataRange(me, me._reloadDataCallback, me._startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
     },
 
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # @param vector data - Vector of hashes {"allDataIndex": index, "data": vector}
-    # @param bool withHeaders
+    # @param  vector  data  Vector of hashes {"allDataIndex": index, "data": vector}
+    # @param  bool  withHeaders
     # @return void
     #
-    reloadDataCallback: func(data, withHeaders) {
-        me.data = data;
+    _reloadDataCallback: func(data, withHeaders) {
+        me._data = data;
 
-        me.listView.setItems(me.data);
+        me._listView.setItems(me._data);
         if (withHeaders) {
-            me.reDrawHeadersContent();
+            me._reDrawHeadersContent();
         }
-        me.setPaging();
+        me._setPaging();
 
-        if (me.detailsDialog.isWindowVisible()) {
-            me.detailsDialog.reload();
+        if (me._detailsDialog.isWindowVisible()) {
+            me._detailsDialog.reload();
         }
 
-        me.handleSelectedRowAfterReloadData();
+        me._handleSelectedRowAfterReloadData();
     },
 
     #
     # @return void
     #
-    handleSelectedRowAfterReloadData: func() {
+    _handleSelectedRowAfterReloadData: func() {
         # Check if the selected row should still be selected.
-        var highlightedIndex = me.listView.getHighlightingRow();
+        var highlightedIndex = me._listView.getHighlightingRow();
         if (   highlightedIndex == nil
             or highlightedIndex < 0
-            or highlightedIndex >= size(me.data)
-            or me.data[highlightedIndex].allDataIndex != me.allDataIndexSelected
+            or highlightedIndex >= size(me._data)
+            or me._data[highlightedIndex].allDataIndex != me.allDataIndexSelected
         ) {
-            me.listView.removeHighlightingRow();
+            me._listView.removeHighlightingRow();
         }
 
         # Check that the selected row is among the data.
-        if (me.detailsDialog.isWindowVisible()) {
-            forindex (var index; me.data) {
-                var allDataIndex = me.data[index].allDataIndex;
+        if (me._detailsDialog.isWindowVisible()) {
+            forindex (var index; me._data) {
+                var allDataIndex = me._data[index].allDataIndex;
                 if (allDataIndex == me.allDataIndexSelected) {
-                    me.setHighlightingRow(allDataIndex, index);
+                    me._setHighlightingRow(allDataIndex, index);
                     break;
                 }
             }
@@ -672,10 +677,10 @@ var LogbookDialog = {
     #
     # @return void
     #
-    setPaging: func() {
-        var curPage = (me.startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
-        var maxPages = math.ceil(me.storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
-        me.labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me.storage.getTotalLines()));
+    _setPaging: func() {
+        var curPage = (me._startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
+        var maxPages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
+        me._labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me._storage.getTotalLines()));
     },
 
     #
@@ -684,18 +689,18 @@ var LogbookDialog = {
     # @param int index
     # @return void
     #
-    listViewCallback: func(index) {
+    _listViewCallback: func(index) {
         if (!g_isThreadPending) {
             g_Sound.play('paper');
 
-            var hash = me.data[index]; # = hash {"allDataIndex": index, "data": vector}
+            var hash = me._data[index]; # = hash {"allDataIndex": index, "data": vector}
 
-            me.setHighlightingRow(hash.allDataIndex, index);
+            me._setHighlightingRow(hash.allDataIndex, index);
 
-            me.filterSelector.hide();
+            me._filterSelector.hide();
 
             var isTotals = hash.allDataIndex == -1;  # -1 is using for Totals row
-            me.detailsDialog.show(me, hash, isTotals);
+            me._detailsDialog.show(me, hash, isTotals);
         }
     },
 
@@ -704,9 +709,9 @@ var LogbookDialog = {
     # @param int index - index of row in list view (among displayed rows)
     # @return void
     #
-    setHighlightingRow: func(allDataIndex, index) {
+    _setHighlightingRow: func(allDataIndex, index) {
         me.allDataIndexSelected = allDataIndex;
-        me.listView.removeHighlightingRow();
-        me.listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+        me._listView.removeHighlightingRow();
+        me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
     },
 };

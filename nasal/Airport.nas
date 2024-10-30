@@ -29,7 +29,7 @@ var Airport = {
     # @return string - ICAO code or empty
     #
     getNearestIcao: func(maxDistance) {
-        var distance = me.getNearestAirportDistanceM();
+        var distance = me._getNearestAirportDistanceM();
         if (distance != nil and distance.distanceM < maxDistance) {
             return distance.icao;
         }
@@ -42,7 +42,7 @@ var Airport = {
     #
     # @return hash|nil - hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
-    getNearestAirportDistanceM: func() {
+    _getNearestAirportDistanceM: func() {
         var nearestAirport = airportinfo();
         if (nearestAirport != nil) {
             var aircraftCoord = geo.aircraft_position();

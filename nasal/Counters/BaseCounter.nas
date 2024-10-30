@@ -23,14 +23,14 @@ var BaseCounter = {
     new: func(onResetCounters, onUpdate) {
         var me = { parents: [BaseCounter] };
 
-        me.onResetCountersCallback = onResetCounters;
-        me.onUpdateCallback = onUpdate;
+        me._onResetCountersCallback = onResetCounters;
+        me._onUpdateCallback        = onUpdate;
 
-        me.isRealTimeDuration = g_Settings.isRealTimeDuration();
-        me.lastElapsedSec     = me.isRealTimeDuration ? 0 : me.getElapsedSec();
+        me._isRealTimeDuration = g_Settings.isRealTimeDuration();
+        me._lastElapsedSec     = me._isRealTimeDuration ? 0 : me._getElapsedSec();
 
-        # me.isReplayMode       = false;
-        me.isRunning          = false;
+        # me._isReplayMode       = false;
+        me._isRunning          = false;
 
         return me;
     },
@@ -41,12 +41,12 @@ var BaseCounter = {
     # @return void
     #
     resetCounters: func() {
-        if (me.onResetCountersCallback != nil) {
-            me.onResetCountersCallback();
+        if (me._onResetCountersCallback != nil) {
+            me._onResetCountersCallback();
         }
 
-        me.lastElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
-        me.isRunning      = true;
+        me._lastElapsedSec = me._isRealTimeDuration ? 0 : me._getElapsedSec();
+        me._isRunning      = true;
     },
 
     #
@@ -55,21 +55,21 @@ var BaseCounter = {
     # @return void
     #
     update: func() {
-        if (!me.isRunning) {
+        if (!me._isRunning) {
             return;
         }
 
-        var currentElapsedSec = me.isRealTimeDuration ? 0 : me.getElapsedSec();
+        var currentElapsedSec = me._isRealTimeDuration ? 0 : me._getElapsedSec();
 
-        var diffElapsedSec = me.isRealTimeDuration
+        var diffElapsedSec = me._isRealTimeDuration
             ? Logbook.MAIN_TIMER_INTERVAL
-            : (currentElapsedSec - me.lastElapsedSec);
+            : (currentElapsedSec - me._lastElapsedSec);
 
-        if (me.onUpdateCallback != nil) {
-            me.onUpdateCallback(diffElapsedSec);
+        if (me._onUpdateCallback != nil) {
+            me._onUpdateCallback(diffElapsedSec);
         }
 
-        me.lastElapsedSec = currentElapsedSec;
+        me._lastElapsedSec = currentElapsedSec;
     },
 
     #
@@ -78,7 +78,7 @@ var BaseCounter = {
     #
     # @return double
     #
-    getElapsedSec: func() {
+    _getElapsedSec: func() {
         return getprop("/sim/time/elapsed-sec");
     },
 
@@ -89,7 +89,7 @@ var BaseCounter = {
     # @param bool isReplayMode
     # @return void
     #
-    # setReplayMode: func(isReplayMode) {
-    #     me.isReplayMode = isReplayMode;
+    # _setReplayMode: func(isReplayMode) {
+    #     me._isReplayMode = isReplayMode;
     # },
 };

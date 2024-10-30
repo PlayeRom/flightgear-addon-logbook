@@ -20,7 +20,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
         return {
             parents : [
                 M2024_10_30_08_44_CreateMigrationsTable,
-                MigrationBase.new(storageSQLite.dbHandler),
+                MigrationBase.new(storageSQLite.getDbHandler()),
             ],
         };
     },
