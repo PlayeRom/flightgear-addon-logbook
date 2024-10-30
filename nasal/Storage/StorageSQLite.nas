@@ -347,7 +347,7 @@ var StorageSQLite = {
     },
 
     #
-    # Load all data for filters
+    # Load all data for filters, called once on startup
     #
     # @return void
     #
@@ -379,9 +379,12 @@ var StorageSQLite = {
     #
     # @param  string  columnName
     # @param  int  dataIndex
+    # @param  hash|nil  where  As hash {column: 'text': value: 'text'}
+    # @param  int  start  Start index counting from 0 as a first row of data, if -1 then don't use it
+    # @param  int  count  How many rows should be returned, if -1 then don't use it
     # @return void
     #
-    updateFilterData: func(columnName, dataIndex) {
+    updateFilterData: func(columnName, dataIndex, where = nil, start = -1, count = -1) {
         if (dataIndex == StorageCsv.INDEX_DATE) {
             columnName = "strftime('%Y', " ~ columnName ~ ")"; # get only a year from `date` column
         }
@@ -390,20 +393,36 @@ var StorageSQLite = {
         var frm = "
             SELECT
                 DISTINCT %s AS value
-            FROM %s
-            ORDER BY value COLLATE NOCASE ASC";
+            FROM %s";
+
+        if (where != nil) {
+            frm ~= sprintf(" WHERE `%s` = '%s'", where.column, where.value);
+        }
+
+        frm ~= " ORDER BY value COLLATE NOCASE ASC";
+
+        if (start > -1 and count > -1) {
+            frm ~= sprintf(" LIMIT %d OFFSET %d", count, start);
+        }
+
         var query = sprintf(frm, columnName, StorageSQLite.TABLE_LOGBOOKS);
         var rows = sqlite.exec(me.dbHandler, query);
 
-        foreach (var row; rows) {
-            var value = dataIndex == StorageCsv.INDEX_DATE
-                ? substr(row.value, 0, 4) # get year only
-                : row.value;
+        if (size(rows)) {
+            me.filters.data[dataIndex].clear();
 
-            me.filters.data[dataIndex].append(value);
+            foreach (var row; rows) {
+                var value = dataIndex == StorageCsv.INDEX_DATE
+                    ? substr(row.value, 0, 4) # get year only
+                    : row.value;
+
+                me.filters.data[dataIndex].append(value);
+            }
         }
     },
 
+    #
+    # Load logbook data with given range, called when user open the Logbook dialog or change its page
     #
     # @param  hash  objCallback  Owner object of callback function
     # @param  func  callback  Callback function called on finish
@@ -435,6 +454,18 @@ var StorageSQLite = {
 
         # Add totals row to the end
         me.appendTotalsRow();
+
+        # Update aircraft variants filter, to show only variant of selected aircraft
+        var aircraft = me.filters.getAppliedValueForFilter(StorageCsv.INDEX_AIRCRAFT);
+        if (aircraft == nil) {
+            # Apply all variant values to filter
+            me.updateFilterData("variant", StorageCsv.INDEX_VARIANT);
+        }
+        else {
+            # Apply variant filters according to selected aircraft
+            var where = { column: "aircraft", value: aircraft };
+            me.updateFilterData("variant", StorageCsv.INDEX_VARIANT, where, start, count);
+        }
 
         # We have not used the thread here, but we must point out that it has ended
         g_isThreadPending = false;

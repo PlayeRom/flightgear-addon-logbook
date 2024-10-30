@@ -127,6 +127,22 @@ var Filters = {
     },
 
     #
+    # Return value if user used filter with given column index
+    #
+    # @param  int  index
+    # @return string|nil
+    #
+    getAppliedValueForFilter: func(index) {
+        foreach (var item; me.appliedFilters.vector) {
+            if (item.index == index) {
+                return item.value;
+            }
+        }
+
+        return nil;
+    },
+
+    #
     # @param hash logData - LogData object
     # @return bool
     #
