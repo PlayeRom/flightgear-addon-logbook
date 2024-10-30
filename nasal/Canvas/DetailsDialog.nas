@@ -104,6 +104,13 @@ var DetailsDialog = {
     },
 
     #
+    # @return ghost  InputDialog object
+    #
+    getInputDialog: func() {
+        return me._inputDialog;
+    },
+
+    #
     # @return void
     #
     _drawBottomBar: func() {

@@ -162,7 +162,7 @@ var LogbookDialog = {
             if (node.getBoolValue()) {
                 # Mouse was clicked somewhere in the sim, close my popups dialogs
                 me._filterSelector.hide();
-                me._detailsDialog.inputDialog.getFilterSelector().hide();
+                me._detailsDialog.getInputDialog().getFilterSelector().hide();
             }
         }));
 

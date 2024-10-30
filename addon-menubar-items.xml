@@ -43,7 +43,7 @@
                 <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.storage.exportToCsv();</script>
+                    <script>logbook.g_Logbook.exportToCsv();</script>
                 </binding>
             </item>
             <item>

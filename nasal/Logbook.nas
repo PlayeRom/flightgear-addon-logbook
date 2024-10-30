@@ -415,4 +415,13 @@ var Logbook = {
     showAboutDialog: func() {
         me._logbookDialog.aboutDialog.show();
     },
+
+    #
+    # Export logbook from SQLite to CSV file
+    #
+    # @return void
+    #
+    exportToCsv: func() {
+        me._storage.exportToCsv();
+    },
 };
