@@ -36,6 +36,7 @@ var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
         "nasal/Storage/MigrationCsv",
+        "nasal/Storage/MigrationSQLite",
         "nasal/Storage/StorageCsv",
         "nasal/Storage/StorageSQLite",
         "nasal/Storage/Storage", # Must be before LogbookDialog

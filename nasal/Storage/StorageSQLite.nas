@@ -16,9 +16,9 @@ var StorageSQLite = {
     #
     # Constants
     #
-    LOGBOOK_FILE: "logbook-v%s.sqlite",
-    FILE_VERSION: "1",
-    TABLE_NAME  : "logbooks",
+    LOGBOOK_FILE    : "logbook.sqlite",
+    TABLE_LOGBOOKS  : "logbooks",
+    TABLE_MIGRATIONS: "migrations",
 
     #
     # Constructor
@@ -34,7 +34,7 @@ var StorageSQLite = {
             filters : filters,
         };
 
-        me.filePath      = me.getPathToFile(StorageSQLite.FILE_VERSION);
+        me.filePath      = me.getPathToFile();
         me.dbHandler     = nil;
         me.loadedData    = [];
         me.headersData   = [
@@ -83,11 +83,10 @@ var StorageSQLite = {
     },
 
     #
-    # @param  string  version
     # @return string  Full path to sqlite file
     #
-    getPathToFile: func(version) {
-        return me.addon.storagePath ~ "/" ~ sprintf(StorageSQLite.LOGBOOK_FILE, version);
+    getPathToFile: func() {
+        return me.addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
     },
 
     #
@@ -121,9 +120,12 @@ var StorageSQLite = {
         me.dbHandler = sqlite.open(me.filePath);
 
         if (!me.isTableExist()) {
-            me.createTable();
+            me.createTableLogbooks();
+            me.createTableMigrations();
             me.importCsvToDb();
         }
+
+        MigrationSQLite.new(me.dbHandler).doMigration();
     },
 
     #
@@ -142,7 +144,7 @@ var StorageSQLite = {
     # @return bool  True if the table already exists
     #
     isTableExist: func() {
-        var query = sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", StorageSQLite.TABLE_NAME);
+        var query = sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", StorageSQLite.TABLE_LOGBOOKS);
         var result = sqlite.exec(me.dbHandler, query);
         return size(result) > 0;
     },
@@ -152,7 +154,7 @@ var StorageSQLite = {
     #
     # @return void
     #
-    createTable: func() {
+    createTableLogbooks: func() {
         var columns = [
             { name: "id",            type: "INTEGER PRIMARY KEY" },
             { name: "date",          type: "TEXT" },
@@ -177,6 +179,31 @@ var StorageSQLite = {
             { name: "note",          type: "TEXT" },
         ];
 
+        me.createTable(StorageSQLite.TABLE_LOGBOOKS, columns);
+    },
+
+    #
+    # Create a `migrations` table in the database
+    #
+    # @return void
+    #
+    createTableMigrations: func() {
+        var columns = [
+            { name: "id",        type: "INTEGER PRIMARY KEY" },
+            { name: "migration", type: "TEXT" },
+        ];
+
+        me.createTable(StorageSQLite.TABLE_MIGRATIONS, columns);
+    },
+
+    #
+    # Create table in the database
+    #
+    # @param  string  tableName
+    # @param  hash  columns  Vector of hashes with column `name` and `type`
+    # @return void
+    #
+    createTable: func(tableName, columns) {
         var queryCols = "";
         foreach (var item; columns) {
             if (size(queryCols)) {
@@ -186,7 +213,7 @@ var StorageSQLite = {
             queryCols ~= sprintf("`%s` %s", item.name, item.type);
         }
 
-        var query = sprintf("CREATE TABLE %s (%s)", StorageSQLite.TABLE_NAME, queryCols);
+        var query = sprintf("CREATE TABLE %s (%s)", tableName, queryCols);
         sqlite.exec(me.dbHandler, query);
     },
 
@@ -266,7 +293,7 @@ var StorageSQLite = {
 
         io.write(file, headerRow ~ "\n");
 
-        var query = sprintf("SELECT * FROM %s", StorageSQLite.TABLE_NAME);
+        var query = sprintf("SELECT * FROM %s", StorageSQLite.TABLE_LOGBOOKS);
         foreach (var row; sqlite.exec(me.dbHandler, query)) {
             var logData = LogData.new();
             logData.fromDb(row);
@@ -339,7 +366,7 @@ var StorageSQLite = {
             db = me.dbHandler;
         }
 
-        var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_NAME);
+        var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(db, query);
         sqlite.exec(db, stmt,
             logData.date,
@@ -401,7 +428,7 @@ var StorageSQLite = {
                 `fuel` = ?,
                 `max_alt` = ?,
                 `note` = ?
-            WHERE id = ?", StorageSQLite.TABLE_NAME);
+            WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
 
         var stmt = sqlite.prepare(me.dbHandler, query);
         sqlite.exec(me.dbHandler, stmt,
@@ -487,7 +514,7 @@ var StorageSQLite = {
                 DISTINCT %s AS value
             FROM %s
             ORDER BY value COLLATE NOCASE ASC";
-        var query = sprintf(frm, columnName, StorageSQLite.TABLE_NAME);
+        var query = sprintf(frm, columnName, StorageSQLite.TABLE_LOGBOOKS);
         var rows = sqlite.exec(me.dbHandler, query);
 
         foreach (var row; rows) {
@@ -517,7 +544,7 @@ var StorageSQLite = {
         # Build where from filters
         var where = me.getWhereQueryFilters();
 
-        var query = sprintf("SELECT * FROM %s %s LIMIT %d OFFSET %d", StorageSQLite.TABLE_NAME, where, count, start);
+        var query = sprintf("SELECT * FROM %s %s LIMIT %d OFFSET %d", StorageSQLite.TABLE_LOGBOOKS, where, count, start);
         foreach (var row; sqlite.exec(me.dbHandler, query)) {
             var vectorLogData = me.dbRowToVector(row);
             append(me.loadedData, {
@@ -587,7 +614,7 @@ var StorageSQLite = {
                 SUM(distance) AS distance,
                 SUM(fuel) AS fuel,
                 MAX(max_alt) AS max_alt
-            FROM %s %s", StorageSQLite.TABLE_NAME, where);
+            FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
         var rows = sqlite.exec(me.dbHandler, query);
 
         if (size(rows) == 0) {
@@ -659,7 +686,7 @@ var StorageSQLite = {
             return false;
         }
 
-        var query = sprintf("UPDATE %s SET %s = ? WHERE id = ?", StorageSQLite.TABLE_NAME, columnName);
+        var query = sprintf("UPDATE %s SET %s = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
         var stmt = sqlite.prepare(me.dbHandler, query);
         sqlite.exec(me.dbHandler, stmt, value, id); # always returns an empty vector
 
@@ -743,7 +770,7 @@ var StorageSQLite = {
         # Build where from filters
         var where = me.getWhereQueryFilters();
 
-        var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", StorageSQLite.TABLE_NAME, where);
+        var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
         var rows = sqlite.exec(me.dbHandler, query);
 
         if (size(rows)) {
@@ -779,7 +806,7 @@ var StorageSQLite = {
             return nil;
         }
 
-        var query = sprintf("SELECT * FROM %s WHERE id = ?", StorageSQLite.TABLE_NAME);
+        var query = sprintf("SELECT * FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me.dbHandler, query);
 
         var rows = sqlite.exec(me.dbHandler, stmt, id);
@@ -806,7 +833,7 @@ var StorageSQLite = {
             return false;
         }
 
-        var query = sprintf("DELETE FROM %s WHERE id = ?", StorageSQLite.TABLE_NAME);
+        var query = sprintf("DELETE FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me.dbHandler, query);
         sqlite.exec(me.dbHandler, stmt, id);
 
