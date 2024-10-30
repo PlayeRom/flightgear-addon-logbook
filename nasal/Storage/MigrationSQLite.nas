@@ -25,11 +25,9 @@ var MigrationSQLite = {
         me.db = db;
 
         me.migrations = {
-            # TODO: add name and func as a next migration
-            # "2024-10-30-migration-name": func (migrationName) {
+            # TODO: add name and func as a next migration, example:
+            # "2024-10-30-migration-name": func {
             #     # TODO: add migration code here
-
-            #     me.confirmMigration(migrationName);
             # },
         };
 
@@ -45,7 +43,9 @@ var MigrationSQLite = {
     doMigration: func() {
         foreach (var migrationName; keys(me.migrations)) {
             if (!me.isMigrationExists(migrationName)) {
-                me.migrations[migrationName](migrationName);
+                me.migrations[migrationName]();
+
+                me.confirmMigration(migrationName);
             }
         }
     },
