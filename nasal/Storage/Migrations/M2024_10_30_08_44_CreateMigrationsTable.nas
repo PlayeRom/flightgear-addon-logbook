@@ -45,6 +45,6 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
             { name: "migration", type: "TEXT" },
         ];
 
-        call(MigrationBase.createTable, [StorageSQLite.TABLE_MIGRATIONS, columns], me);
+        me.createTable(StorageSQLite.TABLE_MIGRATIONS, columns);
     },
 };
