@@ -177,11 +177,12 @@ var InputDialog = {
     },
 
     #
-    # @param int filterId
-    # @param string value
+    # @param  int  filterId
+    # @param  string  dbColumnName
+    # @param  string  value
     # @return void
     #
-    filterSelectorCallback: func(filterId, value) {
+    filterSelectorCallback: func(filterId, dbColumnName, value) {
         me.lineEdit.setText(value);
     },
 
