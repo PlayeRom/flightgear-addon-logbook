@@ -44,6 +44,15 @@ var Utils = {
     },
 
     #
+    # Return true when Storage is using SQLite instead of CSV file
+    #
+    # @return bool
+    #
+    isUsingSQLite: func() {
+        return Utils.isFG2024Version();
+    },
+
+    #
     # Check if the given string contains a space
     #
     # @param  string  text

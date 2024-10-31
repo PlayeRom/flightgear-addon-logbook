@@ -25,11 +25,11 @@ var Storage = {
         };
 
         # TODO: drop support for StorageCsv when 2024 will be widely used
-        me._handler = Utils.isFG2024Version()
+        me._handler = Utils.isUsingSQLite()
             ? StorageSQLite.new(filters)
             : StorageCsv.new(filters);
 
-        if (me.isStorageSQLite()) {
+        if (Utils.isUsingSQLite()) {
             gui.menuEnable("logbook-addon-export-csv", true);
         }
 
@@ -47,10 +47,11 @@ var Storage = {
 
     #
     # @return True if Storage is working on SQLite DB, if on a CSV file then false
+    # Use Utils.isUsingSQLite() instead
     #
-    isStorageSQLite: func() {
-        return me._handler.parents[0] == StorageSQLite;
-    },
+    # isStorageSQLite: func() {
+    #     return me._handler.parents[0] == StorageSQLite;
+    # },
 
     #
     # Store log data to logbook file/DB
@@ -80,7 +81,7 @@ var Storage = {
     # @return void
     #
     updateItem: func(logData, id) {
-        if (me.isStorageSQLite()) {
+        if (Utils.isUsingSQLite()) {
             me._handler.updateItem(logData, id);
         }
     },
@@ -156,7 +157,7 @@ var Storage = {
     # @return void
     #
     exportToCsv: func() {
-        if (me.isStorageSQLite()) {
+        if (Utils.isUsingSQLite()) {
             me._handler.exportToCsv();
         }
         else {

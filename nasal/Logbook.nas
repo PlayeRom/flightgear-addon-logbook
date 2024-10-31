@@ -54,7 +54,7 @@ var Logbook = {
         me._crashDetector = CrashDetector.new(me._spaceShuttle);
         me._airport       = Airport.new();
 
-        me._recovery      = me._storage.isStorageSQLite()
+        me._recovery      = Utils.isUsingSQLite()
             ? RecoverySQLite.new(me._storage)
             : RecoveryCsv.new(me._storage);
 

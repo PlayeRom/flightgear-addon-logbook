@@ -118,7 +118,7 @@ var LogbookDialog = {
                 if (me._storage.deleteLog(index)) {
                     me._listView.enableLoading();
 
-                    if (me._storage.isStorageSQLite()) {
+                    if (Utils.isUsingSQLite()) {
                         # Get signal to reload data
                         setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
                         setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
@@ -140,7 +140,7 @@ var LogbookDialog = {
                 if (me._storage.editData(index, header, value)) {
                     me._listView.enableLoading();
 
-                    if (me._storage.isStorageSQLite()) {
+                    if (Utils.isUsingSQLite()) {
                         # Get signal to reload data
                         setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
                     }

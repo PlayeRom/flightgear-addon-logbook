@@ -248,12 +248,14 @@ var InputDialog = {
     # @return bool - Return true if value is correct
     #
     _validate: func(value) {
-        for (var i = 0; i < size(value); i += 1) {
-            if (   value[i] == `,`
-                or value[i] == `"` #"# <- Fix syntax coloring in Visual Code
-            ) {
-                gui.popupTip("Please don't use `,` and `\"` as these are special characters for the CSV file.");
-                return false;
+        if (!Utils.isUsingSQLite()) {
+            for (var i = 0; i < size(value); i += 1) {
+                if (   value[i] == `,`
+                    or value[i] == `"` #"# <- Fix syntax coloring in Visual Code
+                ) {
+                    gui.popupTip("Please don't use `,` and `\"` as these are special characters for the CSV file.");
+                    return false;
+                }
             }
         }
 
