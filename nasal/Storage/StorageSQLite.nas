@@ -359,26 +359,33 @@ var StorageSQLite = {
     # @return void
     #
     loadAllData: func() {
-        me._filters.clear();
         me._resetTotals();
-
-        me._updateFilterData("date", StorageCsv.INDEX_DATE);
-        me._updateFilterData("aircraft", StorageCsv.INDEX_AIRCRAFT);
-        me._updateFilterData("variant", StorageCsv.INDEX_VARIANT);
-        me._updateFilterData("aircraft_type", StorageCsv.INDEX_TYPE);
-        me._updateFilterData("callsign", StorageCsv.INDEX_CALLSIGN);
-        me._updateFilterData("`from`", StorageCsv.INDEX_FROM);
-        me._updateFilterData("`to`", StorageCsv.INDEX_TO);
-        me._updateFilterData("landing", StorageCsv.INDEX_LANDING);
-        me._updateFilterData("crash", StorageCsv.INDEX_CRASH);
-
-        # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
-        me._filters.dirty = false;
+        me._loadAllFilters();
 
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon", true);
 
         logprint(MY_LOG_LEVEL, "Logbook Add-on - loadAllDataThread finished");
+    },
+
+    #
+    # Load all filters from database
+    #
+    _loadAllFilters: func() {
+        me._filters.clear();
+
+        me._updateFilterData("date",          StorageCsv.INDEX_DATE);
+        me._updateFilterData("aircraft",      StorageCsv.INDEX_AIRCRAFT);
+        me._updateFilterData("variant",       StorageCsv.INDEX_VARIANT);
+        me._updateFilterData("aircraft_type", StorageCsv.INDEX_TYPE);
+        me._updateFilterData("callsign",      StorageCsv.INDEX_CALLSIGN);
+        me._updateFilterData("`from`",        StorageCsv.INDEX_FROM);
+        me._updateFilterData("`to`",          StorageCsv.INDEX_TO);
+        me._updateFilterData("landing",       StorageCsv.INDEX_LANDING);
+        me._updateFilterData("crash",         StorageCsv.INDEX_CRASH);
+
+        # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
+        me._filters.dirty = false;
     },
 
     #
@@ -432,9 +439,15 @@ var StorageSQLite = {
     # @return string
     #
     _gatValueFilter: func(value, dataIndex) {
-             if (dataIndex == StorageCsv.INDEX_DATE)    return substr(value, 0, 4) # get year only
+        if (dataIndex == StorageCsv.INDEX_DATE) {
+            return  substr(value, 0, 4) # get year only
+        }
         else if (dataIndex == StorageCsv.INDEX_LANDING
-              or dataIndex == StorageCsv.INDEX_CRASH)   return value ? "1" : ""; # we can't provide int for filters because we sort by strings
+              or dataIndex == StorageCsv.INDEX_CRASH
+        ) {
+            # we can't provide int for filters because we Filters.sort by strings
+            return value ? "1" : "";
+        }
 
         return value;
     },
