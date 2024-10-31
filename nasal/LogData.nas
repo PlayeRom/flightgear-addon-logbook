@@ -148,7 +148,7 @@ var LogData = {
     # @return me
     #
     setCallsign: func(callsign) {
-        me.callsign = me.getCsvSafeText(callsign);
+        me.callsign = me._getCsvSafeText(callsign);
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setCallsign = ", me.callsign);
 
         return me;
