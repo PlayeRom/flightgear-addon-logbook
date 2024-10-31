@@ -12,6 +12,8 @@
 #
 # StorageCsv class to save logbook data to CSV file
 #
+# @deprecated This will be phased out in favor of StorageSQLite
+#
 var StorageCsv = {
     #
     # Constants

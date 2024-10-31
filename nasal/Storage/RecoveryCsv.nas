@@ -10,14 +10,15 @@
 #
 
 #
-# The RecoveryCsv class saves the current flight status to a separate file every minute.
+# The RecoveryCsv class saves the current flight status to a separate file at a given INTERVAL_SEC.
 # When FG crashes, the recovery file data will be rewritten to the main log file on restart.
 #
 var RecoveryCsv = {
     #
     # Constants
     #
-    RECOVERY_FILE : "recovery-v%s.csv",
+    RECOVERY_FILE: "recovery-v%s.csv",
+    INTERVAL_SEC : 60,
 
     #
     # Constructor
@@ -34,7 +35,7 @@ var RecoveryCsv = {
         };
 
         me._filePath = g_Addon.storagePath ~ "/" ~ sprintf(RecoveryCsv.RECOVERY_FILE, StorageCsv.FILE_VERSION);
-        me._timer    = maketimer(60, me, me._update);
+        me._timer    = maketimer(RecoveryCsv.INTERVAL_SEC, me, me._update);
 
         me._restore();
 

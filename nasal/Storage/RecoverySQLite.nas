@@ -3,17 +3,22 @@
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2022 Roman Ludwicki
+# Copyright (C) 2024 Roman Ludwicki
 #
 # Logbook is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# The RecoverySQLite class saves the current flight status to a DB every minute.
+# The RecoverySQLite class saves the current flight status to the database at a given INTERVAL_SEC.
 # When FG crashes, the log will not be lost.
 #
 var RecoverySQLite = {
+    #
+    # Constants
+    #
+    INTERVAL_SEC: 60,
+
     #
     # Constructor
     #
@@ -30,7 +35,7 @@ var RecoverySQLite = {
             _inserted   : false,
         };
 
-        me._timer = maketimer(60, me, me._update);
+        me._timer = maketimer(RecoveryCsv.INTERVAL_SEC, me, me._update);
 
         me._storage.loadAllData();
 
