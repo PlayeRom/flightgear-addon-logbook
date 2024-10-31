@@ -419,13 +419,24 @@ var StorageSQLite = {
             me._filters.data[dataIndex].clear();
 
             foreach (var row; rows) {
-                var value = dataIndex == StorageCsv.INDEX_DATE
-                    ? substr(row.value, 0, 4) # get year only
-                    : row.value;
+                var value = me._gatValueFilter(row.value, dataIndex);
 
                 me._filters.data[dataIndex].append(value);
             }
         }
+    },
+
+    #
+    # @param  string|int  value
+    # @param  int  dataIndex
+    # @return string
+    #
+    _gatValueFilter: func(value, dataIndex) {
+             if (dataIndex == StorageCsv.INDEX_DATE)    return substr(value, 0, 4) # get year only
+        else if (dataIndex == StorageCsv.INDEX_LANDING
+              or dataIndex == StorageCsv.INDEX_CRASH)   return value ? "1" : ""; # we can't provide int for filters because we sort by strings
+
+        return value;
     },
 
     #
