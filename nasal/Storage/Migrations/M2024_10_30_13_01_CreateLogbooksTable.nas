@@ -81,6 +81,8 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             return;
         }
 
+        var db = me._storageSQLite.getDbHandler();
+
         var file = io.open(csvFile, "r");
 
         var counter = -1; # from -1 for don't count the headers
@@ -92,10 +94,30 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             if (counter > -1) { # skip headers
                 var items = split(",", Utils.removeQuotes(line));
 
-                var logData = LogData.new();
-                logData.fromVector(items);
-
-                me._storageSQLite.addItem(logData);
+                var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_LOGBOOKS);
+                var stmt = sqlite.prepare(db, query);
+                sqlite.exec(db, stmt,
+                    items[0],           # date
+                    items[1],           # time
+                    items[2],           # aircraft
+                    items[3],           # variant
+                    items[4],           # aircraft_type
+                    items[5],           # callsign
+                    items[6],           # from
+                    items[7],           # to
+                    num(items[8]) == 1, # landing
+                    num(items[9]) == 1, # crash
+                    num(items[10]),     # day
+                    num(items[11]),     # night
+                    num(items[12]),     # instrument
+                    num(items[13]),     # multiplayer
+                    num(items[14]),     # swift
+                    num(items[15]),     # duration
+                    num(items[16]),     # distance
+                    num(items[17]),     # fuel
+                    num(items[18]),     # max_alt
+                    items[19],          # note
+                );
             }
 
             counter += 1;
