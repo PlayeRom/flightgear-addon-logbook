@@ -114,11 +114,11 @@ var LogbookDialog = {
                 # Back to false
                 setprop(node.getPath(), false);
 
-                var index  = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index");
-                var header = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-header");
-                var value  = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value");
+                var index      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index");
+                var columnName = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-column-name");
+                var value      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value");
 
-                if (me._storage.editData(index, header, value)) {
+                if (me._storage.editData(index, columnName, value)) {
                     me._listView.enableLoading();
 
                     if (Utils.isUsingSQLite()) {
@@ -258,11 +258,7 @@ var LogbookDialog = {
         me._headersContent.removeAllChildren();
 
         var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
-        var index = -1;
-        var columns = me._columns.getAll();
-        foreach (var columnItem; columns) {
-            index += 1;
-
+        foreach (var columnItem; me._columns.getAll()) {
             if (!columnItem.visible) {
                 continue;
             }
@@ -272,14 +268,14 @@ var LogbookDialog = {
             var rect = rowGroup.rect(0, 0, columnItem.width, canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(index, columnItem.header));
+            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(columnItem.name, columnItem.header));
 
             me._setMouseHoverHeadersListener(
                 rowGroup,
                 rect,
-                me._filters.getFilterItemsByColumnIndex(index),
-                me._filters.getFilterTitleByColumnIndex(index),
-                index
+                me._filters.getFilterItemsByColumnName(columnItem.name),
+                columnItem.header ~ " filter",
+                columnItem.name
             );
 
             x += columnItem.width;
@@ -291,11 +287,11 @@ var LogbookDialog = {
     # @param  hash  rect  Rectangle canvas object
     # @param  vector|nil  items  Items for FilterSelector
     # @param  string|nil  title  FilterSelector title dialog
-    # @param  int|nil  index  Column index as StorageCsv.INDEX_[...]
+    # @param  string  columnName  Column name
     # @return void
     #
-    _setMouseHoverHeadersListener: func(rowGroup, rect, items, title, index) {
-        if (items == nil or title == nil or index == nil) {
+    _setMouseHoverHeadersListener: func(rowGroup, rect, items, title, columnName) {
+        if (items == nil or title == nil or columnName == nil) {
             # No filters for this column, skip it
             return;
         }
@@ -317,7 +313,7 @@ var LogbookDialog = {
                 g_Sound.play('paper');
                 me._filterSelector
                     .setItems(items)
-                    .setColumnIndex(index)
+                    .setColumnName(columnName)
                     .setPosition(event.screenX, event.screenY)
                     .setTitle(title)
                     .setCallback(me, me._filterSelectorCallback)
@@ -327,37 +323,36 @@ var LogbookDialog = {
     },
 
     #
-    # @param  int  columnIndex  Column index as StorageCsv.INDEX_[...]
-    # @param  string  dbColumnName
+    # @param  string  columName
     # @param  string  value
     # @return void
     #
-    _filterSelectorCallback: func(columnIndex, dbColumnName, value) {
+    _filterSelectorCallback: func(columName, value) {
         me._detailsDialog.hide();
-        me.reloadData(true, FilterData.new(columnIndex, dbColumnName, value));
+        me.reloadData(true, FilterData.new(columName, value));
     },
 
     #
     # Replace some too long header text or set "filtered" marker
     #
-    # @param int column
-    # @param string text
+    # @param  string  columnName
+    # @param  string  text
     # @return string
     #
-    _getReplaceHeaderText: func(column, text) {
-        if (column == StorageCsv.INDEX_LANDING) {
+    _getReplaceHeaderText: func(columnName, text) {
+        if (columnName == Columns.LANDING) {
             text = "Land.";
         }
 
-        if (me._filters.isApplied(column)) {
+        if (me._filters.isApplied(columnName)) {
             return text ~ " (!)";
         }
 
-        if (column == StorageCsv.INDEX_INSTRUMENT) {
+        if (columnName == Columns.INSTRUMENT) {
             return "Instr.";
         }
 
-        if (column == StorageCsv.INDEX_MULTIPLAYER) {
+        if (columnName == Columns.MULTIPLAYER) {
             return "Multip.";
         }
 
@@ -574,7 +569,7 @@ var LogbookDialog = {
     # Reload logbook data
     #
     # @param  bool  withHeaders  Set true when headers/filters must be change too.
-    # @param  hash  filter  FilterData object as {"index": column index, "value": "text"}
+    # @param  hash  filter  FilterData object as {"columnName": name, "value": "text"}
     # @return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {

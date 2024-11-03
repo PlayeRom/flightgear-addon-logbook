@@ -107,13 +107,13 @@ var Storage = {
     },
 
     #
-    # @param int rowIndex - where 0 = first data row, not header row
-    # @param string header
-    # @param string value
-    # @return bool - Return true if successful
+    # @param  int  id  Record ID in table for SQLite or row index in CSV file where 0 = first data row, not header row
+    # @param  string  columnName
+    # @param  string  value
+    # @return bool  Return true if successful
     #
-    editData: func(rowIndex, header, value) {
-        return me._handler.editData(rowIndex, header, value);
+    editData: func(id, columnName, value) {
+        return me._handler.editData(id, columnName, value);
     },
 
     #

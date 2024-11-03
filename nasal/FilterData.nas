@@ -16,26 +16,24 @@ var FilterData = {
     #
     # Constructor
     #
-    # @param  int  index  Column index as StorageCsv.INDEX_[...]
-    # @param  string  dbColumnName
+    # @param  string  columnName
     # @param  string  value
     # @return me
     #
-    new: func(index, dbColumnName, value) {
+    new: func(columnName, value) {
         return {
             parents     : [FilterData],
-            index       : index,
-            dbColumnName: dbColumnName,
+            columnName  : columnName,
             value       : value,
         };
     },
 
     #
-    # @param  int  index  Column index as StorageCsv.INDEX_[...]
+    # @param  string  columnName
     # @param  string  value
     # @return bool
     #
-    isMatch: func(index, value) {
-        return me.index == index and me.value == value;
+    isMatch: func(columnName, value) {
+        return me.columnName == columnName and me.value == value;
     },
 };

@@ -60,7 +60,7 @@ var FilterSelector = {
         me._listView = nil;
         me._callback = nil;
         me._objCallback = nil;
-        me._columnIndex = nil;
+        me._columnName = nil;
 
         me._drawContent();
 
@@ -164,13 +164,13 @@ var FilterSelector = {
     },
 
     #
-    # Set column index of filter as StorageCsv.INDEX_[...]
+    # Set column name
     #
-    # @param int index - Column index as StorageCsv.INDEX_[...] of column
+    # @param  string  name  Column name
     # @return me
     #
-    setColumnIndex: func(index) {
-        me._columnIndex = index;
+    setColumnName: func(name) {
+        me._columnName = name;
         return me;
     },
 
@@ -265,9 +265,7 @@ var FilterSelector = {
 
         var text = me._items.vector[index];
 
-        var dbColumnName = me._columns.getColumnNameByIndex(me._columnIndex);
-
-        call(me._callback, [me._columnIndex, dbColumnName, text], me._objCallback);
+        call(me._callback, [me._columnName, text], me._objCallback);
         me.hide();
     },
 };

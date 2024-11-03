@@ -43,20 +43,6 @@ var StorageCsv = {
     INDEX_MAX_ALT    : 18,
     INDEX_NOTE       : 19,
 
-    TOTAL_FORMATS        : [
-        "%d",   # landing
-        "%d",   # crash
-        "%.2f", # day
-        "%.2f", # night
-        "%.2f", # instrument
-        "%.2f", # multiplayer
-        "%.2f", # swift
-        "%.2f", # duration
-        "%.2f", # distance
-        "%.0f", # fuel
-        "%.0f", # max alt
-    ],
-
     #
     # Constructor
     #
@@ -80,9 +66,6 @@ var StorageCsv = {
 
         # Temporary filtered data as a cache for optimized viewing of large logs
         me._cachedData    = std.Vector.new();
-
-        me._totals        = [];
-        me._resetTotals();
 
         # Total lines in CSV file (without headers)
         me._totalLines    = -1;
@@ -114,23 +97,16 @@ var StorageCsv = {
     },
 
     #
+    # Reset total amount to 0
+    #
     # @return void
     #
     _resetTotals: func() {
-        # Total amount
-        me._totals = [
-            0, # Landing
-            0, # Crash
-            0, # Day
-            0, # Night
-            0, # Instrument
-            0, # Multiplayer
-            0, # Swift
-            0, # Duration
-            0, # Distance
-            0, # Fuel
-            0, # Max Alt
-        ];
+        foreach (var columnItem; me._columns.getAll()) {
+            if (columnItem.totals != nil) {
+                columnItem.totalVal = 0;
+            }
+        }
     },
 
     #
@@ -476,36 +452,45 @@ var StorageCsv = {
     # @return void
     #
     _appendTotalsRow: func() {
+        var totalsData = [];
+        var setTotalsLabel = false;
+
+        foreach (var columnItem; me._columns.getAll()) {
+            if (!columnItem.visible) {
+                continue;
+            }
+
+            if (columnItem.totals == nil) {
+                append(totalsData, "");
+            }
+            else {
+                if (!setTotalsLabel) {
+                    # Set the "Totals" label for the last added empty item
+                    var count = size(totalsData);
+                    if (count > 0) {
+                        totalsData[count - 1] = "Totals:";
+                        setTotalsLabel = true;
+                    }
+                }
+
+                append(totalsData, sprintf(columnItem.totalFrm, columnItem.totalVal));
+            }
+        }
+
         append(me._loadedData, {
             allDataIndex : -1,
-            data         : [
-                "", # <- empty columns before "Totals:" text
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "Totals:",
-            ],
+            data         : totalsData,
         });
-
-        forindex (var index; me._totals) {
-            append(
-                me._loadedData[size(me._loadedData) - 1].data,
-                sprintf(StorageCsv.TOTAL_FORMATS[index], me._totals[index])
-            );
-        }
     },
 
     #
-    # @param int rowIndex - where 0 = first data row, not header row
-    # @param string header
-    # @param string value
-    # @return bool - Return true if successful
+    # @param  int  rowIndex  Where 0 = first data row, not header row
+    # @param  string  columnName
+    # @param  string  value
+    # @return bool  Return true if successful
     #
-    editData: func(rowIndex, header, value) {
-        if (rowIndex == nil or header == nil or value == nil) {
+    editData: func(rowIndex, columnName, value) {
+        if (rowIndex == nil or columnName == nil or value == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
             return false;
         }
@@ -519,33 +504,34 @@ var StorageCsv = {
             return false;
         }
 
-        var headerIndex = me._getHeaderIndex(header);
-        if (headerIndex == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
+        var columnIndex = me._columns.getColumnIndexByName(columnName);
+        if (columnIndex == nil) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, columnName ", columnName, " not found");
             return false;
         }
 
         return Thread.new().run(
-            func { me._editData(rowIndex, header, value, headerIndex); },
+            func { me._editData(rowIndex, columnName, value, columnIndex); },
             me,
             me._editThreadFinish
         );
     },
 
     #
-    # @param int rowIndex - where 0 = first data row, not header row
-    # @param string header
-    # @param string value
-    # @param int headerIndex
+    # @param  int  rowIndex  Where 0 = first data row, not header row
+    # @param  string  columnName
+    # @param  string  value
+    # @param  int  columnIndex
     # @return void
     #
-    _editData: func(rowIndex, header, value, headerIndex) {
+    _editData: func(rowIndex, columnName, value, columnIndex) {
         var items = me._allData.vector[rowIndex].toVector();
-        items[headerIndex] = value;
+        items[columnIndex] = value;
         me._allData.vector[rowIndex].fromVector(items);
 
-        var recalcTotals = headerIndex >= StorageCsv.INDEX_LANDING and headerIndex <= StorageCsv.INDEX_MAX_ALT;
-        var resetFilters = me._filters.isColumnIndexFiltered(headerIndex);
+        var columnItem = me._columns.getColumnByName(columnName);
+        var recalcTotals = columnItem.totals != nil;
+        var resetFilters = me._filters.isColumnIndexFiltered(columnIndex);
         me._saveAllData(recalcTotals, resetFilters);
     },
 
@@ -627,48 +613,31 @@ var StorageCsv = {
     },
 
     #
-    # Increase values in me._totals vector with given items data
+    # Increase values in totals with given items data
     #
-    # @param vector items
+    # @param  vector  items
     # @return void
     #
     _countTotals: func(items) {
-        var index = 0;
-        foreach (var text; items) {
-            var totalIndex = me._getTotalIndexFromColumnIndex(index);
-            if (totalIndex != -1) {
-                if (index == StorageCsv.INDEX_MAX_ALT) {
-                    if (text > me._totals[totalIndex]) {
-                        me._totals[totalIndex] = text;
-                    }
-                }
-                else {
-                    me._totals[totalIndex] += (text == "" ? 0 : text);
-                }
+        var index = -1;
+        foreach (var value; items) {
+            index += 1;
+
+            var columnItem = me._columns.getColumnByIndex(index);
+            if (columnItem == nil or columnItem.totals == nil) {
+                continue;
             }
 
-            index += 1;
+            if (columnItem.name == Columns.MAX_ALT) {
+                if (num(value) > columnItem.totalVal) {
+                    me._columns.setTotalValueByColumnName(columnItem.name, num(value));
+                }
+            }
+            else {
+                value = columnItem.totalVal + (value == "" ? 0 : num(value));
+                me._columns.setTotalValueByColumnName(columnItem.name, value);
+            }
         }
-    },
-
-    #
-    # @param int columnIndex
-    # @return int
-    #
-    _getTotalIndexFromColumnIndex: func(columnIndex) {
-             if (columnIndex == StorageCsv.INDEX_LANDING)     return 0; # me._totals[0]
-        else if (columnIndex == StorageCsv.INDEX_CRASH)       return 1; # me._totals[1] etc.
-        else if (columnIndex == StorageCsv.INDEX_DAY)         return 2;
-        else if (columnIndex == StorageCsv.INDEX_NIGHT)       return 3;
-        else if (columnIndex == StorageCsv.INDEX_INSTRUMENT)  return 4;
-        else if (columnIndex == StorageCsv.INDEX_MULTIPLAYER) return 5;
-        else if (columnIndex == StorageCsv.INDEX_SWIFT)       return 6;
-        else if (columnIndex == StorageCsv.INDEX_DURATION)    return 7;
-        else if (columnIndex == StorageCsv.INDEX_DISTANCE)    return 8;
-        else if (columnIndex == StorageCsv.INDEX_FUEL)        return 9;
-        else if (columnIndex == StorageCsv.INDEX_MAX_ALT)     return 10;
-
-        return -1; # error
     },
 
     #

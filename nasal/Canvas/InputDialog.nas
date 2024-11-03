@@ -42,9 +42,9 @@ var InputDialog = {
         me._addonNodePath = g_Addon.node.getPath();
 
         me._allDataIndex    = nil; # index of log entry in whole CSV file
-        me._header          = nil; # header name
         me._parent          = nil; # DetailsDialog
         me._value           = nil;
+        me._columnItem      = nil; # columnItem from Columns class
 
         me._filterSelector = FilterSelector.new(columns);
 
@@ -123,17 +123,17 @@ var InputDialog = {
     #
     # @param  hash  parent  DetailsDialog object
     # @param  int  allDataIndex
-    # @param  string  label  Header text
+    # @param  hash  columnItem  Column item from Columns class
     # @param  string  value  Value to edit
     # @return void
     #
-    show: func(parent, allDataIndex, label, value) {
+    show: func(parent, allDataIndex, value, columnItem) {
         me._parent       = parent;
         me._allDataIndex = allDataIndex;
-        me._header       = label;
         me._value        = value;
+        me._columnItem   = columnItem;
 
-        me._setLabel(me._header);
+        me._setLabel(me._columnItem.header);
         me._setLineEdit(sprintf("%s", value));
         me._lineEdit.setFocus();
 
@@ -177,7 +177,7 @@ var InputDialog = {
     _actionTypeSelect: func() {
         me._filterSelector
             .setItems(AircraftType.getVector(), false)
-            .setColumnIndex(StorageCsv.INDEX_TYPE)
+            .setColumnName(Columns.AC_TYPE)
             .setPosition(
                 getprop("/devices/status/mice/mouse/x") or 0,
                 getprop("/devices/status/mice/mouse/y") or 0
@@ -188,12 +188,11 @@ var InputDialog = {
     },
 
     #
-    # @param  int  filterId
-    # @param  string  dbColumnName
+    # @param  string  columnName
     # @param  string  value
     # @return void
     #
-    _filterSelectorCallback: func(filterId, dbColumnName, value) {
+    _filterSelectorCallback: func(columnName, value) {
         me._lineEdit.setText(value);
     },
 
@@ -225,7 +224,7 @@ var InputDialog = {
 
         # Set values to properties and trigger action listener
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index", me._allDataIndex);
-        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-header", me._header);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-column-name", me._columnItem.name);
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value", value);
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry", true);
     },
@@ -260,25 +259,25 @@ var InputDialog = {
             }
         }
 
-        if (me._header == "Date") {
+        if (me._columnItem.name == Columns.DATE) {
             if (!me._validateDate(value)) {
                 gui.popupTip("Incorrect date");
                 return false;
             }
         }
-        else if (me._header == "Time") {
+        else if (me._columnItem.name == Columns.TIME) {
             if (!me._validateTime(value)) {
                 gui.popupTip("Incorrect time");
                 return false;
             }
         }
-        else if (me._header == "Variant") {
+        else if (me._columnItem.name == Columns.VARIANT) {
             if (!me._validateVariant(value)) {
                 gui.popupTip("Please don't use space or dot characters");
                 return false;
             }
         }
-        else if (me._header == "Type") {
+        else if (me._columnItem.name == Columns.AC_TYPE) {
             if (!me._validateAircraftType(value)) {
                 var msg = "Incorrect Aircraft Type. Allowed values are: ";
                 var types = "";
@@ -292,29 +291,29 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (  me._header == "Landing"
-                or me._header == "Crash"
+        else if (me._columnItem.name == Columns.LANDING
+              or me._columnItem.name == Columns.CRASH
         ) {
             if (!me._validateBoolean(value)) {
                 gui.popupTip("The allowed value are 1 or 0 (or empty).");
                 return false;
             }
         }
-        else if (   me._header == "Day"
-                 or me._header == "Night"
-                 or me._header == "Instrument"
-                 or me._header == "Multiplayer"
-                 or me._header == "Swift"
-                 or me._header == "Duration"
-                 or me._header == "Distance"
-                 or me._header == "Fuel"
+        else if (me._columnItem.name == Columns.DAY
+              or me._columnItem.name == Columns.NIGHT
+              or me._columnItem.name == Columns.INSTRUMENT
+              or me._columnItem.name == Columns.MULTIPLAYER
+              or me._columnItem.name == Columns.SWIFT
+              or me._columnItem.name == Columns.DURATION
+              or me._columnItem.name == Columns.DISTANCE
+              or me._columnItem.name == Columns.FUEL
         ) {
             if (!me._validateDecimal(value)) {
                 gui.popupTip("The allowed value is decimal number.");
                 return false;
             }
         }
-        else if (me._header == "Max Alt") {
+        else if (me._columnItem.name == Columns.MAX_ALT) {
             if (!me._validateNumber(value)) {
                 gui.popupTip("The allowed value is a number.");
                 return false;

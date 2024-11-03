@@ -27,8 +27,8 @@ var LogData = {
         callsign     = "",  # Pilot callsign
         from         = "",  # ICAO departure airport (if take-off from the ground)
         to           = "",  # ICAO destination airport (if landed)
-        landing      = 0,   # 1 means that aircraft landed
-        crash        = 0,   # 1 means that aircraft crashed
+        landing      = 0,   # 1 (true) means that aircraft landed
+        crash        = 0,   # 1 (true) means that aircraft crashed
         day          = 0.0, # Total flight time during the day (hours)
         night        = 0.0, # Total flight time during the night (hours)
         instrument   = 0.0, # Total flight time during the IMC (hours)
@@ -390,7 +390,7 @@ var LogData = {
         append(vector, sprintf("%.02f", me.duration));
         append(vector, sprintf("%.02f", me.distance));
         append(vector, sprintf("%.02f", me.fuel));
-        append(vector, sprintf("%.0f", me.max_alt));
+        append(vector, sprintf("%.0f",  me.max_alt));
         append(vector, me.note);
 
         return vector;
@@ -438,19 +438,21 @@ var LogData = {
     },
 
     #
-    # @param int index - Column index
+    # Get value for filters
+    #
+    # @param  string  columnName  Column name
     # @return string|nil
     #
-    getFilterValueByIndex: func(index) {
-             if (index == StorageCsv.INDEX_DATE)     return me._getYear();
-        else if (index == StorageCsv.INDEX_AIRCRAFT) return me.aircraft;
-        else if (index == StorageCsv.INDEX_VARIANT)  return me.variant;
-        else if (index == StorageCsv.INDEX_TYPE)     return me.aircraft_type;
-        else if (index == StorageCsv.INDEX_CALLSIGN) return me.callsign;
-        else if (index == StorageCsv.INDEX_FROM)     return me.from;
-        else if (index == StorageCsv.INDEX_TO)       return me.to;
-        else if (index == StorageCsv.INDEX_LANDING)  return me.printLanding();
-        else if (index == StorageCsv.INDEX_CRASH)    return me.printCrash();
+    getFilterValueByColumnName: func(columnName) {
+             if (columnName == Columns.DATE)     return me._getYear();
+        else if (columnName == Columns.AIRCRAFT) return me.aircraft;
+        else if (columnName == Columns.VARIANT)  return me.variant;
+        else if (columnName == Columns.AC_TYPE)  return me.aircraft_type;
+        else if (columnName == Columns.CALLSIGN) return me.callsign;
+        else if (columnName == Columns.FROM)     return me.from;
+        else if (columnName == Columns.TO)       return me.to;
+        else if (columnName == Columns.LANDING)  return me.printLanding();
+        else if (columnName == Columns.CRASH)    return me.printCrash();
 
         return nil;
     },

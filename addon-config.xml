@@ -37,7 +37,7 @@
                     <!-- Trigger action on edit entry -->
                     <action-edit-entry type="bool">false</action-edit-entry>
                     <action-edit-entry-index type="int">0</action-edit-entry-index>
-                    <action-edit-entry-header type="string"></action-edit-entry-header>
+                    <action-edit-entry-column-name type="string"></action-edit-entry-column-name>
                     <action-edit-entry-value type="string"></action-edit-entry-value>
 
                     <help-text>

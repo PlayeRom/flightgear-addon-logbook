@@ -39,9 +39,6 @@ var StorageSQLite = {
         me._loadedData  = [];
         me._withHeaders = true;
 
-        me._totals      = [];
-        me._resetTotals();
-
         me._openDb();
 
         # Callback for return results of loadDataRange
@@ -65,26 +62,6 @@ var StorageSQLite = {
     #
     _getPathToFile: func() {
         return g_Addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
-    },
-
-    #
-    # @return void
-    #
-    _resetTotals: func() {
-        # Total amount
-        me._totals = [
-            0, # Landing
-            0, # Crash
-            0, # Day
-            0, # Night
-            0, # Instrument
-            0, # Multiplayer
-            0, # Swift
-            0, # Duration
-            0, # Distance
-            0, # Fuel
-            0, # Max Alt
-        ];
     },
 
     #
@@ -337,7 +314,6 @@ var StorageSQLite = {
     # @return void
     #
     loadAllData: func() {
-        me._resetTotals();
         me._loadAllFilters();
 
         # Enable Logbook menu because we have a data
@@ -352,15 +328,15 @@ var StorageSQLite = {
     _loadAllFilters: func() {
         me._filters.clear();
 
-        me._updateFilterData("date",          StorageCsv.INDEX_DATE);
-        me._updateFilterData("aircraft",      StorageCsv.INDEX_AIRCRAFT);
-        me._updateFilterData("variant",       StorageCsv.INDEX_VARIANT);
-        me._updateFilterData("aircraft_type", StorageCsv.INDEX_TYPE);
-        me._updateFilterData("callsign",      StorageCsv.INDEX_CALLSIGN);
-        me._updateFilterData("`from`",        StorageCsv.INDEX_FROM);
-        me._updateFilterData("`to`",          StorageCsv.INDEX_TO);
-        me._updateFilterData("landing",       StorageCsv.INDEX_LANDING);
-        me._updateFilterData("crash",         StorageCsv.INDEX_CRASH);
+        me._updateFilterData(Columns.DATE);
+        me._updateFilterData(Columns.AIRCRAFT);
+        me._updateFilterData(Columns.VARIANT);
+        me._updateFilterData(Columns.AC_TYPE);
+        me._updateFilterData(Columns.CALLSIGN);
+        me._updateFilterData(Columns.FROM);
+        me._updateFilterData(Columns.TO);
+        me._updateFilterData(Columns.LANDING);
+        me._updateFilterData(Columns.CRASH);
 
         # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
         me._filters.dirty = false;
@@ -370,15 +346,15 @@ var StorageSQLite = {
     # Update given filter with data from DB
     #
     # @param  string  columnName
-    # @param  int  dataIndex
     # @param  hash|nil  where  As hash {column: 'text': value: 'text'}
     # @param  int  start  Start index counting from 0 as a first row of data, if -1 then don't use it
     # @param  int  count  How many rows should be returned, if -1 then don't use it
     # @return void
     #
-    _updateFilterData: func(columnName, dataIndex, where = nil, start = -1, count = -1) {
-        if (dataIndex == StorageCsv.INDEX_DATE) {
-            columnName = "strftime('%Y', " ~ columnName ~ ")"; # get only a year from `date` column
+    _updateFilterData: func(columnName, where = nil, start = -1, count = -1) {
+        var sqlColumnName = "`" ~ columnName ~ "`";
+        if (columnName == Columns.DATE) {
+            sqlColumnName = "strftime('%Y', " ~ sqlColumnName ~ ")"; # get only a year from `date` column
         }
 
         # COLLATE NOCASE - ignore case sensitivity during sorting
@@ -397,31 +373,31 @@ var StorageSQLite = {
             frm ~= sprintf(" LIMIT %d OFFSET %d", count, start);
         }
 
-        var query = sprintf(frm, columnName, StorageSQLite.TABLE_LOGBOOKS);
+        var query = sprintf(frm, sqlColumnName, StorageSQLite.TABLE_LOGBOOKS);
         var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows)) {
-            me._filters.data[dataIndex].clear();
+            me._filters.data[columnName].clear();
 
             foreach (var row; rows) {
-                var value = me._gatValueFilter(row.value, dataIndex);
+                var value = me._gatValueFilter(row.value, columnName);
 
-                me._filters.data[dataIndex].append(value);
+                me._filters.data[columnName].append(value);
             }
         }
     },
 
     #
     # @param  string|int  value
-    # @param  int  dataIndex
+    # @param  string  columnName
     # @return string
     #
-    _gatValueFilter: func(value, dataIndex) {
-        if (dataIndex == StorageCsv.INDEX_DATE) {
+    _gatValueFilter: func(value, columnName) {
+        if (columnName == Columns.DATE) {
             return  substr(value, 0, 4) # get year only
         }
-        else if (dataIndex == StorageCsv.INDEX_LANDING
-              or dataIndex == StorageCsv.INDEX_CRASH
+        else if (columnName == Columns.LANDING
+              or columnName == Columns.CRASH
         ) {
             # we can't provide int for filters because we Filters.sort by strings
             return value ? "1" : "";
@@ -465,15 +441,15 @@ var StorageSQLite = {
         me._appendTotalsRow();
 
         # Update aircraft variants filter, to show only variant of selected aircraft
-        var aircraft = me._filters.getAppliedValueForFilter(StorageCsv.INDEX_AIRCRAFT);
+        var aircraft = me._filters.getAppliedValueForFilter(Columns.AIRCRAFT);
         if (aircraft == nil) {
             # Apply all variant values to filter
-            me._updateFilterData("variant", StorageCsv.INDEX_VARIANT);
+            me._updateFilterData(Columns.VARIANT);
         }
         else {
             # Apply variant filters according to selected aircraft
-            var where = { column: "aircraft", value: aircraft };
-            me._updateFilterData("variant", StorageCsv.INDEX_VARIANT, where, start, count);
+            var where = { column: Columns.AIRCRAFT, value: aircraft };
+            me._updateFilterData(Columns.VARIANT, where, start, count);
         }
 
         me._loadDataRangeThreadFinish();
@@ -499,8 +475,8 @@ var StorageSQLite = {
                 ? "WHERE "
                 : "AND ";
 
-            var columnName = filterData.dbColumnName;
-            if (columnName == "date") {
+            var columnName = filterData.columnName;
+            if (columnName == Columns.DATE) {
                 # For date column the value is a year only
                 where ~= "`" ~ columnName ~ "` LIKE '" ~ filterData.value ~ "%' ";
             }
@@ -517,38 +493,32 @@ var StorageSQLite = {
     # @return void
     #
     _updateTotalsValues: func(where) {
-        var query = sprintf("SELECT
-                SUM(landing) AS landing,
-                SUM(crash) AS crash,
-                SUM(day) AS day,
-                SUM(night) AS night,
-                SUM(instrument) AS instrument,
-                SUM(multiplayer) AS multiplayer,
-                SUM(swift) AS swift,
-                SUM(duration) AS duration,
-                SUM(distance) AS distance,
-                SUM(fuel) AS fuel,
-                MAX(max_alt) AS max_alt
-            FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
+        var select = "";
+        foreach (var columnItem; me._columns.getAll()) {
+            if (columnItem.visible and columnItem.totals != nil) {
+                if (select != "") {
+                    select ~= ", ";
+                }
+
+                select ~= columnItem.totals ~ "(`" ~ columnItem.name ~ "`) AS `" ~ columnItem.name ~ "`";
+            }
+        }
+
+        # query = "SELECT SUM(landing) as landing, SUM..., FROM logbooks WHERE ..."
+        var query = sprintf("SELECT %s FROM %s %s", select, StorageSQLite.TABLE_LOGBOOKS, where);
         var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows) == 0) {
             return;
         }
 
+        # row it's hash with fields as column names
         var row = rows[0];
 
-        me._totals[0]  = row.landing;
-        me._totals[1]  = row.crash;
-        me._totals[2]  = row.day;
-        me._totals[3]  = row.night;
-        me._totals[4]  = row.instrument;
-        me._totals[5]  = row.multiplayer;
-        me._totals[6]  = row.swift;
-        me._totals[7]  = row.duration;
-        me._totals[8]  = row.distance;
-        me._totals[9]  = row.fuel;
-        me._totals[10] = row.max_alt;
+        foreach (var columnName; keys(row)) {
+            var value = row[columnName];
+            me._columns.setTotalValueByColumnName(columnName, value);
+        }
     },
 
     #
@@ -557,47 +527,50 @@ var StorageSQLite = {
     # @return void
     #
     _appendTotalsRow: func() {
+        var totalsData = [];
+        var setTotalsLabel = false;
+
+        foreach (var columnItem; me._columns.getAll()) {
+            if (!columnItem.visible) {
+                continue;
+            }
+
+            if (columnItem.totals == nil) {
+                append(totalsData, "");
+            }
+            else {
+                if (!setTotalsLabel) {
+                    # Set the "Totals" label for the last added empty item
+                    var count = size(totalsData);
+                    if (count > 0) {
+                        totalsData[count - 1] = "Totals:";
+                        setTotalsLabel = true;
+                    }
+                }
+
+                append(totalsData, sprintf(columnItem.totalFrm, columnItem.totalVal));
+            }
+        }
+
         append(me._loadedData, {
             allDataIndex : -1,
-            data         : [
-                "", # <- empty columns before "Totals:" text
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "Totals:",
-            ],
+            data         : totalsData,
         });
-
-        forindex (var index; me._totals) {
-            append(
-                me._loadedData[size(me._loadedData) - 1].data,
-                sprintf(StorageCsv.TOTAL_FORMATS[index], me._totals[index])
-            );
-        }
     },
 
     #
     # @param  int  id  Record ID in table
-    # @param  string  header
+    # @param  string  columnName
     # @param  string  value
     # @return bool  Return true if successful
     #
-    editData: func(id, header, value) {
-        if (id == nil or header == nil or value == nil) {
+    editData: func(id, columnName, value) {
+        if (id == nil or columnName == nil or value == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
             return false;
          }
 
-        var columnName = me._columns.getColumnNameByHeader(header);
-        if (columnName == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
-            return false;
-        }
-
-        var query = sprintf("UPDATE %s SET %s = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
+        var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt, value, id); # always returns an empty vector
 

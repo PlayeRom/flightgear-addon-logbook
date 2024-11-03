@@ -23,15 +23,15 @@ var Filters = {
 
         # Filter data for each column by which we can filter, loaded in Storage.loadAllData
         me.data = {};
-        me.data[StorageCsv.INDEX_DATE]     = std.Vector.new();
-        me.data[StorageCsv.INDEX_AIRCRAFT] = std.Vector.new();
-        me.data[StorageCsv.INDEX_VARIANT]  = std.Vector.new();
-        me.data[StorageCsv.INDEX_TYPE]     = std.Vector.new();
-        me.data[StorageCsv.INDEX_CALLSIGN] = std.Vector.new();
-        me.data[StorageCsv.INDEX_FROM]     = std.Vector.new();
-        me.data[StorageCsv.INDEX_TO]       = std.Vector.new();
-        me.data[StorageCsv.INDEX_LANDING]  = std.Vector.new();
-        me.data[StorageCsv.INDEX_CRASH]    = std.Vector.new();
+        me.data[Columns.DATE]     = std.Vector.new();
+        me.data[Columns.AIRCRAFT] = std.Vector.new();
+        me.data[Columns.VARIANT]  = std.Vector.new();
+        me.data[Columns.AC_TYPE]  = std.Vector.new();
+        me.data[Columns.CALLSIGN] = std.Vector.new();
+        me.data[Columns.FROM]     = std.Vector.new();
+        me.data[Columns.TO]       = std.Vector.new();
+        me.data[Columns.LANDING]  = std.Vector.new();
+        me.data[Columns.CRASH]    = std.Vector.new();
 
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();
@@ -62,10 +62,10 @@ var Filters = {
     # @return void
     #
     append: func(logData) {
-        foreach (var index; keys(me.data)) {
-            var value = logData.getFilterValueByIndex(index);
-            if (!me.data[index].contains(value)) {
-                me.data[index].append(value);
+        foreach (var columnName; keys(me.data)) {
+            var value = logData.getFilterValueByColumnName(columnName);
+            if (!me.data[columnName].contains(value)) {
+                me.data[columnName].append(value);
                 me.dirty = true;
             }
         }
@@ -77,20 +77,20 @@ var Filters = {
     # @return void
     #
     sort: func() {
-        foreach (var index; keys(me.data)) {
-            if (me.data[index].size() > 1) {
-                me.data[index].vector = sort(me.data[index].vector, string.icmp);
+        foreach (var columnName; keys(me.data)) {
+            if (me.data[columnName].size() > 1) {
+                me.data[columnName].vector = sort(me.data[columnName].vector, string.icmp);
             }
         }
     },
 
     #
-    # @param hash filterData - FilterData as {"index": column index, "value": "text"}
+    # @param hash filterData - FilterData as {"columnName": column name, "value": "text"}
     # @return bool - Return true if filter is applied
     #
     applyFilter: func(filterData) {
         foreach (var item; me.appliedFilters.vector) {
-            if (item.index == filterData.index) {
+            if (item.columnName == filterData.columnName) {
                 if (item.value == filterData.value) {
                     # It is the same filter already applied, no changes are required
                     return false;
@@ -112,14 +112,14 @@ var Filters = {
     },
 
     #
-    # Return true if user used filter with given column index
+    # Return true if user used filter with given column name
     #
-    # @param int index
+    # @param  string  columnName
     # @return bool
     #
-    isApplied: func(index) {
+    isApplied: func(columnName) {
         foreach (var item; me.appliedFilters.vector) {
-            if (item.index == index) {
+            if (item.columnName == columnName) {
                 return true;
             }
         }
@@ -128,14 +128,14 @@ var Filters = {
     },
 
     #
-    # Return value if user used filter with given column index
+    # Return value if user used filter with given column name
     #
-    # @param  int  index
+    # @param  string  columnName
     # @return string|nil
     #
-    getAppliedValueForFilter: func(index) {
+    getAppliedValueForFilter: func(columnName) {
         foreach (var item; me.appliedFilters.vector) {
-            if (item.index == index) {
+            if (item.columnName == columnName) {
                 return item.value;
             }
         }
@@ -144,14 +144,14 @@ var Filters = {
     },
 
     #
-    # @param hash logData - LogData object
+    # @param  hash  logData  LogData object
     # @return bool
     #
     isAllowedByFilter: func(logData) {
         var matchCounter = 0;
         foreach (var filterData; me.appliedFilters.vector) {
-            foreach (var index; keys(me.data)) {
-                if (filterData.isMatch(index, logData.getFilterValueByIndex(index))) {
+            foreach (var columnName; keys(me.data)) {
+                if (filterData.isMatch(columnName, logData.getFilterValueByColumnName(columnName))) {
                     matchCounter += 1;
                     continue;
                 }
@@ -163,35 +163,15 @@ var Filters = {
     },
 
     #
-    # @param int column - Index of column
+    # @param  string  column  Column name
     # @return vector|nil
     #
-    getFilterItemsByColumnIndex: func(column) {
-        foreach (var index; keys(me.data)) {
-            if (column == index) {
-                return me.data[column].vector;
-            }
+    getFilterItemsByColumnName: func(columnName) {
+        if (contains(me.data, columnName)) {
+            return me.data[columnName].vector;
         }
 
         return nil;
-    },
-
-    #
-    # @param int column - Index of column
-    # @return string
-    #
-    getFilterTitleByColumnIndex: func(column) {
-             if (column == StorageCsv.INDEX_DATE)     return "Date filter";
-        else if (column == StorageCsv.INDEX_AIRCRAFT) return "Aircraft filter";
-        else if (column == StorageCsv.INDEX_VARIANT)  return "Variant filter";
-        else if (column == StorageCsv.INDEX_TYPE)     return "Type filter";
-        else if (column == StorageCsv.INDEX_CALLSIGN) return "Callsign filter";
-        else if (column == StorageCsv.INDEX_FROM)     return "From filter";
-        else if (column == StorageCsv.INDEX_TO)       return "To filter";
-        else if (column == StorageCsv.INDEX_LANDING)  return "Landing filter";
-        else if (column == StorageCsv.INDEX_CRASH)    return "Crash filter";
-
-        return "Filter";
     },
 
     #

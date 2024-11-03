@@ -222,26 +222,23 @@ var DetailsDialog = {
     # @return vector
     #
     _getListViewRows: func(data) {
-        var columns = me._columns.getAll();
         var rowsData = [];
+        var index = -1;
 
-        var start = 0;
-        if (me._isTotals) {
-            start = StorageCsv.INDEX_LANDING;
-        }
+        foreach (var columnItem; me._columns.getAll()) {
+            index += 1;
 
-        forindex (var index; columns[start:]) {
-            var shiftIndex = index + start;
-            if (me._isTotals and shiftIndex == StorageCsv.INDEX_NOTE) {
-                break; # In total we do not show notes
+            if (me._isTotals and columnItem.totals == nil) {
+                # We need to display totals, and the column is not a part of totals, so skip it
+                continue;
             }
 
             append(rowsData, {
                 data : [
-                    sprintf("%10s:", columns[shiftIndex].header),
+                    sprintf("%10s:", columnItem.header),
                     sprintf("%s %s",
-                        me._addCommaSeparator(shiftIndex, data[shiftIndex]),
-                        me._getExtraText(shiftIndex, data[shiftIndex])
+                        me._addCommaSeparator(columnItem.name, data[index]),
+                        me._getExtraText(columnItem.name, data[index])
                     ),
                 ],
             });
@@ -283,19 +280,23 @@ var DetailsDialog = {
 
                 me._inputDialog.getFilterSelector().hide();
 
-                var columns = me._columns.getAll();
-                me._inputDialog.show(me, me._dataRow.allDataIndex, columns[index].header, me._dataRow.data[index]);
+                me._inputDialog.show(
+                    me,
+                    me._dataRow.allDataIndex,
+                    me._dataRow.data[index],
+                    me._columns.getColumnByIndex(index)
+                );
             }
         }
     },
 
     #
-    # @param int column
-    # @param string value
+    # @param  string  columnName
+    # @param  string  value
     # @return string
     #
-    _getExtraText: func(column, value) {
-        if ((column == StorageCsv.INDEX_FROM or column == StorageCsv.INDEX_TO) and value != "") {
+    _getExtraText: func(columnName, value) {
+        if ((columnName == Columns.FROM or columnName == Columns.TO) and value != "") {
             var airport = airportinfo(value);
             if (airport != nil) {
                 return "(" ~ airport.name ~ ")";
@@ -304,7 +305,13 @@ var DetailsDialog = {
             return "";
         }
 
-        if (column >= StorageCsv.INDEX_DAY and column <= StorageCsv.INDEX_DURATION) {
+        if (   columnName == Columns.DAY
+            or columnName == Columns.NIGHT
+            or columnName == Columns.INSTRUMENT
+            or columnName == Columns.MULTIPLAYER
+            or columnName == Columns.SWIFT
+            or columnName == Columns.DURATION
+        ) {
             var digits = split(".", value);
             if (size(digits) < 2) {
                 # something is wrong
@@ -314,7 +321,7 @@ var DetailsDialog = {
             return sprintf("hours (%d:%02.0f)", digits[0], (digits[1] / 100) * 60);
         }
 
-        if (column == StorageCsv.INDEX_DISTANCE) {
+        if (columnName == Columns.DISTANCE) {
             var inMeters = value * globals.NM2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
@@ -324,12 +331,12 @@ var DetailsDialog = {
             return sprintf("nm (%.0f m)", inMeters);
         }
 
-        if (column == StorageCsv.INDEX_FUEL) {
+        if (columnName == Columns.FUEL) {
             var liters = sprintf("%.02f", value * globals.GAL2L);
             return sprintf("US gallons (%s l)", me._getValueWithCommaSeparator(liters));
         }
 
-        if (column == StorageCsv.INDEX_MAX_ALT) {
+        if (columnName == Columns.MAX_ALT) {
             var inMeters = value * globals.FT2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
@@ -343,14 +350,14 @@ var DetailsDialog = {
     },
 
     #
-    # @param int column
-    # @param string value
+    # @param  string  columnName
+    # @param  string  value
     # @return string
     #
-    _addCommaSeparator: func(column, value) {
-        if (   column == StorageCsv.INDEX_DISTANCE
-            or column == StorageCsv.INDEX_FUEL
-            or column == StorageCsv.INDEX_MAX_ALT
+    _addCommaSeparator: func(columnName, value) {
+        if (   columnName == Columns.DISTANCE
+            or columnName == Columns.FUEL
+            or columnName == Columns.MAX_ALT
         ) {
             return me._getValueWithCommaSeparator(value);
         }
