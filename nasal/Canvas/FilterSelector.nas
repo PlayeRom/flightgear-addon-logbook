@@ -27,17 +27,21 @@ var FilterSelector = {
     #
     # Constructor
     #
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func() {
-        var me = { parents: [
-            FilterSelector,
-            Dialog.new(
-                FilterSelector.WINDOW_WIDTH,
-                FilterSelector.WINDOW_HEIGHT,
-                "Filter selector"
-            ),
-        ] };
+    new: func(columns) {
+        var me = {
+            parents: [
+                FilterSelector,
+                Dialog.new(
+                    FilterSelector.WINDOW_WIDTH,
+                    FilterSelector.WINDOW_HEIGHT,
+                    "Filter selector"
+                ),
+            ],
+            _columns: columns,
+        };
 
         me._font     = "LiberationFonts/LiberationSans-Bold.ttf";
         me._fontSize = 16;
@@ -261,7 +265,7 @@ var FilterSelector = {
 
         var text = me._items.vector[index];
 
-        var dbColumnName = StorageSQLite.getColumnNameByIndex(me._columnIndex);
+        var dbColumnName = me._columns.getColumnNameByIndex(me._columnIndex);
 
         call(me._callback, [me._columnIndex, dbColumnName, text], me._objCallback);
         me.hide();

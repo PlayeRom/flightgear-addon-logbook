@@ -21,6 +21,7 @@ var Filters = {
     new: func() {
         var me = { parents: [Filters] };
 
+        # Filter data for each column by which we can filter, loaded in Storage.loadAllData
         me.data = {};
         me.data[StorageCsv.INDEX_DATE]     = std.Vector.new();
         me.data[StorageCsv.INDEX_AIRCRAFT] = std.Vector.new();

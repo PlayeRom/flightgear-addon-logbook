@@ -48,8 +48,9 @@ var Logbook = {
         me._environment   = Environment.new();
         me._multiplayer   = Multiplayer.new();
         me._landingGear   = LandingGear.new(me._addonHintsNode);
+        me._columns       = Columns.new();
         me._filters       = Filters.new();
-        me._storage       = Storage.new(me._filters);
+        me._storage       = Storage.new(me._filters, me._columns);
         me._spaceShuttle  = SpaceShuttle.new();
         me._crashDetector = CrashDetector.new(me._spaceShuttle);
         me._airport       = Airport.new();
@@ -59,7 +60,7 @@ var Logbook = {
             : RecoveryCsv.new(me._storage);
 
         me._aircraft      = Aircraft.new();
-        me._logbookDialog = LogbookDialog.new(me._storage, me._filters);
+        me._logbookDialog = LogbookDialog.new(me._storage, me._filters, me._columns);
 
         me._aircraftType  = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);

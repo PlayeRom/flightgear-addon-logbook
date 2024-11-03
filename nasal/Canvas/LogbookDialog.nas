@@ -16,41 +16,21 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH         : 1360,
-    WINDOW_HEIGHT        : 680,
-    MAX_DATA_ITEMS       : 20,
-    COLUMNS_WIDTH        : [
-         85, #  0 - date
-         50, #  1 - time
-        150, #  2 - aircraft
-        150, #  3 - variant
-         80, #  4 - aircraft type
-         80, #  5 - callsign
-         55, #  6 - from
-         55, #  7 - to
-         50, #  8 - landing
-         50, #  9 - crash
-         50, # 10 - day
-         50, # 11 - night
-         50, # 12 - instrument
-         50, # 13 - multiplayer
-         50, # 14 - swift
-         60, # 15 - duration
-         60, # 16 - distance
-         80, # 17 - fuel
-         70, # 18 - max alt
-    ],
-    FONT_NAME            : "LiberationFonts/LiberationSans-Bold.ttf",
-    FONT_SIZE            : 12,
+    WINDOW_WIDTH  : 1360,
+    WINDOW_HEIGHT : 680,
+    MAX_DATA_ITEMS: 20,
+    FONT_NAME     : "LiberationFonts/LiberationSans-Bold.ttf",
+    FONT_SIZE     : 12,
 
     #
     # Constructor
     #
-    # @param hash storage - Storage object
-    # @param hash filters - Filters object
+    # @param  hash  storage  Storage object
+    # @param  hash  filters  Filters object
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func(storage, filters) {
+    new: func(storage, filters, columns) {
         var me = {
             parents : [
                 LogbookDialog,
@@ -62,6 +42,7 @@ var LogbookDialog = {
             ],
             _storage : storage,
             _filters : filters,
+            _columns : columns,
         };
 
         me._addonNodePath = g_Addon.node.getPath();
@@ -81,8 +62,8 @@ var LogbookDialog = {
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
-        me._detailsDialog  = DetailsDialog.new(storage);
-        me._filterSelector = FilterSelector.new();
+        me._detailsDialog  = DetailsDialog.new(storage, columns);
+        me._filterSelector = FilterSelector.new(columns);
         me.helpDialog      = HelpDialog.new();
         me.aboutDialog     = AboutDialog.new();
 
@@ -95,7 +76,7 @@ var LogbookDialog = {
                 canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             )
             .setFontName(LogbookDialog.FONT_NAME)
-            .setColumnsWidth(LogbookDialog.COLUMNS_WIDTH)
+            .setColumnsWidth(me._columns.getWidths())
             .setClickCallback(me._listViewCallback, me);
 
         me._setListViewStyle();
@@ -277,43 +258,32 @@ var LogbookDialog = {
         me._headersContent.removeAllChildren();
 
         var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
-        var column = -1;
-        var headers = me._storage.getHeadersData();
-        foreach (var text; headers) {
-            column += 1;
+        var index = -1;
+        var columns = me._columns.getAll();
+        foreach (var columnItem; columns) {
+            index += 1;
 
-            if (column == StorageCsv.INDEX_NOTE) {
-                # Don't show Note column
+            if (!columnItem.visible) {
                 continue;
             }
 
             var rowGroup = me._headersContent.createChild("group");
             rowGroup.setTranslation(x, 0);
-            var rect = rowGroup.rect(0, 0, me._getColumnWidth(column), canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
+            var rect = rowGroup.rect(0, 0, columnItem.width, canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(column, text));
+            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(index, columnItem.header));
 
             me._setMouseHoverHeadersListener(
                 rowGroup,
                 rect,
-                me._filters.getFilterItemsByColumnIndex(column),
-                me._filters.getFilterTitleByColumnIndex(column),
-                column
+                me._filters.getFilterItemsByColumnIndex(index),
+                me._filters.getFilterTitleByColumnIndex(index),
+                index
             );
 
-            x += me._getColumnWidth(column);
+            x += columnItem.width;
         }
-    },
-
-    #
-    # Get width of column for given index
-    #
-    # @param int index
-    # @return int
-    #
-    _getColumnWidth: func(index) {
-        return LogbookDialog.COLUMNS_WIDTH[index];
     },
 
     #
@@ -357,7 +327,7 @@ var LogbookDialog = {
     },
 
     #
-    # @param  int  columnIndex
+    # @param  int  columnIndex  Column index as StorageCsv.INDEX_[...]
     # @param  string  dbColumnName
     # @param  string  value
     # @return void

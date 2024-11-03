@@ -17,17 +17,18 @@ var Storage = {
     # Constructor
     #
     # @param  hash  filters  Filters object
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func(filters) {
+    new: func(filters, columns) {
         var me = {
             parents : [Storage],
         };
 
         # TODO: drop support for StorageCsv when 2024 will be widely used
         me._handler = Utils.isUsingSQLite()
-            ? StorageSQLite.new(filters)
-            : StorageCsv.new(filters);
+            ? StorageSQLite.new(filters, columns)
+            : StorageCsv.new(filters, columns);
 
         if (Utils.isUsingSQLite()) {
             gui.menuEnable("logbook-addon-export-csv", true);
@@ -122,15 +123,6 @@ var Storage = {
     #
     getTotalLines: func() {
         return me._handler.getTotalLines();
-    },
-
-    #
-    # Get vector with headers names
-    #
-    # @return vector
-    #
-    getHeadersData: func() {
-        return me._handler.getHeadersData();
     },
 
     #

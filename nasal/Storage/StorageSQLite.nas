@@ -23,40 +23,20 @@ var StorageSQLite = {
     #
     # Constructor
     #
-    # @param hash filters - Filters object
+    # @param  hash  filters  Filters object
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func(filters) {
+    new: func(filters, columns) {
         var me = {
             parents : [StorageSQLite],
-            _filters : filters,
+            _filters: filters,
+            _columns: columns,
         };
 
         me._filePath    = me._getPathToFile();
         me._dbHandler   = nil;
         me._loadedData  = [];
-        me._headersData = [
-            'Date',
-            'Time',
-            'Aircraft',
-            'Variant',
-            'Type',
-            'Callsign',
-            'From',
-            'To',
-            'Landing',
-            'Crash',
-            'Day',
-            'Night',
-            'Instrument',
-            'Multiplayer',
-            'Swift',
-            'Duration',
-            'Distance',
-            'Fuel',
-            'Max Alt',
-            'Note',
-        ];
         me._withHeaders = true;
 
         me._totals      = [];
@@ -164,16 +144,14 @@ var StorageSQLite = {
         var file = io.open(csvFile, "w");
 
         var headerRow = "";
-        foreach (var header; me._headersData) {
+        foreach (var columnItem; me._columns.getAll()) {
             if (headerRow != "") {
                 headerRow ~= ",";
             }
 
-            if (Utils.isSpace(header)) {
-                header = '"' ~ header ~ '"';
-            }
-
-            headerRow ~= header;
+            headerRow ~= Utils.isSpace(columnItem.header)
+                ? '"' ~ columnItem.header ~ '"'
+                :       columnItem.header;
         }
 
         io.write(file, headerRow ~ "\n");
@@ -459,7 +437,7 @@ var StorageSQLite = {
     # @param  func  callback  Callback function called on finish
     # @param  int  start  Start index counting from 0 as a first row of data
     # @param  int  count  How many rows should be returned
-    # @param  bool  withHeaders
+    # @param  bool  withHeaders  Set true when headers/filters must be change too in LogbookDialog canvas.
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
@@ -613,7 +591,7 @@ var StorageSQLite = {
             return false;
          }
 
-        var columnName = me._getColumnNameByHeader(header);
+        var columnName = me._columns.getColumnNameByHeader(header);
         if (columnName == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, header ", header, " not found");
             return false;
@@ -626,68 +604,6 @@ var StorageSQLite = {
         gui.popupTip("The change has been saved!");
 
         return true;
-    },
-
-    #
-    # Get DB column name by header name
-    #
-    # @param  string  header
-    # @return int|nil
-    #
-    _getColumnNameByHeader: func(header) {
-             if (header == "Data")        return "date";
-        else if (header == "Time")        return "time";
-        else if (header == "Aircraft")    return "aircraft";
-        else if (header == "Variant")     return "variant";
-        else if (header == "Type")        return "aircraft_type";
-        else if (header == "Callsign")    return "callsign";
-        else if (header == "From")        return "from";
-        else if (header == "To")          return "to";
-        else if (header == "Landing")     return "landing";
-        else if (header == "Crash")       return "crash";
-        else if (header == "Day")         return "day";
-        else if (header == "Night")       return "night";
-        else if (header == "Instrument")  return "instrument";
-        else if (header == "Multiplayer") return "multiplayer";
-        else if (header == "Swift")       return "swift";
-        else if (header == "Duration")    return "duration";
-        else if (header == "Distance")    return "distance";
-        else if (header == "Fuel")        return "fuel";
-        else if (header == "Max Alt")     return "max_alt";
-        else if (header == "Note")        return "note";
-
-        return nil;
-    },
-
-    #
-    # Get DB column name by index of column
-    #
-    # @param  int  index  Column index
-    # @return int|nil
-    #
-    getColumnNameByIndex: func(index) {
-             if (index == StorageCsv.INDEX_DATE)        return "date";
-        else if (index == StorageCsv.INDEX_TIME)        return "time";
-        else if (index == StorageCsv.INDEX_AIRCRAFT)    return "aircraft";
-        else if (index == StorageCsv.INDEX_VARIANT)     return "variant";
-        else if (index == StorageCsv.INDEX_TYPE)        return "aircraft_type";
-        else if (index == StorageCsv.INDEX_CALLSIGN)    return "callsign";
-        else if (index == StorageCsv.INDEX_FROM)        return "from";
-        else if (index == StorageCsv.INDEX_TO)          return "to";
-        else if (index == StorageCsv.INDEX_LANDING)     return "landing";
-        else if (index == StorageCsv.INDEX_CRASH)       return "crash";
-        else if (index == StorageCsv.INDEX_DAY)         return "day";
-        else if (index == StorageCsv.INDEX_NIGHT)       return "night";
-        else if (index == StorageCsv.INDEX_INSTRUMENT)  return "instrument";
-        else if (index == StorageCsv.INDEX_MULTIPLAYER) return "multiplayer";
-        else if (index == StorageCsv.INDEX_SWIFT)       return "swift";
-        else if (index == StorageCsv.INDEX_DURATION)    return "duration";
-        else if (index == StorageCsv.INDEX_DISTANCE)    return "distance";
-        else if (index == StorageCsv.INDEX_FUEL)        return "fuel";
-        else if (index == StorageCsv.INDEX_MAX_ALT)     return "max_alt";
-        else if (index == StorageCsv.INDEX_NOTE)        return "note";
-
-        return nil;
     },
 
     #
@@ -707,15 +623,6 @@ var StorageSQLite = {
         }
 
         return 0;
-    },
-
-    #
-    # Get vector with headers names
-    #
-    # @return vector
-    #
-    getHeadersData: func() {
-        return me._headersData;
     },
 
     #

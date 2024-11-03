@@ -22,9 +22,10 @@ var InputDialog = {
     #
     # Constructor
     #
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func() {
+    new: func(columns) {
         var me = { parents: [
             InputDialog,
             Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
@@ -45,7 +46,7 @@ var InputDialog = {
         me._parent          = nil; # DetailsDialog
         me._value           = nil;
 
-        me._filterSelector = FilterSelector.new();
+        me._filterSelector = FilterSelector.new(columns);
 
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);

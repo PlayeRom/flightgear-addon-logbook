@@ -60,13 +60,15 @@ var StorageCsv = {
     #
     # Constructor
     #
-    # @param hash filters - Filters object
+    # @param  hash  filters  Filters object
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func(filters) {
+    new: func(filters, columns) {
         var me = {
             parents : [StorageCsv],
             _filters: filters,
+            _columns: columns,
         };
 
         me._filePath      = me._getPathToFile(StorageCsv.FILE_VERSION);
@@ -359,11 +361,11 @@ var StorageCsv = {
     },
 
     #
-    # @param hash objCallback - owner object of callback function
-    # @param func callback - callback function called on finish
-    # @param int start - Start index counting from 0 as a first row of data
-    # @param int count - How many rows should be returned
-    # @param bool withHeaders
+    # @param  hash  objCallback  Owner object of callback function
+    # @param  func  callback  Callback function called on finish
+    # @param  int  start  Start index counting from 0 as a first row of data
+    # @param  int  count  How many rows should be returned
+    # @param  bool  withHeaders  Set true when headers/filters must be change too in LogbookDialog canvas.
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
@@ -676,15 +678,6 @@ var StorageCsv = {
     #
     getTotalLines: func() {
         return me._totalLines;
-    },
-
-    #
-    # Get vector with headers names
-    #
-    # @return vector
-    #
-    getHeadersData: func() {
-        return me._headersData;
     },
 
     #

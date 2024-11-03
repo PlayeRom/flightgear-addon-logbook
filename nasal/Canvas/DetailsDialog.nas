@@ -28,9 +28,10 @@ var DetailsDialog = {
     # Constructor
     #
     # @param  hash  storage  Storage object
+    # @param  hash  columns  Columns object
     # @return me
     #
-    new: func(storage) {
+    new: func(storage, columns) {
         var me = { parents: [
             DetailsDialog,
             Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
@@ -47,8 +48,9 @@ var DetailsDialog = {
         me._isTotals        = false;
         me._parentDataIndex = nil;
         me._storage         = storage;
+        me._columns         = columns;
         me._btnDelete       = nil;
-        me._inputDialog     = InputDialog.new();
+        me._inputDialog     = InputDialog.new(columns);
         me._deleteDialog    = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
@@ -220,7 +222,7 @@ var DetailsDialog = {
     # @return vector
     #
     _getListViewRows: func(data) {
-        var headers = me._storage.getHeadersData();
+        var columns = me._columns.getAll();
         var rowsData = [];
 
         var start = 0;
@@ -228,15 +230,15 @@ var DetailsDialog = {
             start = StorageCsv.INDEX_LANDING;
         }
 
-        forindex (var index; headers[start:]) {
+        forindex (var index; columns[start:]) {
             var shiftIndex = index + start;
             if (me._isTotals and shiftIndex == StorageCsv.INDEX_NOTE) {
-                break;
+                break; # In total we do not show notes
             }
 
             append(rowsData, {
                 data : [
-                    sprintf("%10s:", headers[shiftIndex]),
+                    sprintf("%10s:", columns[shiftIndex].header),
                     sprintf("%s %s",
                         me._addCommaSeparator(shiftIndex, data[shiftIndex]),
                         me._getExtraText(shiftIndex, data[shiftIndex])
@@ -281,8 +283,8 @@ var DetailsDialog = {
 
                 me._inputDialog.getFilterSelector().hide();
 
-                var headers = me._storage.getHeadersData();
-                me._inputDialog.show(me, me._dataRow.allDataIndex, headers[index], me._dataRow.data[index]);
+                var columns = me._columns.getAll();
+                me._inputDialog.show(me, me._dataRow.allDataIndex, columns[index].header, me._dataRow.data[index]);
             }
         }
     },
