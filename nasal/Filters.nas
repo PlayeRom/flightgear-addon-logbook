@@ -39,6 +39,7 @@ var Filters = {
         # The dirty true flag says that the data has been modified, e.g. by
         # applying a new filter or adding new data to be filtered, which means
         # we have to recalculate everything.
+        # This is only for CSV, SQLite doesn't need it.
         me.dirty = false;
 
         return me;

@@ -189,8 +189,6 @@ var StorageSQLite = {
             # Build where from filters
             var where = me._getWhereQueryFilters();
             me._updateTotalsValues(where);
-
-            me._filters.dirty = true;
         }
     },
 
@@ -337,9 +335,6 @@ var StorageSQLite = {
         me._updateFilterData(Columns.TO);
         me._updateFilterData(Columns.LANDING);
         me._updateFilterData(Columns.CRASH);
-
-        # Un-dirty it, because this is the first loading and now everything is calculated, so the cache can be used
-        me._filters.dirty = false;
     },
 
     #
@@ -421,6 +416,23 @@ var StorageSQLite = {
         me._callback    = callback;
         me._withHeaders = withHeaders;
 
+        Thread.new().run(
+            func { me._loadDataRange(start, count); },
+            me,
+            me._loadDataRangeThreadFinish,
+            false
+        );
+    },
+
+
+    #
+    # Load logbook data with given range
+    #
+    # @param  int  start  Start index counting from 0 as a first row of data
+    # @param  int  count  How many rows should be returned
+    # @return void
+    #
+    _loadDataRange: func(start, count) {
         me._loadedData = [];
 
         var where = me._getWhereQueryFilters();
@@ -456,7 +468,7 @@ var StorageSQLite = {
             me._updateFilterData(Columns.VARIANT, where, start, count);
         }
 
-        me._loadDataRangeThreadFinish();
+        g_isThreadPending = false;
     },
 
     #
@@ -602,7 +614,11 @@ var StorageSQLite = {
         if (id == nil or columnName == nil or value == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
             return false;
-         }
+        }
+
+        if (g_isThreadPending) {
+            return false;
+        }
 
         var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
         var stmt = sqlite.prepare(me._dbHandler, query);
@@ -639,6 +655,11 @@ var StorageSQLite = {
     # @return hash|nil
     #
     getLogData: func(id) {
+        if (g_isThreadPending) {
+            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
+            return nil;
+        }
+
         if (id == Columns.TOTALS_ROW_ID) {
             return me.getTotalsRow(false);
         }

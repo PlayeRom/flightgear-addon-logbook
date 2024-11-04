@@ -657,17 +657,17 @@ var StorageCsv = {
     # @return hash|nil
     #
     getLogData: func(index) {
+        if (g_isThreadPending) {
+            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
+            return nil;
+        }
+
         if (index == Columns.TOTALS_ROW_ID) {
             return me.getTotalsRow(false);
         }
 
         if (index == nil or index < 0 or index >= me._allData.size()) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
-            return nil;
-        }
-
-        if (g_isThreadPending) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
