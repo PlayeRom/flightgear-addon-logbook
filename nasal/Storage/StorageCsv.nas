@@ -315,8 +315,8 @@ var StorageCsv = {
                 me._allData.append(logData);
 
                 me._cachedData.append({
-                    allDataIndex : me._totalLines,
-                    logData      : logData,
+                    id      : me._totalLines,
+                    logData : logData,
                 });
             }
 
@@ -359,8 +359,8 @@ var StorageCsv = {
                 var vectorLogData = hash.logData.toVector(me._columns);
                 if (counter < count) {
                     append(me._loadedData, {
-                        allDataIndex : hash.allDataIndex,
-                        data         : vectorLogData,
+                        id   : hash.id,
+                        data : vectorLogData,
                     });
                     counter += 1;
                 }
@@ -400,7 +400,7 @@ var StorageCsv = {
 
         # Use a more complex loop because we know we have to recalculate everything from scratch
 
-        var allDataIndex = 0;
+        var id = 0;
         me._cachedData.clear();
         me._resetTotals();
         me._totalLines = 0;
@@ -410,8 +410,8 @@ var StorageCsv = {
             if (me._filters.isAllowedByFilter(logData)) {
                 if (me._totalLines >= start and counter < count) {
                     append(me._loadedData, {
-                        allDataIndex : allDataIndex,
-                        data         : vectorLogData,
+                        id   : id,
+                        data : vectorLogData,
                     });
                     counter += 1;
                 }
@@ -420,12 +420,12 @@ var StorageCsv = {
                 me._countTotals(vectorLogData);
 
                 me._cachedData.append({
-                    allDataIndex : allDataIndex,
-                    logData      : logData,
+                    id      : id,
+                    logData : logData,
                 });
             }
 
-            allDataIndex += 1;
+            id += 1;
         }
 
         # Add totals row to the end
@@ -479,8 +479,8 @@ var StorageCsv = {
         }
 
         return {
-            allDataIndex : -1,
-            data         : totalsData,
+            id   : Columns.TOTALS_ROW_ID,
+            data : totalsData,
         };
     },
 
@@ -657,7 +657,7 @@ var StorageCsv = {
     # @return hash|nil
     #
     getLogData: func(index) {
-        if (index == -1) {
+        if (index == Columns.TOTALS_ROW_ID) {
             return me.getTotalsRow(false);
         }
 
@@ -672,8 +672,8 @@ var StorageCsv = {
         }
 
         return {
-            allDataIndex : index,
-            data         : me._allData.vector[index].toVector(me._columns)
+            id   : index,
+            data : me._allData.vector[index].toVector(me._columns)
         };
     },
 

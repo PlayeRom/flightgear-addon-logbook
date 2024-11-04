@@ -37,6 +37,8 @@ var Columns = {
     MAX_ALT    : "max_alt",
     NOTE       : "note",
 
+    TOTALS_ROW_ID: -1,
+
     #
     # Constructor
     #

@@ -434,8 +434,8 @@ var StorageSQLite = {
             var logData = LogData.new();
 
             append(me._loadedData, {
-                allDataIndex: row.id,
-                data        : logData.fromDbToVector(row, me._columns),
+                id   : row.id,
+                data : logData.fromDbToVector(row, me._columns),
             });
         }
 
@@ -587,8 +587,8 @@ var StorageSQLite = {
         }
 
         return {
-            allDataIndex : -1,
-            data         : totalsData,
+            id  : Columns.TOTALS_ROW_ID,
+            data: totalsData,
         };
     },
 
@@ -639,7 +639,7 @@ var StorageSQLite = {
     # @return hash|nil
     #
     getLogData: func(id) {
-        if (id == -1) {
+        if (id == Columns.TOTALS_ROW_ID) {
             return me.getTotalsRow(false);
         }
 
@@ -660,8 +660,8 @@ var StorageSQLite = {
         var row = rows[0];
 
         return {
-            allDataIndex: row.id,
-            data        : me._dbRowToVector(row),
+            id   : row.id,
+            data : me._dbRowToVector(row),
         };
     },
 

@@ -60,10 +60,10 @@ var LogbookDialog = {
             call(LogbookDialog.hide, [], self);
         };
 
-        me._startIndex          = 0;
-        me._data                = [];
-        me._headersContent      = nil;
-        me.allDataIndexSelected = nil;
+        me._startIndex      = 0;
+        me._data            = [];
+        me._headersContent  = nil;
+        me.selectedRecordId = nil;
 
         me.canvas.set("background", me.style.CANVAS_BG);
 
@@ -596,7 +596,7 @@ var LogbookDialog = {
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # @param  vector  data  Vector of hashes {"allDataIndex": index, "data": vector}
+    # @param  vector  data  Vector of hashes {"id": index, "data": vector}
     # @param  bool  withHeaders
     # @return void
     #
@@ -625,7 +625,7 @@ var LogbookDialog = {
         if (   highlightedIndex == nil
             or highlightedIndex < 0
             or highlightedIndex >= size(me._data)
-            or me._data[highlightedIndex].allDataIndex != me.allDataIndexSelected
+            or me._data[highlightedIndex].id != me.selectedRecordId
         ) {
             me._listView.removeHighlightingRow();
         }
@@ -633,9 +633,9 @@ var LogbookDialog = {
         # Check that the selected row is among the data.
         if (me._detailsDialog.isWindowVisible()) {
             forindex (var index; me._data) {
-                var allDataIndex = me._data[index].allDataIndex;
-                if (allDataIndex == me.allDataIndexSelected) {
-                    me._setHighlightingRow(allDataIndex, index);
+                var id = me._data[index].id;
+                if (id == me.selectedRecordId) {
+                    me._setHighlightingRow(id, index);
                     break;
                 }
             }
@@ -656,30 +656,30 @@ var LogbookDialog = {
     #
     # The click callback on the ListView widget. Open the details window.
     #
-    # @param int index
+    # @param  int  index
     # @return void
     #
     _listViewCallback: func(index) {
         if (!g_isThreadPending) {
             g_Sound.play('paper');
 
-            var hash = me._data[index]; # = hash {"allDataIndex": index, "data": vector}
+            var hash = me._data[index]; # = hash {"id": index, "data": vector}
 
-            me._setHighlightingRow(hash.allDataIndex, index);
+            me._setHighlightingRow(hash.id, index);
 
             me._filterSelector.hide();
 
-            me._detailsDialog.show(me, hash.allDataIndex);
+            me._detailsDialog.show(me, hash.id);
         }
     },
 
     #
-    # @param int allDataIndex - index of row in whole CSV file
-    # @param int index - index of row in list view (among displayed rows)
+    # @param  int  id  Record ID from SQLite or index of row in whole CSV file
+    # @param  int  index  Index of row in list view (among displayed rows)
     # @return void
     #
-    _setHighlightingRow: func(allDataIndex, index) {
-        me.allDataIndexSelected = allDataIndex;
+    _setHighlightingRow: func(id, index) {
+        me.selectedRecordId = id;
         me._listView.removeHighlightingRow();
         me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
     },

@@ -181,7 +181,7 @@ var DetailsDialog = {
     #
     show: func(parent, id) {
         me._parent = parent;
-        me._isTotals = id == -1;
+        me._isTotals = id == Columns.TOTALS_ROW_ID;
 
         me._btnDelete.setEnabled(!me._isTotals);
 
@@ -207,7 +207,7 @@ var DetailsDialog = {
         if (me._parent != nil) {
             # Remove highlighted row in LogbookDialog
             me._parent.getListView().removeHighlightingRow();
-            me._parent.allDataIndexSelected = nil;
+            me._parent.selectedRecordId = nil;
         }
 
         me._parentDataId = nil;
@@ -273,7 +273,7 @@ var DetailsDialog = {
     #
     _listViewCallback: func(index) {
         if (!g_isThreadPending) {
-            if (me._dataRow.allDataIndex > -1) { # -1 is using for Totals row
+            if (me._dataRow.id > Columns.TOTALS_ROW_ID) { # -1 is using for Totals row
                 g_Sound.play('paper');
 
                 me._listView.removeHighlightingRow();
@@ -283,7 +283,7 @@ var DetailsDialog = {
 
                 me._inputDialog.show(
                     me,
-                    me._dataRow.allDataIndex,
+                    me._dataRow.id,
                     me._dataRow.data[index],
                     me._columns.getColumnByIndex(index)
                 );

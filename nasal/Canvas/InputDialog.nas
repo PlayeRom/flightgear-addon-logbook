@@ -41,7 +41,7 @@ var InputDialog = {
 
         me._addonNodePath = g_Addon.node.getPath();
 
-        me._allDataIndex    = nil; # index of log entry in whole CSV file
+        me._recordId        = nil; # Record ID in SQLLite or index of log entry in whole CSV file
         me._parent          = nil; # DetailsDialog
         me._value           = nil;
         me._columnItem      = nil; # columnItem from Columns class
@@ -122,16 +122,16 @@ var InputDialog = {
 
     #
     # @param  hash  parent  DetailsDialog object
-    # @param  int  allDataIndex
+    # @param  int  id  Record ID in SQLite or index of whole CSV file
     # @param  hash  columnItem  Column item from Columns class
     # @param  string  value  Value to edit
     # @return void
     #
-    show: func(parent, allDataIndex, value, columnItem) {
-        me._parent       = parent;
-        me._allDataIndex = allDataIndex;
-        me._value        = value;
-        me._columnItem   = columnItem;
+    show: func(parent, id, value, columnItem) {
+        me._parent     = parent;
+        me._recordId   = id;
+        me._value      = value;
+        me._columnItem = columnItem;
 
         me._setLabel(me._columnItem.header);
         me._setLineEdit(sprintf("%s", value));
@@ -223,7 +223,7 @@ var InputDialog = {
         me.hide();
 
         # Set values to properties and trigger action listener
-        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index", me._allDataIndex);
+        setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index", me._recordId);
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-column-name", me._columnItem.name);
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value", value);
         setprop(me._addonNodePath ~ "/addon-devel/action-edit-entry", true);
