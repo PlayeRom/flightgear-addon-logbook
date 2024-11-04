@@ -16,26 +16,30 @@ var Columns = {
     #
     # Constants column names
     #
-    DATE       : "date",
-    TIME       : "time",
-    AIRCRAFT   : "aircraft",
-    VARIANT    : "variant",
-    AC_TYPE    : "aircraft_type",
-    CALLSIGN   : "callsign",
-    FROM       : "from",
-    TO         : "to",
-    LANDING    : "landing",
-    CRASH      : "crash",
-    DAY        : "day",
-    NIGHT      : "night",
-    INSTRUMENT : "instrument",
-    MULTIPLAYER: "multiplayer",
-    SWIFT      : "swift",
-    DURATION   : "duration",
-    DISTANCE   : "distance",
-    FUEL       : "fuel",
-    MAX_ALT    : "max_alt",
-    NOTE       : "note",
+    DATE          : "date", # real date
+    TIME          : "time", # real time
+    SIM_UTC_DATE  : "sim_utc_date",
+    SIM_UTC_TIME  : "sim_utc_time",
+    SIM_LOC_DATE  : "sim_local_date",
+    SIM_LOC_TIME  : "sim_local_time",
+    AIRCRAFT      : "aircraft",
+    VARIANT       : "variant",
+    AC_TYPE       : "aircraft_type",
+    CALLSIGN      : "callsign",
+    FROM          : "from",
+    TO            : "to",
+    LANDING       : "landing",
+    CRASH         : "crash",
+    DAY           : "day",
+    NIGHT         : "night",
+    INSTRUMENT    : "instrument",
+    MULTIPLAYER   : "multiplayer",
+    SWIFT         : "swift",
+    DURATION      : "duration",
+    DISTANCE      : "distance",
+    FUEL          : "fuel",
+    MAX_ALT       : "max_alt",
+    NOTE          : "note",
 
     TOTALS_ROW_ID: -1,
 
@@ -57,28 +61,60 @@ var Columns = {
         # * totals   - SQL function for totals row or nil if column should not be displayed in totals
         # * totalVal - value for total row (if totals != nil)
         # * totalFrm - formatting value for total row (if totals != nil)
-        me._allColumns = [
-            { name: Columns.DATE,        header: "Date",        width:  85, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.TIME,        header: "Time",        width:  50, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.AIRCRAFT,    header: "Aircraft",    width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.VARIANT,     header: "Variant",     width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.AC_TYPE,     header: "Type",        width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.CALLSIGN,    header: "Callsign",    width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.FROM,        header: "From",        width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.TO,          header: "To",          width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: ""     },
-            { name: Columns.LANDING,     header: "Landing",     width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d"   },
-            { name: Columns.CRASH,       header: "Crash",       width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d"   },
-            { name: Columns.DAY,         header: "Day",         width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.NIGHT,       header: "Night",       width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.INSTRUMENT,  header: "Instrument",  width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.MULTIPLAYER, header: "Multiplayer", width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.SWIFT,       header: "Swift",       width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.DURATION,    header: "Duration",    width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.DISTANCE,    header: "Distance",    width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.FUEL,        header: "Fuel",        width:  80, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f" },
-            { name: Columns.MAX_ALT,     header: "Max Alt",     width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f" },
-            { name: Columns.NOTE,        header: "Note",        width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f" },
+        # * csv      - if true then the column exists in the CSV file, false means it is only used in the SQLite database
+        me._allColumnsSQLite = [
+            { name: Columns.DATE,         header: "Real date",      width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.TIME,         header: "Real time",      width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.SIM_UTC_DATE, header: "Sim UTC date",   width:  80, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.SIM_UTC_TIME, header: "Sim UTC time",   width:  55, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.SIM_LOC_DATE, header: "Sim local date", width:  80, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.SIM_LOC_TIME, header: "Sim local time", width:  55, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.AIRCRAFT,     header: "Aircraft",       width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.VARIANT,      header: "Variant",        width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.AC_TYPE,      header: "Type",           width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.CALLSIGN,     header: "Callsign",       width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.FROM,         header: "From",           width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.TO,           header: "To",             width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.LANDING,      header: "Landing",        width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d",   },
+            { name: Columns.CRASH,        header: "Crash",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d",   },
+            { name: Columns.DAY,          header: "Day",            width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.NIGHT,        header: "Night",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.INSTRUMENT,   header: "Instrument",     width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.MULTIPLAYER,  header: "Multiplayer",    width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.SWIFT,        header: "Swift",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.DURATION,     header: "Duration",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.DISTANCE,     header: "Distance",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.FUEL,         header: "Fuel",           width:  80, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.MAX_ALT,      header: "Max Alt",        width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f", },
+            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f", },
         ];
+
+        me._allColumnsCsv = [
+            { name: Columns.DATE,         header: "Date",           width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.TIME,         header: "Time",           width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.AIRCRAFT,     header: "Aircraft",       width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.VARIANT,      header: "Variant",        width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.AC_TYPE,      header: "Type",           width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.CALLSIGN,     header: "Callsign",       width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.FROM,         header: "From",           width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.TO,           header: "To",             width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.LANDING,      header: "Landing",        width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d",   },
+            { name: Columns.CRASH,        header: "Crash",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d",   },
+            { name: Columns.DAY,          header: "Day",            width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.NIGHT,        header: "Night",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.INSTRUMENT,   header: "Instrument",     width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.MULTIPLAYER,  header: "Multiplayer",    width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.SWIFT,        header: "Swift",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.DURATION,     header: "Duration",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.DISTANCE,     header: "Distance",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.FUEL,         header: "Fuel",           width:  80, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.MAX_ALT,      header: "Max Alt",        width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f", },
+            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f", },
+        ];
+
+        me._allColumns = Utils.isUsingSQLite()
+            ? me._allColumnsSQLite
+            : me._allColumnsCsv;
 
         me._allColumnsSize = size(me._allColumns);
 

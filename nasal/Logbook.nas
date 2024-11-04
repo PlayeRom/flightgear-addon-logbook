@@ -259,8 +259,16 @@ var Logbook = {
         me._recovery.start(me, me._recoveryCallback);
 
         me._logData = LogData.new();
-        me._logData.setDate(me._environment.getDateString());
-        me._logData.setTime(me._environment.getTimeString());
+
+        me._logData.setRealDate(me._environment.getRealDateString());
+        me._logData.setRealTime(me._environment.getRealTimeString());
+
+        me._logData.setSimUtcDate(me._environment.getSimUtcDateString());
+        me._logData.setSimUtcTime(me._environment.getSimUtcTimeString());
+
+        me._logData.setSimLocalDate(me._environment.getSimLocalDateString());
+        me._logData.setSimLocalTime(me._environment.getSimLocalTimeString());
+
         me._logData.setAircraft(me._aircraft.getAircraftPrimary());
         me._logData.setVariant(aircraftId);
         me._logData.setAircraftType(me._aircraftType);

@@ -20,8 +20,8 @@ var DetailsDialog = {
     WINDOW_HEIGHT : 660,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     COLUMNS_WIDTH : [
-        120, # header
-        440, # data
+        160, # header
+        400, # data
     ],
 
     #
@@ -236,7 +236,7 @@ var DetailsDialog = {
 
             append(rowsData, {
                 data : [
-                    sprintf("%10s:", columnItem.header),
+                    sprintf("%15s:", columnItem.header),
                     sprintf("%s %s",
                         me._addCommaSeparator(columnItem.name, data[index]),
                         me._getExtraText(columnItem.name, data[index])

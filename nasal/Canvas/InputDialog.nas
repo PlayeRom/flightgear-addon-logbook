@@ -259,13 +259,19 @@ var InputDialog = {
             }
         }
 
-        if (me._columnItem.name == Columns.DATE) {
+        if (   me._columnItem.name == Columns.DATE
+            or me._columnItem.name == Columns.SIM_UTC_DATE
+            or me._columnItem.name == Columns.SIM_LOC_DATE
+        ) {
             if (!me._validateDate(value)) {
                 gui.popupTip("Incorrect date");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.TIME) {
+        else if (me._columnItem.name == Columns.TIME
+              or me._columnItem.name == Columns.SIM_UTC_TIME
+              or me._columnItem.name == Columns.SIM_LOC_TIME
+        ) {
             if (!me._validateTime(value)) {
                 gui.popupTip("Incorrect time");
                 return false;

@@ -33,6 +33,10 @@ var MigrationSQLite = {
                 var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storageSQLite);
                 migration.up();
             },
+            "M2024_11_04_11_53_AddSimTimeColumns": func() {
+                var migration = M2024_11_04_11_53_AddSimTimeColumns.new(storageSQLite);
+                migration.up();
+            },
             # Add next migration here...
         };
 

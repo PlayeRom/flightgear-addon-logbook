@@ -19,61 +19,69 @@ var LogData = {
     # @return me
     #
     new: func(
-        date         = "",  # Take-off date (real)
-        time         = "",  # Take-off time (real)
-        aircraft     = "",  # Primary aircraft from dir (/sim/aircraft-dir)
-        variant      = "",  # Aircraft ID as a variant (/sim/aircraft)
-        aircraftType = "",  # Aircraft type
-        callsign     = "",  # Pilot callsign
-        from         = "",  # ICAO departure airport (if take-off from the ground)
-        to           = "",  # ICAO destination airport (if landed)
-        landing      = 0,   # 1 (true) means that aircraft landed
-        crash        = 0,   # 1 (true) means that aircraft crashed
-        day          = 0.0, # Total flight time during the day (hours)
-        night        = 0.0, # Total flight time during the night (hours)
-        instrument   = 0.0, # Total flight time during the IMC (hours)
-        multiplayer  = 0.0, # Total flight time in multiplayer mode (hours)
-        swift        = 0.0, # Total flight time with connection to swift (hours)
-        duration     = 0.0, # Total flight time as sum of day and night (hours)
-        distance     = 0.0, # The distance traveled during the flight in nautical miles
-        fuel         = 0.0, # Amount of fuel used in US gallons
-        maxAlt       = 0.0, # The maximum altitude reached during the flight in feet
-        note         = "",  # Full aircraft name as default
+        date           = "",  # Take-off date (real)
+        time           = "",  # Take-off time (real)
+        sim_utc_date   = "",  # Take-off date (sim UTC)
+        sim_utc_time   = "",  # Take-off time (sim UTC)
+        sim_local_date = "",  # Take-off date (sim local)
+        sim_local_time = "",  # Take-off time (sim local)
+        aircraft       = "",  # Primary aircraft from dir (/sim/aircraft-dir)
+        variant        = "",  # Aircraft ID as a variant (/sim/aircraft)
+        aircraftType   = "",  # Aircraft type
+        callsign       = "",  # Pilot callsign
+        from           = "",  # ICAO departure airport (if take-off from the ground)
+        to             = "",  # ICAO destination airport (if landed)
+        landing        = 0,   # 1 (true) means that aircraft landed
+        crash          = 0,   # 1 (true) means that aircraft crashed
+        day            = 0.0, # Total flight time during the day (hours)
+        night          = 0.0, # Total flight time during the night (hours)
+        instrument     = 0.0, # Total flight time during the IMC (hours)
+        multiplayer    = 0.0, # Total flight time in multiplayer mode (hours)
+        swift          = 0.0, # Total flight time with connection to swift (hours)
+        duration       = 0.0, # Total flight time as sum of day and night (hours)
+        distance       = 0.0, # The distance traveled during the flight in nautical miles
+        fuel           = 0.0, # Amount of fuel used in US gallons
+        maxAlt         = 0.0, # The maximum altitude reached during the flight in feet
+        note           = "",  # Full aircraft name as default
     ) {
         var me = { parents: [LogData] };
 
         # Member names the same as in the database!
-        me.date          = date;
-        me.time          = time;
-        me.aircraft      = aircraft;
-        me.variant       = variant;
-        me.aircraft_type = aircraftType;
-        me.callsign      = callsign;
-        me.from          = from;
-        me.to            = to;
-        me.landing       = landing;
-        me.crash         = crash;
-        me.day           = day;
-        me.night         = night;
-        me.instrument    = instrument;
-        me.multiplayer   = multiplayer;
-        me.swift         = swift;
-        me.duration      = duration;
-        me.distance      = distance;
-        me.fuel          = fuel;
-        me.max_alt       = maxAlt;
-        me.note          = note;
+        me.date           = date;
+        me.time           = time;
+        me.sim_utc_date   = sim_utc_date;
+        me.sim_utc_time   = sim_utc_time;
+        me.sim_local_date = sim_local_date;
+        me.sim_local_time = sim_local_time;
+        me.aircraft       = aircraft;
+        me.variant        = variant;
+        me.aircraft_type  = aircraftType;
+        me.callsign       = callsign;
+        me.from           = from;
+        me.to             = to;
+        me.landing        = landing;
+        me.crash          = crash;
+        me.day            = day;
+        me.night          = night;
+        me.instrument     = instrument;
+        me.multiplayer    = multiplayer;
+        me.swift          = swift;
+        me.duration       = duration;
+        me.distance       = distance;
+        me.fuel           = fuel;
+        me.max_alt        = maxAlt;
+        me.note           = note;
 
         return me;
     },
 
     #
-    # Set the take-off date
+    # Set the take-off real date
     #
     # @param string date - Take-off date
     # @return me
     #
-    setDate: func(date) {
+    setRealDate: func(date) {
         me.date = date;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setDate = ", date);
 
@@ -81,23 +89,75 @@ var LogData = {
     },
 
     #
-    # Get only year from date
+    # Get only year from real date
     #
     # @return string
     #
-    _getYear: func() {
+    _getRealYear: func() {
         return substr(me.date, 0, 4);
     },
 
     #
-    # Set the take-off time
+    # Set the take-off real time
     #
     # @param string time - Take-off time
     # @return me
     #
-    setTime: func(time) {
+    setRealTime: func(time) {
         me.time = time;
         logprint(MY_LOG_LEVEL, "Logbook Add-on - setTime = ", time);
+
+        return me;
+    },
+
+    #
+    # Set the take-off sim UTC date
+    #
+    # @param string date - Take-off date
+    # @return me
+    #
+    setSimUtcDate: func(date) {
+        me.sim_utc_date = date;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimUtcDate = ", date);
+
+        return me;
+    },
+
+    #
+    # Set the take-off sim UTC time
+    #
+    # @param string time - Take-off time
+    # @return me
+    #
+    setSimUtcTime: func(time) {
+        me.sim_utc_time = time;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimUtcTime = ", time);
+
+        return me;
+    },
+
+    #
+    # Set the take-off sim local date
+    #
+    # @param string date - Take-off date
+    # @return me
+    #
+    setSimLocalDate: func(date) {
+        me.sim_local_date = date;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimLocalDate = ", date);
+
+        return me;
+    },
+
+    #
+    # Set the take-off sim local time
+    #
+    # @param string time - Take-off time
+    # @return me
+    #
+    setSimLocalTime: func(time) {
+        me.sim_local_time = time;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimLocalTime = ", time);
 
         return me;
     },
@@ -366,7 +426,7 @@ var LogData = {
     },
 
     #
-    # Convert hash to vector
+    # Convert hash to vector using all columns
     #
     # @param  hash columns  Columns object
     # @return vector
@@ -382,7 +442,7 @@ var LogData = {
     },
 
     #
-    # Apply given vector to this object
+    # Apply given vector to this object (only for CSV)
     #
     # @param vector items
     # @return void
@@ -411,7 +471,7 @@ var LogData = {
     },
 
     #
-    # Apply given hash to this object
+    # Apply given hash to this object (only for SQLite)
     #
     # @param  hash  row  Hash from DB with all columns
     # @return void
@@ -485,7 +545,7 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByColumnName: func(columnName) {
-             if (columnName == Columns.DATE)     return me._getYear();
+             if (columnName == Columns.DATE)     return me._getRealYear();
         else if (columnName == Columns.AIRCRAFT) return me.aircraft;
         else if (columnName == Columns.VARIANT)  return me.variant;
         else if (columnName == Columns.AC_TYPE)  return me.aircraft_type;
@@ -507,6 +567,10 @@ var LogData = {
         return LogData.new(
             me.date,
             me.time,
+            me.sim_utc_date,
+            me.sim_utc_time,
+            me.sim_local_date,
+            me.sim_local_time,
             me.aircraft,
             me.variant,
             me.aircraft_type,

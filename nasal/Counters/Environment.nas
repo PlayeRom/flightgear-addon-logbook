@@ -55,7 +55,7 @@ var Environment = {
     #
     # @return string
     #
-    getDateString: func() {
+    getRealDateString: func() {
         return sprintf(
             "%d-%02d-%02d",
             getprop("/sim/time/real/year"),
@@ -69,12 +69,145 @@ var Environment = {
     #
     # @return string
     #
-    getTimeString: func() {
+    getRealTimeString: func() {
         return sprintf(
             "%02d:%02d",
             getprop("/sim/time/real/hour"),
             getprop("/sim/time/real/minute")
         );
+    },
+
+    #
+    # Get sim UTC date as string in ISO format
+    #
+    # @return string
+    #
+    getSimUtcDateString: func() {
+        var year  = getprop("/sim/time/utc/year");
+        var month = getprop("/sim/time/utc/month");
+        var day   = getprop("/sim/time/utc/day");
+
+        return sprintf("%d-%02d-%02d", year, month, day);
+    },
+
+    #
+    # Get sim UTC time as string
+    #
+    # @return string
+    #
+    getSimUtcTimeString: func() {
+        return sprintf(
+            "%02d:%02d",
+            getprop("/sim/time/utc/hour"),
+            getprop("/sim/time/utc/minute")
+        );
+    },
+
+    #
+    # Get sim local date as string in ISO format
+    #
+    # @return string
+    #
+    getSimLocalDateString: func() {
+        return me._getLocalDate();
+    },
+
+    #
+    # Get sim local time as string
+    #
+    # @return string
+    #
+    getSimLocalTimeString: func() {
+        return utf8.substr(getprop("/sim/time/local-time-string"), 0, 5);
+    },
+
+    #
+    # A function that calculates the local date from a UTC date, a UTC time, and an offset in seconds.
+    #
+    # @return string
+    #
+    _getLocalDate: func() {
+        # Get sim UTC date
+        var year  = int(getprop("/sim/time/utc/year"));
+        var month = int(getprop("/sim/time/utc/month"));
+        var day   = int(getprop("/sim/time/utc/day"));
+
+        # Get sim UTC time
+        var hour   = int(getprop("/sim/time/utc/hour"));
+        var minute = int(getprop("/sim/time/utc/minute"));
+
+        # Convert offset from seconds to total minutes
+        var localOffset =  num(getprop("/sim/time/local-offset"));
+        var offsetMinutes = localOffset / 60;
+
+        # Calculate total minutes from midnight UTC, applying the local offset
+        var totalMinutes = (hour * 60 + minute) + offsetMinutes;
+
+        # Calculate new hour and minute from total minutes
+        var newHour = math.floor(totalMinutes / 60);
+        var newMinute = math.mod(totalMinutes, 60);
+
+        # If newMinute is negative, adjust newHour and newMinute
+        if (newMinute < 0) {
+            newMinute += 60;  # Correct the negative minute value
+            newHour -= 1;  # Decrease the hour
+        }
+
+        # Adjust the day based on newHour
+        var dayShift = math.floor(newHour / 24);
+        newHour = math.mod(newHour, 24);  # Get the correct hour in the range of 0-23
+
+        # If newHour is negative, adjust dayShift and newHour
+        if (newHour < 0) {
+            newHour += 24;  # Correct the hour value
+            dayShift -= 1;  # Adjust day shift
+        }
+
+        # Update the day with dayShift
+        day += dayShift;
+
+        # Normalize the date if day exceeds the days in the month
+        while (day > me._daysInMonth(year, month)) {
+            day -= me._daysInMonth(year, month);
+            month += 1;
+            if (month > 12) {
+                month = 1;
+                year += 1;
+            }
+        }
+
+        # Normalize the date if day is less than 1
+        while (day < 1) {
+            month -= 1;
+            if (month < 1) {
+                month = 12;
+                year -= 1;
+            }
+            day += me._daysInMonth(year, month);
+        }
+
+        # We return the local date in the format "YYYY-MM-DD" and the time in the format "HH:MM"
+        # var formattedDate = sprintf("%04d-%02d-%02d", year, month, day);
+        # var formattedTime = sprintf("%02d:%02d", newHour, newMinute);
+        # return [formattedDate, formattedTime];
+
+        return sprintf("%d-%02d-%02d", year, month, day);
+    },
+
+    #
+    # A function that returns the number of days in a given month, taking into account leap year for February
+    #
+    # @param  int  year
+    # @param  int  month
+    # @return int
+    #
+    _daysInMonth: func(year, month) {
+        var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        if (month == 2 and ((math.fmod(year, 4) == 0 and math.fmod(year, 100) != 0) or math.fmod(year, 400) == 0)) {
+            return 29;  # February in a leap year
+        }
+
+        return monthDays[month - 1];
     },
 
     #

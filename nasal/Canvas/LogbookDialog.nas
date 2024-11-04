@@ -345,7 +345,19 @@ var LogbookDialog = {
     # @return string
     #
     _getReplaceHeaderText: func(columnName, text) {
-        if (columnName == Columns.LANDING) {
+        if (columnName == Columns.DATE
+            or columnName == Columns.SIM_UTC_DATE
+            or columnName == Columns.SIM_LOC_DATE
+        ) {
+            text = "Date";
+        }
+        else if (columnName == Columns.TIME
+            or columnName == Columns.SIM_UTC_TIME
+            or columnName == Columns.SIM_LOC_TIME
+        ) {
+            text = "Time";
+        }
+        else if (columnName == Columns.LANDING) {
             text = "Land.";
         }
 

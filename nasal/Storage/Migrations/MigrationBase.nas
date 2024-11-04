@@ -46,4 +46,17 @@ var MigrationBase = {
         var query = sprintf("CREATE TABLE %s (%s)", tableName, queryCols);
         sqlite.exec(me._dbHandler, query);
     },
+
+    #
+    # Add column to table
+    #
+    # @param  string  tableName
+    # @param  string  columnName
+    # @param  string  type
+    # @return void
+    #
+    addColumnToTable: func(tableName, columnName, type = "TEXT") {
+        var query = sprintf("ALTER TABLE `%s` ADD COLUMN `%s` %s", tableName, columnName, type);
+        sqlite.exec(me._dbHandler, query);
+    },
 };

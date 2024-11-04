@@ -139,9 +139,13 @@ var StorageSQLite = {
             logData.fromDb(row);
 
             io.write(file, sprintf(
-                "%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+                "%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
                 logData.date,
                 logData.time,
+                logData.sim_utc_date,
+                logData.sim_utc_time,
+                logData.sim_local_date,
+                logData.sim_local_time,
                 logData.aircraft,
                 logData.variant,
                 logData.aircraft_type,
@@ -204,7 +208,9 @@ var StorageSQLite = {
             db = me._dbHandler;
         }
 
-        var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_LOGBOOKS);
+        var query = "INSERT INTO " ~ StorageSQLite.TABLE_LOGBOOKS
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         var stmt = sqlite.prepare(db, query);
         sqlite.exec(db, stmt,
             logData.date,
@@ -227,6 +233,10 @@ var StorageSQLite = {
             logData.fuel,
             logData.max_alt,
             logData.note,
+            logData.sim_utc_date,
+            logData.sim_utc_time,
+            logData.sim_local_date,
+            logData.sim_local_time,
         );
 
         var rows = sqlite.exec(db, "SELECT last_insert_rowid() AS id");
