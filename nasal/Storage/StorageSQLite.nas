@@ -29,10 +29,11 @@ var StorageSQLite = {
     #
     new: func(filters, columns) {
         var me = {
-            parents : [StorageSQLite],
-            _filters: filters,
-            _columns: columns,
-        };
+            parents  : [StorageSQLite],
+            _filters : filters,
+            _columns : columns,
+            _exporter: Exporter.new(columns),
+        };;
 
         me._filePath    = me._getPathToFile();
         me._dbHandler   = nil;
@@ -54,6 +55,7 @@ var StorageSQLite = {
     # @return void
     #
     del: func() {
+        me._exporter.del();
         me._closeDb();
     },
 
@@ -100,76 +102,7 @@ var StorageSQLite = {
     # @return void
     #
     exportToCsv: func() {
-        thread.newthread(func { me._exportToCsv(); });
-    },
-
-    #
-    # Export logbook from SQLite to CSV file
-    #
-    # @return void
-    #
-    _exportToCsv: func() {
-        var year   = getprop("/sim/time/real/year");
-        var month  = getprop("/sim/time/real/month");
-        var day    = getprop("/sim/time/real/day");
-        var hour   = getprop("/sim/time/real/hour");
-        var minute = getprop("/sim/time/real/minute");
-        var second = getprop("/sim/time/real/second");
-
-        var csvFile = sprintf("%s/logbook-export-%d-%02d-%02d-%02d-%02d-%02d.csv", g_Addon.storagePath, year, month, day, hour, minute, second);
-
-        var file = io.open(csvFile, "w");
-
-        var headerRow = "";
-        foreach (var columnItem; me._columns.getAll()) {
-            if (headerRow != "") {
-                headerRow ~= ",";
-            }
-
-            headerRow ~= Utils.isSpace(columnItem.header)
-                ? '"' ~ columnItem.header ~ '"'
-                :       columnItem.header;
-        }
-
-        io.write(file, headerRow ~ "\n");
-
-        var query = sprintf("SELECT * FROM %s", StorageSQLite.TABLE_LOGBOOKS);
-        foreach (var row; sqlite.exec(me._dbHandler, query)) {
-            var logData = LogData.new();
-            logData.fromDb(row);
-
-            io.write(file, sprintf(
-                "%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
-                logData.date,
-                logData.time,
-                logData.sim_utc_date,
-                logData.sim_utc_time,
-                logData.sim_local_date,
-                logData.sim_local_time,
-                logData.aircraft,
-                logData.variant,
-                logData.aircraft_type,
-                logData.callsign,
-                logData.from,
-                logData.to,
-                logData.printLanding(),
-                logData.printCrash(),
-                logData.day,
-                logData.night,
-                logData.instrument,
-                logData.multiplayer,
-                logData.swift,
-                logData.duration,
-                logData.distance,
-                logData.fuel,
-                logData.max_alt,
-                logData.note
-            ));
-        }
-
-        io.close(file);
-
-        gui.popupTip("Exported to file " ~ csvFile);
+        me._exporter.exportToCsv(me._dbHandler);
     },
 
     #

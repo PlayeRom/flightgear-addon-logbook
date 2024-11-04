@@ -41,6 +41,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Storage/Migrations/M2024_11_04_11_53_AddSimTimeColumns",
         "nasal/Storage/MigrationCsv",
         "nasal/Storage/MigrationSQLite",
+        "nasal/Storage/Exporter",
         "nasal/Storage/StorageCsv",
         "nasal/Storage/StorageSQLite",
         "nasal/Storage/Storage", # Must be before LogbookDialog
