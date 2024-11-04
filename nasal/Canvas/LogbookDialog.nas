@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 1360,
+    WINDOW_WIDTH  : 1360, # max width
     WINDOW_HEIGHT : 680,
     MAX_DATA_ITEMS: 20,
     FONT_NAME     : "LiberationFonts/LiberationSans-Bold.ttf",
@@ -31,11 +31,16 @@ var LogbookDialog = {
     # @return me
     #
     new: func(storage, filters, columns) {
+        var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["list-view"].PADDING * 2);
+        if (windowWidth > LogbookDialog.WINDOW_WIDTH) {
+            windowWidth = LogbookDialog.WINDOW_WIDTH;
+        }
+
         var me = {
             parents : [
                 LogbookDialog,
                 Dialog.new(
-                    LogbookDialog.WINDOW_WIDTH,
+                    windowWidth,
                     LogbookDialog.WINDOW_HEIGHT,
                     "Logbook"
                 ),
@@ -664,8 +669,7 @@ var LogbookDialog = {
 
             me._filterSelector.hide();
 
-            var isTotals = hash.allDataIndex == -1;  # -1 is using for Totals row
-            me._detailsDialog.show(me, hash, isTotals);
+            me._detailsDialog.show(me, hash.allDataIndex);
         }
     },
 

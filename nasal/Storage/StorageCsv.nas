@@ -239,7 +239,7 @@ var StorageCsv = {
             me._filters.append(logData);
             me._filters.sort();
             me._totalLines += 1;
-            me._countTotals(logData.toVector());
+            me._countTotals(logData.toVector(me._columns));
             me._filters.dirty = true;
         }
     },
@@ -356,7 +356,7 @@ var StorageCsv = {
             var counter = 0;
 
             foreach (var hash; me._cachedData.vector[start:]) {
-                var vectorLogData = hash.logData.toVector();
+                var vectorLogData = hash.logData.toVector(me._columns);
                 if (counter < count) {
                     append(me._loadedData, {
                         allDataIndex : hash.allDataIndex,
@@ -370,7 +370,7 @@ var StorageCsv = {
             }
 
             # Add totals row to the end
-            me._appendTotalsRow();
+            append(me._loadedData, me.getTotalsRow());
 
             # We have not used the thread here, but we must point out that it has ended
             g_isThreadPending = false;
@@ -406,7 +406,7 @@ var StorageCsv = {
         me._totalLines = 0;
 
         foreach (var logData; me._allData.vector) {
-            var vectorLogData = logData.toVector();
+            var vectorLogData = logData.toVector(me._columns);
             if (me._filters.isAllowedByFilter(logData)) {
                 if (me._totalLines >= start and counter < count) {
                     append(me._loadedData, {
@@ -429,7 +429,7 @@ var StorageCsv = {
         }
 
         # Add totals row to the end
-        me._appendTotalsRow();
+        append(me._loadedData, me.getTotalsRow());
 
         me._filters.dirty = false;
 
@@ -451,14 +451,15 @@ var StorageCsv = {
     #
     # @return void
     #
-    _appendTotalsRow: func() {
+    getTotalsRow: func() {
         var totalsData = [];
         var setTotalsLabel = false;
 
         foreach (var columnItem; me._columns.getAll()) {
-            if (!columnItem.visible) {
-                continue;
-            }
+            # For CSV always give everything regardless of visible flag
+            # if (withCheckVisible and !columnItem.visible) {
+            #     continue;
+            # }
 
             if (columnItem.totals == nil) {
                 append(totalsData, "");
@@ -477,10 +478,10 @@ var StorageCsv = {
             }
         }
 
-        append(me._loadedData, {
+        return {
             allDataIndex : -1,
             data         : totalsData,
-        });
+        };
     },
 
     #
@@ -525,7 +526,7 @@ var StorageCsv = {
     # @return void
     #
     _editData: func(rowIndex, columnName, value, columnIndex) {
-        var items = me._allData.vector[rowIndex].toVector();
+        var items = me._allData.vector[rowIndex].toVector(me._columns);
         items[columnIndex] = value;
         me._allData.vector[rowIndex].fromVector(items);
 
@@ -574,7 +575,7 @@ var StorageCsv = {
             me.addItem(logData, file);
 
             if (recalcTotals) {
-                me._countTotals(logData.toVector());
+                me._countTotals(logData.toVector(me._columns));
             }
 
             if (resetFilters) {
@@ -652,10 +653,14 @@ var StorageCsv = {
     #
     # Get vector of data row by given index of row
     #
-    # @param int index
+    # @param  int  index  If -1 then return data with totals row
     # @return hash|nil
     #
     getLogData: func(index) {
+        if (index == -1) {
+            return me.getTotalsRow(false);
+        }
+
         if (index == nil or index < 0 or index >= me._allData.size()) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
             return nil;
@@ -668,7 +673,7 @@ var StorageCsv = {
 
         return {
             allDataIndex : index,
-            data         : me._allData.vector[index].toVector()
+            data         : me._allData.vector[index].toVector(me._columns)
         };
     },
 

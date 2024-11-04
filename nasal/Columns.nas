@@ -126,6 +126,23 @@ var Columns = {
     },
 
     #
+    # Return the sum of the widths of the visible columns
+    #
+    # @return int
+    #
+    getSumWidth: func() {
+        var sum = 0;
+
+        foreach (var columnItem; me._allColumns) {
+            if (columnItem.visible) {
+                sum += columnItem.width;
+            }
+        }
+
+        return sum;
+    },
+
+    #
     # Get column hash by index of column
     #
     # @param  int  index  Column index as StorageCsv.INDEX_...

@@ -305,7 +305,7 @@ var StorageSQLite = {
     _dbRowToVector: func(row) {
         var logData = LogData.new();
         logData.fromDb(row);
-        return logData.toVector();
+        return logData.toVector(me._columns);
     },
 
     #
@@ -423,22 +423,26 @@ var StorageSQLite = {
 
         me._loadedData = [];
 
-        # Build where from filters
         var where = me._getWhereQueryFilters();
 
-        var query = sprintf("SELECT * FROM %s %s LIMIT %d OFFSET %d", StorageSQLite.TABLE_LOGBOOKS, where, count, start);
+        var query = "SELECT " ~ me._getSelectLoadDataRange()
+            ~ " FROM " ~ StorageSQLite.TABLE_LOGBOOKS
+            ~ " " ~ where
+            ~ " LIMIT " ~ count ~ " OFFSET " ~ start;
+
         foreach (var row; sqlite.exec(me._dbHandler, query)) {
-            var vectorLogData = me._dbRowToVector(row);
+            var logData = LogData.new();
+
             append(me._loadedData, {
                 allDataIndex: row.id,
-                data        : vectorLogData,
+                data        : logData.fromDbToVector(row, me._columns),
             });
         }
 
         me._updateTotalsValues(where);
 
         # Add totals row to the end
-        me._appendTotalsRow();
+        append(me._loadedData, me.getTotalsRow());
 
         # Update aircraft variants filter, to show only variant of selected aircraft
         var aircraft = me._filters.getAppliedValueForFilter(Columns.AIRCRAFT);
@@ -466,6 +470,8 @@ var StorageSQLite = {
     },
 
     #
+    # Build where from filters
+    #
     # @return string
     #
     _getWhereQueryFilters: func() {
@@ -489,13 +495,34 @@ var StorageSQLite = {
     },
 
     #
+    # Build select columns according to visibility flag
+    #
+    # @return string
+    #
+    _getSelectLoadDataRange: func() {
+        var select = "`id`";
+
+        foreach (var columnItem; me._columns.getAll()) {
+            if (columnItem.visible) {
+                select ~= ", `" ~ columnItem.name ~ "`";
+            }
+        }
+
+        return select;
+    },
+
+    #
     # @param  string  where  SQL query condition
     # @return void
     #
-    _updateTotalsValues: func(where) {
+    _updateTotalsValues: func(where, withCheckVisible = 1) {
         var select = "";
         foreach (var columnItem; me._columns.getAll()) {
-            if (columnItem.visible and columnItem.totals != nil) {
+            if (withCheckVisible and !columnItem.visible) {
+                continue;
+            }
+
+            if (columnItem.totals != nil) {
                 if (select != "") {
                     select ~= ", ";
                 }
@@ -524,14 +551,21 @@ var StorageSQLite = {
     #
     # Append totals row to loadedData
     #
+    # @param  bool  withCheckVisible  If true false return even those columns which have visible set to false
     # @return void
     #
-    _appendTotalsRow: func() {
+    getTotalsRow: func(withCheckVisible = 1) {
+        if (!withCheckVisible) {
+            # Build where from filters
+            var where = me._getWhereQueryFilters();
+            me._updateTotalsValues(where, false);
+        }
+
         var totalsData = [];
         var setTotalsLabel = false;
 
         foreach (var columnItem; me._columns.getAll()) {
-            if (!columnItem.visible) {
+            if (withCheckVisible and !columnItem.visible) {
                 continue;
             }
 
@@ -552,10 +586,10 @@ var StorageSQLite = {
             }
         }
 
-        append(me._loadedData, {
+        return {
             allDataIndex : -1,
             data         : totalsData,
-        });
+        };
     },
 
     #
@@ -601,10 +635,14 @@ var StorageSQLite = {
     #
     # Get vector of data row by given id of row
     #
-    # @param  int  id
+    # @param  int  id  If -1 then return data with totals row
     # @return hash|nil
     #
     getLogData: func(id) {
+        if (id == -1) {
+            return me.getTotalsRow(false);
+        }
+
         if (id == nil) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
             return nil;

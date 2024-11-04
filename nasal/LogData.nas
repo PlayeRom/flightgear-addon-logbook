@@ -368,30 +368,15 @@ var LogData = {
     #
     # Convert hash to vector
     #
+    # @param  hash columns  Columns object
     # @return vector
     #
-    toVector: func() {
+    toVector: func(columns) {
         var vector = [];
-        append(vector, me.date);
-        append(vector, me.time);
-        append(vector, me.aircraft);
-        append(vector, me.variant);
-        append(vector, me.aircraft_type);
-        append(vector, me.callsign);
-        append(vector, me.from);
-        append(vector, me.to);
-        append(vector, me.printLanding());
-        append(vector, me.printCrash());
-        append(vector, sprintf("%.02f", me.day));
-        append(vector, sprintf("%.02f", me.night));
-        append(vector, sprintf("%.02f", me.instrument));
-        append(vector, sprintf("%.02f", me.multiplayer));
-        append(vector, sprintf("%.02f", me.swift));
-        append(vector, sprintf("%.02f", me.duration));
-        append(vector, sprintf("%.02f", me.distance));
-        append(vector, sprintf("%.02f", me.fuel));
-        append(vector, sprintf("%.0f",  me.max_alt));
-        append(vector, me.note);
+
+        foreach (var columItem; columns.getAll()) {
+            append(vector, me._formatData(columItem.name));
+        }
 
         return vector;
     },
@@ -428,13 +413,69 @@ var LogData = {
     #
     # Apply given hash to this object
     #
-    # @param  hash  row
+    # @param  hash  row  Hash from DB with all columns
     # @return void
     #
     fromDb: func(row) {
         foreach (var key; keys(row)) {
+            if (key == "id") {
+                continue;
+            }
+
             me[key] = row[key];
         }
+    },
+
+    #
+    # Apply given hash from DB to this object and return vector with data
+    #
+    # @param  hash  row  Hash from DB, not all columns can be included here, depending on SELECT in SQL query
+    # @param  hash  columns  Columns object
+    # @return vector
+    #
+    fromDbToVector: func(row, columns) {
+        var vector = [];
+
+        foreach (var columItem; columns.getAll()) {
+            if (contains(row, columItem.name)) {
+                me[columItem.name] = row[columItem.name];
+
+                append(vector, me._formatData(columItem.name));
+            }
+        }
+
+        return vector;
+    },
+
+    #
+    # Get formatted data to display in LogbookDialog
+    #
+    # @param  string  columnName
+    # @return string|double|int
+    #
+    _formatData: func(columnName) {
+        if (columnName == Columns.LANDING) {
+            return me.printLanding();
+        }
+        elsif (columnName == Columns.CRASH) {
+            return me.printCrash();
+        }
+        elsif (columnName == Columns.DAY
+            or columnName == Columns.NIGHT
+            or columnName == Columns.INSTRUMENT
+            or columnName == Columns.MULTIPLAYER
+            or columnName == Columns.SWIFT
+            or columnName == Columns.DURATION
+            or columnName == Columns.DISTANCE
+            or columnName == Columns.FUEL
+        ) {
+            return sprintf("%.02f", me[columnName]);
+        }
+        elsif (columnName == Columns.MAX_ALT) {
+            return sprintf("%.0f",  me.max_alt);
+        }
+
+        return me[columnName];
     },
 
     #

@@ -46,7 +46,7 @@ var DetailsDialog = {
         me._parent          = nil; # LogbookDialog object
         me._dataRow         = nil;
         me._isTotals        = false;
-        me._parentDataIndex = nil;
+        me._parentDataId    = nil;
         me._storage         = storage;
         me._columns         = columns;
         me._btnDelete       = nil;
@@ -131,7 +131,7 @@ var DetailsDialog = {
             .setFixedSize(75, 26)
             .listen("clicked", func {
                 if (!g_isThreadPending) {
-                    me._deleteDialog.show(me._parentDataIndex, me);
+                    me._deleteDialog.show(me._parentDataId, me);
                 }
             }
         );
@@ -176,21 +176,22 @@ var DetailsDialog = {
     # Show canvas dialog
     #
     # @param  hash  parent  LogbookDialog object
-    # @param  hash  data  {"allDataIndex": index, "data": vector}
-    # @param  bool  isTotals
+    # @param  int  id  Record ID in DB or row index in CSV file, if -1 then it's total row
     # @return void
     #
-    show: func(parent, data, isTotals) {
+    show: func(parent, id) {
         me._parent = parent;
-        me._dataRow = data;
-        me._isTotals = isTotals;
+        me._isTotals = id == -1;
 
         me._btnDelete.setEnabled(!me._isTotals);
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
 
-        me._parentDataIndex = me._dataRow.allDataIndex;
+        me._parentDataId = id;
+
+        # Get data from storage
+        me._dataRow = me._storage.getLogData(me._parentDataId);
 
         me._listView.setItems(me._getListViewRows(me._dataRow.data));
 
@@ -209,7 +210,7 @@ var DetailsDialog = {
             me._parent.allDataIndexSelected = nil;
         }
 
-        me._parentDataIndex = nil;
+        me._parentDataId = nil;
         me._inputDialog.hide();
         me._deleteDialog.hide();
         call(Dialog.hide, [], me);
@@ -253,8 +254,8 @@ var DetailsDialog = {
     # @return void
     #
     reload: func() {
-        if (me._parentDataIndex != nil) {
-            me._dataRow = me._storage.getLogData(me._parentDataIndex);
+        if (me._parentDataId != nil) {
+            me._dataRow = me._storage.getLogData(me._parentDataId);
             if (me._dataRow == nil) {
                 call(DetailsDialog.hide, [false], me);
                 return;
