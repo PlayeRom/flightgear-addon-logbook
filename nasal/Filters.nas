@@ -23,15 +23,17 @@ var Filters = {
 
         # Filter data for each column by which we can filter, loaded in Storage.loadAllData
         me.data = {};
-        me.data[Columns.DATE]     = std.Vector.new();
-        me.data[Columns.AIRCRAFT] = std.Vector.new();
-        me.data[Columns.VARIANT]  = std.Vector.new();
-        me.data[Columns.AC_TYPE]  = std.Vector.new();
-        me.data[Columns.CALLSIGN] = std.Vector.new();
-        me.data[Columns.FROM]     = std.Vector.new();
-        me.data[Columns.TO]       = std.Vector.new();
-        me.data[Columns.LANDING]  = std.Vector.new();
-        me.data[Columns.CRASH]    = std.Vector.new();
+        me.data[Columns.DATE]         = std.Vector.new();
+        me.data[Columns.SIM_UTC_DATE] = std.Vector.new();
+        me.data[Columns.SIM_LOC_DATE] = std.Vector.new();
+        me.data[Columns.AIRCRAFT]     = std.Vector.new();
+        me.data[Columns.VARIANT]      = std.Vector.new();
+        me.data[Columns.AC_TYPE]      = std.Vector.new();
+        me.data[Columns.CALLSIGN]     = std.Vector.new();
+        me.data[Columns.FROM]         = std.Vector.new();
+        me.data[Columns.TO]           = std.Vector.new();
+        me.data[Columns.LANDING]      = std.Vector.new();
+        me.data[Columns.CRASH]        = std.Vector.new();
 
         # Vector of FilterData objects
         me.appliedFilters = std.Vector.new();

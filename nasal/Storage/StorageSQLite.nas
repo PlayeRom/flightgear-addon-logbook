@@ -109,7 +109,7 @@ var StorageSQLite = {
     # Store log data to DB
     #
     # @param  hash  logData  LogData object
-    # @param  int  id|nill  Record ID for SQLite storage
+    # @param  int|nil  id  Record ID for SQLite storage
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
     #                       without rest of stuff (used only for CSV recovery)
     # @return void
@@ -191,6 +191,10 @@ var StorageSQLite = {
         var query = sprintf("UPDATE %s
             SET `date` = ?,
                 `time` = ?,
+                `sim_utc_date` = ?,
+                `sim_utc_time` = ?,
+                `sim_local_date` = ?,
+                `sim_local_time` = ?,
                 `aircraft` = ?,
                 `variant` = ?,
                 `aircraft_type` = ?,
@@ -215,6 +219,10 @@ var StorageSQLite = {
         sqlite.exec(me._dbHandler, stmt,
             logData.date,
             logData.time,
+            logData.sim_utc_date,
+            logData.sim_utc_time,
+            logData.sim_local_date,
+            logData.sim_local_time,
             logData.aircraft,
             logData.variant,
             logData.aircraft_type,
@@ -269,7 +277,7 @@ var StorageSQLite = {
     _loadAllFilters: func() {
         me._filters.clear();
 
-        me._updateFilterData(Columns.DATE);
+        me._updateFilterData(me._columns.getColumnDate());
         me._updateFilterData(Columns.AIRCRAFT);
         me._updateFilterData(Columns.VARIANT);
         me._updateFilterData(Columns.AC_TYPE);
@@ -291,7 +299,7 @@ var StorageSQLite = {
     #
     _updateFilterData: func(columnName, where = nil, start = -1, count = -1) {
         var sqlColumnName = "`" ~ columnName ~ "`";
-        if (columnName == Columns.DATE) {
+        if (columnName == me._columns.getColumnDate()) {
             sqlColumnName = "strftime('%Y', " ~ sqlColumnName ~ ")"; # get only a year from `date` column
         }
 
@@ -331,7 +339,7 @@ var StorageSQLite = {
     # @return string
     #
     _gatValueFilter: func(value, columnName) {
-        if (columnName == Columns.DATE) {
+        if (columnName == me._columns.getColumnDate()) {
             return  substr(value, 0, 4) # get year only
         }
         else if (columnName == Columns.LANDING
@@ -437,7 +445,7 @@ var StorageSQLite = {
                 : "AND ";
 
             var columnName = filterData.columnName;
-            if (columnName == Columns.DATE) {
+            if (columnName == me._columns.getColumnDate()) {
                 # For date column the value is a year only
                 where ~= "`" ~ columnName ~ "` LIKE '" ~ filterData.value ~ "%' ";
             }
@@ -484,6 +492,10 @@ var StorageSQLite = {
 
                 select ~= columnItem.totals ~ "(`" ~ columnItem.name ~ "`) AS `" ~ columnItem.name ~ "`";
             }
+        }
+
+        if (select == "") {
+            return;
         }
 
         # query = "SELECT SUM(landing) as landing, SUM..., FROM logbooks WHERE ..."
@@ -538,6 +550,14 @@ var StorageSQLite = {
                 }
 
                 append(totalsData, sprintf(columnItem.totalFrm, columnItem.totalVal));
+            }
+        }
+
+        if (!setTotalsLabel) {
+            # The Totals label is still not set, because each column with totals is not displayed, so set it to the last column
+            var count = size(totalsData);
+            if (count > 0) {
+                totalsData[count - 1] = "Totals";
             }
         }
 

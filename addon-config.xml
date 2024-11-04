@@ -22,6 +22,28 @@
                             <dark-style type="bool">false</dark-style>
                             <real-time-duration type="bool">true</real-time-duration>
                             <sound-enabled type="bool">true</sound-enabled>
+                            <!-- possible value for date-time-display: real, sim-utc, sim-local -->
+                            <date-time-display type="string">real</date-time-display>
+
+                            <columns-visible>
+                                <!-- Which columns should be displayed: -->
+                                <variant type="bool">true</variant>
+                                <aircraft_type type="bool">true</aircraft_type>
+                                <callsign type="bool">true</callsign>
+                                <from type="bool">true</from>
+                                <to type="bool">true</to>
+                                <landing type="bool">true</landing>
+                                <crash type="bool">true</crash>
+                                <day type="bool">true</day>
+                                <night type="bool">true</night>
+                                <instrument type="bool">true</instrument>
+                                <multiplayer type="bool">true</multiplayer>
+                                <swift type="bool">true</swift>
+                                <duration type="bool">true</duration>
+                                <distance type="bool">true</distance>
+                                <fuel type="bool">true</fuel>
+                                <max_alt type="bool">true</max_alt>
+                            </columns-visible>
                         </settings>
                     </save>
 

@@ -18,6 +18,12 @@ var Settings = {
     #
     SAVE_FILE    : "settings-v%s.xml",
     FILE_VERSION : "1.0.1",
+    #
+    # Possible options for date and time display:
+    #
+    DATE_TIME_REAL   : "real",      # real time from OS
+    DATE_TIME_SIM_UTC: "sim-utc",   # UTC time in simulator
+    DATE_TIME_SIM_LOC: "sim-local", # local time in simulator
 
     #
     # Constructor
@@ -29,6 +35,7 @@ var Settings = {
 
         me._file = g_Addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
         me._propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
+        me._saveNode = props.globals.getNode(me._propToSave); # node object with data to save/load
 
         me._load();
 
@@ -45,19 +52,12 @@ var Settings = {
     },
 
     #
-    # @return hash - node object with data to save/load
-    #
-    getSaveNode: func() {
-        return props.globals.getNode(me._propToSave);
-    },
-
-    #
     # Load settings properties tree
     #
     # @return void
     #
     _load: func() {
-        if (io.read_properties(me._file, me.getSaveNode()) == nil) {
+        if (io.read_properties(me._file, me._saveNode) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Load settings failed");
         }
     },
@@ -68,7 +68,7 @@ var Settings = {
     # @return void
     #
     save: func() {
-        if (io.write_properties(me._file, me.getSaveNode()) == nil) {
+        if (io.write_properties(me._file, me._saveNode) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Save settings failed");
         }
     },
@@ -81,13 +81,16 @@ var Settings = {
     },
 
     #
-    # @param bool value
+    # @param  bool  value
     # @return void
     #
     setDarkMode: func(value) {
         setprop(me._propToSave ~ "/settings/dark-style", value);
     },
 
+    #
+    # If true then time spent in flight is always real time, i.e. speeding up or
+    # slowing down the simulation time will not affect Duration.
     #
     # @return bool
     #
@@ -110,5 +113,57 @@ var Settings = {
         }
 
         return isSoundEnabled;
+    },
+
+    #
+    # Get the options which date and time should be displayed in LogbookDialog
+    #
+    # @return string
+    #
+    getDateTimeDisplay: func() {
+        var dateTimeDisplay = getprop(me._propToSave ~ "/settings/date-time-display");
+        if (dateTimeDisplay == nil
+            or (    dateTimeDisplay != Settings.DATE_TIME_REAL
+                and dateTimeDisplay != Settings.DATE_TIME_SIM_UTC
+                and dateTimeDisplay != Settings.DATE_TIME_SIM_LOC)
+        ) {
+            return Settings.DATE_TIME_REAL;
+        }
+
+        return dateTimeDisplay;
+    },
+
+    #
+    # @return hash
+    #
+    getColumnsVisible: func() {
+        var columnsVisibleNode = me._saveNode.getNode("settings/columns-visible");
+
+        var columnOptions = [
+            Columns.VARIANT,
+            Columns.AC_TYPE,
+            Columns.CALLSIGN,
+            Columns.FROM,
+            Columns.TO,
+            Columns.LANDING,
+            Columns.CRASH,
+            Columns.DAY,
+            Columns.NIGHT,
+            Columns.INSTRUMENT,
+            Columns.MULTIPLAYER,
+            Columns.SWIFT,
+            Columns.DURATION,
+            Columns.DISTANCE,
+            Columns.FUEL,
+            Columns.MAX_ALT,
+        ];
+
+        var hash = {};
+
+        foreach (var column; columnOptions) {
+            hash[column] = columnsVisibleNode.getChild(column).getBoolValue();
+        }
+
+        return hash;
     },
 };

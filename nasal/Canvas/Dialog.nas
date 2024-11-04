@@ -43,7 +43,7 @@ var Dialog = {
             .setFile("Textures/paper.png")
             .setTranslation(0, 0)
             # paper.png has 1360x1024 px
-            .setSize(LogbookDialog.WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.WINDOW_WIDTH));
+            .setSize(LogbookDialog.MAX_WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.MAX_WINDOW_WIDTH));
         me.toggleBgImage();
 
         if (resize and onResizeWidth != nil) {

@@ -98,6 +98,24 @@ var LogData = {
     },
 
     #
+    # Get only year from sim UTC date
+    #
+    # @return string
+    #
+    _getSimUtcYear: func() {
+        return substr(me.sim_utc_date, 0, 4);
+    },
+
+    #
+    # Get only year from sim local date
+    #
+    # @return string
+    #
+    _getSimLocalYear: func() {
+        return substr(me.sim_local_date, 0, 4);
+    },
+
+    #
     # Set the take-off real time
     #
     # @param string time - Take-off time
@@ -545,15 +563,17 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByColumnName: func(columnName) {
-             if (columnName == Columns.DATE)     return me._getRealYear();
-        else if (columnName == Columns.AIRCRAFT) return me.aircraft;
-        else if (columnName == Columns.VARIANT)  return me.variant;
-        else if (columnName == Columns.AC_TYPE)  return me.aircraft_type;
-        else if (columnName == Columns.CALLSIGN) return me.callsign;
-        else if (columnName == Columns.FROM)     return me.from;
-        else if (columnName == Columns.TO)       return me.to;
-        else if (columnName == Columns.LANDING)  return me.printLanding();
-        else if (columnName == Columns.CRASH)    return me.printCrash();
+             if (columnName == Columns.DATE)         return me._getRealYear();
+        else if (columnName == Columns.SIM_UTC_DATE) return me._getSimUtcYear();
+        else if (columnName == Columns.SIM_LOC_DATE) return me._getSimLocalYear();
+        else if (columnName == Columns.AIRCRAFT)     return me.aircraft;
+        else if (columnName == Columns.VARIANT)      return me.variant;
+        else if (columnName == Columns.AC_TYPE)      return me.aircraft_type;
+        else if (columnName == Columns.CALLSIGN)     return me.callsign;
+        else if (columnName == Columns.FROM)         return me.from;
+        else if (columnName == Columns.TO)           return me.to;
+        else if (columnName == Columns.LANDING)      return me.printLanding();
+        else if (columnName == Columns.CRASH)        return me.printCrash();
 
         return nil;
     },

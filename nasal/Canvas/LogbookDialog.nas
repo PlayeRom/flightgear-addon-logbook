@@ -16,11 +16,12 @@ var LogbookDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 1360, # max width
-    WINDOW_HEIGHT : 680,
-    MAX_DATA_ITEMS: 20,
-    FONT_NAME     : "LiberationFonts/LiberationSans-Bold.ttf",
-    FONT_SIZE     : 12,
+    MAX_WINDOW_WIDTH: 1360,
+    MIN_WINDOW_WIDTH: 540,
+    WINDOW_HEIGHT   : 680,
+    MAX_DATA_ITEMS  : 20,
+    FONT_NAME       : "LiberationFonts/LiberationSans-Bold.ttf",
+    FONT_SIZE       : 12,
 
     #
     # Constructor
@@ -32,8 +33,11 @@ var LogbookDialog = {
     #
     new: func(storage, filters, columns) {
         var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["list-view"].PADDING * 2);
-        if (windowWidth > LogbookDialog.WINDOW_WIDTH) {
-            windowWidth = LogbookDialog.WINDOW_WIDTH;
+        if (windowWidth < LogbookDialog.MIN_WINDOW_WIDTH) {
+            windowWidth = LogbookDialog.MIN_WINDOW_WIDTH;
+        }
+        else if (windowWidth > LogbookDialog.MAX_WINDOW_WIDTH) {
+            windowWidth = LogbookDialog.MAX_WINDOW_WIDTH;
         }
 
         var me = {
@@ -345,15 +349,15 @@ var LogbookDialog = {
     # @return string
     #
     _getReplaceHeaderText: func(columnName, text) {
-        if (columnName == Columns.DATE
+        if (   columnName == Columns.DATE
             or columnName == Columns.SIM_UTC_DATE
             or columnName == Columns.SIM_LOC_DATE
         ) {
             text = "Date";
         }
         else if (columnName == Columns.TIME
-            or columnName == Columns.SIM_UTC_TIME
-            or columnName == Columns.SIM_LOC_TIME
+              or columnName == Columns.SIM_UTC_TIME
+              or columnName == Columns.SIM_LOC_TIME
         ) {
             text = "Time";
         }
@@ -401,29 +405,29 @@ var LogbookDialog = {
 
         var btnFirst = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("|<<")
-            .setFixedSize(75, 26)
+            .setFixedSize(65, 26)
             .listen("clicked", func { me._first(); });
 
         var btnPrev = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("<")
-            .setFixedSize(75, 26)
+            .setFixedSize(65, 26)
             .listen("clicked", func { me._prev(); });
 
         me._setPaging();
 
         var btnNext = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText(">")
-            .setFixedSize(75, 26)
+            .setFixedSize(65, 26)
             .listen("clicked", func { me._next(); });
 
         var btnLast = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText(">>|")
-            .setFixedSize(75, 26)
+            .setFixedSize(65, 26)
             .listen("clicked", func { me._last(); });
 
         me._btnStyle
             .setText(me._getOppositeStyleName())
-            .setFixedSize(75, 26)
+            .setFixedSize(65, 26)
             .listen("clicked", func { me._toggleStyle(); });
 
         var btnHelp = canvas.gui.widgets.Button.new(me.group, canvas.style, {})

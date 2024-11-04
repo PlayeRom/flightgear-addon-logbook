@@ -50,7 +50,8 @@ var Columns = {
     #
     new: func() {
         var me = {
-            parents : [Columns],
+            parents       : [Columns],
+            _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
         # Default columns state
@@ -61,7 +62,6 @@ var Columns = {
         # * totals   - SQL function for totals row or nil if column should not be displayed in totals
         # * totalVal - value for total row (if totals != nil)
         # * totalFrm - formatting value for total row (if totals != nil)
-        # * csv      - if true then the column exists in the CSV file, false means it is only used in the SQLite database
         me._allColumnsSQLite = [
             { name: Columns.DATE,         header: "Real date",      width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.TIME,         header: "Real time",      width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
@@ -112,7 +112,7 @@ var Columns = {
             { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f", },
         ];
 
-        me._allColumns = Utils.isUsingSQLite()
+        me._allColumns = me._isUsingSQLite
             ? me._allColumnsSQLite
             : me._allColumnsCsv;
 
@@ -120,7 +120,7 @@ var Columns = {
 
         me._widths = std.Vector.new();
 
-        me.buildWidthsVector();
+        me._updateColumnsVisible();
 
         return me;
     },
@@ -132,19 +132,6 @@ var Columns = {
     #
     del: func() {
         #
-    },
-
-    #
-    # @return void
-    #
-    buildWidthsVector: func() {
-        me._widths.clear();
-
-        foreach (var columnItem; me._allColumns) {
-            if (columnItem.visible) {
-                me._widths.append(columnItem.width);
-            }
-        }
     },
 
     #
@@ -237,6 +224,73 @@ var Columns = {
         var index = me.getColumnIndexByName(columnName);
         if (index != nil) {
             me._allColumns[index].totalVal = totalValue;
+        }
+    },
+
+    #
+    # Get date column depend of option
+    #
+    # @return string
+    #
+    getColumnDate: func() {
+        var dataTimeDisplay = g_Settings.getDateTimeDisplay();
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) {
+            return Columns.SIM_UTC_DATE;
+        }
+        else if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) {
+            return Columns.SIM_LOC_DATE;
+        }
+
+        return Columns.DATE;
+    },
+
+    #
+    # Get time column depend of option
+    #
+    # @return string
+    #
+    getColumnTime: func() {
+        var dataTimeDisplay = g_Settings.getDateTimeDisplay();
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) {
+            return Columns.SIM_UTC_TIME;
+        }
+        else if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) {
+            return Columns.SIM_LOC_TIME;
+        }
+
+        return Columns.TIME;
+    },
+
+    #
+    # Update column visible by settings
+    #
+    # @return void
+    #
+    _updateColumnsVisible: func() {
+        var dataTimeDisplay = g_Settings.getDateTimeDisplay();
+        var columnsVisible = g_Settings.getColumnsVisible();
+
+        me._widths.clear();
+
+        foreach (var columnItem; me._allColumns) {
+            if (me._isUsingSQLite) {
+                if (columnItem.name == Columns.DATE or columnItem.name == Columns.TIME) {
+                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_REAL;
+                }
+                else if (columnItem.name == Columns.SIM_UTC_DATE or columnItem.name == Columns.SIM_UTC_TIME) {
+                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
+                }
+                else if (columnItem.name == Columns.SIM_LOC_DATE or columnItem.name == Columns.SIM_LOC_TIME) {
+                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
+                }
+                else if (contains(columnsVisible, columnItem.name)) {
+                    columnItem.visible = columnsVisible[columnItem.name];
+                }
+            }
+
+            if (columnItem.visible) {
+                me._widths.append(columnItem.width);
+            }
         }
     },
 };
