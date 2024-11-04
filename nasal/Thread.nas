@@ -20,13 +20,16 @@ var Thread = {
     # @return me
     #
     new: func() {
-        return {
+        var me = {
             parents     : [Thread],
-            _timer       : nil,
             _isPending   : false,
             _objCallback : nil,
             _callback    : func,
         };
+
+        me._timer = maketimer(0.1, me, me._checkEnd);
+
+        return me;
     },
 
     #
@@ -41,10 +44,10 @@ var Thread = {
     },
 
     #
-    # @param func threadFunc
-    # @param hash objCallback
-    # @param func callback
-    # @param bool isLockByGlobal
+    # @param  func  threadFunc  Task to be done in the thread
+    # @param  hash  objCallback  The object to which the function passed in callback belongs
+    # @param  func  callback  Function that will be called when the thread finishes its task
+    # @param  bool  isLockByGlobal
     # @return bool
     #
     run: func(threadFunc, objCallback, callback, isLockByGlobal = 1) {
@@ -63,7 +66,6 @@ var Thread = {
             me._isPending = false;
         });
 
-        me._timer = maketimer(0.1, me, me._checkEnd);
         me._timer.start();
 
         return true;
