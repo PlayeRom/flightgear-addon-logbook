@@ -49,6 +49,7 @@ var SettingsDialog = {
         me._checkboxReal     = nil;
         me._checkboxSimUtc   = nil;
         me._checkboxSimLocal = nil;
+        me._lineEditItemsPerPage = nil;
         me._columnCheckBoxes = {};
         me._hBoxLayout = nil;
 
@@ -106,6 +107,7 @@ var SettingsDialog = {
         g_Settings.setDateTimeDisplay(me._dateTimeDisplay);
         g_Settings.setSoundEnabled(me._soundOption);
         g_Settings.setColumnsVisible(me._columnsVisible);
+        g_Settings.setLogItemsPerPage(me._lineEditItemsPerPage.text());
 
         g_Settings.save();
 
@@ -152,6 +154,7 @@ var SettingsDialog = {
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawDateTimeOptions(vBoxLayout);
         me._drawMiscellaneousOptions(vBoxLayout);
+        me._drawLogItemsPerPage(vBoxLayout);
         vBoxLayout.addStretch(1);
         me._hBoxLayout.addItem(vBoxLayout);
 
@@ -244,6 +247,29 @@ var SettingsDialog = {
         });
 
         vBoxLayout.addItem(checkboxSound);
+
+        return vBoxLayout;
+    },
+
+    #
+    # Draw Items per page option
+    #
+    # @param  ghost  vBoxLayout  canvas.VBoxLayout
+    # @return ghost  canvas.VBoxLayout
+    #
+    _drawLogItemsPerPage: func(vBoxLayout) {
+        vBoxLayout.addSpacing(30);
+        vBoxLayout.addItem(me._getLabel("Items per page (min 5, max 20)"));
+
+        var hBoxLayout = canvas.HBoxLayout.new();
+
+        me._lineEditItemsPerPage = canvas.gui.widgets.LineEdit.new(me._scrollDataContent, canvas.style, {})
+            .setText(sprintf("%d", g_Settings.getLogItemsPerPage()));
+
+        hBoxLayout.addItem(me._lineEditItemsPerPage);
+        hBoxLayout.addStretch(1); # Decrease LineEdit width
+
+        vBoxLayout.addItem(hBoxLayout);
 
         return vBoxLayout;
     },

@@ -24,6 +24,7 @@
                             <sound-enabled type="bool">true</sound-enabled>
                             <!-- possible value for date-time-display: real, sim-utc, sim-local -->
                             <date-time-display type="string">real</date-time-display>
+                            <log-items-per-page type="int">20</log-items-per-page>
 
                             <columns-visible>
                                 <!-- Which columns should be displayed: -->

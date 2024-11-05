@@ -18,7 +18,7 @@ var FilterSelector = {
     #
     WINDOW_WIDTH           : 250,
     WINDOW_HEIGHT          : 300,
-    MAX_WINDOW_HEIGHT      : LogbookDialog.WINDOW_HEIGHT - 50,
+    MAX_WINDOW_HEIGHT      : LogbookDialog.MAX_WINDOW_HEIGHT - 50,
     PADDING                : 10,
     BUTTON_HEIGHT          : 26,
     CLEAR_FILTER_VALUE     : "All",

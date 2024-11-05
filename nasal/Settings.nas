@@ -24,6 +24,9 @@ var Settings = {
     DATE_TIME_REAL   : "real",      # real time from OS
     DATE_TIME_SIM_UTC: "sim-utc",   # UTC time in simulator
     DATE_TIME_SIM_LOC: "sim-local", # local time in simulator
+    #
+    MIN_LOG_ITEMS : 5,
+    MAX_LOG_ITEMS : 20,
 
     #
     # Constructor
@@ -91,6 +94,47 @@ var Settings = {
         if (io.write_properties(me._file, me._saveNode) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Save settings failed");
         }
+    },
+
+    #
+    # Get log items per page
+    #
+    # @return int
+    #
+    getLogItemsPerPage: func() {
+        var value = getprop(me._propToSave ~ "/settings/log-items-per-page") or Settings.MAX_LOG_ITEMS;
+        return me._logItemsValidate(value);
+    },
+
+    #
+    # Set log items per page
+    #
+    # @param  int  value
+    # @return void
+    #
+    setLogItemsPerPage: func(value) {
+        setprop(me._propToSave ~ "/settings/log-items-per-page", me._logItemsValidate(value));
+    },
+
+    #
+    # Validate log items per page
+    #
+    # @param  int|string|nil  value
+    # @return int
+    #
+    _logItemsValidate: func(value) {
+        value = int(value);
+        if (value == nil) {
+            return Settings.MAX_LOG_ITEMS;
+        }
+        else if (value < Settings.MIN_LOG_ITEMS) {
+            return Settings.MIN_LOG_ITEMS;
+        }
+        else if (value > Settings.MAX_LOG_ITEMS) {
+            return Settings.MAX_LOG_ITEMS;
+        }
+
+        return value;
     },
 
     #

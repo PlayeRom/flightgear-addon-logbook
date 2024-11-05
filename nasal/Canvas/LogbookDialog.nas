@@ -16,12 +16,14 @@ var LogbookDialog = {
     #
     # Constants
     #
-    MAX_WINDOW_WIDTH: 1360,
-    MIN_WINDOW_WIDTH: 540,
-    WINDOW_HEIGHT   : 680,
-    MAX_DATA_ITEMS  : 20,
-    FONT_NAME       : "LiberationFonts/LiberationSans-Bold.ttf",
-    FONT_SIZE       : 12,
+    MAX_WINDOW_WIDTH : 1360,
+    MIN_WINDOW_WIDTH : 540,
+
+    MAX_WINDOW_HEIGHT: 680,
+    MIN_WINDOW_HEIGHT: 260,
+
+    FONT_NAME        : "LiberationFonts/LiberationSans-Bold.ttf",
+    FONT_SIZE        : 12,
 
     #
     # Constructor
@@ -41,20 +43,26 @@ var LogbookDialog = {
             windowWidth = LogbookDialog.MAX_WINDOW_WIDTH;
         }
 
+        var windowHeight = (g_Settings.getLogItemsPerPage() + 2) * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT + 64; # +2 (headers row and Totals row), +64 (space bottom buttons)
+        if (windowHeight < LogbookDialog.MIN_WINDOW_HEIGHT) {
+            windowHeight = LogbookDialog.MIN_WINDOW_HEIGHT;
+        }
+        else if (windowHeight > LogbookDialog.MAX_WINDOW_HEIGHT) {
+            windowHeight = LogbookDialog.MAX_WINDOW_HEIGHT;
+        }
+
         var me = {
             parents : [
                 LogbookDialog,
-                Dialog.new(
-                    windowWidth,
-                    LogbookDialog.WINDOW_HEIGHT,
-                    "Logbook"
-                ),
+                Dialog.new(windowWidth, windowHeight, "Logbook"),
             ],
             _storage : storage,
             _filters : filters,
             _columns : columns,
             _logbook : logbook,
         };
+
+        me._itemsPerPage = g_Settings.getLogItemsPerPage();
 
         me._addonNodePath = g_Addon.node.getPath();
 
@@ -178,8 +186,8 @@ var LogbookDialog = {
             setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", false);
 
             # Check index of last page
-            var pages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
-            var newIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+            var pages = math.ceil(me._storage.getTotalLines() / me._itemsPerPage);
+            var newIndex = (pages * me._itemsPerPage) - me._itemsPerPage;
             if (me._startIndex > newIndex) {
                 # We exceed the maximum index, so set a new one
                 me._startIndex = newIndex;
@@ -549,10 +557,10 @@ var LogbookDialog = {
             return;
         }
 
-        if (me._startIndex - LogbookDialog.MAX_DATA_ITEMS >= 0) {
+        if (me._startIndex - me._itemsPerPage >= 0) {
             g_Sound.play('paper');
 
-            me._startIndex -= LogbookDialog.MAX_DATA_ITEMS;
+            me._startIndex -= me._itemsPerPage;
             me._filterSelector.hide();
             me._detailsDialog.hide();
             me.reloadData(false);
@@ -569,10 +577,10 @@ var LogbookDialog = {
             return;
         }
 
-        if (me._startIndex + LogbookDialog.MAX_DATA_ITEMS < me._storage.getTotalLines()) {
+        if (me._startIndex + me._itemsPerPage < me._storage.getTotalLines()) {
             g_Sound.play('paper');
 
-            me._startIndex += LogbookDialog.MAX_DATA_ITEMS;
+            me._startIndex += me._itemsPerPage;
             me._filterSelector.hide();
             me._detailsDialog.hide();
             me.reloadData(false);
@@ -590,8 +598,8 @@ var LogbookDialog = {
         }
 
         var old = me._startIndex;
-        var pages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS);
-        me._startIndex = (pages * LogbookDialog.MAX_DATA_ITEMS) - LogbookDialog.MAX_DATA_ITEMS;
+        var pages = math.ceil(me._storage.getTotalLines() / me._itemsPerPage);
+        me._startIndex = (pages * me._itemsPerPage) - me._itemsPerPage;
 
         if (old != me._startIndex) {
             g_Sound.play('paper');
@@ -622,7 +630,7 @@ var LogbookDialog = {
 
         me._listView.enableLoading();
 
-        me._storage.loadDataRange(me, me._reloadDataCallback, me._startIndex, LogbookDialog.MAX_DATA_ITEMS, withHeaders);
+        me._storage.loadDataRange(me, me._reloadDataCallback, me._startIndex, me._itemsPerPage, withHeaders);
     },
 
     #
@@ -680,8 +688,8 @@ var LogbookDialog = {
     # @return void
     #
     _setPaging: func() {
-        var curPage = (me._startIndex / LogbookDialog.MAX_DATA_ITEMS) + 1;
-        var maxPages = math.ceil(me._storage.getTotalLines() / LogbookDialog.MAX_DATA_ITEMS) or 1;
+        var curPage = (me._startIndex / me._itemsPerPage) + 1;
+        var maxPages = math.ceil(me._storage.getTotalLines() / me._itemsPerPage) or 1;
         me._labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me._storage.getTotalLines()));
     },
 
