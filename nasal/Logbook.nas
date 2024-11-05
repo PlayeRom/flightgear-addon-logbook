@@ -28,6 +28,7 @@ var Logbook = {
         var me = { parents: [Logbook] };
 
         # Auxiliary variables
+        me._isUsingSQLite = Utils.isUsingSQLite();
         me._startFuel     = 0.0; # amount of fuel at takeoff
         me._startOdometer = 0.0; # distance at takeoff
         me._onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
@@ -55,13 +56,13 @@ var Logbook = {
         me._crashDetector = CrashDetector.new(me._spaceShuttle);
         me._airport       = Airport.new();
 
-        me._recovery      = Utils.isUsingSQLite()
+        me._recovery      = me._isUsingSQLite
             ? RecoverySQLite.new(me._storage)
             : RecoveryCsv.new(me._storage);
 
         me._aircraft       = Aircraft.new();
         me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
-        me._settingsDialog = Utils.isUsingSQLite()
+        me._settingsDialog = me._isUsingSQLite
             ? SettingsDialogSQLite.new(me._columns, me)
             : SettingsDialogCsv.new(me._columns, me);
 

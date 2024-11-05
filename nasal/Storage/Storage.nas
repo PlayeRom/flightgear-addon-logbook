@@ -22,15 +22,16 @@ var Storage = {
     #
     new: func(filters, columns) {
         var me = {
-            parents : [Storage],
+            parents       : [Storage],
+            _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
         # TODO: drop support for StorageCsv when 2024 will be widely used
-        me._handler = Utils.isUsingSQLite()
+        me._handler = me._isUsingSQLite
             ? StorageSQLite.new(filters, columns)
             : StorageCsv.new(filters, columns);
 
-        if (Utils.isUsingSQLite()) {
+        if (me._isUsingSQLite) {
             gui.menuEnable("logbook-addon-export-csv", true);
         }
 
@@ -82,7 +83,7 @@ var Storage = {
     # @return void
     #
     updateItem: func(logData, id) {
-        if (Utils.isUsingSQLite()) {
+        if (me._isUsingSQLite) {
             me._handler.updateItem(logData, id);
         }
     },
@@ -149,7 +150,7 @@ var Storage = {
     # @return void
     #
     exportToCsv: func() {
-        if (Utils.isUsingSQLite()) {
+        if (me._isUsingSQLite) {
             me._handler.exportToCsv();
         }
         else {

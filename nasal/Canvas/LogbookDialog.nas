@@ -60,6 +60,7 @@ var LogbookDialog = {
             _filters : filters,
             _columns : columns,
             _logbook : logbook,
+            _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
         me._itemsPerPage = g_Settings.getLogItemsPerPage();
@@ -122,7 +123,7 @@ var LogbookDialog = {
                 if (me._storage.deleteLog(index)) {
                     me._listView.enableLoading();
 
-                    if (Utils.isUsingSQLite()) {
+                    if (me._isUsingSQLite) {
                         # Get signal to reload data
                         setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
                         setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
@@ -144,7 +145,7 @@ var LogbookDialog = {
                 if (me._storage.editData(index, columnName, value)) {
                     me._listView.enableLoading();
 
-                    if (Utils.isUsingSQLite()) {
+                    if (me._isUsingSQLite) {
                         # Get signal to reload data
                         setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
                     }
