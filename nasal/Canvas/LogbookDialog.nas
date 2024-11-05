@@ -95,6 +95,10 @@ var LogbookDialog = {
         me.vbox.addItem(me._listView, 1); # 2nd param = stretch
 
         me._labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+        if (Utils.isFG2024Version()) {
+            me._labelPaging.setColor(me.style.TEXT_COLOR);
+        }
+
         me._btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me._drawBottomBar();
 
@@ -485,6 +489,10 @@ var LogbookDialog = {
         me._btnStyle.setText(me._getOppositeStyleName());
         me._setListViewStyle();
         me._filterSelector.setStyle(me.style);
+
+        if (Utils.isFG2024Version()) {
+            me._labelPaging.setColor(me.style.TEXT_COLOR);
+        }
 
         me.reloadData();
 
