@@ -39,6 +39,7 @@ var SettingsDialogSQLite = {
 
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
+        me._logItemsPerPage = g_Settings.getLogItemsPerPage();
         me._columnsVisible = {};
         me._loadColumnsVisible();
 
@@ -77,6 +78,7 @@ var SettingsDialogSQLite = {
 
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
+        me._logItemsPerPage = g_Settings.getLogItemsPerPage();
         me._loadColumnsVisible();
 
         me._drawContent();
@@ -107,7 +109,7 @@ var SettingsDialogSQLite = {
         g_Settings.setDateTimeDisplay(me._dateTimeDisplay);
         g_Settings.setSoundEnabled(me._soundOption);
         g_Settings.setColumnsVisible(me._columnsVisible);
-        g_Settings.setLogItemsPerPage(me._lineEditItemsPerPage.text());
+        g_Settings.setLogItemsPerPage(me._logItemsPerPage);
 
         g_Settings.save();
 
@@ -259,14 +261,22 @@ var SettingsDialogSQLite = {
     #
     _drawLogItemsPerPage: func(vBoxLayout) {
         vBoxLayout.addSpacing(30);
-        vBoxLayout.addItem(me._getLabel("Items per page (min 5, max 20)"));
+        vBoxLayout.addItem(me._getLabel("Items per page"));
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
-        me._lineEditItemsPerPage = canvas.gui.widgets.LineEdit.new(me._scrollDataContent, canvas.style, {})
-            .setText(sprintf("%d", g_Settings.getLogItemsPerPage()));
+        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
+        comboBox.createItem("5", 5);
+        comboBox.createItem("10", 10);
+        comboBox.createItem("15", 15);
+        comboBox.createItem("20", 20);
+        comboBox.setSelectedByValue(g_Settings.getLogItemsPerPage());
+        comboBox.listen("selected-item-changed", func(e) {
+            me._logItemsPerPage = e.detail.value;
+        });
 
-        hBoxLayout.addItem(me._lineEditItemsPerPage);
+        hBoxLayout.addItem(comboBox);
+
         hBoxLayout.addStretch(1); # Decrease LineEdit width
 
         vBoxLayout.addItem(hBoxLayout);
