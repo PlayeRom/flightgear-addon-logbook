@@ -90,9 +90,9 @@ Data structure
                         <paragraph type="string">
 The following information is logged into the file:
 
-1. Real date - aircraft take-off date. This is the date taken from your OS, not the date in the simulator. This date is displayed in the GUI as default. From version 2024.1, in the details view you can see the UTC and local simulator date.
+1. Real date - aircraft take-off date. This is the date taken from your OS, not the date in the simulator. This date is displayed in the GUI as default. In the settings you can choose what date and time you want to display in the Logbook window,
 
-2. Real time - aircraft take-off time. As with "Real date" this is the time taken from your OS. This time is displayed in the GUI as default. From version 2024.1, in the details view you can see the UTC and local simulator time.
+2. Real time - aircraft take-off time. As with "Real date" this is the time taken from your OS. This time is displayed in the GUI as default. In the settings you can choose what date and time you want to display in the Logbook window.
 
 3. Sim UTC date - aircraft take-off date as UTC time in simulator. This date is available only in version with SQLite (2024.1+).
 
