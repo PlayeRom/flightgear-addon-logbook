@@ -61,7 +61,9 @@ var Logbook = {
 
         me._aircraft       = Aircraft.new();
         me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
-        me._settingsDialog = SettingsDialog.new(me._columns, me);
+        me._settingsDialog = Utils.isUsingSQLite()
+            ? SettingsDialogSQLite.new(me._columns, me)
+            : SettingsDialogCsv.new(me._columns, me);
 
         me._aircraftType  = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);

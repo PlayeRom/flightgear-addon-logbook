@@ -10,9 +10,9 @@
 #
 
 #
-# SettingsDialog class to display settings options
+# SettingsDialogSQLite class to display settings options for version with SQLite DB
 #
-var SettingsDialog = {
+var SettingsDialogSQLite = {
     #
     # Constants
     #
@@ -30,8 +30,8 @@ var SettingsDialog = {
     new: func(columns, logbook) {
         var me = {
             parents: [
-                SettingsDialog,
-                Dialog.new(SettingsDialog.WINDOW_WIDTH, SettingsDialog.WINDOW_HEIGHT, "Logbook Settings"),
+                SettingsDialogSQLite,
+                Dialog.new(SettingsDialogSQLite.WINDOW_WIDTH, SettingsDialogSQLite.WINDOW_HEIGHT, "Logbook Settings"),
             ],
             _columns: columns,
             _logbook: logbook,
@@ -127,8 +127,8 @@ var SettingsDialog = {
         me.vbox.clear();
 
         var margins = {
-            left   : SettingsDialog.PADDING,
-            top    : SettingsDialog.PADDING,
+            left   : SettingsDialogSQLite.PADDING,
+            top    : SettingsDialogSQLite.PADDING,
             right  : 0,
             bottom : 0,
         };
