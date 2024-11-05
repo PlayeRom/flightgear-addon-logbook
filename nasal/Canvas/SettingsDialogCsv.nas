@@ -127,7 +127,6 @@ var SettingsDialogCsv = {
 
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawMiscellaneousOptions(vBoxLayout);
-        me._drawLogItemsPerPage(vBoxLayout);
         vBoxLayout.addStretch(1);
         me._hBoxLayout.addItem(vBoxLayout);
 
@@ -150,6 +149,8 @@ var SettingsDialogCsv = {
 
         vBoxLayout.addItem(checkboxSound);
 
+        me._drawLogItemsPerPage(vBoxLayout);
+
         return vBoxLayout;
     },
 
@@ -160,7 +161,6 @@ var SettingsDialogCsv = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawLogItemsPerPage: func(vBoxLayout) {
-        vBoxLayout.addSpacing(30);
         vBoxLayout.addItem(me._getLabel("Items per page (min 5, max 20)"));
 
         var hBoxLayout = canvas.HBoxLayout.new();

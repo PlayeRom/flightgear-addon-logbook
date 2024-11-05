@@ -156,7 +156,6 @@ var SettingsDialogSQLite = {
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawDateTimeOptions(vBoxLayout);
         me._drawMiscellaneousOptions(vBoxLayout);
-        me._drawLogItemsPerPage(vBoxLayout);
         vBoxLayout.addStretch(1);
         me._hBoxLayout.addItem(vBoxLayout);
 
@@ -250,6 +249,8 @@ var SettingsDialogSQLite = {
 
         vBoxLayout.addItem(checkboxSound);
 
+        me._drawLogItemsPerPage(vBoxLayout);
+
         return vBoxLayout;
     },
 
@@ -260,10 +261,9 @@ var SettingsDialogSQLite = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawLogItemsPerPage: func(vBoxLayout) {
-        vBoxLayout.addSpacing(30);
-        vBoxLayout.addItem(me._getLabel("Items per page"));
-
         var hBoxLayout = canvas.HBoxLayout.new();
+
+        hBoxLayout.addItem(me._getLabel("Items per page"));
 
         var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
         comboBox.createItem("5", 5);
@@ -292,7 +292,7 @@ var SettingsDialogSQLite = {
     _drawColumnsVisible: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        vBoxLayout.addItem(me._getLabel("Columns to display in\nthe main Logbook view"));
+        vBoxLayout.addItem(me._getLabel("Columns to display in\nthe Logbook view"));
         vBoxLayout.addSpacing(10);
 
         var checkboxDate = me._getCheckbox("Date", true, false);
