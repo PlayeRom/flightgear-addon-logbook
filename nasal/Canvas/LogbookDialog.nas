@@ -29,9 +29,10 @@ var LogbookDialog = {
     # @param  hash  storage  Storage object
     # @param  hash  filters  Filters object
     # @param  hash  columns  Columns object
+    # @param  hash  logbook  Logbook object
     # @return me
     #
-    new: func(storage, filters, columns) {
+    new: func(storage, filters, columns, logbook) {
         var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["list-view"].PADDING * 2);
         if (windowWidth < LogbookDialog.MIN_WINDOW_WIDTH) {
             windowWidth = LogbookDialog.MIN_WINDOW_WIDTH;
@@ -52,6 +53,7 @@ var LogbookDialog = {
             _storage : storage,
             _filters : filters,
             _columns : columns,
+            _logbook : logbook,
         };
 
         me._addonNodePath = g_Addon.node.getPath();
@@ -430,6 +432,11 @@ var LogbookDialog = {
             .setFixedSize(65, 26)
             .listen("clicked", func { me._toggleStyle(); });
 
+        var btnSettings = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("≡")
+            .setFixedSize(26, 26)
+            .listen("clicked", func { me._logbook.showSettingDialog(); });
+
         var btnHelp = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("?")
             .setFixedSize(26, 26)
@@ -445,6 +452,7 @@ var LogbookDialog = {
         buttonBox.addItem(btnLast);
         buttonBox.addStretch(2);
         buttonBox.addItem(me._btnStyle);
+        buttonBox.addItem(btnSettings);
         buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 

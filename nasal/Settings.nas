@@ -37,6 +37,26 @@ var Settings = {
         me._propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
         me._saveNode = props.globals.getNode(me._propToSave); # node object with data to save/load
 
+        # Name of columns that can be hidden/shown
+        me._columnsVisible = [
+            Columns.VARIANT,
+            Columns.AC_TYPE,
+            Columns.CALLSIGN,
+            Columns.FROM,
+            Columns.TO,
+            Columns.LANDING,
+            Columns.CRASH,
+            Columns.DAY,
+            Columns.NIGHT,
+            Columns.INSTRUMENT,
+            Columns.MULTIPLAYER,
+            Columns.SWIFT,
+            Columns.DURATION,
+            Columns.DISTANCE,
+            Columns.FUEL,
+            Columns.MAX_ALT,
+        ];
+
         me._load();
 
         return me;
@@ -116,21 +136,49 @@ var Settings = {
     },
 
     #
+    # @param  bool  value
+    # @return void
+    #
+    setSoundEnabled: func(value) {
+        setprop(me._propToSave ~ "/settings/sound-enabled", value);
+    },
+
+    #
+    # @param  string|nil  value
+    # @return bool  Return true if given parameter has valid value for date-time-display option
+    #
+    _isDateTimeDisplayValid: func(value) {
+        return value == Settings.DATE_TIME_REAL
+            or value == Settings.DATE_TIME_SIM_UTC
+            or value == Settings.DATE_TIME_SIM_LOC;
+    },
+
+    #
     # Get the options which date and time should be displayed in LogbookDialog
     #
     # @return string
     #
     getDateTimeDisplay: func() {
-        var dateTimeDisplay = getprop(me._propToSave ~ "/settings/date-time-display");
-        if (dateTimeDisplay == nil
-            or (    dateTimeDisplay != Settings.DATE_TIME_REAL
-                and dateTimeDisplay != Settings.DATE_TIME_SIM_UTC
-                and dateTimeDisplay != Settings.DATE_TIME_SIM_LOC)
-        ) {
+        var value = getprop(me._propToSave ~ "/settings/date-time-display");
+
+        if (!me._isDateTimeDisplayValid(value)) {
             return Settings.DATE_TIME_REAL;
         }
 
-        return dateTimeDisplay;
+        return value;
+    },
+
+    #
+    # @param  string  value
+    # @return void
+    #
+    setDateTimeDisplay: func(value) {
+        if (!me._isDateTimeDisplayValid(value)) {
+            logprint(LOG_ALERT, "Incorrect value for settings/date-time-display = ", value);
+            return;
+        }
+
+        setprop(me._propToSave ~ "/settings/date-time-display", value);
     },
 
     #
@@ -139,31 +187,22 @@ var Settings = {
     getColumnsVisible: func() {
         var columnsVisibleNode = me._saveNode.getNode("settings/columns-visible");
 
-        var columnOptions = [
-            Columns.VARIANT,
-            Columns.AC_TYPE,
-            Columns.CALLSIGN,
-            Columns.FROM,
-            Columns.TO,
-            Columns.LANDING,
-            Columns.CRASH,
-            Columns.DAY,
-            Columns.NIGHT,
-            Columns.INSTRUMENT,
-            Columns.MULTIPLAYER,
-            Columns.SWIFT,
-            Columns.DURATION,
-            Columns.DISTANCE,
-            Columns.FUEL,
-            Columns.MAX_ALT,
-        ];
-
         var hash = {};
 
-        foreach (var column; columnOptions) {
+        foreach (var column; me._columnsVisible) {
             hash[column] = columnsVisibleNode.getChild(column).getBoolValue();
         }
 
         return hash;
+    },
+
+    #
+    # @param  hash  columnsVisible  Column name with visible option { "name1:" true, "name2": false, ... }
+    # @return void
+    #
+    setColumnsVisible: func(columnsVisible) {
+        foreach (var columnName; me._columnsVisible) {
+            setprop(me._propToSave ~ "/settings/columns-visible/" ~ columnName, columnsVisible[columnName]);
+        }
     },
 };

@@ -120,7 +120,7 @@ var Columns = {
 
         me._widths = std.Vector.new();
 
-        me._updateColumnsVisible();
+        me.updateColumnsVisible();
 
         return me;
     },
@@ -266,7 +266,7 @@ var Columns = {
     #
     # @return void
     #
-    _updateColumnsVisible: func() {
+    updateColumnsVisible: func() {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
         var columnsVisible = g_Settings.getColumnsVisible();
 
