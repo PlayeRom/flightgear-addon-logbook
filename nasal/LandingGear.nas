@@ -21,10 +21,9 @@ var LandingGear = {
     #
     # Constructor
     #
-    # @param  node|null  addonHintsNode  Reference to "/sim/addon-hints/Logbook" node or null
     # @return me
     #
-    new: func(addonHintsNode) {
+    new: func() {
         var me = { parents: [LandingGear] };
 
         me._gearIndexes = [];
@@ -33,7 +32,7 @@ var LandingGear = {
         me._landingCountSec = 0;
         me._landingAmount = 0;
 
-        me._addonHintsNode = addonHintsNode;
+        me._addonHintsNode = props.globals.getNode(g_Addon.node.getPath() ~ "/hints");
 
         return me;
     },
@@ -74,14 +73,16 @@ var LandingGear = {
 
     #
     # Recognize and count landing gears by addon hints. The hints should be specify in the following way:
-    # <sim>
-    #     <addon-hints>
-    #         <Logbook>
-    #             <landing-gear-idx type="int">0</landing-gear-idx>
-    #             <landing-gear-idx type="int">1</landing-gear-idx>
-    #         </Logbook>
-    #     </addon-hints>
-    # </sim>
+    # <addons>
+    #     <by-id>
+    #         <org.flightgear.addons.logbook>
+    #             <hints>
+    #                 <landing-gear-idx type="int">12</landing-gear-idx>
+    #                 <landing-gear-idx type="int">13</landing-gear-idx>
+    #             </hints>
+    #         </org.flightgear.addons.logbook>
+    #     </by-id>
+    # </addons>
     #
     # @return bool - Return true if gears have been loaded from the hints
     #
@@ -90,14 +91,14 @@ var LandingGear = {
             # We use landing-gear hints directly from the model.
             foreach (var landingGearIdx; me._addonHintsNode.getChildren("landing-gear-idx")) {
                 var value = landingGearIdx.getValue();
-                if (value) {
+                if (value != nil) {
+                    logprint(LOG_ALERT, "Logbook Add-on - recognize landing gear by hints at index = ", value);
                     append(me._gearIndexes, value);
                 }
             }
 
-            if (size(me._gearIndexes) > 0) {
+            if (size(me._gearIndexes)) {
                 # at least one gear hint was found
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - using landing gear hints provided by model");
                 return true;
             }
 

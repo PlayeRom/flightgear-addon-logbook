@@ -169,14 +169,16 @@ The structure of the property to be passed to FlightGear is as follows:
 
 ```xml
 <PropertyList>
-    <sim>
-        <addon-hints>
-            <Logbook>
-                <landing-gear-idx type="int">12</landing-gear-idx>
-                <landing-gear-idx type="int">13</landing-gear-idx>
-            </Logbook>
-        </addon-hints>
-    </sim>
+    <addons>
+        <by-id>
+            <org.flightgear.addons.logbook>
+                <hints>
+                    <landing-gear-idx type="int">12</landing-gear-idx>
+                    <landing-gear-idx type="int">13</landing-gear-idx>
+                </hints>
+            </org.flightgear.addons.logbook>
+        </by-id>
+    </addons>
 </PropertyList>
 ```
 
@@ -185,8 +187,8 @@ Each `<landing-gear-idx>` tag should contain an integer indicating the index of 
 These properties can be add in a number of ways, such as by placing them in the aircraft files, or by using command line options:
 
 ```bash
---prop:int:/sim/addon-hints/Logbook/landing-gear-idx[0]=12
---prop:int:/sim/addon-hints/Logbook/landing-gear-idx[1]=13
+--prop:int:/addons/by-id/org.flightgear.addons.logbook/hints/landing-gear-idx[0]=12
+--prop:int:/addons/by-id/org.flightgear.addons.logbook/hints/landing-gear-idx[1]=13
 ```
 
 Thanks to MariuszXC for this feature.
