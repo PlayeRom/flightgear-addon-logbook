@@ -266,10 +266,19 @@ var SettingsDialogSQLite = {
         hBoxLayout.addItem(me._getLabel("Items per page"));
 
         var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
-        comboBox.createItem("5", 5);
-        comboBox.createItem("10", 10);
-        comboBox.createItem("15", 15);
-        comboBox.createItem("20", 20);
+        if (view.hasmember(comboBox, "createItem")) {
+            # For next addMenuItem is deprecated
+            comboBox.createItem("5", 5);
+            comboBox.createItem("10", 10);
+            comboBox.createItem("15", 15);
+            comboBox.createItem("20", 20);
+        }
+        else { # for 2024.1
+            comboBox.addMenuItem("5", 5);
+            comboBox.addMenuItem("10", 10);
+            comboBox.addMenuItem("15", 15);
+            comboBox.addMenuItem("20", 20);
+        }
         comboBox.setSelectedByValue(g_Settings.getLogItemsPerPage());
         comboBox.listen("selected-item-changed", func(e) {
             me._logItemsPerPage = e.detail.value;
