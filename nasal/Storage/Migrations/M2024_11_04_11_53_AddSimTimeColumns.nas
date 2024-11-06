@@ -55,8 +55,9 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
             StorageSQLite.TABLE_LOGBOOKS
         );
 
+        var stmt = sqlite.prepare(me._storageSQLite.getDbHandler(), queryInsert);
+
         foreach (var item; rows) {
-            var stmt = sqlite.prepare(me._storageSQLite.getDbHandler(), queryInsert);
             sqlite.exec(me._storageSQLite.getDbHandler(), stmt,
                 item.date,
                 item.time,
