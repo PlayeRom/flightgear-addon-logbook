@@ -26,7 +26,7 @@ var LandingGear = {
     new: func() {
         var me = { parents: [LandingGear] };
 
-        me._gearIndexes = [];
+        me._gearIndexes = std.Vector.new();
 
         # Used to count seconds during landing without landing gear recognition
         me._landingCountSec = 0;
@@ -46,7 +46,7 @@ var LandingGear = {
     recognizeGears: func(onGround) {
         me._resetLandingWithNoGearRecognized();
 
-        me._gearIndexes = [];
+        me._gearIndexes.clear();
 
         if (!me._recognizeGearsByAddonHints()) {
             # Gears not loaded from hints, try to find gears by "/gear/gear[n]/wow" or float
@@ -55,20 +55,20 @@ var LandingGear = {
                 # We are on the ground, so we can count the gears from "/gear/gear[n]/wow" property
                 me._loopThroughGears(func(index) {
                     logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: landing gear found at index = ", index);
-                    append(me._gearIndexes, index);
+                    me._gearIndexes.append(index);
                 });
 
-                if (size(me._gearIndexes) == 0) {
+                if (me._gearIndexes.size() == 0) {
                     # No landing gear found, check floats
                     if (me._isFloatsDragOnWater()) {
                         logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: floats detected");
-                        append(me._gearIndexes, LandingGear.GEAR_FLOATS);
+                        me._gearIndexes.append(LandingGear.GEAR_FLOATS);
                     }
                 }
             }
         }
 
-        return size(me._gearIndexes);
+        return me._gearIndexes.size();
     },
 
     #
@@ -93,11 +93,11 @@ var LandingGear = {
                 var value = landingGearIdx.getValue();
                 if (value != nil) {
                     logprint(LOG_ALERT, "Logbook Add-on - recognize landing gear by hints at index = ", value);
-                    append(me._gearIndexes, value);
+                    me._gearIndexes.append(value);
                 }
             }
 
-            if (size(me._gearIndexes)) {
+            if (me._gearIndexes.size()) {
                 # at least one gear hint was found
                 return true;
             }
@@ -118,7 +118,7 @@ var LandingGear = {
         var counters = {
             'onGroundGearCounter' : 0,
             'inAirGearCounter'    : 0,
-            'expectedCount'       : size(me._gearIndexes),
+            'expectedCount'       : me._gearIndexes.size(),
         };
 
         if (counters.expectedCount > 0) {
@@ -148,7 +148,7 @@ var LandingGear = {
     # @return hash
     #
     _checkWowWithGearRecognized: func(counters, onGround) {
-        foreach (var index; me._gearIndexes) {
+        foreach (var index; me._gearIndexes.vector) {
             if (index == LandingGear.GEAR_FLOATS) {
                 # Check whether gear down
                 if (!onGround and getprop("/controls/gear/gear-down")) {
