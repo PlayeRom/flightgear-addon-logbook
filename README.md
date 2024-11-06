@@ -82,6 +82,7 @@ The following information is logged into the file:
 The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which you don't have the sum of all altitudes, but the highest one.
 
 At the very bottom there is a row of buttons, mainly for moving through the log pages:
+
 * `|<<` – button for moving to the first page,
 * `<` – moving to the previous page,
 * `>` – moving to the next page,
@@ -91,7 +92,7 @@ In the middle there is text information in the format `{on which page you are} /
 
 Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, you have the same information here as in the main window, except:
 
-1. you can see three dates and times:
+1. you can see three dates and times of aircraft takeoff:
     * real date & time from your OS,
     * UTC date & time from the simulator,
     * local date & time from the simulator;
@@ -134,7 +135,7 @@ This add-on includes a mechanism to save the current flight status to a separate
 
 ### For FG 2024.1 and later
 
-In the newer version based on the SQLite database, the recovery mechanism writes data every minute directly to the main database, so data will be preserved even if FlightGear crashes.
+In the newer version based on the SQLite database, the recovery mechanism writes data every minute directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
 
 ## Export database to CSV file
 
