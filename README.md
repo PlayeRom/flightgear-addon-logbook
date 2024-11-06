@@ -43,15 +43,12 @@ The SQLite file can also be edited using special database software such as "DB B
 
 The following information is logged into the file:
 
-1. **Real date** – aircraft take-off date. This is the date taken from your OS, not the date in the simulator. This date is displayed in the GUI as default. In the settings you can choose what date and time you want to display in the Logbook window.
-2. **Real time** – aircraft take-off time. As with **Real date** this is the time taken from your OS. This time is displayed in the GUI as default. In the settings you can choose what date and time you want to display in the Logbook window.
-3. **Sim UTC date** – aircraft take-off date as UTC time in simulator. This date is available only in version with SQLite (2024.1+).
-4. **Sim UTC time** – aircraft take-off time as UTC time in simulator. This time is available only in version with SQLite (2024.1+).
-5. **Sim local date** – aircraft take-off date as local time in simulator. This date is available only in version with SQLite (2024.1+).
-6. **Sim local time** – aircraft take-off time as local time in simulator. This time is available only in version with SQLite (2024.1+).
-7. **Aircraft** – the code name of the aircraft.
-8. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in several variants, such as the default "Cessna 172P", which includes different variants like "Cessna 172P Float". If you select "Cessna 172P," you will see `c172p` in the **Aircraft** as well as **Variant** column. If you select the float variant ("Cessna 172P Float"), you will see `c172p` in the **Aircraft** column, but `c172p-float` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
-9. **Type** – aircraft type as one of following values:
+1. **Real date & time** – aircraft take-off date and time. This is the time taken from your OS, not the time in the simulator. This date and time is displayed in the GUI as default. In the settings you can choose what date and time you want to display in the Logbook window.
+2. **Sim UTC date & time** – aircraft take-off date and time as UTC time in simulator. This date and time is available only in version with SQLite (2024.1+).
+3. **Sim local date & time** – aircraft take-off date and time as local time in simulator. This date and time is available only in version with SQLite (2024.1+).
+4. **Aircraft** – the code name of the aircraft.
+5. **Variant** – the code name of the aircraft as its variant. Some aircraft are available in several variants, such as the default "Cessna 172P", which includes different variants like "Cessna 172P Float". If you select "Cessna 172P," you will see `c172p` in the **Aircraft** as well as **Variant** column. If you select the float variant ("Cessna 172P Float"), you will see `c172p` in the **Aircraft** column, but `c172p-float` in the **Variant** column. This way you have the main group of aircraft in the **Aircraft** column, and its variants in the **Variant** column. This will allow you to extract **Totals** statistics for a general group of aircraft no matter what variant (filtering by **Aircraft**), as well as more precisely for a specific variant of a given aircraft (filtering by **Variant**).
+6. **Type** – aircraft type as one of following values:
     * "heli" (helicopter),
     * "balloon" (also airship),
     * "space" (space ship),
@@ -64,21 +61,21 @@ The following information is logged into the file:
     * "ga-single" (small piston single-engine general aviation),
     * "ga-multi" (small piston multi-engine general aviation),
     * "others" (undefined or not recognized).
-10. **Callsign** – your callsign set for multiplayer.
-11. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
-12. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
-13. **Landing** – if you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, this field will be left blank.
-14. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
-15. **Day** – the number of hours spent flying during the day.
-16. **Night** – number of hours spent flying during the night.
-17. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
-18. **Multiplayer** – the number of flight hours when connecting to a multiplayer server.
-19. **Swift** – number of flight hours when connecting to swift.
-20. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The **Instrument** is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
-21. **Distance** – total distance flown from take-off to landing, in nautical miles.
-22. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
-23. **Max Alt** – maximum altitude, in feet, reached during flight.
-24. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
+7. **Callsign** – your callsign set for multiplayer.
+8. **From** – the ICAO code of the airport from which you have taken off. If you are starting immediately in the air, this field will remain blank.
+9. **To** – the ICAO code of the airport where you landed. If you did not land (e.g. by closing FG in flight) or by landing at an adventurous location, this field will remain blank.
+10. **Landing** – if you landed anywhere, a 1 will be entered here. If the flight ended without landing or the add-on was unable to detect a valid landing, this field will be left blank.
+11. **Crash** – if the add-on recognizes an aircraft crash, a 1 will be entered here, otherwise this field will be left blank.
+12. **Day** – the number of hours spent flying during the day.
+13. **Night** – number of hours spent flying during the night.
+14. **Instrument** – the number of hours flown during the IMC (Instrument Meteorological Conditions).
+15. **Multiplayer** – the number of flight hours when connecting to a multiplayer server.
+16. **Swift** – number of flight hours when connecting to swift.
+17. **Duration** – total duration of the flight in hours, as the sum of **Day** and **Night**. The **Instrument** is not added up here, as it is simply counted separately, regardless of whether it was day or night. **Duration** is calculated in real time, so if you speed up or slow down the simulation time, it will not be affected.
+18. **Distance** – total distance flown from take-off to landing, in nautical miles.
+19. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
+20. **Max Alt** – maximum altitude, in feet, reached during flight.
+21. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
