@@ -174,7 +174,39 @@ var SettingsDialogSQLite = {
         vBoxLayout.addItem(me._getLabel("Date and time displayed\nin the Logbook view"));
         vBoxLayout.addSpacing(10);
 
-        # TODO: for 2024.1. replace CheckBoxes to RadioButtons
+        # TODO: for 2024.1+ replace CheckBoxes to RadioButtons, but they don't work properly yet, maybe on "next"
+        # var radio1 = me._getRadioButton("Real date & time (from your OS)")
+        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_REAL);
+
+        # var radio2 = me._getRadioButton("UTC time in simulator",   { "parent-radio": radio1 })
+        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
+
+        # var radio3 = me._getRadioButton("Local time in simulator", { "parent-radio": radio1 })
+        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
+
+        # radio1.listen("group-checked-radio-changed", func(e) {
+        #     var checkedRadio = radio1.getRadioButtonsGroup().getCheckedRadio();
+
+        #     if (checkedRadio != nil) {
+        #         if (checkedRadio._text == "UTC time in simulator") {
+        #             me._dateTimeDisplay = Settings.DATE_TIME_SIM_UTC;
+        #         }
+        #         else if (checkedRadio._text == "Local time in simulator") {
+        #             me._dateTimeDisplay = Settings.DATE_TIME_SIM_LOC;
+        #         }
+        #         else {
+        #             me._dateTimeDisplay = Settings.DATE_TIME_REAL;
+        #         }
+        #     }
+        #     else {
+        #         me._dateTimeDisplay = Settings.DATE_TIME_REAL;
+        #     }
+        # });
+
+        # vBoxLayout.addItem(radio1);
+        # vBoxLayout.addItem(radio2);
+        # vBoxLayout.addItem(radio3);
+
         me._checkboxReal     = me._getCheckbox("Real date & time (from your OS)", me._dateTimeDisplay == Settings.DATE_TIME_REAL);
         me._checkboxSimUtc   = me._getCheckbox("UTC time in simulator", me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
         me._checkboxSimLocal = me._getCheckbox("Local time in simulator", me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
@@ -372,6 +404,18 @@ var SettingsDialogSQLite = {
             .setEnabled(isEnabled);
 
         return checkbox;
+    },
+
+    #
+    # Get widgets.RadioButton
+    #
+    # @param  string  text  Label text
+    # @param  hash|nil  cfg  Config hash or nil
+    # @return ghost  widgets.RadioButton
+    #
+    _getRadioButton: func(text, cfg = nil) {
+        return canvas.gui.widgets.RadioButton.new(me._scrollDataContent, canvas.style, cfg)
+            .setText(text);
     },
 
     #
