@@ -120,7 +120,7 @@ var LogbookDialog = {
                 setprop(node.getPath(), false);
 
                 var index = getprop(me._addonNodePath ~ "/addon-devel/action-delete-entry-index");
-                if (me._storage.deleteLog(index)) {
+                if (me._logbook.deleteLog(index)) {
                     me._listView.enableLoading();
 
                     if (me._isUsingSQLite) {

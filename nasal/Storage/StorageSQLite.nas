@@ -19,6 +19,7 @@ var StorageSQLite = {
     LOGBOOK_FILE    : "logbook.sqlite",
     TABLE_LOGBOOKS  : "logbooks",
     TABLE_MIGRATIONS: "migrations",
+    TABLE_TRACKERS  : "trackers",
 
     #
     # Constructor
@@ -109,15 +110,15 @@ var StorageSQLite = {
     # Store log data to DB
     #
     # @param  hash  logData  LogData object
-    # @param  int|nil  id  Record ID for SQLite storage
+    # @param  int|nil  logbookId  Record ID of `logbooks` table
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
     #                       without rest of stuff (used only for CSV recovery)
     # @return void
     #
-    saveLogData: func(logData, id = nil, onlyIO = 0) {
-        id == nil
+    saveLogData: func(logData, logbookId = nil, onlyIO = 0) {
+        logbookId == nil
             ? me.addItem(logData) # insert
-            : me.updateItem(logData, id); # update
+            : me.updateItem(logData, logbookId); # update
 
         if (!onlyIO) {
             me._filters.append(logData);
@@ -133,7 +134,7 @@ var StorageSQLite = {
     # Insert LogData into database
     #
     # @param  hash  logData  LogData object
-    # @param  hash  db|nil  DB handler or nil
+    # @param  hash|nil  db  DB handler or nil
     # @return int|nil  ID of new record, or nil
     #
     addItem: func(logData, db = nil) {
@@ -186,10 +187,10 @@ var StorageSQLite = {
     # Update record with given ID
     #
     # @param  hash  logData  LogData object
-    # @param  int  id  Record ID
+    # @param  int  logbookId  Record ID of `logbooks` table
     # @return void
     #
-    updateItem: func(logData, id) {
+    updateItem: func(logData, logbookId) {
         var query = sprintf("UPDATE %s
             SET `date` = ?,
                 `time` = ?,
@@ -247,8 +248,39 @@ var StorageSQLite = {
             logData.note,
             logData.max_groundspeed_kt,
             logData.max_mach,
-            id
+            logbookId
         );
+    },
+
+    #
+    # Insert current data to trackers table
+    #
+    # @param  int|nil  logbookId  Record ID of `logbooks` table
+    # @param  double  duration  Timestamp as duration of flight in hours
+    # @return bool
+    #
+    addTrackerItem: func(logbookId, duration) {
+        if (logbookId == nil) {
+            return false;
+        }
+
+        var pos = geo.aircraft_position();
+        var elevationMeters = geo.elevation(pos.lat(), pos.lon());
+
+        var query = "INSERT INTO " ~ StorageSQLite.TABLE_TRACKERS
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        sqlite.exec(me._dbHandler, stmt,
+            logbookId,
+            duration,
+            pos.lat(),
+            pos.lon(),
+            pos.alt(),
+            elevationMeters,
+        );
+
+        return true;
     },
 
     #
@@ -574,13 +606,13 @@ var StorageSQLite = {
     },
 
     #
-    # @param  int  id  Record ID in table
+    # @param  int  logbookId  Logbook ID in `logbooks` table
     # @param  string  columnName
     # @param  string  value
     # @return bool  Return true if successful
     #
-    editData: func(id, columnName, value) {
-        if (id == nil or columnName == nil or value == nil) {
+    editData: func(logbookId, columnName, value) {
+        if (logbookId == nil or columnName == nil or value == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
             return false;
         }
@@ -591,7 +623,7 @@ var StorageSQLite = {
 
         var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
         var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt, value, id); # always returns an empty vector
+        sqlite.exec(me._dbHandler, stmt, value, logbookId); # always returns an empty vector
 
         gui.popupTip("The change has been saved!");
 
@@ -620,20 +652,20 @@ var StorageSQLite = {
     #
     # Get vector of data row by given id of row
     #
-    # @param  int  id  If -1 then return data with totals row
+    # @param  int  logbookId  If -1 then return data with totals row
     # @return hash|nil
     #
-    getLogData: func(id) {
+    getLogData: func(logbookId) {
         if (g_isThreadPending) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
-        if (id == Columns.TOTALS_ROW_ID) {
+        if (logbookId == Columns.TOTALS_ROW_ID) {
             return me.getTotalsRow(false);
         }
 
-        if (id == nil) {
+        if (logbookId == nil) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
@@ -641,9 +673,9 @@ var StorageSQLite = {
         var query = sprintf("SELECT * FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me._dbHandler, query);
 
-        var rows = sqlite.exec(me._dbHandler, stmt, id);
+        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
         if (size(rows) == 0) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData, id(", id, ") out of range, return nil");
+            logprint(LOG_ALERT, "Logbook Add-on - getLogData, logbookId(", logbookId, ") out of range, return nil");
             return nil;
         }
 
@@ -656,18 +688,23 @@ var StorageSQLite = {
     },
 
     #
-    # @param  int  id  ID to delete
+    # @param  int|nil  logbookId  Logbook ID to delete
     # @return bool
     #
-    deleteLog: func(id) {
-        if (id == nil or id < 0) {
+    deleteLog: func(logbookId) {
+        if (logbookId == nil or logbookId < 0) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - ID out of range in deleteLog");
             return false;
         }
 
         var query = sprintf("DELETE FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt, id);
+        sqlite.exec(me._dbHandler, stmt, logbookId);
+
+        # Delete data from trackers
+        query = sprintf("DELETE FROM %s WHERE logbook_id = ?", StorageSQLite.TABLE_TRACKERS);
+        stmt = sqlite.prepare(me._dbHandler, query);
+        sqlite.exec(me._dbHandler, stmt, logbookId);
 
         gui.popupTip("The log has been deleted!");
 

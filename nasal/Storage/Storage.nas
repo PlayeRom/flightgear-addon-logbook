@@ -59,18 +59,18 @@ var Storage = {
     # Store log data to logbook file/DB
     #
     # @param  hash  logData  LogData object
-    # @param  int  id|nill  Record ID for SQLite storage
+    # @param  int|nil  logbookId  Record ID of `logbooks` table
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
     #                       without rest of stuff (used only for CSV recovery)
     # @return void
     #
-    saveLogData: func(logData, id = nil, onlyIO = 0) {
-        me._handler.saveLogData(logData, id, onlyIO);
+    saveLogData: func(logData, logbookId = nil, onlyIO = 0) {
+        me._handler.saveLogData(logData, logbookId, onlyIO);
     },
 
     #
-    # @param hash handler|nil - file/db handler, if nil the internal storage handler will be used
-    # @param hash logData - LogData object
+    # @param  hash  logData  LogData object
+    # @param  hash|nil  handler  File/db handler, if nil the internal storage handler will be used
     # @return void
     #
     addItem: func(logData, handler = nil) {
@@ -79,13 +79,28 @@ var Storage = {
 
     #
     # @param  hash  logData  LogData object
-    # @param  int  id  Record ID
+    # @param  int  logbookId  Record ID of `logbooks` table
     # @return void
     #
-    updateItem: func(logData, id) {
+    updateItem: func(logData, logbookId) {
         if (me._isUsingSQLite) {
-            me._handler.updateItem(logData, id);
+            me._handler.updateItem(logData, logbookId);
         }
+    },
+
+    #
+    # Insert current data to trackers table
+    #
+    # @param  int|nil  logbookId  Record ID of `logbooks` table
+    # @param  double  duration  Timestamp as duration of flight in hours
+    # @return bool
+    #
+    addTrackerItem: func(logbookId, duration) {
+        if (me._isUsingSQLite and logbookId != nil) {
+            return me._handler.addTrackerItem(logbookId, duration);
+        }
+
+        return false;
     },
 
     #
@@ -96,11 +111,11 @@ var Storage = {
     },
 
     #
-    # @param hash objCallback - owner object of callback function
-    # @param func callback - callback function called on finish
-    # @param int start - Start index counting from 0 as a first row of data
-    # @param int count - How many rows should be returned
-    # @param bool withHeaders
+    # @param  hash  objCallback  Owner object of callback function
+    # @param  func  callback  Callback function called on finish
+    # @param  int  start  Start index counting from 0 as a first row of data
+    # @param  int  count  How many rows should be returned
+    # @param  bool  withHeaders
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
@@ -108,13 +123,13 @@ var Storage = {
     },
 
     #
-    # @param  int  id  Record ID in table for SQLite or row index in CSV file where 0 = first data row, not header row
+    # @param  int  logbookId  Logbook ID in `logbooks` table (SQLite) or row index (CSV) where 0 = first data row, not header row
     # @param  string  columnName
     # @param  string  value
     # @return bool  Return true if successful
     #
-    editData: func(id, columnName, value) {
-        return me._handler.editData(id, columnName, value);
+    editData: func(logbookId, columnName, value) {
+        return me._handler.editData(logbookId, columnName, value);
     },
 
     #
@@ -129,19 +144,19 @@ var Storage = {
     #
     # Get vector of data row by given index of row
     #
-    # @param int index
+    # @param  int  logbookId  Logbook ID (SQLite) or index (CSV)
     # @return hash|nil
     #
-    getLogData: func(index) {
-        return me._handler.getLogData(index);
+    getLogData: func(logbookId) {
+        return me._handler.getLogData(logbookId);
     },
 
     #
-    # @param int index - Index to delete
+    # @param  int|nil  logbookId  Logbook ID (SQLite) or index (CSV) to delete
     # @return bool
     #
-    deleteLog: func(index) {
-        return me._handler.deleteLog(index);
+    deleteLog: func(logbookId) {
+        return me._handler.deleteLog(logbookId);
     },
 
     #

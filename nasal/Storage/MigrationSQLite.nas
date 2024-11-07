@@ -48,6 +48,12 @@ var MigrationSQLite = {
                     var migration = M2024_11_06_22_42_AddSpeedColumns.new(storageSQLite);
                     migration.up();
                 },
+            },
+            {
+                name: "M2024_11_06_22_50_CreateTrackersTable", function: func() {
+                    var migration = M2024_11_06_22_50_CreateTrackersTable.new(storageSQLite);
+                    migration.up();
+                },
             }
             # Add next migration here...
         ];

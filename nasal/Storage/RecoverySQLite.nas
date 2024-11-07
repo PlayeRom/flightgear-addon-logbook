@@ -17,7 +17,7 @@ var RecoverySQLite = {
     #
     # Constants
     #
-    INTERVAL_SEC: 60,
+    INTERVAL_SEC: 30,
 
     #
     # Constructor
@@ -31,7 +31,7 @@ var RecoverySQLite = {
             _storage    : storage,
             _objCallback: nil,
             _callback   : nil,
-            _recordId   : nil,
+            _logbookId  : nil,
             _inserted   : false,
         };
 
@@ -89,18 +89,18 @@ var RecoverySQLite = {
     # @return void
     #
     save: func(logData) {
-        if (me._recordId == nil) {
+        if (me._logbookId == nil) {
             # insert
             if (!me._inserted) {
                 # The inserted protects us from making more than one insert,
                 # if there is no ID after the first insert then something is broken
-                me._recordId = me._storage.addItem(logData);
+                me._logbookId = me._storage.addItem(logData);
                 me._inserted = true;
             }
         }
         else {
             # update
-            me._storage.updateItem(logData, me._recordId);
+            me._storage.updateItem(logData, me._logbookId);
         }
     },
 
@@ -110,14 +110,14 @@ var RecoverySQLite = {
     # @return void
     #
     clear: func() {
-        me._recordId = nil;
+        me._logbookId = nil;
         me._inserted = false;
     },
 
     #
     # @return int|nil
     #
-    getRecordId: func() {
-        return me._recordId;
+    getLogbookId: func() {
+        return me._logbookId;
     },
 };

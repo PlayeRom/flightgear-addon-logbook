@@ -292,6 +292,9 @@ var Logbook = {
         me._onGround = false;
 
         me._crashDetector.startGForce(me._onGround);
+
+        # Save first recovery immediately
+        me._recoveryCallback();
     },
 
     #
@@ -353,7 +356,13 @@ var Logbook = {
             me._onGround = true;
         }
 
-        me._storage.saveLogData(me._logData, me._recovery.getRecordId());
+        var logbookId = me._recovery.getLogbookId();
+
+        me._storage.saveLogData(me._logData, logbookId);
+
+        # Also save data to the trackers table for a given logbook record
+        me._storage.addTrackerItem(logbookId, me._logData.duration);
+
         me._logData = nil;
         me._wowSec = 0;
 
@@ -406,6 +415,28 @@ var Logbook = {
         recoveryData.setMaxMach(me._flight.getMaxMach());
 
         me._recovery.save(recoveryData);
+
+        if (me._isSimPaused or me._isReplayMode) {
+            # Don't save track when paused or watching replay
+            return;
+        }
+
+        # Also save data to the trackers table for a given logbook record
+        me._storage.addTrackerItem(me._recovery.getLogbookId(), recoveryData.duration);
+    },
+
+    #
+    # @param  int  logbookId  Logbook ID (SQLite) or index (CSV) to delete
+    # @return bool
+    #
+    deleteLog: func(logbookId) {
+        var deleted = me._storage.deleteLog(logbookId);
+        if (deleted) {
+            me._recovery.clear(); # for set logbookId to nil
+            return true;
+        }
+
+        return false;
     },
 
     #

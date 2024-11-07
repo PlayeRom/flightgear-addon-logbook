@@ -18,7 +18,7 @@ var RecoveryCsv = {
     # Constants
     #
     RECOVERY_FILE: "recovery-v%s.csv",
-    INTERVAL_SEC : 60,
+    INTERVAL_SEC : 30,
 
     #
     # Constructor
@@ -107,7 +107,7 @@ var RecoveryCsv = {
     #
     # @return nil
     #
-    getRecordId: func() {
+    getLogbookId: func() {
         return nil;
     },
 
