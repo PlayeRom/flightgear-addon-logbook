@@ -144,7 +144,11 @@ The following information is logged into the file:
 
 20. Max Alt – maximum altitude, in feet, reached during flight.
 
-21. Note – notes, by default the full name of the aircraft.
+21. Max groundspeed – maximum groundspeed, in knots, reached during flight.
+
+22. Max Mach – maximum speed in Mach number reached during flight.
+
+23. Note – notes, by default the full name of the aircraft.
                         </paragraph>
                         <paragraph type="string">
 Totals

@@ -75,7 +75,9 @@ The following information is logged into the file:
 18. **Distance** – total distance flown from take-off to landing, in nautical miles.
 19. **Fuel** – total amount of fuel burned in flight, in U.S. gallons.
 20. **Max Alt** – maximum altitude, in feet, reached during flight.
-21. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
+21. **Max groundspeed** – maximum groundspeed, in knots, reached during flight.
+22. **Max Mach** – maximum speed in Mach number reached during flight.
+23. **Note** – notes, by default the full name of the aircraft. This is a good place to enter your own notes as well.
 
 ## Viewing the logbook
 
