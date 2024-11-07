@@ -21,11 +21,24 @@ var FilterData = {
     # @return me
     #
     new: func(columnName, value) {
-        return {
-            parents     : [FilterData],
-            columnName  : columnName,
-            value       : value,
+        var me = {
+            parents    : [FilterData],
+            columnName : columnName,
+            value      : value,
         };
+
+        if (value == ""
+            and (columnName == Columns.LANDING
+              or columnName == Columns.CRASH)
+            and Utils.isUsingSQLite()
+        ) {
+            # In the SQLite database, the `landing` and `crash` columns have
+            # the value 0 and in the filter we have an empty string, so we need
+            # to change the empty string to the value "0".
+            me.value = "0";
+        }
+
+        return me;
     },
 
     #
