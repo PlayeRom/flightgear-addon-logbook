@@ -119,7 +119,7 @@ var Exporter = {
             logData.fromDb(row);
 
             io.write(file, sprintf(
-                "%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,\"%s\"\n",
+                "%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,%.0f,%.02f,\"%s\"\n",
                 logData.date,
                 logData.time,
                 logData.sim_utc_date,
@@ -143,6 +143,8 @@ var Exporter = {
                 logData.distance,
                 logData.fuel,
                 logData.max_alt,
+                logData.max_groundspeed_kt,
+                logData.max_mach,
                 logData.note
             ));
         }
