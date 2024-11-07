@@ -52,11 +52,12 @@ var MigrationBase = {
     #
     # @param  string  tableName
     # @param  string  columnName
-    # @param  string  type
+    # @param  string  type  Column type, default TEXT
+    # @param  string  default  Default value of column, default NULL
     # @return void
     #
-    addColumnToTable: func(tableName, columnName, type = "TEXT") {
-        var query = sprintf("ALTER TABLE `%s` ADD COLUMN `%s` %s", tableName, columnName, type);
+    addColumnToTable: func(tableName, columnName, type = "TEXT", default = "NULL") {
+        var query = sprintf("ALTER TABLE `%s` ADD COLUMN `%s` %s DEFAULT %s", tableName, columnName, type, default);
         sqlite.exec(me._dbHandler, query);
     },
 };

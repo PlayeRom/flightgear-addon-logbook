@@ -19,58 +19,62 @@ var LogData = {
     # @return me
     #
     new: func(
-        date           = "",  # Take-off date (real)
-        time           = "",  # Take-off time (real)
-        sim_utc_date   = "",  # Take-off date (sim UTC)
-        sim_utc_time   = "",  # Take-off time (sim UTC)
-        sim_local_date = "",  # Take-off date (sim local)
-        sim_local_time = "",  # Take-off time (sim local)
-        aircraft       = "",  # Primary aircraft from dir (/sim/aircraft-dir)
-        variant        = "",  # Aircraft ID as a variant (/sim/aircraft)
-        aircraftType   = "",  # Aircraft type
-        callsign       = "",  # Pilot callsign
-        from           = "",  # ICAO departure airport (if take-off from the ground)
-        to             = "",  # ICAO destination airport (if landed)
-        landing        = 0,   # 1 (true) means that aircraft landed
-        crash          = 0,   # 1 (true) means that aircraft crashed
-        day            = 0.0, # Total flight time during the day (hours)
-        night          = 0.0, # Total flight time during the night (hours)
-        instrument     = 0.0, # Total flight time during the IMC (hours)
-        multiplayer    = 0.0, # Total flight time in multiplayer mode (hours)
-        swift          = 0.0, # Total flight time with connection to swift (hours)
-        duration       = 0.0, # Total flight time as sum of day and night (hours)
-        distance       = 0.0, # The distance traveled during the flight in nautical miles
-        fuel           = 0.0, # Amount of fuel used in US gallons
-        maxAlt         = 0.0, # The maximum altitude reached during the flight in feet
-        note           = "",  # Full aircraft name as default
+        date         = "",  # Take-off date (real)
+        time         = "",  # Take-off time (real)
+        simUtcDate   = "",  # Take-off date (sim UTC)
+        simUtcTime   = "",  # Take-off time (sim UTC)
+        simLocalDate = "",  # Take-off date (sim local)
+        simLocalTime = "",  # Take-off time (sim local)
+        aircraft     = "",  # Primary aircraft from dir (/sim/aircraft-dir)
+        variant      = "",  # Aircraft ID as a variant (/sim/aircraft)
+        aircraftType = "",  # Aircraft type
+        callsign     = "",  # Pilot callsign
+        from         = "",  # ICAO departure airport (if take-off from the ground)
+        to           = "",  # ICAO destination airport (if landed)
+        landing      = 0,   # 1 (true) means that aircraft landed
+        crash        = 0,   # 1 (true) means that aircraft crashed
+        day          = 0.0, # Total flight time during the day (hours)
+        night        = 0.0, # Total flight time during the night (hours)
+        instrument   = 0.0, # Total flight time during the IMC (hours)
+        multiplayer  = 0.0, # Total flight time in multiplayer mode (hours)
+        swift        = 0.0, # Total flight time with connection to swift (hours)
+        duration     = 0.0, # Total flight time as sum of day and night (hours)
+        distance     = 0.0, # The distance traveled during the flight in nautical miles
+        fuel         = 0.0, # Amount of fuel used in US gallons
+        maxAlt       = 0.0, # The maximum altitude reached during the flight in feet
+        maxGsKt      = 0.0, # The maximum groundspeed in knots
+        maxMach      = 0.0, # The maximum speed in Mach number
+        note         = "",  # Full aircraft name as default
     ) {
         var me = { parents: [LogData] };
 
         # Member names the same as in the database!
-        me.date           = date;
-        me.time           = time;
-        me.sim_utc_date   = sim_utc_date;
-        me.sim_utc_time   = sim_utc_time;
-        me.sim_local_date = sim_local_date;
-        me.sim_local_time = sim_local_time;
-        me.aircraft       = aircraft;
-        me.variant        = variant;
-        me.aircraft_type  = aircraftType;
-        me.callsign       = callsign;
-        me.from           = from;
-        me.to             = to;
-        me.landing        = landing;
-        me.crash          = crash;
-        me.day            = day;
-        me.night          = night;
-        me.instrument     = instrument;
-        me.multiplayer    = multiplayer;
-        me.swift          = swift;
-        me.duration       = duration;
-        me.distance       = distance;
-        me.fuel           = fuel;
-        me.max_alt        = maxAlt;
-        me.note           = note;
+        me.date               = date;
+        me.time               = time;
+        me.sim_utc_date       = simUtcDate;
+        me.sim_utc_time       = simUtcTime;
+        me.sim_local_date     = simLocalDate;
+        me.sim_local_time     = simLocalTime;
+        me.aircraft           = aircraft;
+        me.variant            = variant;
+        me.aircraft_type      = aircraftType;
+        me.callsign           = callsign;
+        me.from               = from;
+        me.to                 = to;
+        me.landing            = landing;
+        me.crash              = crash;
+        me.day                = day;
+        me.night              = night;
+        me.instrument         = instrument;
+        me.multiplayer        = multiplayer;
+        me.swift              = swift;
+        me.duration           = duration;
+        me.distance           = distance;
+        me.fuel               = fuel;
+        me.max_alt            = maxAlt;
+        me.max_groundspeed_kt = maxGsKt;
+        me.max_mach           = maxMach;
+        me.note               = note;
 
         return me;
     },
@@ -418,6 +422,32 @@ var LogData = {
     },
 
     #
+    # Set the max groundspeed in knots
+    #
+    # @param  double  maxGsKt  Max groundspeed in knots
+    # @return me
+    #
+    setMaxGroundspeedKt: func(maxGsKt) {
+        me.max_groundspeed_kt = maxGsKt;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxGroundspeedKt = ", maxGsKt);
+
+        return me;
+    },
+
+    #
+    # Set the max speed in Mach number
+    #
+    # @param  double  maxMach  Max speed in Mach number
+    # @return me
+    #
+    setMaxMach: func(maxMach) {
+        me.max_mach = maxMach;
+        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxMach = ", maxMach);
+
+        return me;
+    },
+
+    #
     # Set the note
     #
     # @param string note - note
@@ -552,6 +582,12 @@ var LogData = {
         elsif (columnName == Columns.MAX_ALT) {
             return sprintf("%.0f",  me.max_alt);
         }
+        elsif (columnName == Columns.MAX_GS_KT) {
+            return sprintf("%.0f",  me.max_groundspeed_kt);
+        }
+        elsif (columnName == Columns.MAX_MACH) {
+            return sprintf("%.02f",  me.max_mach);
+        }
 
         return me[columnName];
     },
@@ -608,6 +644,8 @@ var LogData = {
             me.distance,
             me.fuel,
             me.max_alt,
+            me.max_groundspeed_kt,
+            me.max_mach,
             me.note,
         );
     },

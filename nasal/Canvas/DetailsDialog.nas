@@ -347,6 +347,11 @@ var DetailsDialog = {
             return sprintf("ft MSL (%.0f m)", inMeters);
         }
 
+        if (columnName == Columns.MAX_GS_KT) {
+            var kmPerHour = value * 1.852;
+            return sprintf("kt (%.0f km/h)", kmPerHour);
+        }
+
         return "";
     },
 
@@ -359,6 +364,7 @@ var DetailsDialog = {
         if (   columnName == Columns.DISTANCE
             or columnName == Columns.FUEL
             or columnName == Columns.MAX_ALT
+            or columnName == Columns.MAX_MACH
         ) {
             return me._getValueWithCommaSeparator(value);
         }

@@ -39,6 +39,8 @@ var Columns = {
     DISTANCE      : "distance",
     FUEL          : "fuel",
     MAX_ALT       : "max_alt",
+    MAX_GS_KT     : "max_groundspeed_kt",
+    MAX_MACH      : "max_mach",
     NOTE          : "note",
 
     TOTALS_ROW_ID: -1,
@@ -72,7 +74,7 @@ var Columns = {
             { name: Columns.AIRCRAFT,     header: "Aircraft",       width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.VARIANT,      header: "Variant",        width: 150, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.AC_TYPE,      header: "Type",           width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
-            { name: Columns.CALLSIGN,     header: "Callsign",       width:  80, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
+            { name: Columns.CALLSIGN,     header: "Callsign",       width:  80, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.FROM,         header: "From",           width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.TO,           header: "To",             width:  55, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.LANDING,      header: "Landing",        width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%d",   },
@@ -80,13 +82,15 @@ var Columns = {
             { name: Columns.DAY,          header: "Day",            width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.NIGHT,        header: "Night",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.INSTRUMENT,   header: "Instrument",     width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
-            { name: Columns.MULTIPLAYER,  header: "Multiplayer",    width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
-            { name: Columns.SWIFT,        header: "Swift",          width:  50, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.MULTIPLAYER,  header: "Multiplayer",    width:  50, visible: false, totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.SWIFT,        header: "Swift",          width:  50, visible: false, totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.DURATION,     header: "Duration",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.DISTANCE,     header: "Distance",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.FUEL,         header: "Fuel",           width:  80, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.MAX_ALT,      header: "Max Alt",        width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f", },
-            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f", },
+            { name: Columns.MAX_GS_KT,    header: "Max groundspeed",width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f", },
+            { name: Columns.MAX_MACH,     header: "Max Mach",       width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.2f", },
+            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
         ];
 
         me._allColumnsCsv = [
@@ -109,7 +113,7 @@ var Columns = {
             { name: Columns.DISTANCE,     header: "Distance",       width:  60, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.FUEL,         header: "Fuel",           width:  80, visible: true,  totals: "SUM", totalVal: 0,  totalFrm: "%.2f", },
             { name: Columns.MAX_ALT,      header: "Max Alt",        width:  70, visible: true,  totals: "MAX", totalVal: 0,  totalFrm: "%.0f", },
-            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "%.0f", },
+            { name: Columns.NOTE,         header: "Note",           width: 150, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
         ];
 
         me._allColumns = me._isUsingSQLite

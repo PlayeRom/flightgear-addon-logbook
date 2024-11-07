@@ -16,7 +16,7 @@ var LogbookDialog = {
     #
     # Constants
     #
-    MAX_WINDOW_WIDTH : 1360,
+    MAX_WINDOW_WIDTH : 1500,
     MIN_WINDOW_WIDTH : 540,
 
     MAX_WINDOW_HEIGHT: 680,
@@ -390,6 +390,10 @@ var LogbookDialog = {
 
         if (columnName == Columns.MULTIPLAYER) {
             return "Multip.";
+        }
+
+        if (columnName == Columns.MAX_GS_KT) {
+            return "Max GS";
         }
 
         return text;

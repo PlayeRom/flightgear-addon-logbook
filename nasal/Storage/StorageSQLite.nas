@@ -142,7 +142,7 @@ var StorageSQLite = {
         }
 
         var query = "INSERT INTO " ~ StorageSQLite.TABLE_LOGBOOKS
-            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         var stmt = sqlite.prepare(db, query);
         sqlite.exec(db, stmt,
@@ -170,6 +170,8 @@ var StorageSQLite = {
             logData.sim_utc_time,
             logData.sim_local_date,
             logData.sim_local_time,
+            logData.max_groundspeed_kt,
+            logData.max_mach,
         );
 
         var rows = sqlite.exec(db, "SELECT last_insert_rowid() AS id");
@@ -212,7 +214,9 @@ var StorageSQLite = {
                 `distance` = ?,
                 `fuel` = ?,
                 `max_alt` = ?,
-                `note` = ?
+                `note` = ?,
+                `max_groundspeed_kt` = ?,
+                `max_mach` = ?
             WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
 
         var stmt = sqlite.prepare(me._dbHandler, query);
@@ -241,6 +245,8 @@ var StorageSQLite = {
             logData.fuel,
             logData.max_alt,
             logData.note,
+            logData.max_groundspeed_kt,
+            logData.max_mach,
             id
         );
     },

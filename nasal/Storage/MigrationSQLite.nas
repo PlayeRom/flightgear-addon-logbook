@@ -24,21 +24,33 @@ var MigrationSQLite = {
 
         me._dbHandler = storageSQLite.getDbHandler();
 
-        me._migrations = {
-            "M2024_10_30_08_44_CreateMigrationsTable": func() {
-                var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storageSQLite);
-                migration.up();
+        me._migrations = [
+            {
+                name: "M2024_10_30_08_44_CreateMigrationsTable", function: func() {
+                    var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storageSQLite);
+                    migration.up();
+                },
             },
-            "M2024_10_30_13_01_CreateLogbooksTable": func() {
-                var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storageSQLite);
-                migration.up();
+            {
+                name: "M2024_10_30_13_01_CreateLogbooksTable", function: func() {
+                    var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storageSQLite);
+                    migration.up();
+                },
             },
-            "M2024_11_04_11_53_AddSimTimeColumns": func() {
-                var migration = M2024_11_04_11_53_AddSimTimeColumns.new(storageSQLite);
-                migration.up();
+            {
+                name: "M2024_11_04_11_53_AddSimTimeColumns", function: func() {
+                    var migration = M2024_11_04_11_53_AddSimTimeColumns.new(storageSQLite);
+                    migration.up();
+                },
             },
+            {
+                name: "M2024_11_06_22_42_AddSpeedColumns", function: func() {
+                    var migration = M2024_11_06_22_42_AddSpeedColumns.new(storageSQLite);
+                    migration.up();
+                },
+            }
             # Add next migration here...
-        };
+        ];
 
         return me;
     },
@@ -50,13 +62,13 @@ var MigrationSQLite = {
     # @return void
     #
     migrate: func() {
-        foreach (var migrationName; keys(me._migrations)) {
-            if (!me._isMigrationExists(migrationName)) {
-                logprint(LOG_ALERT, "Logbook Add-on - call migration: ", migrationName);
+        foreach (var migration; me._migrations) {
+            if (!me._isMigrationExists(migration.name)) {
+                logprint(LOG_ALERT, "Logbook Add-on - call migration: ", migration.name);
 
-                me._migrations[migrationName]();
+                migration.function();
 
-                me._confirmMigration(migrationName);
+                me._confirmMigration(migration.name);
             }
         }
     },

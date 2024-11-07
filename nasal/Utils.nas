@@ -62,4 +62,14 @@ var Utils = {
         var parts = split(" ", text);
         return size(parts) > 1;
     },
+
+    #
+    # Convert value to string
+    #
+    # @param  string|int|double value
+    # @return string
+    #
+    toString: func(value) {
+        return sprintf("%s", value);
+    },
 };

@@ -58,6 +58,8 @@ var Settings = {
             Columns.DISTANCE,
             Columns.FUEL,
             Columns.MAX_ALT,
+            Columns.MAX_GS_KT,
+            Columns.MAX_MACH,
         ];
 
         me._load();

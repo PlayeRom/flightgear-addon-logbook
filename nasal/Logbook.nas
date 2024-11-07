@@ -44,6 +44,7 @@ var Logbook = {
         me._logData       = nil;
         me._environment   = Environment.new();
         me._multiplayer   = Multiplayer.new();
+        me._flight        = Flight.new();
         me._landingGear   = LandingGear.new();
         me._columns       = Columns.new();
         me._filters       = Filters.new();
@@ -186,6 +187,7 @@ var Logbook = {
 
         me._environment.update();
         me._multiplayer.update();
+        me._flight.update();
 
         if (me._spaceShuttle.isLiftOff()) {
             logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
@@ -285,6 +287,7 @@ var Logbook = {
 
         me._environment.resetCounters();
         me._multiplayer.resetCounters();
+        me._flight.resetCounters();
 
         me._onGround = false;
 
@@ -335,10 +338,13 @@ var Logbook = {
         me._logData.setDay(me._environment.getDayHours());
         me._logData.setNight(me._environment.getNightHours());
         me._logData.setInstrument(me._environment.getInstrumentHours());
-        me._logData.setMaxAlt(me._environment.getMaxAlt());
 
         me._logData.setMultiplayer(me._multiplayer.getMultiplayerHours());
         me._logData.setSwift(me._multiplayer.getSwiftHours());
+
+        me._logData.setMaxAlt(me._flight.getMaxAlt());
+        me._logData.setMaxGroundspeedKt(me._flight.getMaxGroundspeedKt());
+        me._logData.setMaxMach(me._flight.getMaxMach());
 
         if (crashed) {
             logprint(LOG_ALERT, "Logbook Add-on - crash detected");
@@ -391,10 +397,13 @@ var Logbook = {
         recoveryData.setDay(me._environment.getDayHours());
         recoveryData.setNight(me._environment.getNightHours());
         recoveryData.setInstrument(me._environment.getInstrumentHours());
-        recoveryData.setMaxAlt(me._environment.getMaxAlt());
 
         recoveryData.setMultiplayer(me._multiplayer.getMultiplayerHours());
         recoveryData.setSwift(me._multiplayer.getSwiftHours());
+
+        recoveryData.setMaxAlt(me._flight.getMaxAlt());
+        recoveryData.setMaxGroundspeedKt(me._flight.getMaxGroundspeedKt());
+        recoveryData.setMaxMach(me._flight.getMaxMach());
 
         me._recovery.save(recoveryData);
     },

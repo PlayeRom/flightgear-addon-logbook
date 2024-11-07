@@ -130,11 +130,11 @@ var InputDialog = {
     show: func(parent, id, value, columnItem) {
         me._parent     = parent;
         me._recordId   = id;
-        me._value      = value;
+        me._value      = Utils.toString(value);
         me._columnItem = columnItem;
 
         me._setLabel(me._columnItem.header);
-        me._setLineEdit(sprintf("%s", value));
+        me._setLineEdit(me._value);
         me._lineEdit.setFocus();
 
         call(Dialog.show, [], me);
@@ -313,13 +313,16 @@ var InputDialog = {
               or me._columnItem.name == Columns.DURATION
               or me._columnItem.name == Columns.DISTANCE
               or me._columnItem.name == Columns.FUEL
+              or me._columnItem.name == Columns.MAX_MACH
         ) {
             if (!me._validateDecimal(value)) {
                 gui.popupTip("The allowed value is decimal number.");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.MAX_ALT) {
+        else if (me._columnItem.name == Columns.MAX_ALT
+              or me._columnItem.name == Columns.MAX_GS_KT
+        ) {
             if (!me._validateNumber(value)) {
                 gui.popupTip("The allowed value is a number.");
                 return false;
