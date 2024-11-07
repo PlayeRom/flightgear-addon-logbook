@@ -85,7 +85,7 @@ var AboutDialog = {
         vBoxLayout.addItem(me._getLabel("Written by:"));
 
         foreach (var author; g_Addon.authors) {
-            vBoxLayout.addItem(me._getLabel(sprintf("%s", author.name)));
+            vBoxLayout.addItem(me._getLabel(Utils.toString(author.name)));
         }
 
         var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
