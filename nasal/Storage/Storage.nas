@@ -93,11 +93,12 @@ var Storage = {
     #
     # @param  int|nil  logbookId  Record ID of `logbooks` table
     # @param  double  duration  Timestamp as duration of flight in hours
+    # @param  double  distance  In nautical miles from starting point
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration) {
+    addTrackerItem: func(logbookId, duration, distance) {
         if (me._isUsingSQLite and logbookId != nil) {
-            return me._handler.addTrackerItem(logbookId, duration);
+            return me._handler.addTrackerItem(logbookId, duration, distance);
         }
 
         return false;
@@ -171,5 +172,33 @@ var Storage = {
         else {
             gui.popupTip("This option is available only for version 2024.1 and later");
         }
+    },
+
+    #
+    # Get tracker data for given logbook ID
+    #
+    # @param  int|nil  logbookId
+    # @return vector|nil
+    #
+    getLogbookTracker: func(logbookId) {
+        if (me._isUsingSQLite and logbookId != nil) {
+            return me._handler.getLogbookTracker(logbookId);
+        }
+
+        return nil;
+    },
+
+    #
+    # Get max altitude value in tracker data for given logbook ID
+    #
+    # @param  int|nil  logbookId
+    # @return double|nil
+    #
+    getLogbookTrackerMaxAlt: func(logbookId) {
+        if (me._isUsingSQLite and logbookId != nil) {
+            return me._handler.getLogbookTrackerMaxAlt(logbookId);
+        }
+
+        return nil;
     },
 };

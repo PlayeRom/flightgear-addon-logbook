@@ -46,11 +46,13 @@ var DetailsDialog = {
         me._parent          = nil; # LogbookDialog object
         me._dataRow         = nil;
         me._isTotals        = false;
-        me._parentDataId    = nil;
+        me._logbookId       = nil;
         me._storage         = storage;
         me._columns         = columns;
         me._btnDelete       = nil;
+        me._btnVProfile     = nil;
         me._inputDialog     = InputDialog.new(columns);
+        me._vProfileDialog  = VerticalProfileDialog.new(storage);
         me._deleteDialog    = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
@@ -93,6 +95,7 @@ var DetailsDialog = {
     # @return void
     #
     del: func() {
+        me._vProfileDialog.del();
         me._inputDialog.del();
         me._deleteDialog.del();
         call(Dialog.del, [], me);
@@ -126,18 +129,28 @@ var DetailsDialog = {
             }
         );
 
+        me._btnVProfile = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("V")
+            .setFixedSize(26, 26)
+            .listen("clicked", func {
+                me._vProfileDialog.show(me._logbookId);
+            }
+        );
+
         me._btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
                 if (!g_isThreadPending) {
-                    me._deleteDialog.show(me._parentDataId, me);
+                    me._deleteDialog.show(me._logbookId, me);
                 }
             }
         );
 
-        buttonBox.addStretch(3);
+        buttonBox.addStretch(4);
         buttonBox.addItem(btnClose);
+        buttonBox.addStretch(1);
+        buttonBox.addItem(me._btnVProfile);
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
@@ -176,22 +189,22 @@ var DetailsDialog = {
     # Show canvas dialog
     #
     # @param  hash  parent  LogbookDialog object
-    # @param  int  id  Record ID in DB or row index in CSV file, if -1 then it's total row
+    # @param  int  logbookId  Logbook ID in DB or row index in CSV file, if -1 then it's total row
     # @return void
     #
-    show: func(parent, id) {
+    show: func(parent, logbookId) {
         me._parent = parent;
-        me._isTotals = id == Columns.TOTALS_ROW_ID;
+        me._isTotals = logbookId == Columns.TOTALS_ROW_ID;
 
         me._btnDelete.setEnabled(!me._isTotals);
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
 
-        me._parentDataId = id;
+        me._logbookId = logbookId;
 
         # Get data from storage
-        me._dataRow = me._storage.getLogData(me._parentDataId);
+        me._dataRow = me._storage.getLogData(me._logbookId);
 
         me._listView.setItems(me._getListViewRows(me._dataRow.data));
 
@@ -210,7 +223,7 @@ var DetailsDialog = {
             me._parent.selectedRecordId = nil;
         }
 
-        me._parentDataId = nil;
+        me._logbookId = nil;
         me._inputDialog.hide();
         me._deleteDialog.hide();
         call(Dialog.hide, [], me);
@@ -254,8 +267,8 @@ var DetailsDialog = {
     # @return void
     #
     reload: func() {
-        if (me._parentDataId != nil) {
-            me._dataRow = me._storage.getLogData(me._parentDataId);
+        if (me._logbookId != nil) {
+            me._dataRow = me._storage.getLogData(me._logbookId);
             if (me._dataRow == nil) {
                 call(DetailsDialog.hide, [false], me);
                 return;

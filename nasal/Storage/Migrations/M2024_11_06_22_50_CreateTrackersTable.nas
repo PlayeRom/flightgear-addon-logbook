@@ -48,6 +48,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
             { name: "lon",         type: "REAL" }, # aircraft position
             { name: "alt_m",       type: "REAL" }, # aircraft altitude in meters
             { name: "elevation_m", type: "REAL" }, # elevation in metres of a lat,lon point on the scenery
+            { name: "distance",    type: "REAL" }, # distance traveled from the starting point in nautical miles
         ];
 
         me.createTable(StorageSQLite.TABLE_TRACKERS, columns);

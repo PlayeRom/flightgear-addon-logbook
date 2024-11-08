@@ -361,7 +361,7 @@ var Logbook = {
         me._storage.saveLogData(me._logData, logbookId);
 
         # Also save data to the trackers table for a given logbook record
-        me._storage.addTrackerItem(logbookId, me._logData.duration);
+        me._storage.addTrackerItem(logbookId, me._logData.duration, me._logData.distance);
 
         me._logData = nil;
         me._wowSec = 0;
@@ -422,7 +422,7 @@ var Logbook = {
         }
 
         # Also save data to the trackers table for a given logbook record
-        me._storage.addTrackerItem(me._recovery.getLogbookId(), recoveryData.duration);
+        me._storage.addTrackerItem(me._recovery.getLogbookId(), recoveryData.duration, recoveryData.distance);
     },
 
     #

@@ -57,6 +57,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/SettingsDialogSQLite",
         "nasal/Canvas/SettingsDialogCsv",
+        "nasal/Canvas/VerticalProfileDialog",
         "nasal/Canvas/LogbookDialog",
         "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
         "nasal/Counters/BaseCounter",

@@ -257,9 +257,10 @@ var StorageSQLite = {
     #
     # @param  int|nil  logbookId  Record ID of `logbooks` table
     # @param  double  duration  Timestamp as duration of flight in hours
+    # @param  double  distance  In nautical miles from starting point
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration) {
+    addTrackerItem: func(logbookId, duration, distance) {
         if (logbookId == nil) {
             return false;
         }
@@ -268,7 +269,7 @@ var StorageSQLite = {
         var elevationMeters = geo.elevation(pos.lat(), pos.lon());
 
         var query = "INSERT INTO " ~ StorageSQLite.TABLE_TRACKERS
-            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)";
 
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt,
@@ -278,6 +279,7 @@ var StorageSQLite = {
             pos.lon(),
             pos.alt(),
             elevationMeters,
+            distance,
         );
 
         return true;
@@ -709,5 +711,47 @@ var StorageSQLite = {
         gui.popupTip("The log has been deleted!");
 
         return true;
+    },
+
+    #
+    # Get tracker data for given logbook ID
+    #
+    # @param  int|nil  logbookId
+    # @return vector|nil
+    #
+    getLogbookTracker: func(logbookId) {
+        if (logbookId == nil) {
+            return nil;
+        }
+
+        var query = sprintf("SELECT * FROM %s WHERE logbook_id = ?", StorageSQLite.TABLE_TRACKERS);
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
+
+        return rows;
+    },
+
+    #
+    # Get max altitude value in tracker data for given logbook ID
+    #
+    # @param  int|nil  logbookId
+    # @return double|nil
+    #
+    getLogbookTrackerMaxAlt: func(logbookId) {
+        if (logbookId == nil) {
+            return nil;
+        }
+
+        var query = "SELECT MAX(CASE WHEN alt_m > elevation_m THEN alt_m ELSE elevation_m END) AS `max_alt` "
+            ~ "FROM " ~ StorageSQLite.TABLE_TRACKERS
+            ~ " WHERE logbook_id = ?";
+        var stmt = sqlite.prepare(me._dbHandler, query);
+        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
+
+        if (size(rows)) {
+            return rows[0].max_alt;
+        }
+
+        return nil;
     },
 };
