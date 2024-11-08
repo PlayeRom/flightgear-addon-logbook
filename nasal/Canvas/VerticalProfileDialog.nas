@@ -19,6 +19,10 @@ var VerticalProfileDialog = {
     WINDOW_WIDTH  : 1360,
     WINDOW_HEIGHT : 350,
     PADDING       : 0,
+    #
+    # Aircraft icon:
+    PIXEL_DIFF    : 9,  # The difference in height in pixels between adjacent flight profile points
+    AC_ANGLE      : 20, # Angle in degrees to rotate the airplane icon up or down
 
     #
     # Constructor
@@ -123,18 +127,18 @@ var VerticalProfileDialog = {
         var padding = 20;
         var xXAxis = 80;
         var yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
+        var positiveYAxisLength = yXAxis - padding;
 
         var graphWidth = VerticalProfileDialog.WINDOW_WIDTH - padding - (VerticalProfileDialog.PADDING * 2);
 
         me._drawTextCenter("Time (hours) and Distance (NM)", VerticalProfileDialog.WINDOW_WIDTH / 2, graphHeight + 10);
         me._drawTextCenter("Altitude (feet)", 20, graphHeight / 2, -90);
-        me._drawTextRight("0", xXAxis - 5, yXAxis); # 0 ft altitude
 
         var maxAlt = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
 
         # Draw max alt label and half alt label
         # me._drawTextRight(sprintf("%.0f", maxAlt * globals.M2FT),       xXAxis - 5, padding);
-        # me._drawTextRight(sprintf("%.0f", (maxAlt / 2) * globals.M2FT), xXAxis - 5, padding + (yXAxis - padding) / 2);
+        # me._drawTextRight(sprintf("%.0f", (maxAlt / 2) * globals.M2FT), xXAxis - 5, padding + (positiveYAxisLength / 2));
 
         # Draw altitude grid
 
@@ -142,11 +146,17 @@ var VerticalProfileDialog = {
             .setColor(0.8, 0.8, 0.8)
             .setStrokeLineWidth(1);
 
+        me._drawTextRight("0", xXAxis - 5, yXAxis); # 0 ft altitude
+
         var maxAltFt = maxAlt * globals.M2FT;
         var graduation = me._roundToNearestPowerOfTen(maxAltFt / 4);
-        for (var i = 1; i <= 4; i += 1) {
+        for (var i = 1; i <= 5; i += 1) {
             var altFt = graduation * i;
-            var y = yXAxis - ((altFt / maxAltFt) * (yXAxis - padding));
+            var y = yXAxis - ((altFt / maxAltFt) * positiveYAxisLength);
+            if (y < padding) {
+                # There is no more space for another horizontal line, exit the loop
+                break;
+            }
 
             me._drawTextRight(sprintf("%.0f", altFt), xXAxis - 5, y);
 
@@ -170,7 +180,8 @@ var VerticalProfileDialog = {
         var lastRecord = rows[size(rows) - 1];
         var maxTimestamp = lastRecord.timestamp;
 
-        # Distance between recorded points. If the distance reaches a value above 100, then draw an airplane icon.
+        # Distance in pixels on graph between recorded points.
+        # If the distance reaches a value above 100 px, then draw an airplane icon.
         var p1 = {};
         var p2 = {};
         var distance = 0;
@@ -182,8 +193,8 @@ var VerticalProfileDialog = {
             var row = rows[index];
 
             var x = xXAxis + ((row.timestamp / maxTimestamp) * (graphWidth - xXAxis));
-            var elevationY = yXAxis - ((row.elevation_m / maxAlt) * (yXAxis - padding));
-            var flightY    = yXAxis - ((row.alt_m / maxAlt) * (yXAxis - padding));
+            var elevationY = yXAxis - ((row.elevation_m / maxAlt) * positiveYAxisLength);
+            var flightY    = yXAxis - ((row.alt_m / maxAlt) * positiveYAxisLength);
 
             if (index == 0) {
                 elevationProfile.moveTo(x, elevationY);
@@ -208,16 +219,18 @@ var VerticalProfileDialog = {
 
                 if (distance > 100) {
                     var rotate = 0;
-                         if (p2.y      > p1.y + 10) rotate = 20; # descent
-                    else if (p2.y + 10 < p1.y) {
+                    if (p2.y > p1.y + VerticalProfileDialog.PIXEL_DIFF) {
+                        rotate = VerticalProfileDialog.AC_ANGLE; # descent
+                    }
+                    else if (p2.y + VerticalProfileDialog.PIXEL_DIFF < p1.y) {
                         # We are climb compared with previous point, but for climb
                         # it is best to compare Y with the next point
                         if (index + 1 < size(rows)) {
                             var nextRow = rows[index + 1];
-                            var nextFlightY = yXAxis - ((nextRow.alt_m / maxAlt) * (yXAxis - padding));
+                            var nextFlightY = yXAxis - ((nextRow.alt_m / maxAlt) * positiveYAxisLength);
 
-                            if (nextFlightY + 10 < p2.y) {
-                                rotate = -20; # climb
+                            if (nextFlightY + VerticalProfileDialog.PIXEL_DIFF < p2.y) {
+                                rotate = -VerticalProfileDialog.AC_ANGLE; # climb
                             }
                         }
                     }
@@ -228,7 +241,7 @@ var VerticalProfileDialog = {
 
                 if (math.mod(index, xAxisLabelsSeparation) == 0) {
                     # Labels with hours on X axis
-                    me._drawTextCenter(sprintf("%.1f", row.timestamp), x, yXAxis + 10);
+                    me._drawTextCenter(sprintf("%.2f", row.timestamp), x, yXAxis + 10);
 
                     # Labels with distance on X axis
                     me._drawTextCenter(sprintf("%.1f", row.distance), x, yXAxis + 30);
