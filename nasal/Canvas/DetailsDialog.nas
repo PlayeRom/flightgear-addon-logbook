@@ -43,6 +43,7 @@ var DetailsDialog = {
             call(DetailsDialog.hide, [], self);
         };
 
+        me._isUsingSQLite   = Utils.isUsingSQLite();
         me._parent          = nil; # LogbookDialog object
         me._dataRow         = nil;
         me._isTotals        = false;
@@ -129,13 +130,15 @@ var DetailsDialog = {
             }
         );
 
-        me._btnVProfile = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("V")
-            .setFixedSize(26, 26)
-            .listen("clicked", func {
-                me._vProfileDialog.show(me._logbookId);
-            }
-        );
+        if (me._isUsingSQLite) {
+            me._btnVProfile = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+                .setText("V")
+                .setFixedSize(26, 26)
+                .listen("clicked", func {
+                    me._vProfileDialog.show(me._logbookId);
+                }
+            );
+        }
 
         me._btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Delete")
@@ -147,10 +150,12 @@ var DetailsDialog = {
             }
         );
 
-        buttonBox.addStretch(4);
+        buttonBox.addStretch(me._isUsingSQLite ? 4 : 3);
         buttonBox.addItem(btnClose);
-        buttonBox.addStretch(1);
-        buttonBox.addItem(me._btnVProfile);
+        if (me._isUsingSQLite) {
+            buttonBox.addStretch(1);
+            buttonBox.addItem(me._btnVProfile);
+        }
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
