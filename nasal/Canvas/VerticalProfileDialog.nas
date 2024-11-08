@@ -107,6 +107,18 @@ var VerticalProfileDialog = {
     _drawScrollable: func() {
         var graphHeight = VerticalProfileDialog.WINDOW_HEIGHT - 100;
 
+        me._scrollDataContent.createChild("path", "padding-keeper")
+            .moveTo(0, 0)
+            .lineTo(VerticalProfileDialog.WINDOW_WIDTH, 0)
+            .setColor(0, 0, 0)
+            .setStrokeLineWidth(1);
+
+        var rows = me._storage.getLogbookTracker(me._logbookId);
+        if (rows == nil or size(rows) == 0) {
+            me._drawTextCenter("This log doesn't contain flight data.", VerticalProfileDialog.WINDOW_WIDTH / 2, graphHeight / 2);
+            return;
+        }
+
         var seaMeanLevel = (graphHeight / 6);
         var padding = 20;
         var xXAxis = 80;
@@ -114,20 +126,9 @@ var VerticalProfileDialog = {
 
         var graphWidth = VerticalProfileDialog.WINDOW_WIDTH - padding - (VerticalProfileDialog.PADDING * 2);
 
-        var paddingKeeper = me._scrollDataContent.createChild("path", "padding-keeper")
-            .moveTo(0, 0)
-            .lineTo(VerticalProfileDialog.WINDOW_WIDTH, 0)
-            .setColor(0, 0, 0)
-            .setStrokeLineWidth(1);
-
         me._drawTextCenter("Time (hours) and Distance (NM)", VerticalProfileDialog.WINDOW_WIDTH / 2, graphHeight + 10);
         me._drawTextCenter("Altitude (feet)", 20, graphHeight / 2, -90);
         me._drawTextRight("0", xXAxis - 5, yXAxis); # 0 ft altitude
-
-        var rows = me._storage.getLogbookTracker(me._logbookId);
-        if (rows == nil or size(rows) == 0) {
-            return;
-        }
 
         var maxAlt = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
 
