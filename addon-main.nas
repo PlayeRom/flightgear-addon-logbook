@@ -57,7 +57,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/SettingsDialogSQLite",
         "nasal/Canvas/SettingsDialogCsv",
-        "nasal/Canvas/VerticalProfileDialog",
+        "nasal/Canvas/FlightPreviewDialog",
         "nasal/Canvas/LogbookDialog",
         "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
         "nasal/Counters/BaseCounter",
@@ -91,6 +91,8 @@ var loadExtraNasalFiles = func(addon) {
 
     # Add widgets to canvas namespace
     var widgets = [
+        "nasal/Canvas/Widgets/MapView",
+        "nasal/Canvas/Widgets/ProfileView",
         "nasal/Canvas/Widgets/ListView",
         "nasal/Canvas/Widgets/Styles/DefaultStyle",
     ];
