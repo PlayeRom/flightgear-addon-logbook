@@ -94,7 +94,9 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/Widgets/MapView",
         "nasal/Canvas/Widgets/ProfileView",
         "nasal/Canvas/Widgets/ListView",
-        "nasal/Canvas/Widgets/Styles/DefaultStyle",
+        "nasal/Canvas/Widgets/Styles/DefaultStyleListView",
+        "nasal/Canvas/Widgets/Styles/DefaultStyleMapView",
+        "nasal/Canvas/Widgets/Styles/DefaultStyleProfileView",
     ];
 
     loadVectorOfModules(addon, widgets, "canvas");
