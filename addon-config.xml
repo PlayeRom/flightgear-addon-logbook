@@ -164,7 +164,7 @@ Note
                         <paragraph type="string">
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
 
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the recovery.csv file. The data in the recovery.csv file will be automatically transferred to the logbook.csv file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the recovery.csv file is redundant. Data for recovery mode is saved every 60 seconds.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the recovery.csv file. The data in the recovery.csv file will be automatically transferred to the logbook.csv file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the recovery.csv file is redundant. Data for recovery mode is saved every 30 seconds.
 
 3. For the add-on to count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing.
 

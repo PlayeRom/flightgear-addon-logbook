@@ -81,7 +81,11 @@ The following information is logged into the file:
 
 ## Viewing the logbook
 
-The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form. The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which you don't have the sum of all altitudes, but the highest one.
+The add-on also provides the ability to view the entire flight logbook from the simulator. You should select "Logbook" -> "Logbook" from the menu. The main window will open with the entire logbook in tabular form.
+
+![alt main-window](docs/img/main-window.png "Logbook main window")
+
+The last row signed "Totals", contains a summary, not only of the visible entries on a given page, but of the entire logbook. The same "Totals" row is visible on every page. The exception for totals is the `Max Alt` column, in which you don't have the sum of all altitudes, but the highest one.
 
 At the very bottom there is a row of buttons, mainly for moving through the log pages:
 
@@ -92,7 +96,11 @@ At the very bottom there is a row of buttons, mainly for moving through the log 
 
 In the middle there is text information in the format `{on which page you are} / {number of all pages} (number of entries in the log)`. On the right is the `dark`/`light` button to switch between window styles. The `≡` button opens a windows with settings, and the last `?` button opens a window with help (the same as from the "Logbook" -> "Help" menu).
 
-Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry. In general, you have the same information here as in the main window, except:
+Each log entry can be hovered over and clicked. Then an additional window will open presenting the details of the given entry.
+
+![alt details](docs/img/details.png "Details window")
+
+In general, you have the same information here as in the main window, except:
 
 1. you can see three dates and times of aircraft takeoff:
     * real date & time from your OS,
@@ -104,7 +112,11 @@ Each log entry can be hovered over and clicked. Then an additional window will o
 
 ### Data filtering
 
-The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landing" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values. For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
+The addon allows you to filter some columns in the main log window. At the moment you can filter by the "Date" (as a year), "Aircraft", "Variant", "Type", "Callsign", "From", "To", "Landing" and "Crash" columns. To use filtering, hover the mouse cursor over a column name (it will be highlighted) and click it. A new window will appear with a choice of values.
+
+![alt filtering](docs/img/filtering.png "Filtering columns")
+
+For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
 
 After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
 
@@ -112,11 +124,44 @@ After using the filter, the "Totals" row will also be updated with the filtered 
 
 Each logbook entry can be edited from the simulator. You need to select "Logbook" -> "Logbook" from the menu. The main window with the entire logbook will open. Here you can search for the entry you want to edit and click on it. The details window for the entry will open. Now you can click on the specific entry you want to edit. Another window with a text field will open. Just enter the new value and confirm with the "Save" button. The change will immediately be saved to a file.
 
+![alt editing](docs/img/editing.png "Editing entry")
+
 At the bottom of the details window there is a `Delete` button, with which you can permanently delete the selected entry.
+
+### Flight Analysis
+
+The details window also contains an `Analysis` button. Once you click on it, a new window will open with the flight analysis.
+
+![alt flight-analysis](docs/img/flight-analysis.png "Flight Analysis window")
+
+The window is divided into two parts, the upper one with the map (lateral navigation) and the lower one with the profile (vertical navigation). The path along which the flight was made is drawn in blue. The brown path on the profile is the terrain elevation.
+
+At the bottom, we have a row of buttons for zooming the map and for moving through the points of the path traveled. If the path does not fit on the map, you must zoom out of the map view or move along the path using the `<` and `>` buttons. The currently selected point is marked with the same red cross, both on the map and the profile. By default, it is the starting point. Now, using the arrow buttons, you can move through the points, while seeing a summary on the left for each of them in the form:
+
+* geographical coordinates of the point
+* altitude at which the aircraft was located
+* true and magnetic heading that the aircraft was flying at the given point
+* airspeed in knots that the aircraft was flying at the given point
+* groundspeed in knots that the aircraft was flying at the given point
+* flight time at the given point
+* distance traveled at the given point
+
+Buttons:
+
+* `<` and `>` – move back or forward 1 point
+* `<<` and `>>` – move back or forward 10 points
+* `|<<` and `>>|` – jump to start or end point
+
+
+Flight analysis will only be available for flights made in FlightGear version 2024.1 and newer.
 
 ### Settings
 
-When you click on the `≡` button in the Logbook view, the settings window will open. Here you can configure the following options:
+When you click on the `≡` button in the Logbook view, the settings window will open.
+
+![alt settings](docs/img/settings.png "Settings window")
+
+Here you can configure the following options:
 
 1. `Date and time displayed in the Logbook view` – Logbook window shows only one `Date` and `Time` item, but triple dates and times are logged, so here you can choose which one you want to display in Logbook window, by default it is real time, taken from your operating system. These options are only available for FG >= 2024.1
 2. `Columns to display in the Logbook view` – here you can specify which columns are to be displayed in the Logbook window. The fewer columns are displayed, the faster the Logbook window will be drawn. Columns such as `Date`, `Time` and `Aircraft` are always displayed, the `Note` column will never be displayed and this cannot be changed. These options are only available for FG >= 2024.1
@@ -133,11 +178,11 @@ For the newer version (2024.1 and later) based on the SQLite database, the backu
 
 ### For FG 2020.3 and older
 
-This add-on includes a mechanism to save the current flight status to a separate `recovery-v5.csv` file every minute. If FlightGear unexpectedly closes due to an error, this file will be read on reboot and an entry from this file will be moved to the main log file. In this way, no flight, even aborted, should be lost.
+This add-on includes a mechanism to save the current flight status to a separate `recovery-v5.csv` file every 30 seconds. If FlightGear unexpectedly closes due to an error, this file will be read on reboot and an entry from this file will be moved to the main log file. In this way, no flight, even aborted, should be lost.
 
 ### For FG 2024.1 and later
 
-In the newer version based on the SQLite database, the recovery mechanism writes data every minute directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
+In the newer version based on the SQLite database, the recovery mechanism writes data every 30 seconds directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
 
 ## Export database to CSV file
 
@@ -148,7 +193,7 @@ The CSV file will be in the format `logbook-export-YYYY-MM-DD-HH-mm-SS.csv` and 
 ## NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every minute.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every 30 seconds.
 3. To count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing by the add-on.
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
 5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing detection pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
