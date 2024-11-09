@@ -17,7 +17,7 @@ gui.widgets.MapView = {
     # Constants
     #
     ZOOM_MIN    : 3,
-    ZOOM_MAX    : 19,
+    ZOOM_MAX    : 14,
     ZOOM_DEFAULT: 10,
 
     #
