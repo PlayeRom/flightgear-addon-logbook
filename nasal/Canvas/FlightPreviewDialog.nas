@@ -182,7 +182,6 @@ var FlightPreviewDialog = {
     # @return void
     #
     _zoomIn: func() {
-        print("_zoomIn");
         me._mapView.zoomIn();
         me._updateAfterZoom();
     },
@@ -193,7 +192,6 @@ var FlightPreviewDialog = {
     # @return void
     #
     _zoomOut: func() {
-        print("_zoomOut");
         me._mapView.zoomOut();
         me._updateAfterZoom();
     },
@@ -293,7 +291,7 @@ var FlightPreviewDialog = {
 
         var btnClose = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
             .setText("Close")
-            .listen("clicked", func { print("close"); me.hide(); })
+            .listen("clicked", func { me.hide(); })
             .setFixedSize(65, 26);
 
         buttonBox.addStretch(1);
