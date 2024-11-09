@@ -31,9 +31,12 @@ var Flight = {
         me._maxGSKt = 0.0;
         me._maxMach = 0.0;
 
-        me._propAltFt = props.globals.getNode("/position/altitude-ft");
-        me._propGSKt  = props.globals.getNode("/velocities/groundspeed-kt");
-        me._propMach  = props.globals.getNode("/velocities/mach");
+        me._propAltFt   = props.globals.getNode("/position/altitude-ft");
+        me._propGSKt    = props.globals.getNode("/velocities/groundspeed-kt");
+        me._propASKt    = props.globals.getNode("/velocities/airspeed-kt");
+        me._propMach    = props.globals.getNode("/velocities/mach");
+        me._propHdgTrue = props.globals.getNode("/orientation/heading-deg");
+        me._propHdgMag  = props.globals.getNode("/orientation/heading-magnetic-deg");
 
         return me;
     },
@@ -92,11 +95,47 @@ var Flight = {
     },
 
     #
+    # Get current groundspeed in knots
+    #
+    # @return double
+    #
+    getGroundspeedKt: func() {
+        return me._propGSKt.getValue();
+    },
+
+    #
+    # Get current airspeed in knots
+    #
+    # @return double
+    #
+    getAirspeedKt: func() {
+        return me._propASKt.getValue();
+    },
+
+    #
     # Get max speed in Mach number
     #
     # @return double
     #
     getMaxMach: func() {
         return me._maxMach;
+    },
+
+    #
+    # Get true heading
+    #
+    # @return double
+    #
+    getHeadingTrue: func() {
+        return me._propHdgTrue.getValue();
+    },
+
+    #
+    # Get magnetic heading
+    #
+    # @return double
+    #
+    getHeadingMag: func() {
+        return me._propHdgMag.getValue();
     },
 };

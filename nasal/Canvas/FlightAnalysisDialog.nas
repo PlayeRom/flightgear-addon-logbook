@@ -154,13 +154,22 @@ var FlightAnalysisDialog = {
         var labelLon = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Longitude");
         me._labelLonValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
 
-        var labelTimestamp = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
-        me._labelTimestampValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
-
         var labelAlt = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude");
         me._labelAltValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
 
-        var _labelDistance = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
+        var labelHdgTrue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Heading (true/mag)");
+        me._labelHdgTrueValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelAirspeed = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Airspeed");
+        me._labelAirspeedValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelGroundspeed = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Groundspeed");
+        me._labelGroundspeedValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelTimestamp = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
+        me._labelTimestampValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelDistance = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
         me._labelDistanceValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
 
         vBoxLayoutInfo.addStretch(1);
@@ -170,13 +179,22 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addItem(labelLon);
         vBoxLayoutInfo.addItem(me._labelLonValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelTimestamp);
-        vBoxLayoutInfo.addItem(me._labelTimestampValue);
-        vBoxLayoutInfo.addStretch(1);
         vBoxLayoutInfo.addItem(labelAlt);
         vBoxLayoutInfo.addItem(me._labelAltValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(_labelDistance);
+        vBoxLayoutInfo.addItem(labelHdgTrue);
+        vBoxLayoutInfo.addItem(me._labelHdgTrueValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelAirspeed);
+        vBoxLayoutInfo.addItem(me._labelAirspeedValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelGroundspeed);
+        vBoxLayoutInfo.addItem(me._labelGroundspeedValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelTimestamp);
+        vBoxLayoutInfo.addItem(me._labelTimestampValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelDistance);
         vBoxLayoutInfo.addItem(me._labelDistanceValue);
         vBoxLayoutInfo.addStretch(2);
 
@@ -208,8 +226,11 @@ var FlightAnalysisDialog = {
 
         me._labelLatValue.setText(sprintf("%.03f", row.lat));
         me._labelLonValue.setText(sprintf("%.03f", row.lon));
-        me._labelTimestampValue.setText(Utils.decimalHoursToHuman(row.timestamp));
         me._labelAltValue.setText(sprintf("%.0f ft", row.alt_m * globals.M2FT));
+        me._labelHdgTrueValue.setText(sprintf("%.0f / %.0f", row.heading_true, row.heading_mag));
+        me._labelAirspeedValue.setText(sprintf("%.0f kt", row.airspeed));
+        me._labelGroundspeedValue.setText(sprintf("%.0f kt", row.groundspeed));
+        me._labelTimestampValue.setText(Utils.decimalHoursToHuman(row.timestamp));
         me._labelDistanceValue.setText(sprintf("%.02f NM", row.distance));
     },
 

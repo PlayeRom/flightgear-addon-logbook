@@ -41,14 +41,18 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     _createTrackersTable: func() {
         var columns = [
-            { name: "id",          type: "INTEGER PRIMARY KEY" },
-            { name: "logbook_id",  type: "INTEGER" },
-            { name: "timestamp",   type: "REAL" }, # duration of flight in hours
-            { name: "lat",         type: "REAL" }, # aircraft position
-            { name: "lon",         type: "REAL" }, # aircraft position
-            { name: "alt_m",       type: "REAL" }, # aircraft altitude in meters
-            { name: "elevation_m", type: "REAL" }, # elevation in metres of a lat,lon point on the scenery
-            { name: "distance",    type: "REAL" }, # distance traveled from the starting point in nautical miles
+            { name: "id",           type: "INTEGER PRIMARY KEY" },
+            { name: "logbook_id",   type: "INTEGER" },
+            { name: "timestamp",    type: "REAL" }, # duration of flight in hours
+            { name: "lat",          type: "REAL" }, # aircraft position
+            { name: "lon",          type: "REAL" }, # aircraft position
+            { name: "alt_m",        type: "REAL" }, # aircraft altitude in meters
+            { name: "elevation_m",  type: "REAL" }, # elevation in metres of a lat,lon point on the scenery
+            { name: "distance",     type: "REAL" }, # distance traveled from the starting point in nautical miles
+            { name: "heading_true", type: "REAL" }, # aircraft true heading
+            { name: "heading_mag",  type: "REAL" }, # aircraft magnetic heading
+            { name: "groundspeed",  type: "REAL" }, # aircraft groundspeed in knots
+            { name: "airspeed",     type: "REAL" }, # aircraft airspeed in knots
         ];
 
         me.createTable(StorageSQLite.TABLE_TRACKERS, columns);
