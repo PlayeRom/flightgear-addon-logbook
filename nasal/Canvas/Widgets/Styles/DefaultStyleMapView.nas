@@ -35,7 +35,7 @@ DefaultStyle.widgets["map-view"] = {
         me._makeUrl = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
         me._makePath = string.compileTemplate(me._mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
 
-        me._numTiles = [6, 3];
+        me._numTiles = [6, 4];
 
         me._centerTileOffset = [
             (me._numTiles[0] - 1) / 2,
@@ -46,6 +46,13 @@ DefaultStyle.widgets["map-view"] = {
 
         me._flightPathGroup = nil;
         me._tiles = [];
+
+        # A variable to remember the extreme positions of the map tiles,
+        # which we will use to not draw the flight path outside the map
+        me._minTileX = 0;
+        me._maxTileX = 0;
+        me._minTileY = 0;
+        me._maxTileY = 0;
     },
 
     #
@@ -204,11 +211,11 @@ DefaultStyle.widgets["map-view"] = {
     _drawFlightPath: func(model) {
         me._flightPathGroup.removeAllChildren();
 
-        var flightPath = me._flightPathGroup.createChild("path", "flight")
-            .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(2)
-            .set("z-index", 1);
+        var pointsToDraw = [];
 
+        var isBreak = false;
+
+        # The first loop is to build an array of points that are within the map
         forindex (var index; model._tractItems) {
             var row = model._tractItems[index];
 
@@ -220,11 +227,37 @@ DefaultStyle.widgets["map-view"] = {
                 model._zoom
             );
 
-            if (index == 0) {
-                flightPath.moveTo(pos.x, pos.y);
+            if (   pos.x > me._maxTileX + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.x < me._minTileX
+                or pos.y > me._maxTileY + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.y < me._minTileY
+            ) {
+                # The path point is out of map tiles, so ship it
+                isBreak = true;
             }
             else {
-                flightPath.lineTo(pos.x, pos.y);
+                # When there was a discontinuity, we need to start drawing with the moveTo function,
+                # so we set the moveTo flag which will tell us that
+                pos["moveTo"] = isBreak ? true : false;
+                isBreak = false;
+                append(pointsToDraw, pos);
+            }
+        }
+
+        # Draw points only those within the map
+        var flightPath = me._flightPathGroup.createChild("path", "flight")
+            .setColor(0.5, 0.5, 1)
+            .setStrokeLineWidth(2)
+            .set("z-index", 1);
+
+        forindex (var index; pointsToDraw) {
+            var point = pointsToDraw[index];
+
+            if (index == 0 or point.moveTo) {
+                flightPath.moveTo(point.x, point.y);
+            }
+            else {
+                flightPath.lineTo(point.x, point.y);
             }
         }
 
@@ -242,11 +275,14 @@ DefaultStyle.widgets["map-view"] = {
             return;
         }
 
+        me._minTileX = 0;
+        me._maxTileX = 0;
+        me._minTileY = 0;
+        me._maxTileY = 0;
+
         # get current position
         # var lat = getprop('/position/latitude-deg');
         # var lon = getprop('/position/longitude-deg');
-
-        me._drawFlightPath(model);
 
         var lat = model._tractItems[model._position].lat;
         var lon = model._tractItems[model._position].lon;
@@ -267,6 +303,23 @@ DefaultStyle.widgets["map-view"] = {
                 var transY = int((oy + y) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5);
 
                 me._tiles[x][y].setTranslation(transX, transY);
+
+                # Remember the extreme positions of map tiles
+                if (transX > me._maxTileX) {
+                    me._maxTileX = transX;
+                }
+
+                if (transX < me._minTileX) {
+                    me._minTileX = transX;
+                }
+
+                if (transY > me._maxTileY) {
+                    me._maxTileY = transY;
+                }
+
+                if (transY < me._minTileY) {
+                    me._minTileY = transY;
+                }
             }
         }
 
@@ -310,6 +363,8 @@ DefaultStyle.widgets["map-view"] = {
 
             me._lastTile = tileIndex;
         }
+
+        me._drawFlightPath(model);
     },
 
     #
