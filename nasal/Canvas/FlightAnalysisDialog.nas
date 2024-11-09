@@ -10,9 +10,9 @@
 #
 
 #
-# FlightPreviewDialog class
+# FlightAnalysisDialog class
 #
-var FlightPreviewDialog = {
+var FlightAnalysisDialog = {
     #
     # Constants
     #
@@ -36,11 +36,11 @@ var FlightPreviewDialog = {
     new: func(storage) {
         var me = {
             parents: [
-                FlightPreviewDialog,
+                FlightAnalysisDialog,
                 Dialog.new(
-                    FlightPreviewDialog.WINDOW_WIDTH,
-                    FlightPreviewDialog.WINDOW_HEIGHT,
-                    "Flight Preview"
+                    FlightAnalysisDialog.WINDOW_WIDTH,
+                    FlightAnalysisDialog.WINDOW_HEIGHT,
+                    "Flight Analysis"
                 ),
             ],
             _storage  : storage,
@@ -74,7 +74,7 @@ var FlightPreviewDialog = {
 
         me._btnBackFast  = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
             .setText("<<")
-            .listen("clicked", func { me._goPrevTrack(FlightPreviewDialog.FAST_POS_CHANGE); })
+            .listen("clicked", func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
             .setFixedSize(26, 26);
 
         me._btnBack    = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
@@ -89,7 +89,7 @@ var FlightPreviewDialog = {
 
         me._btnForwardFast = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
             .setText(">>")
-            .listen("clicked", func { me._goNextTrack(FlightPreviewDialog.FAST_POS_CHANGE); })
+            .listen("clicked", func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
             .setFixedSize(26, 26);
 
         me._btnEnd     = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
@@ -138,9 +138,9 @@ var FlightPreviewDialog = {
         me.vbox.clear();
 
         var margins = {
-            left   : FlightPreviewDialog.PADDING,
-            top    : FlightPreviewDialog.PADDING,
-            right  : FlightPreviewDialog.PADDING,
+            left   : FlightAnalysisDialog.PADDING,
+            top    : FlightAnalysisDialog.PADDING,
+            right  : FlightAnalysisDialog.PADDING,
             bottom : 0,
         };
 
@@ -184,7 +184,7 @@ var FlightPreviewDialog = {
         hBoxLayout.addItem(vBoxLayoutInfo, 1); # 2nd param = stretch
 
         me._scrollAreaLProfile = me.createScrollArea(nil, margins);
-        hBoxLayout.addItem(me._scrollAreaLProfile, 7); # 2nd param = stretch
+        hBoxLayout.addItem(me._scrollAreaLProfile, 9); # 2nd param = stretch
         me._scrollLProfileContent = me.getScrollAreaContent(me._scrollAreaLProfile);
 
 
@@ -200,6 +200,10 @@ var FlightPreviewDialog = {
     },
 
     _updateLabels: func() {
+        if (me._trackItems == nil or size(me._trackItems) == 0) {
+            return;
+        }
+
         var row = me._trackItems[me._mapView.getPosition()];
 
         me._labelLatValue.setText(sprintf("%.03f", row.lat));
@@ -218,14 +222,14 @@ var FlightPreviewDialog = {
         # Lateral Profile
 
         me._mapView = canvas.gui.widgets.MapView.new(me._scrollLProfileContent, canvas.style, {});
-        me._mapView.setSize(FlightPreviewDialog.WINDOW_WIDTH, 600);
+        me._mapView.setSize(FlightAnalysisDialog.WINDOW_WIDTH, 600);
         me._mapView.setTrackItems(me._trackItems);
 
 
         # Vertical Profile
 
         me._profileView = canvas.gui.widgets.ProfileView.new(me._scrollVProfileContent, canvas.style, {});
-        me._profileView.setSize(FlightPreviewDialog.WINDOW_WIDTH, FlightPreviewDialog.V_PROFILE_HEIGHT);
+        me._profileView.setSize(FlightAnalysisDialog.WINDOW_WIDTH, FlightAnalysisDialog.V_PROFILE_HEIGHT);
         me._profileView.setData(
             me._trackItems,
             me._storage.getLogbookTrackerMaxAlt(me._logbookId)

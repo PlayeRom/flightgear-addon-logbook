@@ -43,18 +43,18 @@ var DetailsDialog = {
             call(DetailsDialog.hide, [], self);
         };
 
-        me._isUsingSQLite       = Utils.isUsingSQLite();
-        me._parent              = nil; # LogbookDialog object
-        me._dataRow             = nil;
-        me._isTotals            = false;
-        me._logbookId           = nil;
-        me._storage             = storage;
-        me._columns             = columns;
-        me._btnDelete           = nil;
-        me._btnFlightPreview    = nil;
-        me._inputDialog         = InputDialog.new(columns);
-        me._flightPreviewDialog = FlightPreviewDialog.new(storage);
-        me._deleteDialog        = ConfirmationDialog.new("Delete entry log");
+        me._isUsingSQLite        = Utils.isUsingSQLite();
+        me._parent               = nil; # LogbookDialog object
+        me._dataRow              = nil;
+        me._isTotals             = false;
+        me._logbookId            = nil;
+        me._storage              = storage;
+        me._columns              = columns;
+        me._btnDelete            = nil;
+        me._btnFlightAnalysis    = nil;
+        me._inputDialog          = InputDialog.new(columns);
+        me._flightAnalysisDialog = FlightAnalysisDialog.new(storage);
+        me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
         me.canvas.set("background", me.style.CANVAS_BG);
@@ -96,7 +96,7 @@ var DetailsDialog = {
     # @return void
     #
     del: func() {
-        me._flightPreviewDialog.del();
+        me._flightAnalysisDialog.del();
         me._inputDialog.del();
         me._deleteDialog.del();
         call(Dialog.del, [], me);
@@ -131,11 +131,11 @@ var DetailsDialog = {
         );
 
         if (me._isUsingSQLite) {
-            me._btnFlightPreview = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-                .setText("Preview")
+            me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+                .setText("Analysis")
                 .setFixedSize(75, 26)
                 .listen("clicked", func {
-                    me._flightPreviewDialog.show(me._logbookId);
+                    me._flightAnalysisDialog.show(me._logbookId);
                 }
             );
         }
@@ -154,7 +154,7 @@ var DetailsDialog = {
         buttonBox.addItem(btnClose);
         if (me._isUsingSQLite) {
             buttonBox.addStretch(1);
-            buttonBox.addItem(me._btnFlightPreview);
+            buttonBox.addItem(me._btnFlightAnalysis);
         }
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnDelete);
