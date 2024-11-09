@@ -47,6 +47,8 @@ var FlightPreviewDialog = {
             _logbookId: nil,
         };
 
+        me._trackItems = nil;
+
         me.bgImage.hide();
 
         me.setPositionOnCenter();
@@ -120,6 +122,7 @@ var FlightPreviewDialog = {
         g_Sound.play('paper');
 
         me._logbookId = logbookId;
+        me._trackItems = me._storage.getLogbookTracker(me._logbookId);
 
         me._drawContent();
 
@@ -140,9 +143,52 @@ var FlightPreviewDialog = {
             right  : FlightPreviewDialog.PADDING,
             bottom : 0,
         };
+
+        var hBoxLayout = canvas.HBoxLayout.new();
+
+        var vBoxLayoutInfo = canvas.VBoxLayout.new();
+
+        var labelLat = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Latitude");
+        me._labelLatValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelLon = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Longitude");
+        me._labelLonValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelTimestamp = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
+        me._labelTimestampValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var labelAlt = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude");
+        me._labelAltValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        var _labelDistance = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
+        me._labelDistanceValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
+
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelLat);
+        vBoxLayoutInfo.addItem(me._labelLatValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelLon);
+        vBoxLayoutInfo.addItem(me._labelLonValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelTimestamp);
+        vBoxLayoutInfo.addItem(me._labelTimestampValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(labelAlt);
+        vBoxLayoutInfo.addItem(me._labelAltValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(_labelDistance);
+        vBoxLayoutInfo.addItem(me._labelDistanceValue);
+        vBoxLayoutInfo.addStretch(2);
+
+        hBoxLayout.addSpacing(10);
+        hBoxLayout.addItem(vBoxLayoutInfo, 1); # 2nd param = stretch
+
         me._scrollAreaLProfile = me.createScrollArea(nil, margins);
-        me.vbox.addItem(me._scrollAreaLProfile, 2); # 2nd param = stretch
+        hBoxLayout.addItem(me._scrollAreaLProfile, 7); # 2nd param = stretch
         me._scrollLProfileContent = me.getScrollAreaContent(me._scrollAreaLProfile);
+
+
+        me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
 
         me._scrollAreaVProfile = me.createScrollArea(nil, margins);
         me.vbox.addItem(me._scrollAreaVProfile, 1); # 2nd param = stretch
@@ -151,6 +197,16 @@ var FlightPreviewDialog = {
         me._drawScrollable();
 
         me._drawBottomBar();
+    },
+
+    _updateLabels: func() {
+        var row = me._trackItems[me._mapView.getPosition()];
+
+        me._labelLatValue.setText(sprintf("%.03f", row.lat));
+        me._labelLonValue.setText(sprintf("%.03f", row.lon));
+        me._labelTimestampValue.setText(Utils.decimalHoursToHuman(row.timestamp));
+        me._labelAltValue.setText(sprintf("%.0f ft", row.alt_m * globals.M2FT));
+        me._labelDistanceValue.setText(sprintf("%.02f NM", row.distance));
     },
 
     #
@@ -163,7 +219,7 @@ var FlightPreviewDialog = {
 
         me._mapView = canvas.gui.widgets.MapView.new(me._scrollLProfileContent, canvas.style, {});
         me._mapView.setSize(FlightPreviewDialog.WINDOW_WIDTH, 600);
-        me._mapView.setTrackItems(me._storage.getLogbookTracker(me._logbookId));
+        me._mapView.setTrackItems(me._trackItems);
 
 
         # Vertical Profile
@@ -171,9 +227,11 @@ var FlightPreviewDialog = {
         me._profileView = canvas.gui.widgets.ProfileView.new(me._scrollVProfileContent, canvas.style, {});
         me._profileView.setSize(FlightPreviewDialog.WINDOW_WIDTH, FlightPreviewDialog.V_PROFILE_HEIGHT);
         me._profileView.setData(
-            me._storage.getLogbookTracker(me._logbookId),
+            me._trackItems,
             me._storage.getLogbookTrackerMaxAlt(me._logbookId)
         );
+
+        me._updateLabels();
     },
 
     #
@@ -275,6 +333,8 @@ var FlightPreviewDialog = {
         me._btnForward.setEnabled(position < lastRowsIndex);
         me._btnForwardFast.setEnabled(position < lastRowsIndex);
         me._btnEnd.setEnabled(position < lastRowsIndex);
+
+        me._updateLabels();
     },
 
     #

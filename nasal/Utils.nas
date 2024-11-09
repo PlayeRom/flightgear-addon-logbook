@@ -72,4 +72,20 @@ var Utils = {
     toString: func(value) {
         return sprintf("%s", value);
     },
+
+    #
+    # Convert decimal hours to hours and minutes, e.g. 1.5 -> 1:30
+    #
+    # @param  double|string  hoursDecimal
+    # @return string
+    #
+    decimalHoursToHuman: func(decimalHours) {
+        var digits = split(".", sprintf("%.2f", Utils.toString(decimalHours)));
+        if (size(digits) < 2) {
+            # something is wrong
+            return "";
+        }
+
+        return sprintf("%d:%02.0f", digits[0], (digits[1] / 100) * 60);
+    },
 };

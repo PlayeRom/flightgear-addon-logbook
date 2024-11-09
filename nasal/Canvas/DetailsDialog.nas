@@ -331,13 +331,7 @@ var DetailsDialog = {
             or columnName == Columns.SWIFT
             or columnName == Columns.DURATION
         ) {
-            var digits = split(".", value);
-            if (size(digits) < 2) {
-                # something is wrong
-                return "hours";
-            }
-
-            return sprintf("hours (%d:%02.0f)", digits[0], (digits[1] / 100) * 60);
+            return sprintf("hours (%s)", Utils.decimalHoursToHuman(value));
         }
 
         if (columnName == Columns.DISTANCE) {
