@@ -50,8 +50,6 @@ var VerticalProfileDialog = {
 
         me._vBoxLayout = nil;
 
-        me._drawContent();
-
         return me;
     },
 
@@ -113,7 +111,7 @@ var VerticalProfileDialog = {
 
         me._scrollDataContent.createChild("path", "padding-keeper")
             .moveTo(0, 0)
-            .lineTo(VerticalProfileDialog.WINDOW_WIDTH, 0)
+            .horiz(VerticalProfileDialog.WINDOW_WIDTH)
             .setColor(0, 0, 0)
             .setStrokeLineWidth(1);
 
@@ -162,7 +160,7 @@ var VerticalProfileDialog = {
 
             # Draw horizontal grid line
             grid.moveTo(xXAxis, y)
-                .lineTo(graphWidth, y);
+                .horiz(graphWidth - xXAxis);
         }
 
         # Draw elevation and flight profile
@@ -248,7 +246,7 @@ var VerticalProfileDialog = {
 
                     # Draw vertical grid line
                     grid.moveTo(x, padding)
-                        .lineTo(x, yXAxis);
+                        .vert(yXAxis);
                 }
             }
         }
@@ -261,11 +259,11 @@ var VerticalProfileDialog = {
 
         # Draw X Axis
         axis.moveTo(xXAxis, yXAxis)
-            .lineTo(graphWidth, yXAxis);
+            .horiz(graphWidth - xXAxis);
 
         # Draw Y Axis
         axis.moveTo(xXAxis, padding)
-            .lineTo(xXAxis, graphHeight);
+            .vert(graphHeight);
     },
 
     #
