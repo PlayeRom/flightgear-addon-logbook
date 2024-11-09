@@ -1036,7 +1036,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
         me._positiveYAxisLength = me._yXAxis - padding;
 
-        me._graphWidth = model._size[0] - padding;# - (VerticalProfileDialog.PADDING * 2);
+        me._graphWidth = model._size[0] - padding;
 
         me._drawTextCenter("Time (hours) and Distance (NM)", model._size[0] / 2, graphHeight + 10);
         me._drawTextCenter("Altitude (feet)", 20, graphHeight / 2, -90);

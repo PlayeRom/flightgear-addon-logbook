@@ -19,7 +19,7 @@ var FlightPreviewDialog = {
     WINDOW_WIDTH     : 1360,
     WINDOW_HEIGHT    : 900,
     V_PROFILE_HEIGHT : 350,
-    PADDING       : 0,
+    PADDING          : 0,
     #
     # Aircraft icon:
     #
