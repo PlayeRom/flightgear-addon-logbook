@@ -125,7 +125,7 @@ DefaultStyle.widgets["profile-view"] = {
         var graduation = me._roundToNearestPowerOfTen(maxAltFt / 4);
         for (var i = 1; i <= 5; i += 1) {
             var altFt = graduation * i;
-            var y = me._yXAxis - ((altFt / maxAltFt) * me._positiveYAxisLength);
+            var y = me._yXAxis - ((maxAltFt == 0 ? 0 : altFt / maxAltFt) * me._positiveYAxisLength);
             if (y < padding) {
                 # There is no more space for another horizontal line, exit the loop
                 break;
@@ -165,9 +165,9 @@ DefaultStyle.widgets["profile-view"] = {
         forindex (var index; rows) {
             var row = rows[index];
 
-            var x = me._xXAxis + ((row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
-            var elevationY = me._yXAxis - ((row.elevation_m / maxAlt) * me._positiveYAxisLength);
-            var flightY    = me._yXAxis - ((row.alt_m / maxAlt) * me._positiveYAxisLength);
+            var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
+            var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : row.elevation_m / maxAlt) * me._positiveYAxisLength);
+            var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : row.alt_m / maxAlt) * me._positiveYAxisLength);
 
             if (index == 0) {
                 elevationProfile.moveTo(x, elevationY);
@@ -200,7 +200,7 @@ DefaultStyle.widgets["profile-view"] = {
                         # it is best to compare Y with the next point
                         if (index + 1 < size(rows)) {
                             var nextRow = rows[index + 1];
-                            var nextFlightY = me._yXAxis - ((nextRow.alt_m / maxAlt) * me._positiveYAxisLength);
+                            var nextFlightY = me._yXAxis - ((maxAlt == 0 ? 0 : nextRow.alt_m / maxAlt) * me._positiveYAxisLength);
 
                             if (nextFlightY + DefaultStyle.widgets["profile-view"].PIXEL_DIFF < p2.y) {
                                 rotate = -DefaultStyle.widgets["profile-view"].AC_ANGLE; # climb
@@ -263,8 +263,8 @@ DefaultStyle.widgets["profile-view"] = {
         me._aircraftPositionGroup.removeAllChildren();
 
         var row = model._tractItems[model._position];
-        var x = me._xXAxis + ((row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
-        var y = me._yXAxis - ((row.alt_m / model._maxAlt) * me._positiveYAxisLength);
+        var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
+        var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
         return me._drawAircraft(x, y);
     },
