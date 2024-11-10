@@ -16,7 +16,7 @@ var Environment = {
     #
     # Constants
     #
-    SKY_DOME_COLOR_THRESHOLD : 0.4,
+    SUN_ANG_NIGHT_THRESHOLD  : 1.57,
     MINIMUM_VFR_VISIBILITY   : 5000, # in meters
 
     #
@@ -40,9 +40,7 @@ var Environment = {
 
         me._propAltFt          = props.globals.getNode("/position/altitude-ft");
 
-        me._propSkyRed         = props.globals.getNode("/rendering/dome/sky/red");
-        me._propSkyGreen       = props.globals.getNode("/rendering/dome/sky/green");
-        me._propSkyBlue        = props.globals.getNode("/rendering/dome/sky/blue");
+        me._propSunAngleRad    = props.globals.getNode("/sim/time/sun-angle-rad");
 
         me._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
         me._propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
@@ -249,9 +247,7 @@ var Environment = {
     # @return bool
     #
     _isNight: func() {
-        return  me._propSkyRed.getValue()   < Environment.SKY_DOME_COLOR_THRESHOLD
-            and me._propSkyGreen.getValue() < Environment.SKY_DOME_COLOR_THRESHOLD
-            and me._propSkyBlue.getValue()  < Environment.SKY_DOME_COLOR_THRESHOLD;
+        return me._propSunAngleRad.getValue() > Environment.SUN_ANG_NIGHT_THRESHOLD;
     },
 
     #
