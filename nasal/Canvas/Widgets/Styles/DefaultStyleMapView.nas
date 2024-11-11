@@ -31,23 +31,21 @@ DefaultStyle.widgets["map-view"] = {
         me._textColor = me._style.getColor("fg_color");
 
         # Variables for map
-        me._mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
-        me._makeUrl = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
-        me._makePath = string.compileTemplate(me._mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
+        var mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
+        me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
+        me._makePath = string.compileTemplate(mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
 
-        me._numTiles = [6, 4];
-        me._centerTileOffset = nil;
-        me._lastTile = [-1, -1];;
+        me._numTiles = { x: 6, y: 4 };
+        me._centerTileOffset = { x: 0, y: 0 };
+        me._lastTile = { x: -1, y: -1 };
 
         me._flightPathGroup = nil;
         me._tiles = [];
 
         # A variable to remember the extreme positions of the map tiles,
         # which we will use to not draw the flight path outside the map
-        me._minTileX = 0;
-        me._maxTileX = 0;
-        me._minTileY = 0;
-        me._maxTileY = 0;
+        me._minTile = { x: 0, y: 0 };
+        me._maxTile = { x: 0, y: 0 };
     },
 
     #
@@ -94,13 +92,12 @@ DefaultStyle.widgets["map-view"] = {
 
             me._calculateNumTiles(model);
 
-            me._centerTileOffset = [
-                (me._numTiles[0] - 1) / 2,
-                (me._numTiles[1] - 1) / 2,
-            ];
+            me._centerTileOffset.x = (me._numTiles.x - 1) / 2;
+            me._centerTileOffset.y = (me._numTiles.y - 1) / 2;
 
-            me._lastTile[0] = -1;
-            me._lastTile[1] = -1;
+            # Reset values
+            me._lastTile.x = -1;
+            me._lastTile.y = -1;
 
             me._createTiles();
 
@@ -114,20 +111,20 @@ DefaultStyle.widgets["map-view"] = {
     # Calculate how many tiles you need in width and height depending on the widget size
     #
     _calculateNumTiles: func(model) {
-        me._numTiles[0] = math.floor(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
-        me._numTiles[1] = math.floor(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles.x = math.floor(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles.y = math.floor(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
     },
 
     #
     # Initialize the map by setting up a grid of raster images
     #
     _createTiles: func() {
-        me._tiles = setsize([], me._numTiles[0]);
+        me._tiles = setsize([], me._numTiles.x);
 
-        for (var x = 0; x < me._numTiles[0]; x += 1) {
-            me._tiles[x] = setsize([], me._numTiles[1]);
+        for (var x = 0; x < me._numTiles.x; x += 1) {
+            me._tiles[x] = setsize([], me._numTiles.y);
 
-            for (var y = 0; y < me._numTiles[1]; y += 1) {
+            for (var y = 0; y < me._numTiles.y; y += 1) {
                 me._tiles[x][y] = me._root.createChild("image", "map-tile");
             }
         }
@@ -139,8 +136,8 @@ DefaultStyle.widgets["map-view"] = {
     _drawAircraft: func() {
         me._root.createChild("path")
             .moveTo(
-                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset[0] - 10,
-                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset[1]
+                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - 10,
+                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y
             )
             .horiz(20)
             .move(-10, -10)
@@ -209,8 +206,8 @@ DefaultStyle.widgets["map-view"] = {
         var centerY = me._latToY(centerLat, zoom);
 
         # Offset from the center of the map
-        var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset[0];
-        var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset[1];
+        var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x;
+        var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y;
 
         return { x: pixelX, y: pixelY };
     },
@@ -240,10 +237,10 @@ DefaultStyle.widgets["map-view"] = {
                 model._zoom
             );
 
-            if (   pos.x > me._maxTileX + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.x < me._minTileX
-                or pos.y > me._maxTileY + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.y < me._minTileY
+            if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.x < me._minTile.x
+                or pos.y < me._minTile.y
             ) {
                 # The path point is out of map tiles, so ship it
                 isBreak = true;
@@ -288,63 +285,66 @@ DefaultStyle.widgets["map-view"] = {
             return;
         }
 
-        me._minTileX = 0;
-        me._maxTileX = 0;
-        me._minTileY = 0;
-        me._maxTileY = 0;
+        me._minTile.x = 0;
+        me._minTile.y = 0;
+        me._maxTile.x = 0;
+        me._maxTile.y = 0;
 
-        # get current position
-        # var lat = getprop('/position/latitude-deg');
-        # var lon = getprop('/position/longitude-deg');
-
+        # Get current position
         var lat = model._tractItems[model._position].lat;
         var lon = model._tractItems[model._position].lon;
 
-        var n = math.pow(2, model._zoom);
-        var offset = [
-            n * ((lon + 180) / 360) - me._centerTileOffset[0],
-            (1 - math.ln(math.tan(lat * math.pi / 180) + 1 / math.cos(lat * math.pi / 180)) / math.pi) / 2 * n - me._centerTileOffset[1],
-        ];
-        var tileIndex = [int(offset[0]), int(offset[1])];
+        var scale = math.pow(2, model._zoom);
+        var offset = {
+            x: scale * ((lon + 180) / 360) - me._centerTileOffset.x,
+            y: (1 - math.ln(math.tan(lat * math.pi / 180) + 1 / math.cos(lat * math.pi / 180)) / math.pi) / 2 * scale - me._centerTileOffset.y,
+        };
 
-        var ox = tileIndex[0] - offset[0];
-        var oy = tileIndex[1] - offset[1];
+        var tileIndex = {
+            x: int(offset.x),
+            y: int(offset.y),
+        };
 
-        for (var x = 0; x < me._numTiles[0]; x += 1) {
-            for (var y = 0; y < me._numTiles[1]; y += 1) {
-                var transX = int((ox + x) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5);
-                var transY = int((oy + y) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5);
+        var ox = tileIndex.x - offset.x;
+        var oy = tileIndex.y - offset.y;
 
-                me._tiles[x][y].setTranslation(transX, transY);
+        for (var x = 0; x < me._numTiles.x; x += 1) {
+            for (var y = 0; y < me._numTiles.y; y += 1) {
+                var trans = {
+                    x: int((ox + x) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5),
+                    y: int((oy + y) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5),
+                };
+
+                me._tiles[x][y].setTranslation(trans.x, trans.y);
 
                 # Remember the extreme positions of map tiles
-                if (transX > me._maxTileX) {
-                    me._maxTileX = transX;
+                if (trans.x > me._maxTile.x) {
+                    me._maxTile.x = trans.x;
                 }
 
-                if (transX < me._minTileX) {
-                    me._minTileX = transX;
+                if (trans.x < me._minTile.x) {
+                    me._minTile.x = trans.x;
                 }
 
-                if (transY > me._maxTileY) {
-                    me._maxTileY = transY;
+                if (trans.y > me._maxTile.y) {
+                    me._maxTile.y = trans.y;
                 }
 
-                if (transY < me._minTileY) {
-                    me._minTileY = transY;
+                if (trans.y < me._minTile.y) {
+                    me._minTile.y = trans.y;
                 }
             }
         }
 
-        if (   tileIndex[0] != me._lastTile[0]
-            or tileIndex[1] != me._lastTile[1]
+        if (   tileIndex.x != me._lastTile.x
+            or tileIndex.y != me._lastTile.y
         ) {
-            for (var x = 0; x < me._numTiles[0]; x += 1) {
-                for (var y = 0; y < me._numTiles[1]; y += 1) {
+            for (var x = 0; x < me._numTiles.x; x += 1) {
+                for (var y = 0; y < me._numTiles.y; y += 1) {
                     var pos = {
                         z: model._zoom,
-                        x: int(offset[0] + x),
-                        y: int(offset[1] + y),
+                        x: int(offset.x + x),
+                        y: int(offset.y + y),
                     };
 
                     (func {
@@ -374,7 +374,8 @@ DefaultStyle.widgets["map-view"] = {
                 }
             }
 
-            me._lastTile = tileIndex;
+            me._lastTile.x = tileIndex.x;
+            me._lastTile.y = tileIndex.y;
         }
 
         me._drawFlightPath(model);
