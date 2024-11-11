@@ -36,13 +36,8 @@ DefaultStyle.widgets["map-view"] = {
         me._makePath = string.compileTemplate(me._mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
 
         me._numTiles = [6, 4];
-
-        me._centerTileOffset = [
-            (me._numTiles[0] - 1) / 2,
-            (me._numTiles[1] - 1) / 2,
-        ];
-
-        me._lastTile = [-1, -1];
+        me._centerTileOffset = nil;
+        me._lastTile = [-1, -1];;
 
         me._flightPathGroup = nil;
         me._tiles = [];
@@ -63,7 +58,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return me
     #
     setSize: func(model, w, h) {
-        # me.reDrawContent(model);
+        me.reDrawContent(model);
 
         return me;
     },
@@ -97,12 +92,30 @@ DefaultStyle.widgets["map-view"] = {
             me._flightPathGroup = me._root.createChild("group")
                 .set("z-index", 1);
 
+            me._calculateNumTiles(model);
+
+            me._centerTileOffset = [
+                (me._numTiles[0] - 1) / 2,
+                (me._numTiles[1] - 1) / 2,
+            ];
+
+            me._lastTile[0] = -1;
+            me._lastTile[1] = -1;
+
             me._createTiles();
 
             me._drawAircraft();
 
             me.updateTiles(model);
         }
+    },
+
+    #
+    # Calculate how many tiles you need in width and height depending on the widget size
+    #
+    _calculateNumTiles: func(model) {
+        me._numTiles[0] = math.floor(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles[1] = math.floor(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
     },
 
     #

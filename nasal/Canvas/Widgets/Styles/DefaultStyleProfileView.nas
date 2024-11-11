@@ -48,7 +48,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return me
     #
     setSize: func(model, w, h) {
-        # me.reDrawContent(model);
+        me.reDrawContent(model);
 
         return me;
     },
@@ -94,21 +94,23 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     _drawProfile: func(model) {
-        var graphHeight = model._size[1] - 100;
+        # TODO: maybe the widget should not use padding, this one should be set in BoxLayout using addSpacing()?
+        var padding = 20;
+
+        var graphHeight = model._size[1] - (padding * 2);
 
         me._drawPaddingKeeper(model);
 
         var rows = model._tractItems;
 
         var seaMeanLevel = (graphHeight / 6);
-        var padding = 20;
         me._xXAxis = 80;
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
         me._positiveYAxisLength = me._yXAxis - padding;
 
         me._graphWidth = model._size[0] - padding;
 
-        me._drawTextCenter("Time (hours) and Distance (NM)", model._size[0] / 2, graphHeight + 10);
+        me._drawTextCenter("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1] - padding);
         me._drawTextCenter("Altitude (feet)", 20, graphHeight / 2, -90);
 
         var maxAlt = model._maxAlt; # me._storage.getLogbookTrackerMaxAlt(me._logbookId);

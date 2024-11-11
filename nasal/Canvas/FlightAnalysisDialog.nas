@@ -18,7 +18,6 @@ var FlightAnalysisDialog = {
     #
     WINDOW_WIDTH     : 1360,
     WINDOW_HEIGHT    : 720,
-    V_PROFILE_HEIGHT : 300,
     FRACTION         : { labels: 1, map: 9 },
     #
     # Aircraft icon:
@@ -38,7 +37,9 @@ var FlightAnalysisDialog = {
                 Dialog.new(
                     FlightAnalysisDialog.WINDOW_WIDTH,
                     FlightAnalysisDialog.WINDOW_HEIGHT,
-                    "Flight Analysis"
+                    "Flight Analysis",
+                    true,
+                    func(w, h) { me._onResize(w, h); }
                 ),
             ],
             _storage  : storage,
@@ -143,8 +144,13 @@ var FlightAnalysisDialog = {
     _drawContent: func() {
         me.vbox.clear();
 
-        me._scrollAreaLProfile = me.createScrollArea();
-        me._scrollAreaVProfile = me.createScrollArea();
+        me._scrollAreaMap = me.createScrollArea();
+
+        me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
+        me._profileView.setData(
+            me._trackItems,
+            me._storage.getLogbookTrackerMaxAlt(me._logbookId)
+        );
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
@@ -152,15 +158,16 @@ var FlightAnalysisDialog = {
 
         hBoxLayout.addSpacing(10);
         hBoxLayout.addItem(vBoxLayoutInfo, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
-        hBoxLayout.addItem(me._scrollAreaLProfile, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
+        hBoxLayout.addItem(me._scrollAreaMap, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
 
         me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
-        me.vbox.addItem(me._scrollAreaVProfile, 1); # 2nd param = stretch
+        me.vbox.addItem(me._profileView, 1); # 2nd param = stretch
 
-        me._scrollLProfileContent = me.getScrollAreaContent(me._scrollAreaLProfile);
-        me._scrollVProfileContent = me.getScrollAreaContent(me._scrollAreaVProfile);
+        me._scrollMapContent = me.getScrollAreaContent(me._scrollAreaMap);
 
         me._drawScrollable();
+
+        me._updateLabelValues();
 
         me._drawBottomBar();
     },
@@ -186,7 +193,7 @@ var FlightAnalysisDialog = {
         var labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
         me._labelDistanceValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 NM");
 
-        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addSpacing(10);
         vBoxLayoutInfo.addItem(labelLatLon);
         vBoxLayoutInfo.addItem(me._labelLatLonValue);
         vBoxLayoutInfo.addStretch(1);
@@ -208,6 +215,7 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addItem(labelDistance);
         vBoxLayoutInfo.addItem(me._labelDistanceValue);
         vBoxLayoutInfo.addStretch(2);
+        vBoxLayoutInfo.addSpacing(10);
 
         return vBoxLayoutInfo;
     },
@@ -220,24 +228,32 @@ var FlightAnalysisDialog = {
     _drawScrollable: func() {
         # Lateral Profile
 
-        me._mapView = canvas.gui.widgets.MapView.new(me._scrollLProfileContent, canvas.style, {});
-        me._mapView.setSize(
-            FlightAnalysisDialog.WINDOW_WIDTH - (FlightAnalysisDialog.WINDOW_WIDTH / (FlightAnalysisDialog.FRACTION.map)),
-            560
+        me._mapView = canvas.gui.widgets.MapView.new(me._scrollMapContent, canvas.style, {});
+        # I use _onResize to set the correct number of tiles on the map when I reopen the window,
+        # because it remembers the previous size
+        me._onResize(
+            getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"),
+            getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]")
         );
         me._mapView.setTrackItems(me._trackItems);
+    },
 
-
-        # Vertical Profile
-
-        me._profileView = canvas.gui.widgets.ProfileView.new(me._scrollVProfileContent, canvas.style, {});
-        me._profileView.setSize(FlightAnalysisDialog.WINDOW_WIDTH, FlightAnalysisDialog.V_PROFILE_HEIGHT);
-        me._profileView.setData(
-            me._trackItems,
-            me._storage.getLogbookTrackerMaxAlt(me._logbookId)
+    #
+    # Callback on resize window
+    #
+    # @param  int  width  New width of window
+    # @param  int  height  New height of window
+    # @return void
+    #
+    _onResize: func(width, height) {
+        # TODO: The easiest way would be to take me._scrollAreaMap._size,
+        # but this one doesn't yet include the current size/
+        # So I'm trying to combine with _onResize and calculating from proportions,
+        # if these change it will stop working/
+        me._mapView.setSize(
+            width - (width / FlightAnalysisDialog.FRACTION.map),
+            height * 0.585
         );
-
-        me._updateLabelValues();
     },
 
     #

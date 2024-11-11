@@ -20,10 +20,10 @@ var Dialog = {
     # @param  int  height  Initial height of window
     # @param  string  title  Title of window in the top bar
     # @param  bool  resize  If true then user will be possible to resize the window
-    # @param  func|nil  onResizeWidth  Callback call when width of window was changed
+    # @param  func|nil  onResize  Callback call when width or height of window was changed
     # @return me
     #
-    new: func(width, height, title, resize = 0, onResizeWidth = nil) {
+    new: func(width, height, title, resize = 0, onResize = nil) {
         var me = { parents: [Dialog] };
 
         me._width  = width;
@@ -46,12 +46,15 @@ var Dialog = {
             .setSize(LogbookDialog.MAX_WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.MAX_WINDOW_WIDTH));
         me.toggleBgImage();
 
-        if (resize and onResizeWidth != nil) {
+        if (resize and onResize != nil) {
             me._windowPropIndex = me._getWindowPropertyIndex(title);
             if (me._windowPropIndex > -1) {
                 # Set listener for resize width of window
-                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]", func(node) {
-                    onResizeWidth(node.getValue());
+                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size", func(node) {
+                    onResize(
+                        getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"),
+                        getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]")
+                    );
                 });
             }
         }

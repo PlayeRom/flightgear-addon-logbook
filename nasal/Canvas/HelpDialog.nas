@@ -34,7 +34,7 @@ var HelpDialog = {
                 HelpDialog.WINDOW_HEIGHT,
                 HelpDialog.TITLE,
                 true,
-                func(width) { me._onResizeWidth(width); }
+                func(w, h) { me._onResize(w, h); }
             ),
         ] };
 
@@ -82,10 +82,11 @@ var HelpDialog = {
     #
     # Resize callback from parent Dialog
     #
-    # @param int width
+    # @param  int  width
+    # @param  int  height
     # @return void
     #
-    _onResizeWidth: func(width) {
+    _onResize: func(width, height) {
         me._reDrawTexts(0, 0, width - (HelpDialog.PADDING * 2));
     },
 
