@@ -150,12 +150,12 @@ var DetailsDialog = {
             }
         );
 
-        buttonBox.addStretch(me._isUsingSQLite ? 5 : 3);
-        buttonBox.addItem(btnClose);
+        buttonBox.addStretch(me._isUsingSQLite ? 1 : 3);
         if (me._isUsingSQLite) {
-            buttonBox.addStretch(1);
             buttonBox.addItem(me._btnFlightAnalysis);
+            buttonBox.addStretch(1);
         }
+        buttonBox.addItem(btnClose);
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
@@ -202,7 +202,9 @@ var DetailsDialog = {
         me._isTotals = logbookId == Columns.TOTALS_ROW_ID;
 
         me._btnDelete.setEnabled(!me._isTotals);
-        me._btnFlightAnalysis.setEnabled(!me._isTotals);
+        if (me._isUsingSQLite) {
+            me._btnFlightAnalysis.setEnabled(!me._isTotals);
+        }
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
