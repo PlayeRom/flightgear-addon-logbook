@@ -108,6 +108,11 @@ var LogbookDialog = {
             me._labelPaging.setColor(me.style.TEXT_COLOR);
         }
 
+        me._btnFirst = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._btnPrev  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._btnNext  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._btnLast  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+
         me._btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me._drawBottomBar();
 
@@ -422,24 +427,24 @@ var LogbookDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnFirst = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnFirst
             .setText("|<<")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._first(); });
 
-        var btnPrev = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnPrev
             .setText("<")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._prev(); });
 
         me._setPaging();
 
-        var btnNext = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnNext
             .setText(">")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._next(); });
 
-        var btnLast = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnLast
             .setText(">>|")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._last(); });
@@ -460,13 +465,13 @@ var LogbookDialog = {
             .listen("clicked", func { me.helpDialog.show(); });
 
         buttonBox.addStretch(4);
-        buttonBox.addItem(btnFirst);
-        buttonBox.addItem(btnPrev);
+        buttonBox.addItem(me._btnFirst);
+        buttonBox.addItem(me._btnPrev);
         buttonBox.addStretch(1);
         buttonBox.addItem(me._labelPaging);
         buttonBox.addStretch(1);
-        buttonBox.addItem(btnNext);
-        buttonBox.addItem(btnLast);
+        buttonBox.addItem(me._btnNext);
+        buttonBox.addItem(me._btnLast);
         buttonBox.addStretch(2);
         buttonBox.addItem(me._btnStyle);
         buttonBox.addItem(btnSettings);
@@ -696,6 +701,11 @@ var LogbookDialog = {
         var curPage = (me._startIndex / me._itemsPerPage) + 1;
         var maxPages = math.ceil(me._storage.getTotalLines() / me._itemsPerPage) or 1;
         me._labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me._storage.getTotalLines()));
+
+        me._btnFirst.setEnabled(curPage > 1);
+        me._btnPrev.setEnabled(curPage > 1);
+        me._btnNext.setEnabled(curPage < maxPages);
+        me._btnLast.setEnabled(curPage < maxPages);
     },
 
     #
