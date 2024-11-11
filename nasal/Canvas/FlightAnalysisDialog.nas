@@ -19,6 +19,7 @@ var FlightAnalysisDialog = {
     WINDOW_WIDTH     : 1360,
     WINDOW_HEIGHT    : 900,
     V_PROFILE_HEIGHT : 350,
+    FRACTION         : { labels: 1, map: 9 },
     #
     # Aircraft icon:
     #
@@ -150,8 +151,8 @@ var FlightAnalysisDialog = {
         var vBoxLayoutInfo = me._drawInfoLabels();
 
         hBoxLayout.addSpacing(10);
-        hBoxLayout.addItem(vBoxLayoutInfo, 1); # 2nd param = stretch
-        hBoxLayout.addItem(me._scrollAreaLProfile, 9); # 2nd param = stretch
+        hBoxLayout.addItem(vBoxLayoutInfo, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
+        hBoxLayout.addItem(me._scrollAreaLProfile, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
 
         me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
         me.vbox.addItem(me._scrollAreaVProfile, 1); # 2nd param = stretch
@@ -220,7 +221,10 @@ var FlightAnalysisDialog = {
         # Lateral Profile
 
         me._mapView = canvas.gui.widgets.MapView.new(me._scrollLProfileContent, canvas.style, {});
-        me._mapView.setSize(FlightAnalysisDialog.WINDOW_WIDTH, 600);
+        me._mapView.setSize(
+            FlightAnalysisDialog.WINDOW_WIDTH - (FlightAnalysisDialog.WINDOW_WIDTH / (FlightAnalysisDialog.FRACTION.map)),
+            560
+        );
         me._mapView.setTrackItems(me._trackItems);
 
 
