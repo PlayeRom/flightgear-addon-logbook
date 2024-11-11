@@ -19,12 +19,9 @@ var FlightAnalysisDialog = {
     WINDOW_WIDTH     : 1360,
     WINDOW_HEIGHT    : 900,
     V_PROFILE_HEIGHT : 350,
-    PADDING          : 0,
     #
     # Aircraft icon:
     #
-    PIXEL_DIFF     : 9,  # The difference in height in pixels between adjacent flight profile points
-    AC_ANGLE       : 20, # Angle in degrees to rotate the airplane icon up or down
     FAST_POS_CHANGE: 10,
 
     #
@@ -145,15 +142,8 @@ var FlightAnalysisDialog = {
     _drawContent: func() {
         me.vbox.clear();
 
-        var margins = {
-            left   : FlightAnalysisDialog.PADDING,
-            top    : FlightAnalysisDialog.PADDING,
-            right  : FlightAnalysisDialog.PADDING,
-            bottom : 0,
-        };
-
-        me._scrollAreaLProfile = me.createScrollArea(nil, margins);
-        me._scrollAreaVProfile = me.createScrollArea(nil, margins);
+        me._scrollAreaLProfile = me.createScrollArea();
+        me._scrollAreaVProfile = me.createScrollArea();
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
