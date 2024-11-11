@@ -202,6 +202,7 @@ var DetailsDialog = {
         me._isTotals = logbookId == Columns.TOTALS_ROW_ID;
 
         me._btnDelete.setEnabled(!me._isTotals);
+        me._btnFlightAnalysis.setEnabled(!me._isTotals);
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
