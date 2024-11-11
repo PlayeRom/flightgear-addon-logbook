@@ -17,8 +17,8 @@ var FlightAnalysisDialog = {
     # Constants
     #
     WINDOW_WIDTH     : 1360,
-    WINDOW_HEIGHT    : 900,
-    V_PROFILE_HEIGHT : 350,
+    WINDOW_HEIGHT    : 720,
+    V_PROFILE_HEIGHT : 300,
     FRACTION         : { labels: 1, map: 9 },
     #
     # Aircraft icon:
