@@ -17,7 +17,7 @@ var RecoverySQLite = {
     #
     # Constants
     #
-    INTERVAL_SEC: 30,
+    INTERVAL_SEC: 20,
 
     #
     # Constructor
