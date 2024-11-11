@@ -46,15 +46,37 @@ var Dialog = {
             .setSize(LogbookDialog.MAX_WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.MAX_WINDOW_WIDTH));
         me.toggleBgImage();
 
+        me._windowPropIndex = nil;
+
         if (resize and onResize != nil) {
             me._windowPropIndex = me._getWindowPropertyIndex(title);
             if (me._windowPropIndex > -1) {
+                # Our goal is to observe the change in width and height, but we want to call onResize only once,
+                # regardless of whether only the width, height or both values have changed.
+                # FG handles the following listeners in such a way that it will always trigger both, even if only one of
+                # the sizes has changed. Therefore, we handle both listeners with a timer, where each triggered of the
+                # listener extends the life of the timer, until finally the listeners stop triggered and the timer
+                # function finally executes and executes only once.
+                var resizeTimer = maketimer(0.1, func() {
+                    resizeTimer.stop();
+
+                    me._width  = int(getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"));
+                    me._height = int(getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]"));
+
+                    onResize(me._width, me._height);
+                });
+
                 # Set listener for resize width of window
-                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size", func(node) {
-                    onResize(
-                        getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"),
-                        getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]")
-                    );
+                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]", func(node) {
+                    resizeTimer.isRunning
+                        ? resizeTimer.restart(0.1)
+                        : resizeTimer.start();
+                });
+
+                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]", func(node) {
+                    resizeTimer.isRunning
+                        ? resizeTimer.restart(0.1)
+                        : resizeTimer.start();
                 });
             }
         }
