@@ -27,6 +27,8 @@ var Settings = {
     #
     MIN_LOG_ITEMS : 5,
     MAX_LOG_ITEMS : 20,
+    #
+    TRACKER_INTERVAL_SEC: 20,
 
     #
     # Constructor
@@ -250,5 +252,20 @@ var Settings = {
         foreach (var columnName; me._columnsVisible) {
             setprop(me._propToSave ~ "/settings/columns-visible/" ~ columnName, columnsVisible[columnName]);
         }
+    },
+
+    #
+    # Get number of seconds as data recording interval during flight
+    #
+    # @return int
+    #
+    getTrackerIntervalSec: func() {
+        var value = getprop(me._propToSave ~ "/settings/tracker-interval-sec");
+
+        if (value == nil or value == "") {
+            return Settings.TRACKER_INTERVAL_SEC;
+        }
+
+        return value;
     },
 };

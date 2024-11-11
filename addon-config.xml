@@ -26,6 +26,9 @@
                             <date-time-display type="string">real</date-time-display>
                             <log-items-per-page type="int">10</log-items-per-page>
 
+                            <!-- Number of seconds as data recording interval during flight -->
+                            <tracker-interval-sec type="int">20</tracker-interval-sec>
+
                             <columns-visible>
                                 <!-- Which columns should be displayed: -->
                                 <variant type="bool">true</variant>

@@ -182,7 +182,7 @@ This add-on includes a mechanism to save the current flight status to a separate
 
 ### For FG 2024.1 and later
 
-In the newer version based on the SQLite database, the recovery mechanism writes data every 30 seconds directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
+In the newer version based on the SQLite database, the recovery mechanism writes data every 20 seconds directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
 
 ## Export database to CSV file
 
@@ -193,7 +193,7 @@ The CSV file will be in the format `logbook-export-YYYY-MM-DD-HH-mm-SS.csv` and 
 ## NOTE
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every 30 seconds.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every 30 or 20 seconds.
 3. To count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing by the add-on.
 4. If you start a simulation in the air, the add-on will recognize this and start logging without waiting for take-off.
 5. If you start a simulation in the air, the add-on is unable to recognize the landing gear, so the landing detection pass will extend to 6 seconds (giving an extra 3 seconds to make sure the aircraft is resting on all wheels).
