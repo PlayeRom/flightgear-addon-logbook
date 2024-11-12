@@ -232,6 +232,7 @@ var DetailsDialog = {
         }
 
         me._logbookId = nil;
+        me._flightAnalysisDialog.hide();
         me._inputDialog.hide();
         me._deleteDialog.hide();
         call(Dialog.hide, [], me);
