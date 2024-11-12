@@ -37,6 +37,7 @@ var Flight = {
         me._propMach    = props.globals.getNode("/velocities/mach");
         me._propHdgTrue = props.globals.getNode("/orientation/heading-deg");
         me._propHdgMag  = props.globals.getNode("/orientation/heading-magnetic-deg");
+        me._propPitch   = props.globals.getNode("/orientation/pitch-deg");
 
         return me;
     },
@@ -137,5 +138,14 @@ var Flight = {
     #
     getHeadingMag: func() {
         return me._propHdgMag.getValue();
+    },
+
+    #
+    # Get aircraft pitch in degrees
+    #
+    # @return double
+    #
+    getPitch: func() {
+        return me._propPitch.getValue();
     },
 };

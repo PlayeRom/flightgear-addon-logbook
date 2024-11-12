@@ -262,9 +262,10 @@ var StorageSQLite = {
     # @param  double  headingMag
     # @param  double  groundspeed  In knots
     # @param  double  airspeed  In knots
+    # @param  double  pitch  Aircraft pitch in degrees
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed) {
+    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed, pitch) {
         if (logbookId == nil) {
             return false;
         }
@@ -273,7 +274,7 @@ var StorageSQLite = {
         var elevationMeters = geo.elevation(pos.lat(), pos.lon());
 
         var query = "INSERT INTO " ~ StorageSQLite.TABLE_TRACKERS
-            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt,
@@ -287,7 +288,8 @@ var StorageSQLite = {
             headingTrue,
             headingMag,
             groundspeed,
-            airspeed
+            airspeed,
+            pitch
         );
 
         return true;

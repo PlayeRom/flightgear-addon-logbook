@@ -368,7 +368,8 @@ var Logbook = {
             me._flight.getHeadingTrue(),
             me._flight.getHeadingMag(),
             me._flight.getGroundspeedKt(),
-            me._flight.getAirspeedKt()
+            me._flight.getAirspeedKt(),
+            me._flight.getPitch()
         );
 
         me._logData = nil;
@@ -437,7 +438,8 @@ var Logbook = {
             me._flight.getHeadingTrue(),
             me._flight.getHeadingMag(),
             me._flight.getGroundspeedKt(),
-            me._flight.getAirspeedKt()
+            me._flight.getAirspeedKt(),
+            me._flight.getPitch()
         );
     },
 

@@ -53,6 +53,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
             { name: "heading_mag",  type: "REAL" }, # aircraft magnetic heading
             { name: "groundspeed",  type: "REAL" }, # aircraft groundspeed in knots
             { name: "airspeed",     type: "REAL" }, # aircraft airspeed in knots
+            { name: "pitch",        type: "REAL" }, # aircraft pitch in deg
         ];
 
         me.createTable(StorageSQLite.TABLE_TRACKERS, columns);

@@ -98,9 +98,10 @@ var Storage = {
     # @param  double  headingMag
     # @param  double  groundspeed  In knots
     # @param  double  airspeed  In knots
+    # @param  double  pitch  Aircraft pitch in degrees
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed) {
+    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed, pitch) {
         if (me._isUsingSQLite and logbookId != nil) {
             return me._handler.addTrackerItem(
                 logbookId,
@@ -109,7 +110,8 @@ var Storage = {
                 headingTrue,
                 headingMag,
                 groundspeed,
-                airspeed
+                airspeed,
+                pitch
             );
         }
 
