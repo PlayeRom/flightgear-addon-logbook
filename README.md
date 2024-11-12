@@ -152,6 +152,9 @@ Buttons:
 * `<<` and `>>` – move back or forward 10 points
 * `|<<` and `>>|` – jump to start or end point
 
+To change red cross position, you can also click on the map near to the fly path or click on the profile diagram.
+
+The flight analysis window is resizable, but remember that if it is too small it will not be able to draw the map or vertical profile correctly.
 
 Flight analysis will only be available for flights made in FlightGear version 2024.1 and newer.
 
