@@ -199,10 +199,9 @@ var Dialog = {
     #
     # Hide canvas dialog
     #
-    # @param  bool  withRedraw
     # @return void
     #
-    hide: func(withRedraw = 1) {
+    hide: func() {
         me.window.hide();
     },
 
