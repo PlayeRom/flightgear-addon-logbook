@@ -104,10 +104,7 @@ gui.widgets.ProfileView = {
     goNextTrack: func(interval = 1) {
         me._position += interval;
 
-        var lastRowsIndex = me.getTrackLastIndex();
-        if (me._position > lastRowsIndex) {
-            me._position = lastRowsIndex;
-        }
+        me._protectMaxPosition();
 
         me._view.updateAircraftPosition(me);
 
@@ -123,13 +120,47 @@ gui.widgets.ProfileView = {
     goPrevTrack: func(interval = 1) {
         me._position -= interval;
 
-        if (me._position < 0) {
-            me._position = 0;
-        }
+        me._protectMinPosition();
 
         me._view.updateAircraftPosition(me);
 
         return me;
+    },
+
+    #
+    # Set new position of track
+    #
+    # @param  int  position
+    # @return me
+    #
+    setTrack: func(position) {
+        me._position = position;
+
+        me._protectMinPosition();
+        me._protectMaxPosition();
+
+        me._view.updateAircraftPosition(me);
+
+        return me;
+    },
+
+    #
+    # Prevents exceeding the minimum value of the position
+    #
+    _protectMinPosition: func() {
+        if (me._position < 0) {
+            me._position = 0;
+        }
+    },
+
+    #
+    # Prevents exceeding the maximum value of the position
+    #
+    _protectMaxPosition: func() {
+        var lastRowsIndex = me.getTrackLastIndex();
+        if (me._position > lastRowsIndex) {
+            me._position = lastRowsIndex;
+        }
     },
 
     #
@@ -154,7 +185,7 @@ gui.widgets.ProfileView = {
     },
 
     #
-    # The widget itself updated the plane's position
+    # The widget itself updated the aircraft's position
     #
     # @param  int  position  New position
     # @return void

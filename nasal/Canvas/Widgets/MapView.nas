@@ -221,4 +221,30 @@ gui.widgets.MapView = {
     getPosition: func() {
         return me._position;
     },
+
+    #
+    # @param  func  callback  Callback function
+    # @param  hash  objCallback  Class as owner of callback function
+    # @return me
+    #
+    setUpdateCallback: func(callback, objCallback) {
+        me._callback = callback;
+        me._objCallback = objCallback;
+
+        return me;
+    },
+
+    #
+    # The widget itself updated the aircraft's position
+    #
+    # @param  int  position  New position
+    # @return void
+    #
+    _updatePosition: func(position) {
+        me._position = position;
+
+        if (me._objCallback != nil and me._callback != nil) {
+            call(me._callback, [position], me._objCallback);
+        }
+    },
 };

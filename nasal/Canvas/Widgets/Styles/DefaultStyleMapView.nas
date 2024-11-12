@@ -46,6 +46,9 @@ DefaultStyle.widgets["map-view"] = {
         # which we will use to not draw the flight path outside the map
         me._minTile = { x: 0, y: 0 };
         me._maxTile = { x: 0, y: 0 };
+
+        me._points = std.Vector.new();
+        me._isClickEventSet = false;
     },
 
     #
@@ -87,6 +90,32 @@ DefaultStyle.widgets["map-view"] = {
             );
         }
         else {
+            if (!me._isClickEventSet) {
+                me._isClickEventSet = true;
+
+                me._root.addEventListener("click", func(e) {
+                    # Find the path point closest to the click
+                    var minDistance = nil;
+                    var position = nil;
+                    var distance = 0;
+                    foreach (var point; me._points.vector) {
+                        distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
+
+                        if (distance < 50 # <- ignore points further than 50 px
+                            and (minDistance == nil or distance < minDistance)
+                        ) {
+                            minDistance = distance;
+                            position = point.position;
+                        }
+                    }
+
+                    if (position != nil) {
+                        model._updatePosition(position);
+                        me.updateTiles(model);
+                    }
+                });
+            }
+
             me._flightPathGroup = me._root.createChild("group")
                 .set("z-index", 1);
 
@@ -101,10 +130,22 @@ DefaultStyle.widgets["map-view"] = {
 
             me._createTiles();
 
+            # Aircraft is always on the center of view and the map is moving
             me._drawAircraft();
 
             me.updateTiles(model);
         }
+    },
+
+    #
+    # Calculate distance between 2 points
+    #
+    # @param  hash  p1
+    # @param  hash  p2
+    # @return double
+    #
+    _getDistance: func(p1, p2) {
+        return math.sqrt(math.pow(p2.x - p1.x, 2) + math.pow(p2.y - p1.y, 2));
     },
 
     #
@@ -219,6 +260,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Path element
     #
     _drawFlightPath: func(model) {
+        me._points.clear();
         me._flightPathGroup.removeAllChildren();
 
         var pointsToDraw = [];
@@ -249,6 +291,7 @@ DefaultStyle.widgets["map-view"] = {
                 # When there was a discontinuity, we need to start drawing with the moveTo function,
                 # so we set the moveTo flag which will tell us that
                 pos["moveTo"] = isBreak ? true : false;
+                pos["position"] = index;
                 isBreak = false;
                 append(pointsToDraw, pos);
             }
@@ -262,6 +305,8 @@ DefaultStyle.widgets["map-view"] = {
 
         forindex (var index; pointsToDraw) {
             var point = pointsToDraw[index];
+
+            me._points.append(point);
 
             if (index == 0 or point.moveTo) {
                 flightPath.moveTo(point.x, point.y);

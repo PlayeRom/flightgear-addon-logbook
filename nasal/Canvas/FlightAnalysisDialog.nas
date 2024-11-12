@@ -245,6 +245,7 @@ var FlightAnalysisDialog = {
             getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]")
         );
         me._mapView.setTrackItems(me._trackItems);
+        me._mapView.setUpdateCallback(me._mapViewUpdatePosition, me);
     },
 
     #
@@ -390,9 +391,21 @@ var FlightAnalysisDialog = {
     },
 
     #
+    # Callback function called from MapView when user click on the map
+    #
+    # @param  int  position  New aircraft position
+    # @return void
+    #
+    _mapViewUpdatePosition: func(position) {
+        me._profileView.setTrack(position);
+
+        me._updateAfterChangePosition();
+    },
+
+    #
     # Callback function called from ProfileView when user click on diagram
     #
-    # @param int  position  New aircraft position
+    # @param  int  position  New aircraft position
     # @return void
     #
     _profileViewUpdatePosition: func(position) {
