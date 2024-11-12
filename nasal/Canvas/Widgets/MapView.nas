@@ -145,10 +145,7 @@ gui.widgets.MapView = {
     goNextTrack: func(interval = 1) {
         me._position += interval;
 
-        var lastRowsIndex = me.getTrackLastIndex();
-        if (me._position > lastRowsIndex) {
-            me._position = lastRowsIndex;
-        }
+        me._protectMaxPosition();
 
         me._view.updateTiles(me);
 
@@ -164,13 +161,47 @@ gui.widgets.MapView = {
     goPrevTrack: func(interval = 1) {
         me._position -= interval;
 
-        if (me._position < 0) {
-            me._position = 0;
-        }
+        me._protectMinPosition();
 
         me._view.updateTiles(me);
 
         return me;
+    },
+
+    #
+    # Set new position of track
+    #
+    # @param  int  position
+    # @return me
+    #
+    setTrack: func(position) {
+        me._position = position;
+
+        me._protectMinPosition();
+        me._protectMaxPosition();
+
+        me._view.updateTiles(me);
+
+        return me;
+    },
+
+    #
+    # Prevents exceeding the minimum value of the position
+    #
+    _protectMinPosition: func() {
+        if (me._position < 0) {
+            me._position = 0;
+        }
+    },
+
+    #
+    # Prevents exceeding the maximum value of the position
+    #
+    _protectMaxPosition: func() {
+        var lastRowsIndex = me.getTrackLastIndex();
+        if (me._position > lastRowsIndex) {
+            me._position = lastRowsIndex;
+        }
     },
 
     #

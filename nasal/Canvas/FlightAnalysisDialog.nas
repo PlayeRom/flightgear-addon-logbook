@@ -152,6 +152,7 @@ var FlightAnalysisDialog = {
             me._trackItems,
             me._storage.getLogbookTrackerMaxAlt(me._logbookId)
         );
+        me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
@@ -260,7 +261,7 @@ var FlightAnalysisDialog = {
         # if these change it will stop working correctly.
         me._mapView.setSize(
             width - (width / FlightAnalysisDialog.FRACTION.map),
-            height * 0.585
+            height * 0.66
         );
     },
 
@@ -386,6 +387,18 @@ var FlightAnalysisDialog = {
         me._btnEnd.setEnabled(position < lastRowsIndex);
 
         me._updateLabelValues();
+    },
+
+    #
+    # Callback function called from ProfileView when user click on diagram
+    #
+    # @param int  position  New aircraft position
+    # @return void
+    #
+    _profileViewUpdatePosition: func(position) {
+        me._mapView.setTrack(position);
+
+        me._updateAfterChangePosition();
     },
 
     #

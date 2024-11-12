@@ -42,6 +42,9 @@ DefaultStyle.widgets["profile-view"] = {
         me._maxTimestamp = 0;
         me._graphWidth = 0;
         me._positiveYAxisLength = 0;
+
+        me._pointsX = std.Vector.new();
+        me._isClickEventSet = false;
     },
 
     #
@@ -82,6 +85,37 @@ DefaultStyle.widgets["profile-view"] = {
             );
         }
         else {
+            if (!me._isClickEventSet) {
+                me._isClickEventSet = true;
+
+                me._root.addEventListener("click", func(e) {
+                    # Find nearest point on X axis
+                    var minDiff = nil;
+                    var lastDiff = nil;
+                    var diff = 0;
+                    var found = nil;
+                    foreach (var item; me._pointsX.vector) {
+                        diff = math.abs(item.x - e.localX);
+                        if (minDiff == nil or diff < minDiff) {
+                            minDiff = diff;
+                            found = item;
+                        }
+
+                        if (lastDiff != nil and diff > lastDiff) {
+                            break;
+                        }
+
+                        lastDiff = diff;
+                    }
+
+                    if (found != nil) {
+                        model._updatePosition(found.position);
+
+                        me.updateAircraftPosition(model);
+                    }
+                });
+            }
+
             me._aircraftPositionGroup = me._root.createChild("group")
                 .set("z-index", 1);
 
@@ -154,6 +188,7 @@ DefaultStyle.widgets["profile-view"] = {
             # .moveTo(me._xXAxis, graphHeight)
             .setStrokeLineWidth(2);
 
+        me._pointsX.clear();
         var flightProfile = me._root.createChild("path", "flight")
             .setColor(0.5, 0.5, 1)
             .setStrokeLineWidth(2);
@@ -176,6 +211,8 @@ DefaultStyle.widgets["profile-view"] = {
             var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
             var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : row.elevation_m / maxAlt) * me._positiveYAxisLength);
             var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : row.alt_m / maxAlt) * me._positiveYAxisLength);
+
+            me._pointsX.append({ x: x, position: index });
 
             if (index == 0) {
                 elevationProfile.moveTo(x, elevationY);
@@ -274,7 +311,7 @@ DefaultStyle.widgets["profile-view"] = {
         var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
-        return me._drawAircraft(x, y);
+        return me._drawAircraft(model, x, y);
     },
 
     #
@@ -284,7 +321,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @param  double  y
     # @return ghost  Path element
     #
-    _drawAircraft: func(x, y) {
+    _drawAircraft: func(model, x, y) {
         var arm = DefaultStyle.widgets["profile-view"].CROSS_ARM;
 
         return me._aircraftPositionGroup.createChild("path")
@@ -295,6 +332,30 @@ DefaultStyle.widgets["profile-view"] = {
             .set("stroke", "red")
             .set("stroke-width", 3)
             .set("z-index", 2);
+            # .addEventListener("drag", func (e) {
+            #     # var t = me._chart.getTranslation();
+            #     # t[0] += e.deltaX;
+            #     # t[1] += e.deltaY;
+            #     # me._chart.setTranslation(t[0], t[1]);
+            #     print("------------ e.deltaX = ", e.deltaX);
+            #     if (e.deltaX > 5) {
+            #         model._position += 1;
+            #         var lastRowsIndex = model.getTrackLastIndex();
+            #         if (model._position > lastRowsIndex) {
+            #             model._position = lastRowsIndex;
+            #         }
+
+            #         me.updateAircraftPosition(model);
+            #     }
+            #     else if (e.deltaX < -5) {
+            #         model._position -= 1;
+            #         if (model._position < 0) {
+            #             model._position = 0;
+            #         }
+
+            #         me.updateAircraftPosition(model);
+            #     }
+            # });
     },
 
     #
