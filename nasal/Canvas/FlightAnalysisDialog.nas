@@ -16,13 +16,14 @@ var FlightAnalysisDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH     : 1360,
-    WINDOW_HEIGHT    : 720,
-    FRACTION         : { labels: 1, map: 9 },
+    WINDOW_WIDTH    : 1360,
+    WINDOW_HEIGHT   : 720,
+    PADDING         : 10,
+    FRACTION        : { labels: 1, map: 9 },
     #
     # Aircraft icon:
     #
-    FAST_POS_CHANGE: 10,
+    FAST_POS_CHANGE : 10,
 
     #
     # Constructor
@@ -156,12 +157,19 @@ var FlightAnalysisDialog = {
 
         var vBoxLayoutInfo = me._drawInfoLabels();
 
-        hBoxLayout.addSpacing(10);
+        hBoxLayout.addSpacing(FlightAnalysisDialog.PADDING);
         hBoxLayout.addItem(vBoxLayoutInfo, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
         hBoxLayout.addItem(me._scrollAreaMap, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
 
         me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
-        me.vbox.addItem(me._profileView, 1); # 2nd param = stretch
+
+        var hBoxProfile = canvas.HBoxLayout.new();
+        hBoxProfile.addSpacing(FlightAnalysisDialog.PADDING);
+        hBoxProfile.addItem(me._profileView);
+        hBoxProfile.addSpacing(FlightAnalysisDialog.PADDING);
+
+        me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
+        me.vbox.addItem(hBoxProfile, 1); # 2nd param = stretch
 
         me._scrollMapContent = me.getScrollAreaContent(me._scrollAreaMap);
 
@@ -193,7 +201,7 @@ var FlightAnalysisDialog = {
         var labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
         me._labelDistanceValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 NM");
 
-        vBoxLayoutInfo.addSpacing(10);
+        vBoxLayoutInfo.addSpacing(FlightAnalysisDialog.PADDING);
         vBoxLayoutInfo.addItem(labelLatLon);
         vBoxLayoutInfo.addItem(me._labelLatLonValue);
         vBoxLayoutInfo.addStretch(1);
@@ -215,7 +223,7 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addItem(labelDistance);
         vBoxLayoutInfo.addItem(me._labelDistanceValue);
         vBoxLayoutInfo.addStretch(2);
-        vBoxLayoutInfo.addSpacing(10);
+        vBoxLayoutInfo.addSpacing(FlightAnalysisDialog.PADDING);
 
         return vBoxLayoutInfo;
     },
@@ -247,9 +255,9 @@ var FlightAnalysisDialog = {
     #
     _onResize: func(width, height) {
         # TODO: The easiest way would be to take me._scrollAreaMap._size,
-        # but this one doesn't yet include the current size/
+        # but this one doesn't yet include the current size.
         # So I'm trying to combine with _onResize and calculating from proportions,
-        # if these change it will stop working/
+        # if these change it will stop working correctly.
         me._mapView.setSize(
             width - (width / FlightAnalysisDialog.FRACTION.map),
             height * 0.585
@@ -412,9 +420,9 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(btnClose);
         buttonBox.addStretch(1);
 
-        me.vbox.addSpacing(10);
+        me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
         me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(10);
+        me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
 
         return buttonBox;
     },

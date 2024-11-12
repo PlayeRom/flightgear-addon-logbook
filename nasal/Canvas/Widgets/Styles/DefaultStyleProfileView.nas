@@ -14,6 +14,10 @@
 #
 DefaultStyle.widgets["profile-view"] = {
     #
+    # Constants
+    #
+    CROSS_ARM : 10,
+    #
     # Constants aircraft icon:
     #
     PIXEL_DIFF:  9, # The difference in height in pixels between adjacent flight profile points
@@ -69,7 +73,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._root.removeAllChildren();
 
         if (model._tractItems == nil or size(model._tractItems) == 0) {
-            me._drawPaddingKeeper(model);
+            # me._drawPaddingKeeper(model);
 
             me._drawTextCenter(
                 "This log doesn't contain flight data.",
@@ -94,24 +98,26 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     _drawProfile: func(model) {
-        # TODO: maybe the widget should not use padding, this one should be set in BoxLayout using addSpacing()?
-        var padding = 20;
+        var paddingTop    = 0;
+        var paddingRight  = 0;
+        var paddingBottom = 40; # <- to make space for the X-axis caption "Time (hours) and Distance (NM)"
+        var paddingLeft   = 0;
 
-        var graphHeight = model._size[1] - (padding * 2);
+        var graphHeight = model._size[1] - paddingBottom;
 
-        me._drawPaddingKeeper(model);
+        # me._drawPaddingKeeper(model);
 
         var rows = model._tractItems;
 
         var seaMeanLevel = (graphHeight / 6);
-        me._xXAxis = 80;
+        me._xXAxis = 60 + paddingLeft;
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
-        me._positiveYAxisLength = me._yXAxis - padding;
+        me._positiveYAxisLength = me._yXAxis - paddingTop;
 
-        me._graphWidth = model._size[0] - padding;
+        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (DefaultStyle.widgets["profile-view"].CROSS_ARM);
 
-        me._drawTextCenter("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1] - padding);
-        me._drawTextCenter("Altitude (feet)", 20, graphHeight / 2, -90);
+        me._drawText("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1], "center-bottom");
+        me._drawText("Altitude (feet)", paddingLeft, graphHeight / 2, "center-top", -90);
 
         var maxAlt = model._maxAlt; # me._storage.getLogbookTrackerMaxAlt(me._logbookId);
 
@@ -128,7 +134,7 @@ DefaultStyle.widgets["profile-view"] = {
         for (var i = 1; i <= 5; i += 1) {
             var altFt = graduation * i;
             var y = me._yXAxis - ((maxAltFt == 0 ? 0 : altFt / maxAltFt) * me._positiveYAxisLength);
-            if (y < padding) {
+            if (y < paddingTop) {
                 # There is no more space for another horizontal line, exit the loop
                 break;
             }
@@ -137,7 +143,7 @@ DefaultStyle.widgets["profile-view"] = {
 
             # Draw horizontal grid line
             grid.moveTo(me._xXAxis, y)
-                .horiz(me._graphWidth - me._xXAxis);
+                .horiz(me._graphWidth);
         }
 
         # Draw elevation and flight profile
@@ -167,7 +173,7 @@ DefaultStyle.widgets["profile-view"] = {
         forindex (var index; rows) {
             var row = rows[index];
 
-            var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
+            var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
             var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : row.elevation_m / maxAlt) * me._positiveYAxisLength);
             var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : row.alt_m / maxAlt) * me._positiveYAxisLength);
 
@@ -222,7 +228,7 @@ DefaultStyle.widgets["profile-view"] = {
                     me._drawTextCenter(sprintf("%.1f", row.distance), x, me._yXAxis + 30);
 
                     # Draw vertical grid line
-                    grid.moveTo(x, padding)
+                    grid.moveTo(x, paddingTop)
                         .vert(me._yXAxis);
                 }
             }
@@ -234,15 +240,15 @@ DefaultStyle.widgets["profile-view"] = {
 
         # Draw X Axis
         axis.moveTo(me._xXAxis, me._yXAxis)
-            .horiz(me._graphWidth - me._xXAxis);
+            .horiz(me._graphWidth);
 
         # Draw Y Axis
-        axis.moveTo(me._xXAxis, padding)
+        axis.moveTo(me._xXAxis, paddingTop)
             .vert(graphHeight);
     },
 
     #
-    # Draw an invisible line to get the padding
+    # Draw an invisible line to get the padding. This was needed when ProfileView was drawn inside ScrollArea.
     #
     # @param  ghost  model  ProfileView model
     # @return ghost  Path element
@@ -265,7 +271,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._aircraftPositionGroup.removeAllChildren();
 
         var row = model._tractItems[model._position];
-        var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * (me._graphWidth - me._xXAxis));
+        var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
         return me._drawAircraft(x, y);
@@ -279,14 +285,13 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     _drawAircraft: func(x, y) {
+        var arm = DefaultStyle.widgets["profile-view"].CROSS_ARM;
+
         return me._aircraftPositionGroup.createChild("path")
-            .moveTo(
-                x - 10,
-                y
-            )
-            .horiz(20)
-            .move(-10, -10)
-            .vert(20)
+            .moveTo(x - arm, y)
+            .horiz(arm * 2)
+            .move(-arm, -arm)
+            .vert(arm * 2)
             .set("stroke", "red")
             .set("stroke-width", 3)
             .set("z-index", 2);
@@ -302,7 +307,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Text element
     #
     _drawTextCenter: func(text, x, y, rotate = 0) {
-        return me._drawText(text, x, y, rotate, "center-center");
+        return me._drawText(text, x, y, "center-center", rotate);
     },
 
     #
@@ -315,7 +320,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Text element
     #
     _drawTextRight: func(text, x, y, rotate = 0) {
-        return me._drawText(text, x, y, rotate, "right-center");
+        return me._drawText(text, x, y, "right-center", rotate);
     },
 
     #
@@ -324,11 +329,11 @@ DefaultStyle.widgets["profile-view"] = {
     # @param  string  text
     # @param  double  x
     # @param  double  y
-    # @param  double  rotate
     # @param  string  alignment
+    # @param  double  rotate
     # @return ghost  Text element
     #
-    _drawText: func(text, x, y, rotate, alignment = "center-center") {
+    _drawText: func(text, x, y, alignment = "center-center", rotate = 0) {
         return me._root.createChild("text")
             .setColor(me._textColor)
             .setAlignment(alignment)
