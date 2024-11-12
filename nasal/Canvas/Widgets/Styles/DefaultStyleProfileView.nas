@@ -153,7 +153,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._drawText("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1], "center-bottom");
         me._drawText("Altitude (feet)", paddingLeft, graphHeight / 2, "center-top", -90);
 
-        var maxAlt = model._maxAlt; # me._storage.getLogbookTrackerMaxAlt(me._logbookId);
+        var maxAlt = model._maxAlt;
 
         # Draw altitude grid
 
@@ -332,30 +332,6 @@ DefaultStyle.widgets["profile-view"] = {
             .set("stroke", "red")
             .set("stroke-width", 3)
             .set("z-index", 2);
-            # .addEventListener("drag", func (e) {
-            #     # var t = me._chart.getTranslation();
-            #     # t[0] += e.deltaX;
-            #     # t[1] += e.deltaY;
-            #     # me._chart.setTranslation(t[0], t[1]);
-            #     print("------------ e.deltaX = ", e.deltaX);
-            #     if (e.deltaX > 5) {
-            #         model._position += 1;
-            #         var lastRowsIndex = model.getTrackLastIndex();
-            #         if (model._position > lastRowsIndex) {
-            #             model._position = lastRowsIndex;
-            #         }
-
-            #         me.updateAircraftPosition(model);
-            #     }
-            #     else if (e.deltaX < -5) {
-            #         model._position -= 1;
-            #         if (model._position < 0) {
-            #             model._position = 0;
-            #         }
-
-            #         me.updateAircraftPosition(model);
-            #     }
-            # });
     },
 
     #
@@ -413,7 +389,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return double
     #
     _getDistance: func(p1, p2) {
-        math.sqrt(math.pow(p2.x - p1.x, 2) + math.pow(p2.y - p1.y, 2));
+        return math.sqrt(math.pow(p2.x - p1.x, 2) + math.pow(p2.y - p1.y, 2));
     },
 
     #
