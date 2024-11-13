@@ -48,6 +48,7 @@ var FlightAnalysisDialog = {
         };
 
         me._trackItems = nil;
+        me._trackSize = 0;
 
         me.bgImage.hide();
 
@@ -105,8 +106,15 @@ var FlightAnalysisDialog = {
             .listen("clicked", func { me._goEndTrack(); })
             .setFixedSize(26, 26);
 
+        me._btnPlay    = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
+            .setText("Play")
+            .listen("clicked", func { me._togglePlay(); })
+            .setFixedSize(65, 26);
+
         me._mapView = nil;
         me._profileView = nil;
+
+        me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
 
         return me;
     },
@@ -131,6 +139,7 @@ var FlightAnalysisDialog = {
 
         me._logbookId = logbookId;
         me._trackItems = me._storage.getLogbookTracker(me._logbookId);
+        me._trackSize = size(me._trackItems);
 
         me._drawContent();
 
@@ -272,7 +281,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _updateLabelValues: func() {
-        if (me._trackItems == nil or size(me._trackItems) == 0) {
+        if (me._trackItems == nil or me._trackSize == 0) {
             return;
         }
 
@@ -383,6 +392,7 @@ var FlightAnalysisDialog = {
         me._btnStart.setEnabled(position > 0);
         me._btnBackFast.setEnabled(position > 0);
         me._btnBack.setEnabled(position > 0);
+        me._btnPlay.setEnabled(position < lastRowsIndex);
         me._btnForward.setEnabled(position < lastRowsIndex);
         me._btnForwardFast.setEnabled(position < lastRowsIndex);
         me._btnEnd.setEnabled(position < lastRowsIndex);
@@ -439,6 +449,7 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._btnStart);
         buttonBox.addItem(me._btnBackFast);
         buttonBox.addItem(me._btnBack);
+        buttonBox.addItem(me._btnPlay);
         buttonBox.addItem(me._btnForward);
         buttonBox.addItem(me._btnForwardFast);
         buttonBox.addItem(me._btnEnd);
@@ -451,5 +462,37 @@ var FlightAnalysisDialog = {
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
 
         return buttonBox;
+    },
+
+    #
+    # Start/stop play animation of fly
+    #
+    # @return void
+    #
+    _togglePlay: func() {
+        if (me._playTimer.isRunning) {
+            me._playTimer.stop();
+            me._btnPlay.setText("Start");
+        }
+        else {
+            me._playTimer.start();
+            me._btnPlay.setText("Stop");
+        }
+    },
+
+    #
+    # Play animation update timer callback
+    #
+    # @return void
+    #
+    _onPlayUpdate: func() {
+        var position = me._mapView.getPosition();
+        if (position < me._trackSize - 1) {
+            me._goNextTrack();
+        }
+        else {
+            me._playTimer.stop();
+            me._btnPlay.setText("Start");
+        }
     },
 };
