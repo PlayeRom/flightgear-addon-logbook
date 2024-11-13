@@ -39,7 +39,7 @@ var FlightAnalysisDialog = {
                 Dialog.new(
                     FlightAnalysisDialog.WINDOW_WIDTH,
                     FlightAnalysisDialog.WINDOW_HEIGHT,
-                    "Flight Analysis",
+                    "Logbook Flight Analysis",
                     true,
                     func(w, h) { me._onResize(w, h); }
                 ),
