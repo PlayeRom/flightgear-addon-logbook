@@ -53,7 +53,7 @@ var DetailsDialog = {
         me._btnDelete            = nil;
         me._btnFlightAnalysis    = nil;
         me._inputDialog          = InputDialog.new(columns);
-        me._flightAnalysisDialog = FlightAnalysisDialog.new(storage);
+        me._flightAnalysisDialog = nil;
         me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
@@ -96,7 +96,11 @@ var DetailsDialog = {
     # @return void
     #
     del: func() {
-        me._flightAnalysisDialog.del();
+        if (me._flightAnalysisDialog != nil) {
+            me._flightAnalysisDialog.del();
+            me._flightAnalysisDialog = nil;
+        }
+
         me._inputDialog.del();
         me._deleteDialog.del();
         call(Dialog.del, [], me);
@@ -135,7 +139,8 @@ var DetailsDialog = {
                 .setText("Analysis")
                 .setFixedSize(75, 26)
                 .listen("clicked", func {
-                    me._flightAnalysisDialog.show(me._logbookId);
+                    me._flightAnalysisDialog = FlightAnalysisDialog.new(me._storage, me._logbookId);
+                    me._flightAnalysisDialog.show();
                 }
             );
         }
@@ -232,7 +237,12 @@ var DetailsDialog = {
         }
 
         me._logbookId = nil;
-        me._flightAnalysisDialog.hide();
+
+        if (me._flightAnalysisDialog != nil) {
+            me._flightAnalysisDialog.del();
+            me._flightAnalysisDialog = nil;
+        }
+
         me._inputDialog.hide();
         me._deleteDialog.hide();
         call(Dialog.hide, [], me);

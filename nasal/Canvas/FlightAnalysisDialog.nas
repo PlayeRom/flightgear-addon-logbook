@@ -29,9 +29,10 @@ var FlightAnalysisDialog = {
     # Constructor
     #
     # @param  hash  storage  Storage object
+    # @param  int  logbookId
     # @return me
     #
-    new: func(storage) {
+    new: func(storage, logbookId) {
         var me = {
             parents: [
                 FlightAnalysisDialog,
@@ -44,77 +45,30 @@ var FlightAnalysisDialog = {
                 ),
             ],
             _storage  : storage,
-            _logbookId: nil,
+            _logbookId: logbookId,
         };
-
-        me._trackItems = nil;
-        me._trackSize = 0;
 
         me.bgImage.hide();
 
         me.setPositionOnCenter();
 
-        me._labelLatLonValue      = nil;
-        me._labelAltValue         = nil;
-        me._labelHdgTrueValue     = nil;
-        me._labelAirspeedValue    = nil;
-        me._labelGroundspeedValue = nil;
-        me._labelTimestampValue   = nil;
-        me._labelDistanceValue    = nil;
+        # Override window del method for stop _playTimer
+        var self = me;
+        me.window.del = func() {
+            call(FlightAnalysisDialog.del, [], self);
+        };
 
-        me._buttonsGroup = me.canvas.createGroup();
-
-        me._btnZoomMinus = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("-")
-            .listen("clicked", func { me._zoomOut(); })
-            .setFixedSize(26, 26);
-
-        me._labelZoom = canvas.gui.widgets.Label.new(me._buttonsGroup, canvas.style, {});
-
-        me._btnZoomPlus  = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("+")
-            .listen("clicked", func { me._zoomIn(); })
-            .setFixedSize(26, 26);
-
-        me._btnStart   = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("|<<")
-            .listen("clicked", func { me._goStartTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnBackFast  = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("<<")
-            .listen("clicked", func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
-            .setFixedSize(26, 26);
-
-        me._btnBack    = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("<")
-            .listen("clicked", func { me._goPrevTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnForward = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText(">")
-            .listen("clicked", func { me._goNextTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnForwardFast = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText(">>")
-            .listen("clicked", func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
-            .setFixedSize(26, 26);
-
-        me._btnEnd     = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText(">>|")
-            .listen("clicked", func { me._goEndTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnPlay    = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
-            .setText("Play")
-            .listen("clicked", func { me._togglePlay(); })
-            .setFixedSize(65, 26);
-
+        me._scrollAreaMap = me.createScrollArea();
         me._mapView = nil;
-        me._profileView = nil;
+        me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
+        me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
 
         me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
+
+        me._trackItems = me._storage.getLogbookTracker(me._logbookId);
+        me._trackSize = size(me._trackItems);
+
+        me._drawContent();
 
         return me;
     },
@@ -125,23 +79,18 @@ var FlightAnalysisDialog = {
     # @return void
     #
     del: func() {
+        me._playTimer.stop();
+
         call(Dialog.del, [], me);
     },
 
     #
     # Show this canvas dialog
     #
-    # @param  int  logbookId
     # @return void
     #
-    show: func(logbookId) {
+    show: func() {
         g_Sound.play('paper');
-
-        me._logbookId = logbookId;
-        me._trackItems = me._storage.getLogbookTracker(me._logbookId);
-        me._trackSize = size(me._trackItems);
-
-        me._drawContent();
 
         call(Dialog.show, [], me);
     },
@@ -152,16 +101,10 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _drawContent: func() {
-        me.vbox.clear();
-
-        me._scrollAreaMap = me.createScrollArea();
-
-        me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setData(
             me._trackItems,
             me._storage.getLogbookTrackerMaxAlt(me._logbookId)
         );
-        me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
@@ -194,43 +137,43 @@ var FlightAnalysisDialog = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawInfoLabels: func() {
-        var vBoxLayoutInfo = canvas.VBoxLayout.new();
-
-        var labelLatLon           = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Latitude, Longitude");
+        me._labelLatLon           = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Latitude, Longitude");
         me._labelLatLonValue      = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0.00, 0.00");
-        var labelAlt              = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude");
+        me._labelAlt              = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude");
         me._labelAltValue         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 ft");
-        var labelHdgTrue          = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Heading true / mag");
+        me._labelHdgTrue          = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Heading true / mag");
         me._labelHdgTrueValue     = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0° / 0°");
-        var labelAirspeed         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Airspeed");
+        me._labelAirspeed         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Airspeed");
         me._labelAirspeedValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt");
-        var labelGroundspeed      = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Groundspeed");
+        me._labelGroundspeed      = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Groundspeed");
         me._labelGroundspeedValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt");
-        var labelTimestamp        = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
+        me._labelTimestamp        = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
         me._labelTimestampValue   = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
-        var labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
+        me._labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
         me._labelDistanceValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 NM");
 
+        var vBoxLayoutInfo = canvas.VBoxLayout.new();
+
         vBoxLayoutInfo.addSpacing(FlightAnalysisDialog.PADDING);
-        vBoxLayoutInfo.addItem(labelLatLon);
+        vBoxLayoutInfo.addItem(me._labelLatLon);
         vBoxLayoutInfo.addItem(me._labelLatLonValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelAlt);
+        vBoxLayoutInfo.addItem(me._labelAlt);
         vBoxLayoutInfo.addItem(me._labelAltValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelHdgTrue);
+        vBoxLayoutInfo.addItem(me._labelHdgTrue);
         vBoxLayoutInfo.addItem(me._labelHdgTrueValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelAirspeed);
+        vBoxLayoutInfo.addItem(me._labelAirspeed);
         vBoxLayoutInfo.addItem(me._labelAirspeedValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelGroundspeed);
+        vBoxLayoutInfo.addItem(me._labelGroundspeed);
         vBoxLayoutInfo.addItem(me._labelGroundspeedValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelTimestamp);
+        vBoxLayoutInfo.addItem(me._labelTimestamp);
         vBoxLayoutInfo.addItem(me._labelTimestampValue);
         vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(labelDistance);
+        vBoxLayoutInfo.addItem(me._labelDistance);
         vBoxLayoutInfo.addItem(me._labelDistanceValue);
         vBoxLayoutInfo.addStretch(2);
         vBoxLayoutInfo.addSpacing(FlightAnalysisDialog.PADDING);
@@ -430,13 +373,58 @@ var FlightAnalysisDialog = {
     # @return ghost  HBoxLayout object with button
     #
     _drawBottomBar: func() {
-        me._updateAfterChangePosition();
-
         var buttonBox = canvas.HBoxLayout.new();
+
+        me._btnZoomMinus = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("-")
+            .listen("clicked", func { me._zoomOut(); })
+            .setFixedSize(26, 26);
+
+        me._labelZoom = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+
+        me._btnZoomPlus  = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("+")
+            .listen("clicked", func { me._zoomIn(); })
+            .setFixedSize(26, 26);
+
+        me._btnStart   = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("|<<")
+            .listen("clicked", func { me._goStartTrack(); })
+            .setFixedSize(26, 26);
+
+        me._btnBackFast  = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("<<")
+            .listen("clicked", func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
+            .setFixedSize(26, 26);
+
+        me._btnBack    = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("<")
+            .listen("clicked", func { me._goPrevTrack(); })
+            .setFixedSize(26, 26);
+
+        me._btnForward = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText(">")
+            .listen("clicked", func { me._goNextTrack(); })
+            .setFixedSize(26, 26);
+
+        me._btnForwardFast = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText(">>")
+            .listen("clicked", func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
+            .setFixedSize(26, 26);
+
+        me._btnEnd     = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText(">>|")
+            .listen("clicked", func { me._goEndTrack(); })
+            .setFixedSize(26, 26);
+
+        me._btnPlay    = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Play")
+            .listen("clicked", func { me._togglePlay(); })
+            .setFixedSize(65, 26);
 
         me._labelZoom.setText("Zoom " ~ me._mapView.getZoomLevel());
 
-        var btnClose = canvas.gui.widgets.Button.new(me._buttonsGroup, canvas.style, {})
+        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Close")
             .listen("clicked", func { me.hide(); })
             .setFixedSize(65, 26);
@@ -460,6 +448,8 @@ var FlightAnalysisDialog = {
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
         me.vbox.addItem(buttonBox);
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
+
+        me._updateAfterChangePosition();
 
         return buttonBox;
     },
