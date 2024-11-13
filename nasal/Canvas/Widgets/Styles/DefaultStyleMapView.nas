@@ -17,6 +17,10 @@ DefaultStyle.widgets["map-view"] = {
     # Constants
     #
     TILE_SIZE: 256,
+    #
+    # Width and height of SVG plance icon, observationally obtained
+    AC_ICON_W : 29,
+    AC_ICON_H : 34,
 
     #
     # Constructor
@@ -50,7 +54,7 @@ DefaultStyle.widgets["map-view"] = {
         me._points = std.Vector.new();
         me._isClickEventSet = false;
 
-        me._aircraftPositionGroup = nil;
+        me._svgPlane = nil;
     },
 
     #
@@ -118,8 +122,7 @@ DefaultStyle.widgets["map-view"] = {
                 });
             }
 
-            me._aircraftPositionGroup = me._root.createChild("group")
-                .set("z-index", 2);
+            me._createPlaneIcon();
 
             me._flightPathGroup = me._root.createChild("group")
                 .set("z-index", 1);
@@ -174,6 +177,14 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
+    # Create SVG plane image
+    #
+    _createPlaneIcon: func() {
+        me._svgPlane = me._root.createChild("group").set("z-index", 2);
+        canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
+    },
+
+    #
     # Draw plane from SVG file at center of the map
     #
     # @param  double  x
@@ -181,22 +192,18 @@ DefaultStyle.widgets["map-view"] = {
     # @param  double  rotate
     # @return void
     #
-    _drawAircraft: func(heading) {
-        me._aircraftPositionGroup.removeAllChildren();
-
-        # Width and height of resized SVG image, observationally obtained
-        var width  = 29;
-        var height = 34;
-
+    _drawPlaneIcon: func(heading) {
         var headingInRad = heading * globals.D2R;
-        var offset = me._getRotationOffset(width, height, headingInRad);
+        var offset = me._getRotationOffset(
+            DefaultStyle.widgets["map-view"].AC_ICON_W,
+            DefaultStyle.widgets["map-view"].AC_ICON_H,
+            headingInRad
+        );
 
-        var svgPlane = me._aircraftPositionGroup.createChild("group");
-        canvas.parsesvg(svgPlane, "Textures/plane-top.svg");
-        svgPlane.setRotation(headingInRad);
-        svgPlane.setTranslation(
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (width  / 2) + offset.dx,
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (height / 2) + offset.dy
+        me._svgPlane.setRotation(headingInRad);
+        me._svgPlane.setTranslation(
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (DefaultStyle.widgets["map-view"].AC_ICON_W / 2) + offset.dx,
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (DefaultStyle.widgets["map-view"].AC_ICON_H / 2) + offset.dy
         );
     },
 
@@ -359,7 +366,7 @@ DefaultStyle.widgets["map-view"] = {
 
         var track = model._tractItems[model._position];
 
-        me._drawAircraft(track.heading_true);
+        me._drawPlaneIcon(track.heading_true);
 
         me._minTile.x = 0;
         me._minTile.y = 0;
