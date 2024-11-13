@@ -342,7 +342,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     _drawPlaneIcon: func(x, y, rotate = 0) {
-        var angleInRadians = rotate * globals.D2R;
+        var angleInRadians = -rotate * globals.D2R;
         var offset = me._getRotationOffset(
             DefaultStyle.widgets["profile-view"].AC_ICON_W,
             DefaultStyle.widgets["profile-view"].AC_ICON_H,
@@ -353,7 +353,7 @@ DefaultStyle.widgets["profile-view"] = {
             x - (DefaultStyle.widgets["profile-view"].AC_ICON_W / 2) + offset.dx,
             y - (DefaultStyle.widgets["profile-view"].AC_ICON_H / 2) + offset.dy
         );
-        me._svgPlane.setRotation(rotate * globals.D2R);
+        me._svgPlane.setRotation(angleInRadians);
     },
 
     #
