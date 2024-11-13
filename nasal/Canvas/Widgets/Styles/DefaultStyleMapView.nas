@@ -236,121 +236,6 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Convert given longitude to X position
-    #
-    # @param  double  lon  Longitude to convert to X position
-    # @param  int  zoom  Current zoom level of map
-    # @return double  The X position
-    #
-    _lonToX: func(lon, zoom) {
-        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
-        return (lon + 180) / 360 * scale;
-    },
-
-    #
-    # Convert given latitude to Y position
-    #
-    # @param  double  lat  Latitude to convert to Y position
-    # @param  int  zoom  Current zoom level of map
-    # @return double  The Y position
-    #
-    _latToY: func(lat, zoom) {
-        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
-        var sinLat = math.sin(lat * math.pi / 180);
-        return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
-    },
-
-    #
-    # Convert given lan, lot to pixel position on the window
-    #
-    # @param  double  lat  Latitude to convert to pixel
-    # @param  double  lon  Longitude to convert to pixel
-    # @param  double  centerLat  Latitude of current aircraft position
-    # @param  double  centerLon  Longitude of current aircraft position
-    # @param  int  zoom  Current zoom level of map
-    # @return hash  Hash as pixel position with x and y
-    #
-    _convertLatLonToPixel: func(lat, lon, centerLat, centerLon, zoom) {
-        var x = me._lonToX(lon, zoom);
-        var y = me._latToY(lat, zoom);
-
-        var centerX = me._lonToX(centerLon, zoom);
-        var centerY = me._latToY(centerLat, zoom);
-
-        # Offset from the center of the map
-        var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x;
-        var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y;
-
-        return { x: pixelX, y: pixelY };
-    },
-
-    #
-    # Redraw flight path. We have to redraw if zoom was changed
-    #
-    # @param  ghost  model  MapView model
-    # @return ghost  Path element
-    #
-    _drawFlightPath: func(model) {
-        me._points.clear();
-        me._flightPathGroup.removeAllChildren();
-
-        var pointsToDraw = [];
-
-        var isBreak = false;
-
-        # The first loop is to build an array of points that are within the map
-        forindex (var index; model._tractItems) {
-            var row = model._tractItems[index];
-
-            var pos = me._convertLatLonToPixel(
-                row.lat,
-                row.lon,
-                model._tractItems[model._position].lat,
-                model._tractItems[model._position].lon,
-                model._zoom
-            );
-
-            if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.x < me._minTile.x
-                or pos.y < me._minTile.y
-            ) {
-                # The path point is out of map tiles, so ship it
-                isBreak = true;
-            }
-            else {
-                # When there was a discontinuity, we need to start drawing with the moveTo function,
-                # so we set the moveTo flag which will tell us that
-                pos["moveTo"] = isBreak ? true : false;
-                pos["position"] = index;
-                isBreak = false;
-                append(pointsToDraw, pos);
-            }
-        }
-
-        # Draw points only those within the map
-        var flightPath = me._flightPathGroup.createChild("path", "flight")
-            .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(2)
-            .set("z-index", 1);
-
-        forindex (var index; pointsToDraw) {
-            var point = pointsToDraw[index];
-
-            me._points.append(point);
-
-            if (index == 0 or point.moveTo) {
-                flightPath.moveTo(point.x, point.y);
-            }
-            else {
-                flightPath.lineTo(point.x, point.y);
-            }
-        }
-
-        return flightPath;
-    },
-
-    #
     # This is the callback that will be regularly called by the timer to update the map
     #
     # @param  ghost  model  MapView model
@@ -459,6 +344,121 @@ DefaultStyle.widgets["map-view"] = {
         }
 
         me._drawFlightPath(model);
+    },
+
+    #
+    # Redraw flight path. We have to redraw if zoom was changed
+    #
+    # @param  ghost  model  MapView model
+    # @return ghost  Path element
+    #
+    _drawFlightPath: func(model) {
+        me._points.clear();
+        me._flightPathGroup.removeAllChildren();
+
+        var pointsToDraw = [];
+
+        var isBreak = false;
+
+        # The first loop is to build an array of points that are within the map
+        forindex (var index; model._tractItems) {
+            var row = model._tractItems[index];
+
+            var pos = me._convertLatLonToPixel(
+                row.lat,
+                row.lon,
+                model._tractItems[model._position].lat,
+                model._tractItems[model._position].lon,
+                model._zoom
+            );
+
+            if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
+                or pos.x < me._minTile.x
+                or pos.y < me._minTile.y
+            ) {
+                # The path point is out of map tiles, so ship it
+                isBreak = true;
+            }
+            else {
+                # When there was a discontinuity, we need to start drawing with the moveTo function,
+                # so we set the moveTo flag which will tell us that
+                pos["moveTo"] = isBreak ? true : false;
+                pos["position"] = index;
+                isBreak = false;
+                append(pointsToDraw, pos);
+            }
+        }
+
+        # Draw points only those within the map
+        var flightPath = me._flightPathGroup.createChild("path", "flight")
+            .setColor(0.5, 0.5, 1)
+            .setStrokeLineWidth(2)
+            .set("z-index", 1);
+
+        forindex (var index; pointsToDraw) {
+            var point = pointsToDraw[index];
+
+            me._points.append(point);
+
+            if (index == 0 or point.moveTo) {
+                flightPath.moveTo(point.x, point.y);
+            }
+            else {
+                flightPath.lineTo(point.x, point.y);
+            }
+        }
+
+        return flightPath;
+    },
+
+    #
+    # Convert given lan, lot to pixel position on the window
+    #
+    # @param  double  lat  Latitude to convert to pixel
+    # @param  double  lon  Longitude to convert to pixel
+    # @param  double  centerLat  Latitude of current aircraft position
+    # @param  double  centerLon  Longitude of current aircraft position
+    # @param  int  zoom  Current zoom level of map
+    # @return hash  Hash as pixel position with x and y
+    #
+    _convertLatLonToPixel: func(lat, lon, centerLat, centerLon, zoom) {
+        var x = me._lonToX(lon, zoom);
+        var y = me._latToY(lat, zoom);
+
+        var centerX = me._lonToX(centerLon, zoom);
+        var centerY = me._latToY(centerLat, zoom);
+
+        # Offset from the center of the map
+        var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x;
+        var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y;
+
+        return { x: pixelX, y: pixelY };
+    },
+
+    #
+    # Convert given longitude to X position
+    #
+    # @param  double  lon  Longitude to convert to X position
+    # @param  int  zoom  Current zoom level of map
+    # @return double  The X position
+    #
+    _lonToX: func(lon, zoom) {
+        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
+        return (lon + 180) / 360 * scale;
+    },
+
+    #
+    # Convert given latitude to Y position
+    #
+    # @param  double  lat  Latitude to convert to Y position
+    # @param  int  zoom  Current zoom level of map
+    # @return double  The Y position
+    #
+    _latToY: func(lat, zoom) {
+        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
+        var sinLat = math.sin(lat * math.pi / 180);
+        return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
     },
 
     #
