@@ -39,7 +39,7 @@ DefaultStyle.widgets["map-view"] = {
         me._centerTileOffset = { x: 0, y: 0 };
         me._lastTile = { x: -1, y: -1 };
 
-        me._flightPathGroup = nil;
+        me._flightPath = nil;
         me._tiles = [];
 
         # A variable to remember the extreme positions of the map tiles,
@@ -47,7 +47,7 @@ DefaultStyle.widgets["map-view"] = {
         me._minTile = { x: 0, y: 0 };
         me._maxTile = { x: 0, y: 0 };
 
-        me._points = std.Vector.new();
+        me._pointsToDraw = std.Vector.new();
         me._isClickEventSet = false;
 
         me._svgPlane = nil;
@@ -102,7 +102,7 @@ DefaultStyle.widgets["map-view"] = {
                     var minDistance = nil;
                     var position = nil;
                     var distance = 0;
-                    foreach (var point; me._points.vector) {
+                    foreach (var point; me._pointsToDraw.vector) {
                         distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
 
                         if (distance < 50 # <- ignore points further than 50 px
@@ -122,7 +122,9 @@ DefaultStyle.widgets["map-view"] = {
 
             me._createPlaneIcon();
 
-            me._flightPathGroup = me._root.createChild("group")
+            me._flightPath = me._root.createChild("path", "flight")
+                .setColor(0.5, 0.5, 1)
+                .setStrokeLineWidth(2)
                 .set("z-index", 1);
 
             me._calculateNumTiles(model);
@@ -298,14 +300,11 @@ DefaultStyle.widgets["map-view"] = {
                 if (trans.y < me._minTile.y) {
                     me._minTile.y = trans.y;
                 }
-            }
-        }
 
-        if (   tileIndex.x != me._lastTile.x
-            or tileIndex.y != me._lastTile.y
-        ) {
-            for (var x = 0; x < me._numTiles.x; x += 1) {
-                for (var y = 0; y < me._numTiles.y; y += 1) {
+                # Update tiles if needed
+                if (   tileIndex.x != me._lastTile.x
+                    or tileIndex.y != me._lastTile.y
+                ) {
                     var pos = {
                         z: model._zoom,
                         x: int(offset.x + x),
@@ -317,31 +316,31 @@ DefaultStyle.widgets["map-view"] = {
                         var tile = me._tiles[x][y];
 
                         if (io.stat(imgPath) == nil) {
-                            # image not found, save in $FG_HOME
+                            # image not found in cache, save in $FG_HOME
                             var imgUrl = me._makeUrl(pos);
 
-                            logprint(LOG_INFO, 'Logbook Add-on - requesting ', imgUrl);
+                            # logprint(LOG_INFO, 'Logbook Add-on - requesting ', imgUrl);
 
                             http.save(imgUrl, imgPath)
                                 .done(func {
-                                    logprint(LOG_INFO, 'Logbook Add-on - received image ', imgPath);
+                                    # logprint(LOG_INFO, 'Logbook Add-on - received image ', imgPath);
                                     tile.set("src", imgPath);
                                 })
-                                .fail(func (response) {
+                                .fail(func(response) {
                                     logprint(LOG_ALERT, 'Logbook Add-on - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
                                 });
                         }
                         else { # cached image found, reusing
-                            logprint(LOG_INFO, 'Logbook Add-on - loading ', imgPath);
+                            # logprint(LOG_INFO, 'Logbook Add-on - loading ', imgPath);
                             tile.set("src", imgPath);
                         }
                     })();
                 }
             }
-
-            me._lastTile.x = tileIndex.x;
-            me._lastTile.y = tileIndex.y;
         }
+
+        me._lastTile.x = tileIndex.x;
+        me._lastTile.y = tileIndex.y;
 
         me._drawFlightPath(model);
     },
@@ -353,12 +352,10 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Path element
     #
     _drawFlightPath: func(model) {
-        me._points.clear();
-        me._flightPathGroup.removeAllChildren();
+        me._pointsToDraw.clear();
 
-        var pointsToDraw = [];
-
-        var isBreak = false;
+        # = true because the first point must start with moveTo method
+        var isBreak = true;
 
         # The first loop is to build an array of points that are within the map
         forindex (var index; model._tractItems) {
@@ -383,33 +380,24 @@ DefaultStyle.widgets["map-view"] = {
             else {
                 # When there was a discontinuity, we need to start drawing with the moveTo function,
                 # so we set the moveTo flag which will tell us that
-                pos["moveTo"] = isBreak ? true : false;
+                pos["moveTo"] = isBreak;
                 pos["position"] = index;
                 isBreak = false;
-                append(pointsToDraw, pos);
+                me._pointsToDraw.append(pos);
             }
         }
 
         # Draw points only those within the map
-        var flightPath = me._flightPathGroup.createChild("path", "flight")
-            .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(2)
-            .set("z-index", 1);
+        me._flightPath.reset();
 
-        forindex (var index; pointsToDraw) {
-            var point = pointsToDraw[index];
-
-            me._points.append(point);
-
-            if (index == 0 or point.moveTo) {
-                flightPath.moveTo(point.x, point.y);
+        foreach (var point; me._pointsToDraw.vector) {
+            if (point.moveTo) {
+                me._flightPath.moveTo(point.x, point.y);
             }
             else {
-                flightPath.lineTo(point.x, point.y);
+                me._flightPath.lineTo(point.x, point.y);
             }
         }
-
-        return flightPath;
     },
 
     #
