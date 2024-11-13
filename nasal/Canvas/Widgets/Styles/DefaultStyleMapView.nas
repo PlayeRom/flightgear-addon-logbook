@@ -17,10 +17,6 @@ DefaultStyle.widgets["map-view"] = {
     # Constants
     #
     TILE_SIZE: 256,
-    #
-    # Width and height of SVG plance icon, observationally obtained
-    AC_ICON_W : 29,
-    AC_ICON_H : 34,
 
     #
     # Constructor
@@ -55,6 +51,8 @@ DefaultStyle.widgets["map-view"] = {
         me._isClickEventSet = false;
 
         me._svgPlane = nil;
+        me._planeIconWidth  = 0;
+        me._planeIconHeight = 0;
     },
 
     #
@@ -182,6 +180,9 @@ DefaultStyle.widgets["map-view"] = {
     _createPlaneIcon: func() {
         me._svgPlane = me._root.createChild("group").set("z-index", 2);
         canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
+
+        me._planeIconWidth  = me._svgPlane.getSize()[0];
+        me._planeIconHeight = me._svgPlane.getSize()[1];
     },
 
     #
@@ -194,16 +195,12 @@ DefaultStyle.widgets["map-view"] = {
     #
     _drawPlaneIcon: func(heading) {
         var headingInRad = heading * globals.D2R;
-        var offset = me._getRotationOffset(
-            DefaultStyle.widgets["map-view"].AC_ICON_W,
-            DefaultStyle.widgets["map-view"].AC_ICON_H,
-            headingInRad
-        );
+        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, headingInRad);
 
         me._svgPlane.setRotation(headingInRad);
         me._svgPlane.setTranslation(
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (DefaultStyle.widgets["map-view"].AC_ICON_W / 2) + offset.dx,
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (DefaultStyle.widgets["map-view"].AC_ICON_H / 2) + offset.dy
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
         );
     },
 

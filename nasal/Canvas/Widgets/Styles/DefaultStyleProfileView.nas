@@ -14,13 +14,6 @@
 #
 DefaultStyle.widgets["profile-view"] = {
     #
-    # Constants
-    #
-    # Width and height of SVG plance icon, observationally obtained
-    AC_ICON_W : 33,
-    AC_ICON_H : 11,
-
-    #
     # Constructor
     #
     # @param  ghost  parent
@@ -42,6 +35,8 @@ DefaultStyle.widgets["profile-view"] = {
         me._isClickEventSet = false;
 
         me._svgPlane = nil;
+        me._planeIconWidth  = 0;
+        me._planeIconHeight = 0;
     },
 
     #
@@ -113,9 +108,10 @@ DefaultStyle.widgets["profile-view"] = {
                 });
             }
 
+            me._createPlaneIcon();
+
             me._drawProfile(model);
 
-            me._createPlaneIcon();
 
             me.updateAircraftPosition(model);
         }
@@ -144,7 +140,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
         me._positiveYAxisLength = me._yXAxis - paddingTop;
 
-        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (DefaultStyle.widgets["profile-view"].AC_ICON_W / 2);
+        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (me._planeIconWidth / 2);
 
         me._drawText("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1], "center-bottom");
         me._drawText("Altitude (feet)", paddingLeft, graphHeight / 2, "center-top", -90);
@@ -329,8 +325,11 @@ DefaultStyle.widgets["profile-view"] = {
     # Create SVG plane image
     #
     _createPlaneIcon: func() {
-        me._svgPlane = me._root.createChild("group");
+        me._svgPlane = me._root.createChild("group").set("z-index", 1);
         canvas.parsesvg(me._svgPlane, "Textures/plane-side.svg");
+
+        me._planeIconWidth  = me._svgPlane.getSize()[0];
+        me._planeIconHeight = me._svgPlane.getSize()[1];
     },
 
     #
@@ -343,15 +342,11 @@ DefaultStyle.widgets["profile-view"] = {
     #
     _drawPlaneIcon: func(x, y, rotate = 0) {
         var angleInRadians = -rotate * globals.D2R;
-        var offset = me._getRotationOffset(
-            DefaultStyle.widgets["profile-view"].AC_ICON_W,
-            DefaultStyle.widgets["profile-view"].AC_ICON_H,
-            angleInRadians
-        );
+        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, angleInRadians);
 
         me._svgPlane.setTranslation(
-            x - (DefaultStyle.widgets["profile-view"].AC_ICON_W / 2) + offset.dx,
-            y - (DefaultStyle.widgets["profile-view"].AC_ICON_H / 2) + offset.dy
+            x - (me._planeIconWidth  / 2) + offset.dx,
+            y - (me._planeIconHeight / 2) + offset.dy
         );
         me._svgPlane.setRotation(angleInRadians);
     },
