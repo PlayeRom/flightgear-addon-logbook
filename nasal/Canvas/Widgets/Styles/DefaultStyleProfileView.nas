@@ -345,8 +345,8 @@ DefaultStyle.widgets["profile-view"] = {
         var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, angleInRadians);
 
         me._svgPlane.setTranslation(
-            x - (me._planeIconWidth  / 2) + offset.dx,
-            y - (me._planeIconHeight / 2) + offset.dy
+            x - (me._planeIconWidth  * 0.5) + offset.dx,
+            y - (me._planeIconHeight * 0.8) + offset.dy
         );
         me._svgPlane.setRotation(angleInRadians);
     },
