@@ -16,8 +16,7 @@ var Settings = {
     #
     # Constants
     #
-    SAVE_FILE    : "settings-v%s.xml",
-    FILE_VERSION : "1.0.1",
+    SAVE_FILE    : "settings.xml",
     #
     # Possible options for date and time display:
     #
@@ -38,7 +37,7 @@ var Settings = {
     new: func() {
         var me = { parents: [Settings] };
 
-        me._file = g_Addon.storagePath ~ "/" ~ sprintf(Settings.SAVE_FILE, Settings.FILE_VERSION);
+        me._file = g_Addon.storagePath ~ "/" ~ Settings.SAVE_FILE;
         me._propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
         me._saveNode = props.globals.getNode(me._propToSave); # node object with data to save/load
 
