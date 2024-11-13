@@ -171,6 +171,26 @@ Here you can configure the following options:
 3. `Click sound` – by default, a sound is played when you click on various buttons, you can turn this sound off here.
 4. `Items per page` – here you can specify how many rows of logs should be displayed in the Logbook view, the default is 20. The lower the number, the faster the Logbook window will be drawn.
 
+#### Advance settings
+
+When you save your settings, this add-on will save them to the `settings.xml` file in `$FG_HOME/Export/Addons/org.flightgear.addons.logbook` location. By editing this file you can configure more options:
+
+1. `tracker-interval-sec` – integer as the number of seconds every which data will be dumped to the log (default 20). The smaller the number, the more data you will receive and the flight analysis will be more accurate, therefore the database file will take up more space and the processor may be more loaded. If you are making a long flight on an airliner, a value of 20 seconds should be satisfactory. If you want to perform aerobatics and want to analyze your flight in detail, you can set this value even to 1 second.
+2. `real-time-duration` – if true then time spent in flight is always real time, i.e. speeding up or slowing down the simulation time will not affect Duration (default true). So if your flight would take 2 hours but you accelerate the time in the simulator twice, then you will fly in 1 real hour and the log will record 1 hour of flight. On the other hand, if you set this option to false, then in this case 2 hours would be logged, according to the simulator time.
+
+and settings available from GUI:
+
+3. `dark-style` – if true then dark theme is using (default false).
+4. `sound-enabled` – if true then click sound will be playing (default true).
+5. `date-time-display` – which time will be displaying in main Logbook table. Possible values:
+    * `real` – your real time, from your OS,
+    * `sim-utc` – UTC time in simulator,
+    * `sim-local` – local time in simulator.
+6. `log-items-per-page` – integer number as how many rows of logs should be displayed in the Logbook view (default 20).
+7. `columns-visible` – which column should be visible in main Logbook view.
+
+NOTE. Before editing the `settings.xml` file, close the simulator.
+
 ## Backup (for FG 2020.3 and older)
 
 Before each saving of a single change, the add-on creates a copy of the original CSV file, to which it appends the `.bak` extension at the end. So, if something goes wrong while editing the data and the original file is corrupted, you can always recover it by removing the `.bak` from the copy name. Remember, you only have a copy of one recent file operation.
