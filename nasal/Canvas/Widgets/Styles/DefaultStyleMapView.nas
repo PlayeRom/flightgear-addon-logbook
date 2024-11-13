@@ -49,6 +49,8 @@ DefaultStyle.widgets["map-view"] = {
 
         me._points = std.Vector.new();
         me._isClickEventSet = false;
+
+        me._aircraftPositionGroup = nil;
     },
 
     #
@@ -116,6 +118,9 @@ DefaultStyle.widgets["map-view"] = {
                 });
             }
 
+            me._aircraftPositionGroup = me._root.createChild("group")
+                .set("z-index", 2);
+
             me._flightPathGroup = me._root.createChild("group")
                 .set("z-index", 1);
 
@@ -129,9 +134,6 @@ DefaultStyle.widgets["map-view"] = {
             me._lastTile.y = -1;
 
             me._createTiles();
-
-            # Aircraft is always on the center of view and the map is moving
-            me._drawAircraft();
 
             me.updateTiles(model);
         }
@@ -172,20 +174,45 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Simple aircraft icon at current position/center of the map
+    # Draw plane from SVG file at center of the map
     #
-    _drawAircraft: func() {
-        me._root.createChild("path")
-            .moveTo(
-                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - 10,
-                DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y
-            )
-            .horiz(20)
-            .move(-10, -10)
-            .vert(20)
-            .set("stroke", "red")
-            .set("stroke-width", 3)
-            .set("z-index", 2);
+    # @param  double  x
+    # @param  double  y
+    # @param  double  rotate
+    # @return void
+    #
+    _drawAircraft: func(heading) {
+        me._aircraftPositionGroup.removeAllChildren();
+
+        # Width and height of resized SVG image, observationally obtained
+        var width  = 29;
+        var height = 34;
+
+        var headingInRad = heading * globals.D2R;
+        var offset = me._getRotationOffset(width, height, headingInRad);
+
+        var svgPlane = me._aircraftPositionGroup.createChild("group");
+        canvas.parsesvg(svgPlane, "Textures/plane-top.svg");
+        svgPlane.setRotation(headingInRad);
+        svgPlane.setTranslation(
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (width  / 2) + offset.dx,
+            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (height / 2) + offset.dy
+        );
+    },
+
+    #
+    # Calculate offset for rotation because the image rotation point is in the upper left corner
+    #
+    # @param  int  width  Image width
+    # @param  int  height  Image height
+    # @param  double  angleInRadians
+    # @return hash  Hash with delta X and delta Y
+    #
+    _getRotationOffset: func(width, height, angleInRadians) {
+        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
+        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
+
+        return { dx: deltaX, dy: deltaY };
     },
 
     #
@@ -330,14 +357,18 @@ DefaultStyle.widgets["map-view"] = {
             return;
         }
 
+        var track = model._tractItems[model._position];
+
+        me._drawAircraft(track.heading_true);
+
         me._minTile.x = 0;
         me._minTile.y = 0;
         me._maxTile.x = 0;
         me._maxTile.y = 0;
 
         # Get current position
-        var lat = model._tractItems[model._position].lat;
-        var lon = model._tractItems[model._position].lon;
+        var lat = track.lat;
+        var lon = track.lon;
 
         var scale = math.pow(2, model._zoom);
         var offset = {

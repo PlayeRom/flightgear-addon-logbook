@@ -16,7 +16,7 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Constants
     #
-    CROSS_ARM : 10,
+    HALF_PLANE_WIDTH : 17, # half of the plane SVG width
     #
     # Constants aircraft icon:
     #
@@ -148,7 +148,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
         me._positiveYAxisLength = me._yXAxis - paddingTop;
 
-        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (DefaultStyle.widgets["profile-view"].CROSS_ARM);
+        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (DefaultStyle.widgets["profile-view"].HALF_PLANE_WIDTH);
 
         me._drawText("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1], "center-bottom");
         me._drawText("Altitude (feet)", paddingLeft, graphHeight / 2, "center-top", -90);
@@ -196,12 +196,6 @@ DefaultStyle.widgets["profile-view"] = {
         var lastRecord = rows[size(rows) - 1];
         me._maxTimestamp = lastRecord.timestamp;
 
-        # Distance in pixels on graph between recorded points.
-        # If the distance reaches a value above 100 px, then draw an airplane icon.
-        var p1 = {};
-        var p2 = {};
-        var distance = 0;
-
         var maxXAxisLabelsCount = 15;
         var xAxisLabelsSeparation = math.ceil(size(rows) / maxXAxisLabelsCount);
 
@@ -217,45 +211,10 @@ DefaultStyle.widgets["profile-view"] = {
             if (index == 0) {
                 elevationProfile.moveTo(x, elevationY);
                 flightProfile.moveTo(x, flightY);
-
-                p1["x"] = x;
-                p1["y"] = flightY;
             }
             else {
                 elevationProfile.lineTo(x, elevationY);
                 flightProfile.lineTo(x, flightY);
-
-                if (index > 1) {
-                    p1["x"] = p2.x;
-                    p1["y"] = p2.y;
-                }
-
-                p2["x"] = x;
-                p2["y"] = flightY;
-
-                distance += me._getDistance(p1, p2);
-
-                if (distance > 100) {
-                    var rotate = 0;
-                    if (p2.y > p1.y + DefaultStyle.widgets["profile-view"].PIXEL_DIFF) {
-                        rotate = DefaultStyle.widgets["profile-view"].AC_ANGLE; # descent
-                    }
-                    else if (p2.y + DefaultStyle.widgets["profile-view"].PIXEL_DIFF < p1.y) {
-                        # We are climb compared with previous point, but for climb
-                        # it is best to compare Y with the next point
-                        if (index + 1 < size(rows)) {
-                            var nextRow = rows[index + 1];
-                            var nextFlightY = me._yXAxis - ((maxAlt == 0 ? 0 : nextRow.alt_m / maxAlt) * me._positiveYAxisLength);
-
-                            if (nextFlightY + DefaultStyle.widgets["profile-view"].PIXEL_DIFF < p2.y) {
-                                rotate = -DefaultStyle.widgets["profile-view"].AC_ANGLE; # climb
-                            }
-                        }
-                    }
-
-                    me._drawPlaneSymbol(x, flightY, rotate);
-                    distance = 0;
-                }
 
                 if (math.mod(index, xAxisLabelsSeparation) == 0) {
                     # Labels with hours on X axis
@@ -311,7 +270,7 @@ DefaultStyle.widgets["profile-view"] = {
         var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
-        return me._drawAircraft(model, x, y);
+        return me._drawAircraft(x, y, row.pitch);
     },
 
     #
@@ -321,17 +280,8 @@ DefaultStyle.widgets["profile-view"] = {
     # @param  double  y
     # @return ghost  Path element
     #
-    _drawAircraft: func(model, x, y) {
-        var arm = DefaultStyle.widgets["profile-view"].CROSS_ARM;
-
-        return me._aircraftPositionGroup.createChild("path")
-            .moveTo(x - arm, y)
-            .horiz(arm * 2)
-            .move(-arm, -arm)
-            .vert(arm * 2)
-            .set("stroke", "red")
-            .set("stroke-width", 3)
-            .set("z-index", 2);
+    _drawAircraft: func(x, y, pitch) {
+        me._drawPlaneSymbol(x, y, -pitch);
     },
 
     #
@@ -401,11 +351,35 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     _drawPlaneSymbol: func(x, y, rotate = 0) {
-        var svgPlane = me._root.createChild("group");
-        canvas.parsesvg(svgPlane, "Textures/plane.svg");
-        svgPlane.setScale(0.15);
-        svgPlane.setTranslation(x - 12, y - 8);
+        # Width and height of resized SVG image, observationally obtained
+        var width  = 33;
+        var height = 11;
+
+        var angleInRadians = rotate * globals.D2R;
+        var offset = me._getRotationOffset(width, height, angleInRadians);
+
+        var svgPlane = me._aircraftPositionGroup.createChild("group");
+        canvas.parsesvg(svgPlane, "Textures/plane-side.svg");
+        svgPlane.setTranslation(
+            x - (width  / 2) + offset.dx,
+            y - (height / 2) + offset.dy
+        );
         svgPlane.setRotation(rotate * globals.D2R);
+    },
+
+    #
+    # Calculate offset for rotation because the image rotation point is in the upper left corner
+    #
+    # @param  int  width  Image width
+    # @param  int  height  Image height
+    # @param  double  angleInRadians
+    # @return hash  Hash with delta X and delta Y
+    #
+    _getRotationOffset: func(width, height, angleInRadians) {
+        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
+        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
+
+        return { dx: deltaX, dy: deltaY };
     },
 
     #
