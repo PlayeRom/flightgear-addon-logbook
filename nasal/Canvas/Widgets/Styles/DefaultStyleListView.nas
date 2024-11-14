@@ -339,8 +339,7 @@ DefaultStyle.widgets["list-view"] = {
             }();
 
             # Since the text can wrap, you need to take the height of the last text and add it to the height of the content.
-            var itemsCount = size(me._itemElements);
-            height = me._itemElements[itemsCount - 1].maxHeight;
+            height = me._itemElements[index].maxHeight;
 
             y += height > DefaultStyle.widgets["list-view"].ITEM_HEIGHT
                 ? (height + me._getHeightItemPadding(height))
