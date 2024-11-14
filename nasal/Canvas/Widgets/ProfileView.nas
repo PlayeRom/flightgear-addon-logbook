@@ -16,7 +16,7 @@ gui.widgets.ProfileView = {
     #
     # Constructor
     #
-    # @param  hash  parent
+    # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
     # @return me
@@ -27,7 +27,7 @@ gui.widgets.ProfileView = {
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "profile-view", me._cfg));
 
-        # Items from `trackers` table
+        # Vector of hashes with flight data
         me._tractItems = [];
 
         # Maximum flight altitude or elevation
@@ -43,14 +43,42 @@ gui.widgets.ProfileView = {
     },
 
     #
-    # Set track items and max alt
+    # Set track items and max altitude
     #
-    # @param  vector|nil  rows  Vector of records from `trackers` table
-    # @param  double maxAlt  Maximum flight altitude or elevation
+    # @param  vector|nil  rows  Vector of hashes with flight data:
+    #                           [
+    #                                {
+    #                                     timestamp   : double,
+    #                                     alt_m       : double,
+    #                                     elevation_m : double,
+    #                                     distance    : double,
+    #                                     pitch       : double,
+    #                                 },
+    #                                 ... etc.
+    #                           ]
+    # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
+    #                             If not given then it will be obtained from rows (slow performance).
     # @return me
     #
-    setData: func(rows, maxAlt) {
+    setData: func(rows, maxAlt = nil) {
         me._position = 0;
+
+        if (maxAlt == nil and rows != nil) {
+            foreach (var item; rows) {
+                if (maxAlt == nil) {
+                    maxAlt = math.max(item.alt_m, item.elevation_m);
+                    continue;
+                }
+
+                if (item.alt_m > maxAlt) {
+                    maxAlt = item.alt_m;
+                }
+
+                if (item.elevation_m > maxAlt) {
+                    maxAlt = item.elevation_m;
+                }
+            }
+        }
 
         me._tractItems = rows;
         me._maxAlt = maxAlt;
@@ -147,6 +175,8 @@ gui.widgets.ProfileView = {
     #
     # Prevents exceeding the minimum value of the position
     #
+    # @return void
+    #
     _protectMinPosition: func() {
         if (me._position < 0) {
             me._position = 0;
@@ -155,6 +185,8 @@ gui.widgets.ProfileView = {
 
     #
     # Prevents exceeding the maximum value of the position
+    #
+    # @return void
     #
     _protectMaxPosition: func() {
         var lastRowsIndex = me.getTrackLastIndex();

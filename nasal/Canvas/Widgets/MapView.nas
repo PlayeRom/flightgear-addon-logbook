@@ -23,7 +23,7 @@ gui.widgets.MapView = {
     #
     # Constructor
     #
-    # @param  hash  parent
+    # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
     # @return me
@@ -34,7 +34,7 @@ gui.widgets.MapView = {
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "map-view", me._cfg));
 
-        # Items from `trackers` table
+        # Vector of hashes with flight data
         me._tractItems = [];
 
         me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
@@ -48,7 +48,15 @@ gui.widgets.MapView = {
     #
     # Set track items
     #
-    # @param  vector|nil  rows  Vector of records from `trackers` table
+    # @param  vector|nil  rows  Vector of hashes with flight data:
+    #                           [
+    #                                {
+    #                                     lat         : double,
+    #                                     lon         : double,
+    #                                     heading_true: double,
+    #                                 },
+    #                                 ... etc.
+    #                           ]
     # @return me
     #
     setTrackItems: func(rows) {
@@ -188,6 +196,8 @@ gui.widgets.MapView = {
     #
     # Prevents exceeding the minimum value of the position
     #
+    # @return void
+    #
     _protectMinPosition: func() {
         if (me._position < 0) {
             me._position = 0;
@@ -196,6 +206,8 @@ gui.widgets.MapView = {
 
     #
     # Prevents exceeding the maximum value of the position
+    #
+    # @return void
     #
     _protectMaxPosition: func() {
         var lastRowsIndex = me.getTrackLastIndex();
@@ -224,10 +236,10 @@ gui.widgets.MapView = {
 
     #
     # @param  func  callback  Callback function
-    # @param  hash  objCallback  Class as owner of callback function
+    # @param  ghost|nill  objCallback  Class as owner of callback function
     # @return me
     #
-    setUpdateCallback: func(callback, objCallback) {
+    setUpdateCallback: func(callback, objCallback = nil) {
         me._callback = callback;
         me._objCallback = objCallback;
 
@@ -243,7 +255,7 @@ gui.widgets.MapView = {
     _updatePosition: func(position) {
         me._position = position;
 
-        if (me._objCallback != nil and me._callback != nil) {
+        if (me._callback != nil) {
             call(me._callback, [position], me._objCallback);
         }
     },

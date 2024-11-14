@@ -324,6 +324,8 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Create SVG plane image
     #
+    # @return void
+    #
     _createPlaneIcon: func() {
         me._svgPlane = me._root.createChild("group").set("z-index", 1);
         canvas.parsesvg(me._svgPlane, "Textures/plane-side.svg");

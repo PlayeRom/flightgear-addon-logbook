@@ -19,8 +19,8 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Constructor
     #
-    # @param hash parent
-    # @param hash cfg
+    # @param  ghost  parent
+    # @param  hash  cfg
     # @return void
     #
     new: func(parent, cfg) {
@@ -46,8 +46,8 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Callback called when user resized the window
     #
-    # @param hash model
-    # @param int w, h - Width and height of widget
+    # @param  ghost  model  ListView model
+    # @param  int  w, h - Width and height of widget
     # @return me
     #
     setSize: func(model, w, h) {
@@ -57,7 +57,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
+    # @param  ghost  model  ListView model
     # @return void
     #
     update: func(model) {
@@ -65,8 +65,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector columnsWidth
+    # @param  ghost  model  ListView model
+    # @param  vector  columnsWidth
     # @return me
     #
     setColumnsWidth: func(model, columnsWidth) {
@@ -77,8 +77,8 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Set title as non clickable description text on the top
     #
-    # @param hash model
-    # @param string text
+    # @param  ghost  model  ListView model
+    # @param  string  text
     # @return me
     #
     setTitle: func(model, text) {
@@ -91,8 +91,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector color
+    # @param  ghost  model  ListView model
+    # @param  vector  color
     # @return me
     #
     setColorText: func(model, color) {
@@ -124,8 +124,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector color
+    # @param  ghost  model  ListView model
+    # @param  vector  color
     # @return me
     #
     setColorBackground: func(model, color) {
@@ -142,8 +142,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector color
+    # @param  ghost  model  ListView model
+    # @param  vector  color
     # @return me
     #
     setColorHoverBackground: func(model, color) {
@@ -154,8 +154,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param int fontSize
+    # @param  ghost  model  ListView model
+    # @param  int  fontSize
     # @return me
     #
     setFontSize: func(model, fontSize) {
@@ -186,8 +186,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param string font
+    # @param  ghost  model  ListView model
+    # @param  string  font
     # @return me
     #
     setFontName: func(model, font) {
@@ -218,8 +218,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param int x, y
+    # @param  ghost  model  ListView model
+    # @param  int  x, y
     # @return me
     #
     setTranslation: func(model, x, y) {
@@ -229,8 +229,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector color
+    # @param  ghost  model  ListView model
+    # @param  vector  color
     # @return me
     #
     setHighlightingRow: func(model, color) {
@@ -242,7 +242,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
+    # @param  ghost  model  ListView model
     # @return me
     #
     removeHighlightingRow: func(model) {
@@ -251,8 +251,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param vector boundingBox
+    # @param  ghost  model  ListView model
+    # @param  vector  boundingBox  [xmin, ymin, xmax, ymax]
     # @return me
     #
     setClipByBoundingBox: func(model, boundingBox) {
@@ -261,7 +261,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
+    # @param  ghost  model  ListView model
     # @return void
     #
     reDrawContent: func(model) {
@@ -277,8 +277,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @return int - Height of content
+    # @param  ghost  model  ListView model
+    # @return int  Height of content
     #
     _drawContentLoading: func(model) {
         me._loadingText = me._createText(
@@ -294,8 +294,8 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @return int - Height of content
+    # @param  ghost  model  ListView model
+    # @return int  Height of content
     #
     _drawContentItems: func(model) {
         if (me._xTranslation != nil and me._yTranslation != nil) {
@@ -357,9 +357,9 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Create row
     #
-    # @param hash model
-    # @param string|hash item
-    # @param int x, y
+    # @param  ghost  model  ListView model
+    # @param  string|hash  item
+    # @param  int  x, y
     # @return void
     #
     _createRow: func(model, item, x, y) {
@@ -376,9 +376,9 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Create simple row
     #
-    # @param hash model
-    # @param string|hash item
-    # @param int x, y
+    # @param  ghost  model  ListView model
+    # @param  string|hash  item
+    # @param  int  x, y
     # @return void
     #
     _createSimpleRow: func(model, item, x, y) {
@@ -412,9 +412,9 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Create complex row
     #
-    # @param hash model
-    # @param string|hash item
-    # @param int x, y
+    # @param  ghost  model  ListView model
+    # @param  string|hash  item
+    # @param  int  x, y
     # @return void
     #
     _createComplexRow: func(model, item, x, y) {
@@ -480,7 +480,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash item
+    # @param  ghost  model  ListView model
     # @return bool
     #
     _isImageInRow: func(item) {
@@ -498,7 +498,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Get width of column for given index
     #
-    # @param int index
+    # @param  int  index
     # @return int
     #
     _getColumnWidth: func(index) {
@@ -506,7 +506,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param int y
+    # @param  int  y
     # @return hash
     #
     _createBar: func(y) {
@@ -521,18 +521,18 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param int y
-    # @return hash - Group element
+    # @param  int  y
+    # @return ghost  Group element
     #
     _createBarGroup: func(y) {
         return me._root.createChild("group").setTranslation(0, y);
     },
 
     #
-    # @param hash model
-    # @param hash context
-    # @param int textHeight
-    # @return hash - Path element
+    # @param  ghost  model  ListView model
+    # @param  hash  context
+    # @param  int  textHeight
+    # @return ghost  Path element
     #
     _createRectangle: func(model, context, textHeight) {
         return context.rect(
@@ -545,12 +545,12 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param hash model
-    # @param hash context - Parent element
-    # @param int x, y
-    # @param string text
-    # @param string alignment
-    # @return hash - Text element
+    # @param  ghost  model  ListView model
+    # @param  hash  context  Parent element
+    # @param  int  x, y
+    # @param  string  text
+    # @param  string  alignment
+    # @return ghost  Text element
     #
     _createText: func(model, context, x, y, text, alignment = "left-baseline") {
         if (model._placeholder != nil and string.trim(text) == "") {
@@ -578,7 +578,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param int maxHeight - Max height of content
+    # @param  int  maxHeight  Max height of content
     # @return double
     #
     _getHeightItemPadding: func(maxHeight) {

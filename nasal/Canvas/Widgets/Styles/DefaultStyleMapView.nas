@@ -450,7 +450,7 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Draw an invisible line to get the padding
+    # Draw an invisible line to get the padding. It is needed when MapView is drawn inside ScrollArea.
     #
     # @param  ghost  model  MapView model
     # @return ghost  Path element

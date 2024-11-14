@@ -120,9 +120,9 @@ gui.widgets.ListView = {
     #
     # Constructor
     #
-    # @param hash parent
-    # @param hash style
-    # @param hash cfg
+    # @param  ghost  parent
+    # @param  hash  style
+    # @param  hash  cfg
     # @return me
     #
     new: func(parent, style, cfg) {
@@ -168,7 +168,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param int x, y
+    # @param  int  x, y
     # @return me
     #
     setTranslation: func(x, y) {
@@ -179,7 +179,7 @@ gui.widgets.ListView = {
     #
     # Set title as non clickable description text on the top
     #
-    # @param string text
+    # @param  string  text
     # @return me
     #
     setTitle: func(text) {
@@ -189,8 +189,8 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param func callback - The click callback with int parameter as clicked item index
-    # @param hash callbackContext - The click callback context
+    # @param  func  callback  The click callback with int parameter as clicked item index
+    # @param  hash  callbackContext  The click callback context
     # @return me
     #
     setClickCallback: func(callback, callbackContext = nil) {
@@ -200,7 +200,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param vector color
+    # @param  vector  color
     # @return me
     #
     setColorText: func(color) {
@@ -209,7 +209,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param vector color
+    # @param  vector  color
     # @return me
     #
     setColorBackground: func(color) {
@@ -218,7 +218,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param vector color
+    # @param  vector  color
     # @return me
     #
     setColorHoverBackground: func(color) {
@@ -251,7 +251,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param string font
+    # @param  string  font
     # @return me
     #
     setFontName: func(font) {
@@ -263,7 +263,7 @@ gui.widgets.ListView = {
     # Set columns widths in pixels as a vector (each item as an int). It's needed if you have to draw many columns
     # with data. When you use it, then for setItems you have to pass vector of hashes.
     #
-    # @param vector columnsWidth - e.g. [200, 300, 150, ...]
+    # @param  vector  columnsWidth  e.g. [200, 300, 150, ...]
     # @return me
     #
     setColumnsWidth: func(columnsWidth) {
@@ -277,9 +277,9 @@ gui.widgets.ListView = {
     # Then each hash will be a row and each string will be a column in its row. In this case, the size of the string
     # vector must be the same as the size of the vector given in setColumnsWidth.
     #
-    # @param vector items - ["Item 1", "Item 2", ...] or
-    #                       [{data: ["Row 1 Col 1", "Row 1 Col 2", ...]}, {data: ["Row 2 Col 1", "Row 2 col 2", ...]}, ...]
-    # @param bool disableLoading
+    # @param  vector  items  ["Item 1", "Item 2", ...] or
+    #                        [{data: ["Row 1 Col 1", "Row 1 Col 2", ...]}, {data: ["Row 2 Col 1", "Row 2 col 2", ...]}, ...]
+    # @param  bool  disableLoading
     # @return me
     #
     setItems: func(items, disableLoading = 1) {
@@ -298,8 +298,8 @@ gui.widgets.ListView = {
     # Set permanently highlighting by given color, specific row given by index.
     # Mouse hover will not change this highlighting until removeHighlightingRow will be called.
     #
-    # @param int index
-    # @param vector color
+    # @param  int  index
+    # @param  vector  color
     # @return me
     #
     setHighlightingRow: func(index, color) {
@@ -371,7 +371,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param vector boundingBox - [xmin, ymin, xmax, ymax]
+    # @param  vector  boundingBox  [xmin, ymin, xmax, ymax]
     # @return me
     #
     setClipByBoundingBox: func(boundingBox) {
@@ -382,7 +382,7 @@ gui.widgets.ListView = {
     #
     # Set the placeholder text to use when a cell has an empty string value
     #
-    # @param string|nil placeholder
+    # @param  string|nil  placeholder
     # @return me
     #
     setEmptyPlaceholder: func(placeholder) {
@@ -393,7 +393,7 @@ gui.widgets.ListView = {
     #
     # Set height of images in pixels
     #
-    # @param int height
+    # @param  int  height
     # @return me
     #
     setImageHeight: func(height) {
@@ -404,7 +404,7 @@ gui.widgets.ListView = {
     #
     # Set aspect ratio of images. The width of the image will be = _imgHeight * _imgAspectRatio.
     #
-    # @param double aspectRatio
+    # @param  double  aspectRatio
     # @return me
     #
     setImageAspectRatio: func(aspectRatio) {
