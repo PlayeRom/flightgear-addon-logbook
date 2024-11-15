@@ -157,8 +157,8 @@ DefaultStyle.widgets["map-view"] = {
     # Calculate how many tiles you need in width and height depending on the widget size
     #
     _calculateNumTiles: func(model) {
-        me._numTiles.x = math.floor(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
-        me._numTiles.y = math.floor(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles.x = math.ceil(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles.y = math.ceil(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
     },
 
     #

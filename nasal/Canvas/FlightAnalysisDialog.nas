@@ -58,7 +58,7 @@ var FlightAnalysisDialog = {
             call(FlightAnalysisDialog.del, [], self);
         };
 
-        me._scrollAreaMap = me.createScrollArea();
+        me._clipArea = canvas.gui.widgets.Area.new(me.group, canvas.style, {});
         me._mapView = nil;
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
@@ -112,7 +112,7 @@ var FlightAnalysisDialog = {
 
         hBoxLayout.addSpacing(FlightAnalysisDialog.PADDING);
         hBoxLayout.addItem(vBoxLayoutInfo, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
-        hBoxLayout.addItem(me._scrollAreaMap, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
+        hBoxLayout.addItem(me._clipArea, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
 
         me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
 
@@ -124,9 +124,9 @@ var FlightAnalysisDialog = {
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
         me.vbox.addItem(hBoxProfile, 1); # 2nd param = stretch
 
-        me._scrollMapContent = me.getScrollAreaContent(me._scrollAreaMap);
+        me._mapContent = me._clipArea.getContent();
 
-        me._drawScrollable();
+        me._drawClipArea();
 
         me._updateLabelValues();
 
@@ -186,10 +186,10 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _drawScrollable: func() {
+    _drawClipArea: func() {
         # Lateral Profile
 
-        me._mapView = canvas.gui.widgets.MapView.new(me._scrollMapContent, canvas.style, {});
+        me._mapView = canvas.gui.widgets.MapView.new(me._mapContent, canvas.style, {});
         # I use _onResize to set the correct number of tiles on the map when I reopen the window,
         # because it remembers the previous size
         me._onResize(
@@ -208,7 +208,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _onResize: func(width, height) {
-        # TODO: The easiest way would be to take me._scrollAreaMap._size,
+        # TODO: The easiest way would be to take me._clipArea._size,
         # but this one doesn't yet include the current size.
         # So I'm trying to combine with _onResize and calculating from proportions,
         # if these change it will stop working correctly.
