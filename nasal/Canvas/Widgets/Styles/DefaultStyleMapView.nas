@@ -220,9 +220,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Draw plane from SVG file at center of the map
     #
-    # @param  double  x
-    # @param  double  y
-    # @param  double  rotate
+    # @param  double  heading
     # @return void
     #
     _drawPlaneIcon: func(heading) {

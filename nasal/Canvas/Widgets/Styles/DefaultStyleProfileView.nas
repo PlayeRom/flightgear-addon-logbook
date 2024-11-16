@@ -67,51 +67,51 @@ DefaultStyle.widgets["profile-view"] = {
     reDrawContent: func(model) {
         me._root.removeAllChildren();
 
-        if (model._tractItems == nil or size(model._tractItems) == 0) {
+        if (model._tractItems == nil or model._trackItemsSize == 0) {
             me._drawTextCenter(
                 "This log doesn't contain flight data.",
                 int(model._size[0] / 2),
                 int(model._size[1] / 2)
             );
+
+            return;
         }
-        else {
-            if (!me._isClickEventSet) {
-                me._isClickEventSet = true;
 
-                me._root.addEventListener("click", func(e) {
-                    # Find nearest point on X axis
-                    var minDiff = nil;
-                    var lastDiff = nil;
-                    var diff = 0;
-                    var found = nil;
-                    foreach (var item; me._pointsX.vector) {
-                        diff = math.abs(item.x - e.localX);
-                        if (minDiff == nil or diff < minDiff) {
-                            minDiff = diff;
-                            found = item;
-                        }
+        if (!me._isClickEventSet) {
+            me._isClickEventSet = true;
 
-                        if (lastDiff != nil and diff > lastDiff) {
-                            break;
-                        }
-
-                        lastDiff = diff;
+            me._root.addEventListener("click", func(e) {
+                # Find nearest point on X axis
+                var minDiff = nil;
+                var lastDiff = nil;
+                var diff = 0;
+                var found = nil;
+                foreach (var item; me._pointsX.vector) {
+                    diff = math.abs(item.x - e.localX);
+                    if (minDiff == nil or diff < minDiff) {
+                        minDiff = diff;
+                        found = item;
                     }
 
-                    if (found != nil) {
-                        model.setTrackPosition(found.position);
-                        model._updatePosition();
+                    if (lastDiff != nil and diff > lastDiff) {
+                        break;
                     }
-                });
-            }
 
-            me._createPlaneIcon();
+                    lastDiff = diff;
+                }
 
-            me._drawProfile(model);
-
-
-            me.updateAircraftPosition(model);
+                if (found != nil) {
+                    model.setTrackPosition(found.position);
+                    model._updatePosition();
+                }
+            });
         }
+
+        me._createPlaneIcon();
+
+        me._drawProfile(model);
+
+        me.updateAircraftPosition(model);
     },
 
     #
