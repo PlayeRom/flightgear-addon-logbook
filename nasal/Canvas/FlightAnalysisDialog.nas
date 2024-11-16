@@ -358,7 +358,7 @@ var FlightAnalysisDialog = {
         me._btnEnd         = me._createButtonNarrow(">>|", func { me._goEndTrack(); });
 
         me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
-        var btnClose       = me._createButtonWide("Close", func { me.hide(); });
+        var btnClose       = me._createButtonWide("Close", func { me.del(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);
