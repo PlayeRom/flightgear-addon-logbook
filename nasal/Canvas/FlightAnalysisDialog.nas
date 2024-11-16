@@ -40,7 +40,7 @@ var FlightAnalysisDialog = {
                     FlightAnalysisDialog.WINDOW_WIDTH,
                     FlightAnalysisDialog.WINDOW_HEIGHT,
                     "Logbook Flight Analysis",
-                    true,
+                    true, # <- resizable
                 ),
             ],
             _storage  : storage,
@@ -188,7 +188,7 @@ var FlightAnalysisDialog = {
             return;
         }
 
-        var row = me._trackItems[me._mapView.getPosition()];
+        var row = me._trackItems[me._mapView.getTrackPosition()];
 
         me._labelLatLonValue.setText(sprintf("%.03f, %.03f", row.lat, row.lon));
         me._labelAltValue.setText(sprintf("%.0f ft", row.alt_m * globals.M2FT));
@@ -290,7 +290,7 @@ var FlightAnalysisDialog = {
     #
     _updateAfterChangePosition: func() {
         var lastRowsIndex = me._mapView.getTrackLastIndex();
-        var position = me._mapView.getPosition();
+        var position = me._mapView.getTrackPosition();
 
         me._btnStart.setEnabled(position > 0);
         me._btnBackFast.setEnabled(position > 0);
@@ -310,7 +310,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _mapViewUpdatePosition: func(position) {
-        me._profileView.setTrack(position);
+        me._profileView.setTrackPosition(position);
 
         me._updateAfterChangePosition();
     },
@@ -331,7 +331,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _profileViewUpdatePosition: func(position) {
-        me._mapView.setTrack(position);
+        me._mapView.setTrackPosition(position);
 
         me._updateAfterChangePosition();
     },
@@ -436,7 +436,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _onPlayUpdate: func() {
-        var position = me._mapView.getPosition();
+        var position = me._mapView.getTrackPosition();
         if (position < me._trackSize - 1) {
             me._goNextTrack();
         }

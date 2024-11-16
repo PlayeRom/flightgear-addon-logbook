@@ -99,9 +99,8 @@ DefaultStyle.widgets["profile-view"] = {
                     }
 
                     if (found != nil) {
-                        model._updatePosition(found.position);
-
-                        me.updateAircraftPosition(model);
+                        model.setTrackPosition(found.position);
+                        model._updatePosition();
                     }
                 });
             }

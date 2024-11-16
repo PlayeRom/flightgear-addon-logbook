@@ -43,9 +43,11 @@ gui.widgets.MapView = {
         # Current index of me._tractItems
         me._position = 0;
 
+        # Callback function called when this widget changes the aircraft's position
         me._callbackPos     = nil;
         me._objCallbackPos  = nil;
 
+        # Callback function called when this widget changes the map zoom
         me._callbackZoom    = nil;
         me._objCallbackZoom = nil;
 
@@ -55,15 +57,15 @@ gui.widgets.MapView = {
     #
     # Set track items
     #
-    # @param  vector|nil  rows  Vector of hashes with flight data:
-    #                           [
-    #                                {
-    #                                     lat         : double,
-    #                                     lon         : double,
-    #                                     heading_true: double,
-    #                                 },
-    #                                 ... etc.
-    #                           ]
+    # @param  vector  rows  Vector of hashes with flight data:
+    #                       [
+    #                            {
+    #                                 lat         : double,
+    #                                 lon         : double,
+    #                                 heading_true: double,
+    #                             },
+    #                             ... etc.
+    #                       ]
     # @return me
     #
     setTrackItems: func(rows) {
@@ -188,7 +190,7 @@ gui.widgets.MapView = {
     # @param  int  position
     # @return me
     #
-    setTrack: func(position) {
+    setTrackPosition: func(position) {
         me._position = position;
 
         me._protectMinPosition();
@@ -197,6 +199,15 @@ gui.widgets.MapView = {
         me._view.updateTiles(me);
 
         return me;
+    },
+
+    #
+    # Get current index position
+    #
+    # @return int  Index position of me_tractItems vector
+    #
+    getTrackPosition: func() {
+        return me._position;
     },
 
     #
@@ -232,19 +243,11 @@ gui.widgets.MapView = {
     },
 
     #
-    # Get current index position
-    #
-    # @return int  Index position of me_tractItems vector
-    #
-    getPosition: func() {
-        return me._position;
-    },
-
-    #
     # Set callback function for position update
     #
-    # @param  func  callback  Callback function
+    # @param  func|nil  callback  Callback function, if nil then callback will be disabled
     # @param  ghost|nil  objCallback  Class as owner of callback function
+    #                                 if nil then reference for callback will not be used
     # @return me
     #
     setUpdatePositionCallback: func(callback, objCallback = nil) {
@@ -255,24 +258,22 @@ gui.widgets.MapView = {
     },
 
     #
-    # The widget itself updated the aircraft's position
+    # Call the callback that the widget itself updated the aircraft's position
     #
-    # @param  int  position  New position
     # @return void
     #
-    _updatePosition: func(position) {
-        me._position = position;
-
+    _updatePosition: func() {
         if (me._callbackPos != nil) {
-            call(me._callbackPos, [position], me._objCallbackPos);
+            call(me._callbackPos, [me._position], me._objCallbackPos);
         }
     },
 
     #
     # Set callback function for zoom update
     #
-    # @param  func  callback  Callback function
-    # @param  ghost|nil  objCallback  Class as owner of callback function
+    # @param  func|nil  callback  Callback function, if nil then callback will be disabled
+    # @param  ghost|nil  objCallback  Class as owner of callback function,
+    #                                 if nil then reference for callback will not be used
     # @return me
     #
     setUpdateZoomCallback: func(callback, objCallback = nil) {
@@ -283,7 +284,7 @@ gui.widgets.MapView = {
     },
 
     #
-    # The widget itself updated the zoom of map
+    # Call the callback that the widget itself updated the zoom of map
     #
     # @return void
     #

@@ -29,15 +29,17 @@ gui.widgets.ProfileView = {
 
         # Vector of hashes with flight data
         me._tractItems = [];
+        me._trackItemsSize = 0;
 
         # Maximum flight altitude or elevation
         me._maxAlt = 0;
 
-        # Current index of me._tractItems
+        # Current index of me._tractItems (current aircraft position)
         me._position = 0;
 
-        me._objCallback = nil;
+        # Callback function called when this widget changes the aircraft's position
         me._callback = nil;
+        me._objCallback = nil; # object as owner of callback function
 
         return me;
     },
@@ -45,17 +47,17 @@ gui.widgets.ProfileView = {
     #
     # Set track items and max altitude
     #
-    # @param  vector|nil  rows  Vector of hashes with flight data:
-    #                           [
-    #                                {
-    #                                     timestamp   : double,
-    #                                     alt_m       : double,
-    #                                     elevation_m : double,
-    #                                     distance    : double,
-    #                                     pitch       : double,
-    #                                 },
-    #                                 ... etc.
-    #                           ]
+    # @param  vector  rows  Vector of hashes with flight data:
+    #                       [
+    #                            {
+    #                                 timestamp   : double,
+    #                                 alt_m       : double,
+    #                                 elevation_m : double,
+    #                                 distance    : double,
+    #                                 pitch       : double,
+    #                             },
+    #                             ... etc.
+    #                       ]
     # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
     #                             If not given then it will be obtained from rows (slow performance).
     # @return me
@@ -81,6 +83,8 @@ gui.widgets.ProfileView = {
         }
 
         me._tractItems = rows;
+        me._trackItemsSize = size(me._tractItems);
+
         me._maxAlt = maxAlt;
 
         return me;
@@ -92,7 +96,7 @@ gui.widgets.ProfileView = {
     # @return int
     #
     getTrackLastIndex: func() {
-        return size(me._tractItems) - 1;
+        return me._trackItemsSize - 1;
     },
 
     #
@@ -159,7 +163,7 @@ gui.widgets.ProfileView = {
     # @param  int  position
     # @return me
     #
-    setTrack: func(position) {
+    setTrackPosition: func(position) {
         me._position = position;
 
         me._protectMinPosition();
@@ -168,6 +172,15 @@ gui.widgets.ProfileView = {
         me._view.updateAircraftPosition(me);
 
         return me;
+    },
+
+    #
+    # Get current index position
+    #
+    # @return int  Index position of me_tractItems vector
+    #
+    getTrackPosition: func() {
+        return me._position;
     },
 
     #
@@ -194,17 +207,9 @@ gui.widgets.ProfileView = {
     },
 
     #
-    # Get current index position
-    #
-    # @return int  Index position of me_tractItems vector
-    #
-    getPosition: func() {
-        return me._position;
-    },
-
-    #
-    # @param  func  callback  Callback function
-    # @param  hash  objCallback  Class as owner of callback function
+    # @param  func|nil  callback  Callback function, if nil then callback will be disabled
+    # @param  ghost|nil  objCallback  Class as owner of callback function,
+    #                                 if nil then reference for callback will not be used
     # @return me
     #
     setUpdateCallback: func(callback, objCallback) {
@@ -215,16 +220,13 @@ gui.widgets.ProfileView = {
     },
 
     #
-    # The widget itself updated the aircraft's position
+    # Call the callback that the widget itself updated the aircraft's position
     #
-    # @param  int  position  New position
     # @return void
     #
-    _updatePosition: func(position) {
-        me._position = position;
-
-        if (me._objCallback != nil and me._callback != nil) {
-            call(me._callback, [position], me._objCallback);
+    _updatePosition: func() {
+        if (me._callback != nil) {
+            call(me._callback, [me._position], me._objCallback);
         }
     },
 };

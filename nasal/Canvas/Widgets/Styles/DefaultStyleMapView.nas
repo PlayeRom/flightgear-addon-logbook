@@ -136,8 +136,8 @@ DefaultStyle.widgets["map-view"] = {
                 }
 
                 if (position != nil) {
-                    model._updatePosition(position);
-                    me.updateTiles(model);
+                    model.setTrackPosition(position);
+                    model._updatePosition();
                 }
             });
 
