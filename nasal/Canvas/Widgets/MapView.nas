@@ -36,6 +36,7 @@ gui.widgets.MapView = {
 
         # Vector of hashes with flight data
         me._tractItems = [];
+        me._trackItemsSize = 0;
 
         me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
 
@@ -64,8 +65,7 @@ gui.widgets.MapView = {
         me._position = 0;
 
         me._tractItems = rows;
-
-        me._view.reDrawContent(me);
+        me._trackItemsSize = size(me._tractItems);
 
         return me;
     },
@@ -76,7 +76,7 @@ gui.widgets.MapView = {
     # @return int
     #
     getTrackLastIndex: func() {
-        return size(me._tractItems) - 1;
+        return me._trackItemsSize - 1;
     },
 
     #

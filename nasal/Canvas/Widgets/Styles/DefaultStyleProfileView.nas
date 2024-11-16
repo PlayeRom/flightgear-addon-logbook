@@ -68,8 +68,6 @@ DefaultStyle.widgets["profile-view"] = {
         me._root.removeAllChildren();
 
         if (model._tractItems == nil or size(model._tractItems) == 0) {
-            # me._drawPaddingKeeper(model);
-
             me._drawTextCenter(
                 "This log doesn't contain flight data.",
                 int(model._size[0] / 2),

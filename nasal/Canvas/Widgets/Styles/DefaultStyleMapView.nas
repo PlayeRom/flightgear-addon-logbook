@@ -28,6 +28,9 @@ DefaultStyle.widgets["map-view"] = {
     new: func(parent, cfg) {
         me._root = parent.createChild("group", "map-view");
 
+        me._content = me._root.createChild("group", "clip-content")
+            .set("clip-frame", Element.PARENT);
+
         me._textColor = me._style.getColor("fg_color");
 
         # Variables for map
@@ -53,6 +56,8 @@ DefaultStyle.widgets["map-view"] = {
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
         me._planeIconHeight = 0;
+
+        me._lastSize = { w: nil, h: nil };
     },
 
     #
@@ -63,7 +68,12 @@ DefaultStyle.widgets["map-view"] = {
     # @return me
     #
     setSize: func(model, w, h) {
-        me.reDrawContent(model);
+        if (me._lastSize.w != w or me._lastSize.h != h) {
+            me.reDrawContent(model);
+        }
+
+        me._lastSize.w = w;
+        me._lastSize.h = h;
 
         return me;
     },
@@ -73,7 +83,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     update: func(model) {
-        # nothing here
+        me._content.set("clip", "rect(0, " ~ model._size[0] ~ ", " ~ model._size[1] ~ ", 0)");
     },
 
     #
@@ -81,65 +91,64 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     reDrawContent: func(model) {
-        me._root.removeAllChildren();
+        me._content.removeAllChildren();
 
-        if (model._tractItems == nil or size(model._tractItems) == 0) {
-            me._drawPaddingKeeper(model);
-
+        if (model._tractItems == nil or model._trackItemsSize == 0) {
             me._createText(
                 int(model._size[0] / 2),
                 int(model._size[1] / 2),
                 "This log doesn't contain flight data.",
                 "center-center"
             );
+
+            return;
         }
-        else {
-            if (!me._isClickEventSet) {
-                me._isClickEventSet = true;
 
-                me._root.addEventListener("click", func(e) {
-                    # Find the path point closest to the click
-                    var minDistance = nil;
-                    var position = nil;
-                    var distance = 0;
-                    foreach (var point; me._pointsToDraw.vector) {
-                        distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
+        if (!me._isClickEventSet) {
+            me._isClickEventSet = true;
 
-                        if (distance < 50 # <- ignore points further than 50 px
-                            and (minDistance == nil or distance < minDistance)
-                        ) {
-                            minDistance = distance;
-                            position = point.position;
-                        }
+            me._content.addEventListener("click", func(e) {
+                # Find the path point closest to the click
+                var minDistance = nil;
+                var position = nil;
+                var distance = 0;
+                foreach (var point; me._pointsToDraw.vector) {
+                    distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
+
+                    if (distance < 50 # <- ignore points further than 50 px
+                        and (minDistance == nil or distance < minDistance)
+                    ) {
+                        minDistance = distance;
+                        position = point.position;
                     }
+                }
 
-                    if (position != nil) {
-                        model._updatePosition(position);
-                        me.updateTiles(model);
-                    }
-                });
-            }
-
-            me._createPlaneIcon();
-
-            me._flightPath = me._root.createChild("path", "flight")
-                .setColor(0.5, 0.5, 1)
-                .setStrokeLineWidth(2)
-                .set("z-index", 1);
-
-            me._calculateNumTiles(model);
-
-            me._centerTileOffset.x = (me._numTiles.x - 1) / 2;
-            me._centerTileOffset.y = (me._numTiles.y - 1) / 2;
-
-            # Reset values
-            me._lastTile.x = -1;
-            me._lastTile.y = -1;
-
-            me._createTiles();
-
-            me.updateTiles(model);
+                if (position != nil) {
+                    model._updatePosition(position);
+                    me.updateTiles(model);
+                }
+            });
         }
+
+        me._createPlaneIcon();
+
+        me._flightPath = me._content.createChild("path", "flight")
+            .setColor(0.5, 0.5, 1)
+            .setStrokeLineWidth(2)
+            .set("z-index", 1);
+
+        me._calculateNumTiles(model);
+
+        me._centerTileOffset.x = (me._numTiles.x - 1) / 2;
+        me._centerTileOffset.y = (me._numTiles.y - 1) / 2;
+
+        # Reset values
+        me._lastTile.x = -1;
+        me._lastTile.y = -1;
+
+        me._createTiles();
+
+        me.updateTiles(model);
     },
 
     #
@@ -171,7 +180,7 @@ DefaultStyle.widgets["map-view"] = {
             me._tiles[x] = setsize([], me._numTiles.y);
 
             for (var y = 0; y < me._numTiles.y; y += 1) {
-                me._tiles[x][y] = me._root.createChild("image", "map-tile");
+                me._tiles[x][y] = me._content.createChild("image", "map-tile");
             }
         }
     },
@@ -180,7 +189,7 @@ DefaultStyle.widgets["map-view"] = {
     # Create SVG plane image
     #
     _createPlaneIcon: func() {
-        me._svgPlane = me._root.createChild("group").set("z-index", 2);
+        me._svgPlane = me._content.createChild("group").set("z-index", 2);
         canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
 
         me._planeIconWidth  = me._svgPlane.getSize()[0];
@@ -228,7 +237,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Text element
     #
     _createText: func(x, y, text, alignment = "left-baseline") {
-        return me._root.createChild("text")
+        return me._content.createChild("text")
             .setFont("LiberationFonts/LiberationMono-Regular.ttf")
             .setFontSize(12)
             .setAlignment(alignment)
@@ -244,7 +253,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     updateTiles: func(model) {
-        if (model._tractItems == nil or size(model._tractItems) == 0) {
+        if (model._tractItems == nil or model._trackItemsSize == 0) {
             return;
         }
 
@@ -456,7 +465,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Path element
     #
     _drawPaddingKeeper: func(model) {
-        me._root.createChild("path", "padding-keeper")
+        me._content.createChild("path", "padding-keeper")
             .moveTo(0, 0)
             .horiz(model._size[0])
             .setColor(0, 0, 0, 0)

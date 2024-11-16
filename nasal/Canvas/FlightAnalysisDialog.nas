@@ -41,7 +41,6 @@ var FlightAnalysisDialog = {
                     FlightAnalysisDialog.WINDOW_HEIGHT,
                     "Logbook Flight Analysis",
                     true,
-                    func(w, h) { me._onResize(w, h); }
                 ),
             ],
             _storage  : storage,
@@ -58,15 +57,21 @@ var FlightAnalysisDialog = {
             call(FlightAnalysisDialog.del, [], self);
         };
 
-        me._clipArea = canvas.gui.widgets.Area.new(me.group, canvas.style, {});
-        me._mapView = nil;
+        me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
+
+        me._mapView = canvas.gui.widgets.MapView.new(me.group, canvas.style, {});
+        me._mapView.setUpdateCallback(me._mapViewUpdatePosition, me);
+
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
 
-        me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
-
+        # Get track data and put it to widgets
+        var maxAlt     = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
         me._trackItems = me._storage.getLogbookTracker(me._logbookId);
-        me._trackSize = size(me._trackItems);
+        me._trackSize  = size(me._trackItems);
+
+        me._mapView.setTrackItems(me._trackItems);
+        me._profileView.setData(me._trackItems, maxAlt);
 
         me._drawContent();
 
@@ -101,18 +106,13 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _drawContent: func() {
-        me._profileView.setData(
-            me._trackItems,
-            me._storage.getLogbookTrackerMaxAlt(me._logbookId)
-        );
-
         var hBoxLayout = canvas.HBoxLayout.new();
 
         var vBoxLayoutInfo = me._drawInfoLabels();
 
         hBoxLayout.addSpacing(FlightAnalysisDialog.PADDING);
         hBoxLayout.addItem(vBoxLayoutInfo, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
-        hBoxLayout.addItem(me._clipArea, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
+        hBoxLayout.addItem(me._mapView, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
 
         me.vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
 
@@ -123,10 +123,6 @@ var FlightAnalysisDialog = {
 
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
         me.vbox.addItem(hBoxProfile, 1); # 2nd param = stretch
-
-        me._mapContent = me._clipArea.getContent();
-
-        me._drawClipArea();
 
         me._updateLabelValues();
 
@@ -179,43 +175,6 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addSpacing(FlightAnalysisDialog.PADDING);
 
         return vBoxLayoutInfo;
-    },
-
-    #
-    # Draw content for scrollable area
-    #
-    # @return void
-    #
-    _drawClipArea: func() {
-        # Lateral Profile
-
-        me._mapView = canvas.gui.widgets.MapView.new(me._mapContent, canvas.style, {});
-        # I use _onResize to set the correct number of tiles on the map when I reopen the window,
-        # because it remembers the previous size
-        me._onResize(
-            getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"),
-            getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]")
-        );
-        me._mapView.setTrackItems(me._trackItems);
-        me._mapView.setUpdateCallback(me._mapViewUpdatePosition, me);
-    },
-
-    #
-    # Callback on resize window
-    #
-    # @param  int  width  New width of window
-    # @param  int  height  New height of window
-    # @return void
-    #
-    _onResize: func(width, height) {
-        # TODO: The easiest way would be to take me._clipArea._size,
-        # but this one doesn't yet include the current size.
-        # So I'm trying to combine with _onResize and calculating from proportions,
-        # if these change it will stop working correctly.
-        me._mapView.setSize(
-            width - (width / FlightAnalysisDialog.FRACTION.map),
-            height * 0.66
-        );
     },
 
     #
@@ -375,59 +334,21 @@ var FlightAnalysisDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        me._btnZoomMinus = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("-")
-            .listen("clicked", func { me._zoomOut(); })
-            .setFixedSize(26, 26);
+        me._labelZoom    = canvas.gui.widgets.Label.new(me.group, canvas.style, {})
+            .setText("Zoom " ~ me._mapView.getZoomLevel());
 
-        me._labelZoom = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+        me._btnZoomMinus   = me._createButtonNarrow("-",   func { me._zoomOut(); });
+        me._btnZoomPlus    = me._createButtonNarrow("+",   func { me._zoomIn(); });
 
-        me._btnZoomPlus  = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("+")
-            .listen("clicked", func { me._zoomIn(); })
-            .setFixedSize(26, 26);
+        me._btnStart       = me._createButtonNarrow("|<<", func { me._goStartTrack(); });
+        me._btnBackFast    = me._createButtonNarrow("<<",  func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
+        me._btnBack        = me._createButtonNarrow("<",   func { me._goPrevTrack(); });
+        me._btnForward     = me._createButtonNarrow(">",   func { me._goNextTrack(); });
+        me._btnForwardFast = me._createButtonNarrow(">>",  func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
+        me._btnEnd         = me._createButtonNarrow(">>|", func { me._goEndTrack(); });
 
-        me._btnStart   = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("|<<")
-            .listen("clicked", func { me._goStartTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnBackFast  = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("<<")
-            .listen("clicked", func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
-            .setFixedSize(26, 26);
-
-        me._btnBack    = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("<")
-            .listen("clicked", func { me._goPrevTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnForward = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText(">")
-            .listen("clicked", func { me._goNextTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnForwardFast = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText(">>")
-            .listen("clicked", func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); })
-            .setFixedSize(26, 26);
-
-        me._btnEnd     = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText(">>|")
-            .listen("clicked", func { me._goEndTrack(); })
-            .setFixedSize(26, 26);
-
-        me._btnPlay    = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Play")
-            .listen("clicked", func { me._togglePlay(); })
-            .setFixedSize(65, 26);
-
-        me._labelZoom.setText("Zoom " ~ me._mapView.getZoomLevel());
-
-        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Close")
-            .listen("clicked", func { me.hide(); })
-            .setFixedSize(65, 26);
+        me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
+        var btnClose       = me._createButtonWide("Close", func { me.hide(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);
@@ -452,6 +373,35 @@ var FlightAnalysisDialog = {
         me._updateAfterChangePosition();
 
         return buttonBox;
+    },
+
+    #
+    # @param  string  label
+    # @param  func  clickedCallback
+    # @return ghost  Button widget
+    #
+    _createButtonNarrow: func(label, clickedCallback) {
+        return me._createButton(label, clickedCallback).setFixedSize(26, 26);
+    },
+
+    #
+    # @param  string  label
+    # @param  func  clickedCallback
+    # @return ghost  Button widget
+    #
+    _createButtonWide: func(label, clickedCallback) {
+        return me._createButton(label, clickedCallback).setFixedSize(65, 26);
+    },
+
+    #
+    # @param  string  label
+    # @param  func  clickedCallback
+    # @return ghost  Button widget
+    #
+    _createButton: func(label, clickedCallback) {
+        return canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText(label)
+            .listen("clicked", clickedCallback)
     },
 
     #

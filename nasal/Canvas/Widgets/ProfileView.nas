@@ -83,8 +83,6 @@ gui.widgets.ProfileView = {
         me._tractItems = rows;
         me._maxAlt = maxAlt;
 
-        me._view.reDrawContent(me);
-
         return me;
     },
 
