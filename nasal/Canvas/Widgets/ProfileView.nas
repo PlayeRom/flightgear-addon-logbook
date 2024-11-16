@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# ProfileView widget - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# ProfileView widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -47,26 +47,30 @@ gui.widgets.ProfileView = {
     #
     # Set track items and max altitude
     #
-    # @param  vector  rows  Vector of hashes with flight data:
-    #                       [
-    #                            {
-    #                                 timestamp   : double,
-    #                                 alt_m       : double,
-    #                                 elevation_m : double,
-    #                                 distance    : double,
-    #                                 pitch       : double,
-    #                             },
-    #                             ... etc.
-    #                       ]
+    # @param  vector  trackItems  Vector of hashes with flight data:
+    #                             [
+    #                                  {
+    #                                       timestamp   : double,
+    #                                       alt_m       : double,
+    #                                       elevation_m : double,
+    #                                       distance    : double,
+    #                                       pitch       : double,
+    #                                   },
+    #                                   ... etc.
+    #                             ]
+    # @param  int  trackItemsSize
     # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
     #                             If not given then it will be obtained from rows (slow performance).
+    # @param  bool  withReset
     # @return me
     #
-    setData: func(rows, maxAlt = nil) {
-        me._position = 0;
+    setTrackItems: func(trackItems, trackItemsSize, maxAlt = nil, withReset = 1) {
+        if (withReset) {
+            me._position = 0;
+        }
 
-        if (maxAlt == nil and rows != nil) {
-            foreach (var item; rows) {
+        if (maxAlt == nil and trackItems != nil) {
+            foreach (var item; trackItems) {
                 if (maxAlt == nil) {
                     maxAlt = math.max(item.alt_m, item.elevation_m);
                     continue;
@@ -82,12 +86,21 @@ gui.widgets.ProfileView = {
             }
         }
 
-        me._tractItems = rows;
-        me._trackItemsSize = size(me._tractItems);
+        me._tractItems     = trackItems;
+        me._trackItemsSize = trackItemsSize;
 
         me._maxAlt = maxAlt;
 
         return me;
+    },
+
+    #
+    # Hard redraw needed when graph has been changed
+    #
+    # @return void
+    #
+    hardUpdateView: func() {
+        me._view.reDrawContent(me);
     },
 
     #

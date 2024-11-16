@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# ProfileView widget - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2022 Roman Ludwicki
+# Copyright (C) 2024 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# ProfileView is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -32,7 +32,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._positiveYAxisLength = 0;
 
         me._pointsX = std.Vector.new();
-        me._isClickEventSet = false;
+        me._isClickEventSet = 0;
 
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
@@ -78,7 +78,7 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         if (!me._isClickEventSet) {
-            me._isClickEventSet = true;
+            me._isClickEventSet = 1;
 
             me._root.addEventListener("click", func(e) {
                 # Find nearest point on X axis

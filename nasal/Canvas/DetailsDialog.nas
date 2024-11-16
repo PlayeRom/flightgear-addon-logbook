@@ -139,7 +139,21 @@ var DetailsDialog = {
                 .setText("Analysis")
                 .setFixedSize(75, 26)
                 .listen("clicked", func {
-                    me._flightAnalysisDialog = FlightAnalysisDialog.new(me._storage, me._logbookId);
+                    var firstRun = me._flightAnalysisDialog == nil;
+                    if (firstRun) {
+                        me._flightAnalysisDialog = FlightAnalysisDialog.new();
+                    }
+
+                    # Get data from SQLite
+                    var trackItems = me._storage.getLogbookTracker(me._logbookId);
+                    var maxAlt     = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
+
+                    me._flightAnalysisDialog.setData(trackItems, maxAlt);
+
+                    if (!firstRun) {
+                        me._flightAnalysisDialog.hardUpdateView();
+                    }
+
                     me._flightAnalysisDialog.show();
                 }
             );
@@ -239,8 +253,7 @@ var DetailsDialog = {
         me._logbookId = nil;
 
         if (me._flightAnalysisDialog != nil) {
-            me._flightAnalysisDialog.del();
-            me._flightAnalysisDialog = nil;
+            me._flightAnalysisDialog.hide();
         }
 
         me._inputDialog.hide();

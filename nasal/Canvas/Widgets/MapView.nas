@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# MapView widget - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# MapView widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -57,25 +57,47 @@ gui.widgets.MapView = {
     #
     # Set track items
     #
-    # @param  vector  rows  Vector of hashes with flight data:
-    #                       [
-    #                            {
-    #                                 lat         : double,
-    #                                 lon         : double,
-    #                                 heading_true: double,
-    #                             },
-    #                             ... etc.
-    #                       ]
+    # @param  vector  trackItems  Vector of hashes with flight data:
+    #                             [
+    #                                  {
+    #                                       lat         : double,
+    #                                       lon         : double,
+    #                                       heading_true: double,
+    #                                   },
+    #                                   ... etc.
+    #                             ]
+    # @param  int  trackItemsSize
+    # @param  bool  withReset
     # @return me
     #
-    setTrackItems: func(rows) {
-        me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
-        me._position = 0;
+    setTrackItems: func(trackItems, trackItemsSize, withReset = 1) {
+        if (withReset) {
+            me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
+            me._position = 0;
+        }
 
-        me._tractItems = rows;
-        me._trackItemsSize = size(me._tractItems);
+        me._tractItems     = trackItems;
+        me._trackItemsSize = trackItemsSize;
 
         return me;
+    },
+
+    #
+    # Soft redraw tiles and path
+    #
+    # @return void
+    #
+    softUpdateView: func() {
+        me._view.updateTiles(me);
+    },
+
+    #
+    # Hard redraw whole widget
+    #
+    # @return void
+    #
+    hardUpdateView: func() {
+        me._view.reDrawContent(me);
     },
 
     #

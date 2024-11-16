@@ -28,11 +28,11 @@ var FlightAnalysisDialog = {
     #
     # Constructor
     #
-    # @param  hash  storage  Storage object
-    # @param  int  logbookId
+    # @param  func|nil  onCanvasClosed
+    # @param  ghost|nil   objCallback
     # @return me
     #
-    new: func(storage, logbookId) {
+    new: func(onCanvasClosed = nil, objCallback = nil) {
         var me = {
             parents: [
                 FlightAnalysisDialog,
@@ -43,18 +43,20 @@ var FlightAnalysisDialog = {
                     true, # <- resizable
                 ),
             ],
-            _storage  : storage,
-            _logbookId: logbookId,
+            _trackItems    : nil,
+            _trackSize     : 0,
+            _onCanvasClosed: onCanvasClosed,
+            _objCallback   : objCallback,
         };
 
         me.bgImage.hide();
 
         me.setPositionOnCenter();
 
-        # Override window del method for stop _playTimer
+        # Override window del method (X button on bar) for stop _playTimer
         var self = me;
         me.window.del = func() {
-            call(FlightAnalysisDialog.del, [], self);
+            call(FlightAnalysisDialog.hide, [], self);
         };
 
         me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
@@ -65,14 +67,6 @@ var FlightAnalysisDialog = {
 
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
-
-        # Get track data and put it to widgets
-        var maxAlt     = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
-        me._trackItems = me._storage.getLogbookTracker(me._logbookId);
-        me._trackSize  = size(me._trackItems);
-
-        me._mapView.setTrackItems(me._trackItems);
-        me._profileView.setData(me._trackItems, maxAlt);
 
         me._drawContent();
 
@@ -87,6 +81,10 @@ var FlightAnalysisDialog = {
     del: func() {
         me._playTimer.stop();
 
+        if (me._onCanvasClosed != nil) {
+            call(me._onCanvasClosed, [], me._objCallback);
+        }
+
         call(Dialog.del, [], me);
     },
 
@@ -98,7 +96,60 @@ var FlightAnalysisDialog = {
     show: func() {
         g_Sound.play('paper');
 
+        me._updateAfterChangePosition();
+
         call(Dialog.show, [], me);
+    },
+
+    #
+    # Show this canvas dialog
+    #
+    # @return void
+    #
+    hide: func() {
+        me._playTimer.stop();
+
+        if (me._onCanvasClosed != nil) {
+            call(me._onCanvasClosed, [], me._objCallback);
+        }
+
+        call(Dialog.hide, [], me);
+    },
+
+    #
+    # Set track data
+    #
+    # @param  vector  logData  Vector of hashes with all path points
+    # @param  double  maxAlt  Max altitude of aircraft or terrain elevation
+    # @return void
+    #
+    setData: func(logData, maxAlt) {
+        me._trackItems = logData;
+        me._trackSize = size(me._trackItems);
+
+        # Put data to widgets
+        me._mapView.setTrackItems(me._trackItems, me._trackSize);
+        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt);
+    },
+
+    #
+    # Redraw hole widgets from strach
+    #
+    hardUpdateView: func() {
+        me._mapView.hardUpdateView();
+        me._profileView.hardUpdateView();
+
+        me._updateAfterChangePosition();
+    },
+
+    #
+    # Soft redraw widgets, however profile must be always hard redraw
+    #
+    softUpdateView: func() {
+        me._mapView.softUpdateView();
+        me._profileView.hardUpdateView();
+
+        me._updateAfterChangePosition();
     },
 
     #
@@ -358,7 +409,7 @@ var FlightAnalysisDialog = {
         me._btnEnd         = me._createButtonNarrow(">>|", func { me._goEndTrack(); });
 
         me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
-        var btnClose       = me._createButtonWide("Close", func { me.del(); });
+        var btnClose       = me._createButtonWide("Close", func { me.hide(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);

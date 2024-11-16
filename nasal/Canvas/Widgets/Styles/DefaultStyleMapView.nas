@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# MapView widget - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2022 Roman Ludwicki
+# Copyright (C) 2024 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# MapView widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -28,7 +28,7 @@ DefaultStyle.widgets["map-view"] = {
     # Now I use clip-frame, which clips the map, path and other elements to a rectangle defined by the size of the widget.
     # So using CULL_PATH loses its meaning.
     #
-    CULL_PATH: false,
+    CULL_PATH: 0,
 
     #
     # Constructor
@@ -63,7 +63,7 @@ DefaultStyle.widgets["map-view"] = {
         me._maxTile = { x: 0, y: 0 };
 
         me._pointsToDraw = std.Vector.new();
-        me._isClickEventSet = false;
+        me._isClickEventSet = 0;
 
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
@@ -117,7 +117,7 @@ DefaultStyle.widgets["map-view"] = {
         }
 
         if (!me._isClickEventSet) {
-            me._isClickEventSet = true;
+            me._isClickEventSet = 1;
 
             me._content.addEventListener("click", func(e) {
                 # Find the path point closest to the click
@@ -347,19 +347,19 @@ DefaultStyle.widgets["map-view"] = {
                             # image not found in cache, save in $FG_HOME
                             var imgUrl = me._makeUrl(pos);
 
-                            # logprint(LOG_INFO, 'Logbook Add-on - requesting ', imgUrl);
+                            # logprint(LOG_INFO, 'MapView Add-on - requesting ', imgUrl);
 
                             http.save(imgUrl, imgPath)
                                 .done(func {
-                                    # logprint(LOG_INFO, 'Logbook Add-on - received image ', imgPath);
+                                    # logprint(LOG_INFO, 'MapView Add-on - received image ', imgPath);
                                     tile.set("src", imgPath);
                                 })
                                 .fail(func(response) {
-                                    logprint(LOG_ALERT, 'Logbook Add-on - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
+                                    logprint(LOG_ALERT, 'MapView Add-on - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
                                 });
                         }
                         else { # cached image found, reusing
-                            # logprint(LOG_INFO, 'Logbook Add-on - loading ', imgPath);
+                            # logprint(LOG_INFO, 'MapView Add-on - loading ', imgPath);
                             tile.set("src", imgPath);
                         }
                     })();
@@ -384,7 +384,7 @@ DefaultStyle.widgets["map-view"] = {
             me._pointsToDraw.clear();
 
             # = true because the first point must start with moveTo method
-            var isBreak = true;
+            var isBreak = 1;
 
             # The first loop is to build an array of points that are within the map
             forindex (var index; model._tractItems) {
@@ -396,14 +396,14 @@ DefaultStyle.widgets["map-view"] = {
                     or pos.y < me._minTile.y
                 ) {
                     # The path point is out of map tiles, so ship it
-                    isBreak = true;
+                    isBreak = 1;
                 }
                 else {
                     # When there was a discontinuity, we need to start drawing with the moveTo function,
                     # so we set the moveTo flag which will tell us that
                     pos["moveTo"] = isBreak;
                     pos["position"] = index;
-                    isBreak = false;
+                    isBreak = 0;
                     me._pointsToDraw.append(pos);
                 }
             }
