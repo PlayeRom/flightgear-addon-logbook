@@ -43,6 +43,12 @@ gui.widgets.MapView = {
         # Current index of me._tractItems
         me._position = 0;
 
+        me._callbackPos     = nil;
+        me._objCallbackPos  = nil;
+
+        me._callbackZoom    = nil;
+        me._objCallbackZoom = nil;
+
         return me;
     },
 
@@ -235,13 +241,15 @@ gui.widgets.MapView = {
     },
 
     #
+    # Set callback function for position update
+    #
     # @param  func  callback  Callback function
-    # @param  ghost|nill  objCallback  Class as owner of callback function
+    # @param  ghost|nil  objCallback  Class as owner of callback function
     # @return me
     #
-    setUpdateCallback: func(callback, objCallback = nil) {
-        me._callback = callback;
-        me._objCallback = objCallback;
+    setUpdatePositionCallback: func(callback, objCallback = nil) {
+        me._callbackPos = callback;
+        me._objCallbackPos = objCallback;
 
         return me;
     },
@@ -255,8 +263,33 @@ gui.widgets.MapView = {
     _updatePosition: func(position) {
         me._position = position;
 
-        if (me._callback != nil) {
-            call(me._callback, [position], me._objCallback);
+        if (me._callbackPos != nil) {
+            call(me._callbackPos, [position], me._objCallbackPos);
+        }
+    },
+
+    #
+    # Set callback function for zoom update
+    #
+    # @param  func  callback  Callback function
+    # @param  ghost|nil  objCallback  Class as owner of callback function
+    # @return me
+    #
+    setUpdateZoomCallback: func(callback, objCallback = nil) {
+        me._callbackZoom = callback;
+        me._objCallbackZoom = objCallback;
+
+        return me;
+    },
+
+    #
+    # The widget itself updated the zoom of map
+    #
+    # @return void
+    #
+    _updateZoom: func() {
+        if (me._callbackZoom != nil) {
+            call(me._callbackZoom, [], me._objCallbackZoom);
         }
     },
 };

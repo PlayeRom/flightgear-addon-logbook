@@ -60,7 +60,8 @@ var FlightAnalysisDialog = {
         me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
 
         me._mapView = canvas.gui.widgets.MapView.new(me.group, canvas.style, {});
-        me._mapView.setUpdateCallback(me._mapViewUpdatePosition, me);
+        me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
+        me._mapView.setUpdateZoomCallback(me._mapViewUpdateZoom, me);
 
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
@@ -312,6 +313,15 @@ var FlightAnalysisDialog = {
         me._profileView.setTrack(position);
 
         me._updateAfterChangePosition();
+    },
+
+    #
+    # Callback function called from MapView when user change zoom by scroll
+    #
+    # @return void
+    #
+    _mapViewUpdateZoom: func() {
+        me._updateAfterZoom();
     },
 
     #

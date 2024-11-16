@@ -140,6 +140,15 @@ DefaultStyle.widgets["map-view"] = {
                     me.updateTiles(model);
                 }
             });
+
+            # Zoom map by scroll wheel
+            me._content.addEventListener("wheel", func(e) {
+                # e.deltaY = 1 or -1
+                model._changeZoom(e.deltaY);
+                model._updateZoom();
+
+                me.updateTiles(model);
+            });
         }
 
         me._createPlaneIcon();
