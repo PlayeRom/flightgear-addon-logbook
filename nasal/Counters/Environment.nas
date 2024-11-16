@@ -36,7 +36,6 @@ var Environment = {
         me._dayCounter         = 0;
         me._nightCounter       = 0;
         me._instrumentCounter  = 0;
-        me._maxAlt             = 0.0;
 
         me._propAltFt          = props.globals.getNode("/position/altitude-ft");
 
@@ -217,7 +216,6 @@ var Environment = {
         me._dayCounter        = 0;
         me._nightCounter      = 0;
         me._instrumentCounter = 0;
-        me._maxAlt            = 0.0;
     },
 
     #
@@ -233,11 +231,6 @@ var Environment = {
 
         if (me._isIMC()) {
             me._instrumentCounter += diffElapsedSec;
-        }
-
-        var alt = me._propAltFt.getValue();
-        if (alt > me._maxAlt) {
-            me._maxAlt = alt;
         }
     },
 
@@ -285,14 +278,5 @@ var Environment = {
     #
     getInstrumentHours: func() {
         return me._instrumentCounter / 3600;
-    },
-
-    #
-    # Get max altitude in ft
-    #
-    # @return double
-    #
-    getMaxAlt: func() {
-        return me._maxAlt;
     },
 };
