@@ -54,8 +54,6 @@ var SettingsDialogSQLite = {
         me._columnCheckBoxes = {};
         me._hBoxLayout = nil;
 
-        me._drawContent();
-
         return me;
     },
 
@@ -117,7 +115,7 @@ var SettingsDialogSQLite = {
 
         me._logbook.resetLogbookDialog();
 
-        me.window.hide();
+        me.hide();
     },
 
     #
@@ -432,7 +430,7 @@ var SettingsDialogSQLite = {
         var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Cancel")
             .setFixedSize(65, 26)
-            .listen("clicked", func { me.window.hide(); });
+            .listen("clicked", func { me.hide(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(btnSave);
