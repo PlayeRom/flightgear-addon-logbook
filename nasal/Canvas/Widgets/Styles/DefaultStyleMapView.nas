@@ -17,6 +17,19 @@ DefaultStyle.widgets["map-view"] = {
     # Constants
     #
     TILE_SIZE: 256,
+    #
+    # If true, then the path drawing method has two steps. First, the first loop will check which path points are in
+    # the map's field of view. The second loop will draw only those selected points.
+    # Advantages: reduces the number of points we have to check when we click on the map (the more zoomed out, the less
+    # it matters). Disadvantages: less efficient path drawing because it has two loops (the more zoomed in, the less it
+    # matters).
+    # If false, all route points will be drawn in one loop.
+    # At first I used CULL_PATH = true because the MapView widget was embedded in ScrollArea, which caused the user to
+    # scroll far the entire path outside the map. So to prevent this I culled the points that would be outside the map.
+    # Now I use clip-frame, which clips the map, path and other elements to a rectangle defined by the size of the widget.
+    # So using CULL_PATH loses its meaning.
+    #
+    CULL_PATH: false,
 
     #
     # Constructor
@@ -361,50 +374,65 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Path element
     #
     _drawFlightPath: func(model) {
-        me._pointsToDraw.clear();
+        if (DefaultStyle.widgets["map-view"].CULL_PATH) {
+            me._pointsToDraw.clear();
 
-        # = true because the first point must start with moveTo method
-        var isBreak = true;
+            # = true because the first point must start with moveTo method
+            var isBreak = true;
 
-        # The first loop is to build an array of points that are within the map
-        forindex (var index; model._tractItems) {
-            var row = model._tractItems[index];
+            # The first loop is to build an array of points that are within the map
+            forindex (var index; model._tractItems) {
+                var pos = me._convertLatLonToPixel(model, index);
 
-            var pos = me._convertLatLonToPixel(
-                row.lat,
-                row.lon,
-                model._tractItems[model._position].lat,
-                model._tractItems[model._position].lon,
-                model._zoom
-            );
-
-            if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
-                or pos.x < me._minTile.x
-                or pos.y < me._minTile.y
-            ) {
-                # The path point is out of map tiles, so ship it
-                isBreak = true;
+                if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
+                    or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
+                    or pos.x < me._minTile.x
+                    or pos.y < me._minTile.y
+                ) {
+                    # The path point is out of map tiles, so ship it
+                    isBreak = true;
+                }
+                else {
+                    # When there was a discontinuity, we need to start drawing with the moveTo function,
+                    # so we set the moveTo flag which will tell us that
+                    pos["moveTo"] = isBreak;
+                    pos["position"] = index;
+                    isBreak = false;
+                    me._pointsToDraw.append(pos);
+                }
             }
-            else {
-                # When there was a discontinuity, we need to start drawing with the moveTo function,
-                # so we set the moveTo flag which will tell us that
-                pos["moveTo"] = isBreak;
-                pos["position"] = index;
-                isBreak = false;
-                me._pointsToDraw.append(pos);
+
+            # Draw points only those within the map
+            me._flightPath.reset();
+
+            foreach (var point; me._pointsToDraw.vector) {
+                if (point.moveTo) {
+                    me._flightPath.moveTo(point.x, point.y);
+                }
+                else {
+                    me._flightPath.lineTo(point.x, point.y);
+                }
             }
         }
+        else {
+            me._pointsToDraw.clear();
+            me._flightPath.reset();
 
-        # Draw points only those within the map
-        me._flightPath.reset();
+            forindex (var index; model._tractItems) {
+                var pos = me._convertLatLonToPixel(model, index);
 
-        foreach (var point; me._pointsToDraw.vector) {
-            if (point.moveTo) {
-                me._flightPath.moveTo(point.x, point.y);
-            }
-            else {
-                me._flightPath.lineTo(point.x, point.y);
+                if (    pos.x < me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
+                    and pos.y < me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
+                    and pos.x > me._minTile.x
+                    and pos.y > me._minTile.y
+                ) {
+                    # The path point is on the map, add it to me._pointsToDraw vector to use for click action
+                    me._pointsToDraw.append(pos);
+                }
+
+                index == 0
+                    ? me._flightPath.moveTo(pos.x, pos.y)
+                    : me._flightPath.lineTo(pos.x, pos.y);
             }
         }
     },
@@ -412,25 +440,28 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Convert given lan, lot to pixel position on the window
     #
-    # @param  double  lat  Latitude to convert to pixel
-    # @param  double  lon  Longitude to convert to pixel
-    # @param  double  centerLat  Latitude of current aircraft position
-    # @param  double  centerLon  Longitude of current aircraft position
-    # @param  int  zoom  Current zoom level of map
+    # @param  ghost  model  MapView model
+    # @param  int  index  Index of track item which lat, lon will be converted to pixel
     # @return hash  Hash as pixel position with x and y
     #
-    _convertLatLonToPixel: func(lat, lon, centerLat, centerLon, zoom) {
-        var x = me._lonToX(lon, zoom);
-        var y = me._latToY(lat, zoom);
+    _convertLatLonToPixel: func(model, index) {
+        # Get lat, lon to convert to pixel
+        var targetPoint = model._tractItems[index];
 
-        var centerX = me._lonToX(centerLon, zoom);
-        var centerY = me._latToY(centerLat, zoom);
+        # Get lat, lon of current aircraft position
+        var centerPoint = model._tractItems[model._position];
+
+        var x = me._lonToX(targetPoint.lon, model._zoom);
+        var y = me._latToY(targetPoint.lat, model._zoom);
+
+        var centerX = me._lonToX(centerPoint.lon, model._zoom);
+        var centerY = me._latToY(centerPoint.lat, model._zoom);
 
         # Offset from the center of the map
         var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x;
         var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y;
 
-        return { x: pixelX, y: pixelY };
+        return { x: pixelX, y: pixelY, position: index };
     },
 
     #
