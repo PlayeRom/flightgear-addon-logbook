@@ -224,7 +224,7 @@ var StorageCsv = {
     # Store log data to logbook file
     #
     # @param  hash  logData  LogData object
-    # @param  int  id|nill  Logbook ID for SQLite storage
+    # @param  int  id|nil  Logbook ID for SQLite storage
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
     #                       without rest of stuff (used only for CSV recovery)
     # @return void
