@@ -20,9 +20,8 @@ DefaultStyle.widgets["map-view"] = {
     #
     # If true, then the path drawing method has two steps. First, the first loop will check which path points are in
     # the map's field of view. The second loop will draw only those selected points.
-    # Advantages: reduces the number of points we have to check when we click on the map (the more zoomed out, the less
-    # it matters). Disadvantages: less efficient path drawing because it has two loops (the more zoomed in, the less it
-    # matters).
+    # Advantages: reduces the number of points to draw (the more zoomed out, the less it matters). Disadvantages: less
+    # efficient path drawing because it has two loops (the more zoomed in, the less it matters).
     # If false, all route points will be drawn in one loop.
     # At first I used CULL_PATH = true because the MapView widget was embedded in ScrollArea, which caused the user to
     # scroll far the entire path outside the map. So to prevent this I culled the points that would be outside the map.
