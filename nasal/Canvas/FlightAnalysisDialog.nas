@@ -513,7 +513,7 @@ var FlightAnalysisDialog = {
     _togglePlay: func() {
         if (me._playTimer.isRunning) {
             me._playTimer.stop();
-            me._btnPlay.setText("Start");
+            me._btnPlay.setText("Play");
         }
         else {
             me._playTimer.start();
@@ -533,7 +533,7 @@ var FlightAnalysisDialog = {
         }
         else {
             me._playTimer.stop();
-            me._btnPlay.setText("Start");
+            me._btnPlay.setText("Play");
         }
     },
 };
