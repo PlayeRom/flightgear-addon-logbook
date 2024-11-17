@@ -16,8 +16,8 @@ var AboutDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 320,
-    WINDOW_HEIGHT : 180,
+    WINDOW_WIDTH  : 280,
+    WINDOW_HEIGHT : 280,
     PADDING       : 10,
 
     #
@@ -74,14 +74,10 @@ var AboutDialog = {
     _drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        vBoxLayout.addItem(me._getLabel(
-            sprintf(
-                "%s version %s - September 30, 2024",
-                g_Addon.name,
-                g_Addon.version.str()
-            )
-        ));
-
+        vBoxLayout.addItem(me._getLabel(g_Addon.name));
+        vBoxLayout.addItem(me._getLabel(sprintf("version %s", g_Addon.version.str())));
+        vBoxLayout.addItem(me._getLabel("September 30, 2024"));
+        vBoxLayout.addStretch(1);
         vBoxLayout.addItem(me._getLabel("Written by:"));
 
         foreach (var author; g_Addon.authors) {
@@ -95,6 +91,7 @@ var AboutDialog = {
                 fgcommand("open-browser", props.Node.new({"url" : g_Addon.codeRepositoryUrl}));
             });
 
+        vBoxLayout.addStretch(1);
         vBoxLayout.addItem(btnRepo);
 
         me._scrollData.setLayout(vBoxLayout);
@@ -105,8 +102,12 @@ var AboutDialog = {
     # @return hash - Label widget
     #
     _getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
+        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
             .setText(text);
+
+        label.setTextAlign("center");
+
+        return label;
     },
 
     #
