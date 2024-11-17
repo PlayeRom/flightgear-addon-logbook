@@ -35,8 +35,6 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
-        "nasal/Storage/Exporter",
-        "nasal/Storage/Storage", # Must be before LogbookDialog
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/Dialog",
@@ -77,8 +75,9 @@ var loadExtraNasalFiles = func(addon) {
             "nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns",
             "nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable",
             "nasal/Storage/SQLite/Migration",
-            "nasal/Storage/SQLite/StorageSQLite",
+            "nasal/Storage/SQLite/Storage",
             "nasal/Storage/SQLite/Recovery",
+            "nasal/Storage/SQLite/Exporter",
             "nasal/Canvas/SQLite/SettingsDialog",
         ] ~ modules;
     }
@@ -88,7 +87,7 @@ var loadExtraNasalFiles = func(addon) {
         modules = [
             "Boolean",
             "nasal/Storage/CSV/Migration",
-            "nasal/Storage/CSV/StorageCsv",
+            "nasal/Storage/CSV/Storage",
             "nasal/Storage/CSV/Recovery",
             "nasal/Canvas/CSV/SettingsDialog",
         ] ~ modules;

@@ -10,48 +10,48 @@
 #
 
 #
-# Migration class fro SQLite
+# Migration class for SQLite
 #
 var Migration = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         var me = { parents: [Migration] };
 
-        me._dbHandler = storageSQLite.getDbHandler();
+        me._dbHandler = storage.getDbHandler();
 
         me._migrations = [
             {
                 name: "M2024_10_30_08_44_CreateMigrationsTable", function: func() {
-                    var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storageSQLite);
+                    var migration = M2024_10_30_08_44_CreateMigrationsTable.new(storage);
                     migration.up();
                 },
             },
             {
                 name: "M2024_10_30_13_01_CreateLogbooksTable", function: func() {
-                    var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storageSQLite);
+                    var migration = M2024_10_30_13_01_CreateLogbooksTable.new(storage);
                     migration.up();
                 },
             },
             {
                 name: "M2024_11_04_11_53_AddSimTimeColumns", function: func() {
-                    var migration = M2024_11_04_11_53_AddSimTimeColumns.new(storageSQLite);
+                    var migration = M2024_11_04_11_53_AddSimTimeColumns.new(storage);
                     migration.up();
                 },
             },
             {
                 name: "M2024_11_06_22_42_AddSpeedColumns", function: func() {
-                    var migration = M2024_11_06_22_42_AddSpeedColumns.new(storageSQLite);
+                    var migration = M2024_11_06_22_42_AddSpeedColumns.new(storage);
                     migration.up();
                 },
             },
             {
                 name: "M2024_11_06_22_50_CreateTrackersTable", function: func() {
-                    var migration = M2024_11_06_22_50_CreateTrackersTable.new(storageSQLite);
+                    var migration = M2024_11_06_22_50_CreateTrackersTable.new(storage);
                     migration.up();
                 },
             }
@@ -97,12 +97,12 @@ var Migration = {
     # @return bool
     #
     _isMigrationExists: func(migrationName) {
-        if (!me._isTableExist(StorageSQLite.TABLE_MIGRATIONS)) {
+        if (!me._isTableExist(Storage.TABLE_MIGRATIONS)) {
             # We don't even have the migrations table yet, this is when we first run it
             return false;
         }
 
-        var query = sprintf("SELECT * FROM `%s` WHERE `migration` = ?", StorageSQLite.TABLE_MIGRATIONS);
+        var query = sprintf("SELECT * FROM `%s` WHERE `migration` = ?", Storage.TABLE_MIGRATIONS);
         var stmt = sqlite.prepare(me._dbHandler, query);
         var rows = sqlite.exec(me._dbHandler, stmt, migrationName);
         return size(rows);
@@ -115,7 +115,7 @@ var Migration = {
     # @return void
     #
     _confirmMigration: func(migrationName) {
-        var query = sprintf("INSERT INTO `%s` VALUES (NULL, ?)", StorageSQLite.TABLE_MIGRATIONS);
+        var query = sprintf("INSERT INTO `%s` VALUES (NULL, ?)", Storage.TABLE_MIGRATIONS);
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt, migrationName);
     },

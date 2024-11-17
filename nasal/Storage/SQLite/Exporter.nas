@@ -10,7 +10,7 @@
 #
 
 #
-# Exporter class
+# Exporter class handle export SQLite to CSV file
 #
 var Exporter = {
     #
@@ -113,7 +113,7 @@ var Exporter = {
 
         io.write(file, headerRow ~ "\n");
 
-        var query = sprintf("SELECT * FROM %s", StorageSQLite.TABLE_LOGBOOKS);
+        var query = sprintf("SELECT * FROM %s", Storage.TABLE_LOGBOOKS);
         foreach (var row; sqlite.exec(me._dbHandler, query)) {
             var logData = LogData.new();
             logData.fromDb(row);

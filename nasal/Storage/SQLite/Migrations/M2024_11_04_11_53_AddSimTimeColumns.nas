@@ -13,16 +13,16 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         return {
             parents : [
                 M2024_11_04_11_53_AddSimTimeColumns,
-                MigrationBase.new(storageSQLite.getDbHandler()),
+                MigrationBase.new(storage.getDbHandler()),
             ],
-            _storageSQLite: storageSQLite,
+            _storage: storage,
         };
     },
 
@@ -32,11 +32,11 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     # @return void
     #
     up: func() {
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, 'sim_utc_date');
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, 'sim_utc_time');
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_utc_date');
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_utc_time');
 
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, 'sim_local_date');
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, 'sim_local_time');
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_local_date');
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_local_time');
 
         me._copyFromReal();
     },
@@ -47,18 +47,18 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     # @return void
     #
     _copyFromReal: func() {
-        var querySelect = sprintf("SELECT `id`, `date`, `time` FROM %s", StorageSQLite.TABLE_LOGBOOKS);
-        var rows = sqlite.exec(me._storageSQLite.getDbHandler(), querySelect);
+        var querySelect = sprintf("SELECT `id`, `date`, `time` FROM %s", Storage.TABLE_LOGBOOKS);
+        var rows = sqlite.exec(me._storage.getDbHandler(), querySelect);
 
         var queryInsert = sprintf(
             "UPDATE %s SET `sim_utc_date` = ?, `sim_utc_time` = ?, `sim_local_date` = ?, `sim_local_time` = ? WHERE `id` = ?",
-            StorageSQLite.TABLE_LOGBOOKS
+            Storage.TABLE_LOGBOOKS
         );
 
-        var stmt = sqlite.prepare(me._storageSQLite.getDbHandler(), queryInsert);
+        var stmt = sqlite.prepare(me._storage.getDbHandler(), queryInsert);
 
         foreach (var item; rows) {
-            sqlite.exec(me._storageSQLite.getDbHandler(), stmt,
+            sqlite.exec(me._storage.getDbHandler(), stmt,
                 item.date,
                 item.time,
                 item.date,

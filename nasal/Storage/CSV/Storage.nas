@@ -10,13 +10,19 @@
 #
 
 #
-# StorageCsv class to save logbook data to CSV file
+# Storage class to save logbook data to CSV file
 #
 # @deprecated This will be phased out in favor of SQLite
 #
-var StorageCsv = {
+var Storage = {
     #
-    # Column indexes:
+    # Constants
+    #
+    CSV_LOGBOOK_FILE : "logbook-v%s.csv",
+    CSV_FILE_VERSION : "5",
+
+    #
+    # Column indexes of CSV file:
     #
     INDEX_DATE       : 0,
     INDEX_TIME       : 1,
@@ -48,7 +54,7 @@ var StorageCsv = {
     #
     new: func(filters, columns) {
         var me = {
-            parents : [StorageCsv],
+            parents : [Storage],
             _filters: filters,
             _columns: columns,
         };
@@ -715,5 +721,27 @@ var StorageCsv = {
         # Get signal to reload data
         setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
         setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
+    },
+
+    #
+    # Export logbook from SQLite to CSV file as a separate thread job
+    #
+    # @return void
+    #
+    exportToCsv: func() {
+        gui.popupTip("This option is available only for FlightGear 2024.1 and later");
+    },
+
+    #
+    # Insert current data to trackers table. This is using only for SQLite version.
+    #
+    # @param  int|nil  logbookId  Record ID of `logbooks` table
+    # @param  hash  data  Hash with data
+    # @return bool
+    #
+    addTrackerItem: func(logbookId, data) {
+        logprint(LOG_INFO, "Logbook Add-on - CSV version doesn't support tracker");
+
+        return false;
     },
 };

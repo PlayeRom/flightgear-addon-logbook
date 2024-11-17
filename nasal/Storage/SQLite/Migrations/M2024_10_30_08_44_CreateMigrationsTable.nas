@@ -13,14 +13,14 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         return {
             parents : [
                 M2024_10_30_08_44_CreateMigrationsTable,
-                MigrationBase.new(storageSQLite.getDbHandler()),
+                MigrationBase.new(storage.getDbHandler()),
             ],
         };
     },
@@ -45,6 +45,6 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
             { name: "migration", type: "TEXT" },
         ];
 
-        me.createTable(StorageSQLite.TABLE_MIGRATIONS, columns);
+        me.createTable(Storage.TABLE_MIGRATIONS, columns);
     },
 };

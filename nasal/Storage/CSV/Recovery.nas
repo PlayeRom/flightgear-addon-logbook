@@ -23,7 +23,7 @@ var Recovery = {
     #
     # Constructor
     #
-    # @param storage - Storage object
+    # @param storage - CSV Storage object
     # @return me
     #
     new: func(storage) {

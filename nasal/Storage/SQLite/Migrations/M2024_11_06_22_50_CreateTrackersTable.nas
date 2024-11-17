@@ -13,14 +13,14 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         return {
             parents : [
                 M2024_11_06_22_50_CreateTrackersTable,
-                MigrationBase.new(storageSQLite.getDbHandler()),
+                MigrationBase.new(storage.getDbHandler()),
             ],
         };
     },
@@ -56,6 +56,6 @@ var M2024_11_06_22_50_CreateTrackersTable = {
             { name: "pitch",        type: "REAL" }, # aircraft pitch in deg
         ];
 
-        me.createTable(StorageSQLite.TABLE_TRACKERS, columns);
+        me.createTable(Storage.TABLE_TRACKERS, columns);
     },
 };

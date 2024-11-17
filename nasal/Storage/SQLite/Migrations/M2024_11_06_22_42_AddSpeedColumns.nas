@@ -13,16 +13,16 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         return {
             parents : [
                 M2024_11_06_22_42_AddSpeedColumns,
-                MigrationBase.new(storageSQLite.getDbHandler()),
+                MigrationBase.new(storage.getDbHandler()),
             ],
-            _storageSQLite: storageSQLite,
+            _storage: storage,
         };
     },
 
@@ -32,7 +32,7 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     # @return void
     #
     up: func() {
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, "max_groundspeed_kt", "REAL", "0.0");
-        me.addColumnToTable(StorageSQLite.TABLE_LOGBOOKS, "max_mach", "REAL", "0.0");
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, "max_groundspeed_kt", "REAL", "0.0");
+        me.addColumnToTable(Storage.TABLE_LOGBOOKS, "max_mach", "REAL", "0.0");
     },
 };

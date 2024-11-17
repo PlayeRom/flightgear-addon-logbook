@@ -10,9 +10,9 @@
 #
 
 #
-# StorageSQLite class to save logbook data to data base
+# Storage class to save logbook data to data base
 #
-var StorageSQLite = {
+var Storage = {
     #
     # Constants
     #
@@ -20,6 +20,12 @@ var StorageSQLite = {
     TABLE_LOGBOOKS  : "logbooks",
     TABLE_MIGRATIONS: "migrations",
     TABLE_TRACKERS  : "trackers",
+
+    #
+    # For old CSV storage maintenance
+    #
+    CSV_LOGBOOK_FILE : "logbook-v%s.csv",
+    CSV_FILE_VERSION : "5",
 
     #
     # Constructor
@@ -30,7 +36,7 @@ var StorageSQLite = {
     #
     new: func(filters, columns) {
         var me = {
-            parents  : [StorageSQLite],
+            parents  : [Storage],
             _filters : filters,
             _columns : columns,
             _exporter: Exporter.new(columns),
@@ -46,6 +52,8 @@ var StorageSQLite = {
         # Callback for return results of loadDataRange
         me._objCallback = nil;
         me._callback    = func;
+
+        gui.menuEnable("logbook-addon-export-csv", true);
 
         return me;
     },
@@ -64,7 +72,7 @@ var StorageSQLite = {
     # @return string  Full path to sqlite file
     #
     _getPathToFile: func() {
-        return g_Addon.storagePath ~ "/" ~ StorageSQLite.LOGBOOK_FILE;
+        return g_Addon.storagePath ~ "/" ~ Storage.LOGBOOK_FILE;
     },
 
     #
@@ -142,7 +150,7 @@ var StorageSQLite = {
             db = me._dbHandler;
         }
 
-        var query = "INSERT INTO " ~ StorageSQLite.TABLE_LOGBOOKS
+        var query = "INSERT INTO " ~ Storage.TABLE_LOGBOOKS
             ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         var stmt = sqlite.prepare(db, query);
@@ -218,7 +226,7 @@ var StorageSQLite = {
                 `note` = ?,
                 `max_groundspeed_kt` = ?,
                 `max_mach` = ?
-            WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
+            WHERE id = ?", Storage.TABLE_LOGBOOKS);
 
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt,
@@ -264,7 +272,7 @@ var StorageSQLite = {
             return false;
         }
 
-        var query = "INSERT INTO " ~ StorageSQLite.TABLE_TRACKERS
+        var query = "INSERT INTO " ~ Storage.TABLE_TRACKERS
             ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         var stmt = sqlite.prepare(me._dbHandler, query);
@@ -360,7 +368,7 @@ var StorageSQLite = {
             frm ~= sprintf(" LIMIT %d OFFSET %d", count, start);
         }
 
-        var query = sprintf(frm, sqlColumnName, StorageSQLite.TABLE_LOGBOOKS);
+        var query = sprintf(frm, sqlColumnName, Storage.TABLE_LOGBOOKS);
         var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows)) {
@@ -430,7 +438,7 @@ var StorageSQLite = {
         var where = me._getWhereQueryFilters();
 
         var query = "SELECT " ~ me._getSelectLoadDataRange()
-            ~ " FROM " ~ StorageSQLite.TABLE_LOGBOOKS
+            ~ " FROM " ~ Storage.TABLE_LOGBOOKS
             ~ " " ~ where
             ~ " LIMIT " ~ count ~ " OFFSET " ~ start;
 
@@ -540,7 +548,7 @@ var StorageSQLite = {
         }
 
         # query = "SELECT SUM(landing) as landing, SUM..., FROM logbooks WHERE ..."
-        var query = sprintf("SELECT %s FROM %s %s", select, StorageSQLite.TABLE_LOGBOOKS, where);
+        var query = sprintf("SELECT %s FROM %s %s", select, Storage.TABLE_LOGBOOKS, where);
         var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows) == 0) {
@@ -624,7 +632,7 @@ var StorageSQLite = {
             return false;
         }
 
-        var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS, columnName);
+        var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", Storage.TABLE_LOGBOOKS, columnName);
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt, value, logbookId); # always returns an empty vector
 
@@ -642,7 +650,7 @@ var StorageSQLite = {
         # Build where from filters
         var where = me._getWhereQueryFilters();
 
-        var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", StorageSQLite.TABLE_LOGBOOKS, where);
+        var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", Storage.TABLE_LOGBOOKS, where);
         var rows = sqlite.exec(me._dbHandler, query);
 
         if (size(rows)) {
@@ -673,7 +681,7 @@ var StorageSQLite = {
             return nil;
         }
 
-        var query = sprintf("SELECT * FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
+        var query = sprintf("SELECT * FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me._dbHandler, query);
 
         var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
@@ -700,12 +708,12 @@ var StorageSQLite = {
             return false;
         }
 
-        var query = sprintf("DELETE FROM %s WHERE id = ?", StorageSQLite.TABLE_LOGBOOKS);
+        var query = sprintf("DELETE FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt, logbookId);
 
         # Delete data from trackers
-        query = sprintf("DELETE FROM %s WHERE logbook_id = ?", StorageSQLite.TABLE_TRACKERS);
+        query = sprintf("DELETE FROM %s WHERE logbook_id = ?", Storage.TABLE_TRACKERS);
         stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt, logbookId);
 
@@ -725,7 +733,7 @@ var StorageSQLite = {
             return nil;
         }
 
-        var query = sprintf("SELECT * FROM %s WHERE logbook_id = ?", StorageSQLite.TABLE_TRACKERS);
+        var query = sprintf("SELECT * FROM %s WHERE logbook_id = ?", Storage.TABLE_TRACKERS);
         var stmt = sqlite.prepare(me._dbHandler, query);
         var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
 
@@ -744,7 +752,7 @@ var StorageSQLite = {
         }
 
         var query = "SELECT MAX(CASE WHEN alt_m > elevation_m THEN alt_m ELSE elevation_m END) AS `max_alt` "
-            ~ "FROM " ~ StorageSQLite.TABLE_TRACKERS
+            ~ "FROM " ~ Storage.TABLE_TRACKERS
             ~ " WHERE logbook_id = ?";
         var stmt = sqlite.prepare(me._dbHandler, query);
         var rows = sqlite.exec(me._dbHandler, stmt, logbookId);

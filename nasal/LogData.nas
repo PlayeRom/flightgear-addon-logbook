@@ -496,26 +496,26 @@ var LogData = {
     # @return void
     #
     fromVector: func(items) {
-        me.date          = items[StorageCsv.INDEX_DATE];
-        me.time          = items[StorageCsv.INDEX_TIME];
-        me.aircraft      = items[StorageCsv.INDEX_AIRCRAFT];
-        me.variant       = items[StorageCsv.INDEX_VARIANT];
-        me.aircraft_type = items[StorageCsv.INDEX_TYPE];
-        me.callsign      = items[StorageCsv.INDEX_CALLSIGN];
-        me.from          = items[StorageCsv.INDEX_FROM];
-        me.to            = items[StorageCsv.INDEX_TO];
-        me.landing       = items[StorageCsv.INDEX_LANDING] == 1;
-        me.crash         = items[StorageCsv.INDEX_CRASH] == 1;
-        me.day           = items[StorageCsv.INDEX_DAY];
-        me.night         = items[StorageCsv.INDEX_NIGHT];
-        me.instrument    = items[StorageCsv.INDEX_INSTRUMENT];
-        me.multiplayer   = items[StorageCsv.INDEX_MULTIPLAYER];
-        me.swift         = items[StorageCsv.INDEX_SWIFT];
-        me.duration      = items[StorageCsv.INDEX_DURATION];
-        me.distance      = items[StorageCsv.INDEX_DISTANCE];
-        me.fuel          = items[StorageCsv.INDEX_FUEL];
-        me.max_alt       = items[StorageCsv.INDEX_MAX_ALT];
-        me.note          = items[StorageCsv.INDEX_NOTE];
+        me.date          = items[Storage.INDEX_DATE];
+        me.time          = items[Storage.INDEX_TIME];
+        me.aircraft      = items[Storage.INDEX_AIRCRAFT];
+        me.variant       = items[Storage.INDEX_VARIANT];
+        me.aircraft_type = items[Storage.INDEX_TYPE];
+        me.callsign      = items[Storage.INDEX_CALLSIGN];
+        me.from          = items[Storage.INDEX_FROM];
+        me.to            = items[Storage.INDEX_TO];
+        me.landing       = items[Storage.INDEX_LANDING] == 1;
+        me.crash         = items[Storage.INDEX_CRASH] == 1;
+        me.day           = items[Storage.INDEX_DAY];
+        me.night         = items[Storage.INDEX_NIGHT];
+        me.instrument    = items[Storage.INDEX_INSTRUMENT];
+        me.multiplayer   = items[Storage.INDEX_MULTIPLAYER];
+        me.swift         = items[Storage.INDEX_SWIFT];
+        me.duration      = items[Storage.INDEX_DURATION];
+        me.distance      = items[Storage.INDEX_DISTANCE];
+        me.fuel          = items[Storage.INDEX_FUEL];
+        me.max_alt       = items[Storage.INDEX_MAX_ALT];
+        me.note          = items[Storage.INDEX_NOTE];
     },
 
     #

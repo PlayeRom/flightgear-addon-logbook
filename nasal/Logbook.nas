@@ -357,7 +357,9 @@ var Logbook = {
         me._storage.saveLogData(me._logData, logbookId);
 
         # Also save data to the trackers table for a given logbook record
-        me._storage.addTrackerItem(logbookId, me._buildAnalysisData(me._logData));
+        if (me._isUsingSQLite) {
+            me._storage.addTrackerItem(logbookId, me._buildAnalysisData(me._logData));
+        }
 
         me._logData = nil;
         me._wowSec = 0;

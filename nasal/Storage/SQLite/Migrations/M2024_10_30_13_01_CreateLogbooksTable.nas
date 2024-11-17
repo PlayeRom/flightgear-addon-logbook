@@ -13,16 +13,16 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # Constructor
     #
-    # @param  hash  storageSQLite  StorageSQLite object
+    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storageSQLite) {
+    new: func(storage) {
         return {
             parents : [
                 M2024_10_30_13_01_CreateLogbooksTable,
-                MigrationBase.new(storageSQLite.getDbHandler()),
+                MigrationBase.new(storage.getDbHandler()),
             ],
-            _storageSQLite: storageSQLite,
+            _storage: storage,
         };
     },
 
@@ -66,7 +66,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             { name: "note",          type: "TEXT" },
         ];
 
-        me.createTable(StorageSQLite.TABLE_LOGBOOKS, columns);
+        me.createTable(Storage.TABLE_LOGBOOKS, columns);
     },
 
     #
@@ -81,7 +81,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             return;
         }
 
-        var db = me._storageSQLite.getDbHandler();
+        var db = me._storage.getDbHandler();
 
         var file = io.open(csvFile, "r");
 
@@ -94,7 +94,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             if (counter > -1) { # skip headers
                 var items = split(",", Utils.removeQuotes(line));
 
-                var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", StorageSQLite.TABLE_LOGBOOKS);
+                var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Storage.TABLE_LOGBOOKS);
                 var stmt = sqlite.prepare(db, query);
                 sqlite.exec(db, stmt,
                     items[0],           # date

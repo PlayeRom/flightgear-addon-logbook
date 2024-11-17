@@ -174,7 +174,7 @@ var Columns = {
     #
     # Get column hash by index of column
     #
-    # @param  int  index  Column index as StorageCsv.INDEX_...
+    # @param  int  index  Column index as Storage.INDEX_...
     # @return hash|nil
     #
     getColumnByIndex: func(index) {
