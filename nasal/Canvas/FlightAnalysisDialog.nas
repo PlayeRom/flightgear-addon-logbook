@@ -90,6 +90,7 @@ var FlightAnalysisDialog = {
         g_Sound.play('paper');
 
         me._updateAfterChangePosition();
+        me._btnPlay.setText("Play");
 
         call(Dialog.show, [], me);
     },
