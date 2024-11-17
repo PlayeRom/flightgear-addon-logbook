@@ -27,7 +27,7 @@
                             <log-items-per-page type="int">10</log-items-per-page>
 
                             <!-- Number of seconds as data recording interval during flight -->
-                            <tracker-interval-sec type="int">20</tracker-interval-sec>
+                            <tracker-interval-sec type="int">5</tracker-interval-sec>
 
                             <columns-visible>
                                 <!-- Which columns should be displayed: -->
