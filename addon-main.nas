@@ -35,28 +35,14 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
-        "nasal/Storage/Migrations/MigrationBase",
-        "nasal/Storage/Migrations/M2024_10_30_08_44_CreateMigrationsTable",
-        "nasal/Storage/Migrations/M2024_10_30_13_01_CreateLogbooksTable",
-        "nasal/Storage/Migrations/M2024_11_04_11_53_AddSimTimeColumns",
-        "nasal/Storage/Migrations/M2024_11_06_22_42_AddSpeedColumns",
-        "nasal/Storage/Migrations/M2024_11_06_22_50_CreateTrackersTable",
-        "nasal/Storage/MigrationCsv",
-        "nasal/Storage/MigrationSQLite",
         "nasal/Storage/Exporter",
-        "nasal/Storage/StorageCsv",
-        "nasal/Storage/StorageSQLite",
         "nasal/Storage/Storage", # Must be before LogbookDialog
-        "nasal/Storage/RecoveryCsv",
-        "nasal/Storage/RecoverySQLite",
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/Dialog",
         "nasal/Canvas/AboutDialog",
         "nasal/Canvas/DetailsDialog",
         "nasal/Canvas/HelpDialog",
-        "nasal/Canvas/SettingsDialogSQLite",
-        "nasal/Canvas/SettingsDialogCsv",
         "nasal/Canvas/FlightAnalysisDialog",
         "nasal/Canvas/LogbookDialog",
         "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
@@ -82,10 +68,30 @@ var loadExtraNasalFiles = func(addon) {
         "Logbook",
     ];
 
-    if (!isFG2024Version()) {
+    if (isFG2024Version()) {
+        modules = [
+            "nasal/Storage/SQLite/Migrations/MigrationBase",
+            "nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable",
+            "nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable",
+            "nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns",
+            "nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns",
+            "nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable",
+            "nasal/Storage/SQLite/Migration",
+            "nasal/Storage/SQLite/StorageSQLite",
+            "nasal/Storage/SQLite/Recovery",
+            "nasal/Canvas/SQLite/SettingsDialog",
+        ] ~ modules;
+    }
+    else {
         # Nasal in 2024.x version is support `true` and `false` keywords but previous FG versions not,
         # so for them add Boolean.nas file
-        modules = ["Boolean"] ~ modules;
+        modules = [
+            "Boolean",
+            "nasal/Storage/CSV/Migration",
+            "nasal/Storage/CSV/StorageCsv",
+            "nasal/Storage/CSV/Recovery",
+            "nasal/Canvas/CSV/SettingsDialog",
+        ] ~ modules;
     }
 
     loadVectorOfModules(addon, modules, "logbook");

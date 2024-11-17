@@ -77,7 +77,7 @@ var StorageSQLite = {
 
         me._dbHandler = sqlite.open(me._filePath);
 
-        MigrationSQLite.new(me).migrate();
+        Migration.new(me).migrate();
     },
 
     #

@@ -10,9 +10,9 @@
 #
 
 #
-# SettingsDialogCsv class to display settings options for version with CSV file
+# SettingsDialog class to display settings options for version with CSV file
 #
-var SettingsDialogCsv = {
+var SettingsDialog = {
     #
     # Constants
     #
@@ -30,8 +30,8 @@ var SettingsDialogCsv = {
     new: func(columns, logbook) {
         var me = {
             parents: [
-                SettingsDialogCsv,
-                Dialog.new(SettingsDialogCsv.WINDOW_WIDTH, SettingsDialogCsv.WINDOW_HEIGHT, "Logbook Settings"),
+                SettingsDialog,
+                Dialog.new(SettingsDialog.WINDOW_WIDTH, SettingsDialog.WINDOW_HEIGHT, "Logbook Settings"),
             ],
             _columns: columns,
             _logbook: logbook,
@@ -68,7 +68,7 @@ var SettingsDialogCsv = {
     show: func() {
         g_Sound.play('paper');
 
-        me._soundOption     = g_Settings.isSoundEnabled();
+        me._soundOption = g_Settings.isSoundEnabled();
 
         me._drawContent();
 
@@ -101,8 +101,8 @@ var SettingsDialogCsv = {
         me.vbox.clear();
 
         var margins = {
-            left   : SettingsDialogCsv.PADDING,
-            top    : SettingsDialogCsv.PADDING,
+            left   : SettingsDialog.PADDING,
+            top    : SettingsDialog.PADDING,
             right  : 0,
             bottom : 0,
         };

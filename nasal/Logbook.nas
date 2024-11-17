@@ -52,17 +52,13 @@ var Logbook = {
         me._airport        = Airport.new();
         me._flightAnalysis = FlightAnalysis.new();
 
-        me._recovery       = me._isUsingSQLite
-            ? RecoverySQLite.new(me._storage)
-            : RecoveryCsv.new(me._storage);
+        me._recovery       = Recovery.new(me._storage);
 
-        me._aircraft        = Aircraft.new();
-        me._logbookDialog   = LogbookDialog.new(me._storage, me._filters, me._columns, me);
-        me._settingsDialog  = me._isUsingSQLite
-            ? SettingsDialogSQLite.new(me._columns, me)
-            : SettingsDialogCsv.new(me._columns, me);
+        me._aircraft       = Aircraft.new();
+        me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
+        me._settingsDialog = SettingsDialog.new(me._columns, me);
 
-        me._aircraftType    = AircraftType.new().getType();
+        me._aircraftType   = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);
 
         me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");

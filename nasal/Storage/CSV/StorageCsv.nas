@@ -12,16 +12,12 @@
 #
 # StorageCsv class to save logbook data to CSV file
 #
-# @deprecated This will be phased out in favor of StorageSQLite
+# @deprecated This will be phased out in favor of SQLite
 #
 var StorageCsv = {
     #
-    # Constants
-    #
-    LOGBOOK_FILE     : "logbook-v%s.csv",
-    FILE_VERSION     : "5",
-
     # Column indexes:
+    #
     INDEX_DATE       : 0,
     INDEX_TIME       : 1,
     INDEX_AIRCRAFT   : 2,
@@ -57,7 +53,7 @@ var StorageCsv = {
             _columns: columns,
         };
 
-        me._filePath      = me._getPathToFile(StorageCsv.FILE_VERSION);
+        me._filePath      = me._getPathToFile(Storage.CSV_FILE_VERSION);
         me._addonNodePath = g_Addon.node.getPath();
         me._loadedData    = [];
         me._headersData   = [];
@@ -93,7 +89,7 @@ var StorageCsv = {
     # @return string - full path to file
     #
     _getPathToFile: func(version) {
-        return g_Addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, version);
+        return g_Addon.storagePath ~ "/" ~ sprintf(Storage.CSV_LOGBOOK_FILE, version);
     },
 
     #
@@ -113,7 +109,7 @@ var StorageCsv = {
     # @return bool - Return true if migration was done
     #
     _migrateVersion: func() {
-        var migrationCsv = MigrationCsv.new();
+        var migrationCsv = Migration.new();
 
         var olderReleases = [
             # Keep the order from the newest to oldest

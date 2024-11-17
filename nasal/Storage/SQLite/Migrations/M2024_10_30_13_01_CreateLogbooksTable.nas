@@ -75,7 +75,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     # @return void
     #
     _importCsvToDb: func() {
-        var csvFile = g_Addon.storagePath ~ "/" ~ sprintf(StorageCsv.LOGBOOK_FILE, StorageCsv.FILE_VERSION);
+        var csvFile = g_Addon.storagePath ~ "/" ~ sprintf(Storage.CSV_LOGBOOK_FILE, Storage.CSV_FILE_VERSION);
         if (!Utils.fileExists(csvFile)) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on, importCsvToDb failed, file \"", csvFile, "\" doesn't exist");
             return;

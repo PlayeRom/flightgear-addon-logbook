@@ -10,9 +10,9 @@
 #
 
 #
-# MigrationSQLite class
+# Migration class fro SQLite
 #
-var MigrationSQLite = {
+var Migration = {
     #
     # Constructor
     #
@@ -20,7 +20,7 @@ var MigrationSQLite = {
     # @return me
     #
     new: func(storageSQLite) {
-        var me = { parents: [MigrationSQLite] };
+        var me = { parents: [Migration] };
 
         me._dbHandler = storageSQLite.getDbHandler();
 

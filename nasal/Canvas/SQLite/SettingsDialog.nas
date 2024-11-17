@@ -10,9 +10,9 @@
 #
 
 #
-# SettingsDialogSQLite class to display settings options for version with SQLite DB
+# SettingsDialog class to display settings options for version with SQLite DB
 #
-var SettingsDialogSQLite = {
+var SettingsDialog = {
     #
     # Constants
     #
@@ -30,8 +30,8 @@ var SettingsDialogSQLite = {
     new: func(columns, logbook) {
         var me = {
             parents: [
-                SettingsDialogSQLite,
-                Dialog.new(SettingsDialogSQLite.WINDOW_WIDTH, SettingsDialogSQLite.WINDOW_HEIGHT, "Logbook Settings"),
+                SettingsDialog,
+                Dialog.new(SettingsDialog.WINDOW_WIDTH, SettingsDialog.WINDOW_HEIGHT, "Logbook Settings"),
             ],
             _columns: columns,
             _logbook: logbook,
@@ -40,19 +40,19 @@ var SettingsDialogSQLite = {
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
         me._logItemsPerPage = g_Settings.getLogItemsPerPage();
-        me._columnsVisible = {};
+        me._columnsVisible  = {};
         me._loadColumnsVisible();
 
         me.bgImage.hide();
 
         me.setPositionOnCenter();
 
-        me._checkboxReal     = nil;
-        me._checkboxSimUtc   = nil;
-        me._checkboxSimLocal = nil;
+        me._checkboxReal         = nil;
+        me._checkboxSimUtc       = nil;
+        me._checkboxSimLocal     = nil;
         me._lineEditItemsPerPage = nil;
-        me._columnCheckBoxes = {};
-        me._hBoxLayout = nil;
+        me._columnCheckBoxes     = {};
+        me._hBoxLayout           = nil;
 
         return me;
     },
@@ -127,8 +127,8 @@ var SettingsDialogSQLite = {
         me.vbox.clear();
 
         var margins = {
-            left   : SettingsDialogSQLite.PADDING,
-            top    : SettingsDialogSQLite.PADDING,
+            left   : SettingsDialog.PADDING,
+            top    : SettingsDialog.PADDING,
             right  : 0,
             bottom : 0,
         };

@@ -14,6 +14,12 @@
 #
 var Storage = {
     #
+    # Constants
+    #
+    CSV_LOGBOOK_FILE : "logbook-v%s.csv",
+    CSV_FILE_VERSION : "5",
+
+    #
     # Constructor
     #
     # @param  hash  filters  Filters object
@@ -210,6 +216,8 @@ var Storage = {
         if (me._isUsingSQLite) {
             return me._handler.vacuumSQLite();
         }
+
+        gui.popupTip("This option is available only for version 2024.1 and later");
 
         return false;
     },

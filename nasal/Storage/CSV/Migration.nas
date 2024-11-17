@@ -10,16 +10,16 @@
 #
 
 #
-# MigrationCsv class
+# Migration class for CSV file
 #
-var MigrationCsv = {
+var Migration = {
     #
     # Constructor
     #
     # @return me
     #
     new: func() {
-        return { parents: [MigrationCsv] };
+        return { parents: [Migration] };
     },
 
     #

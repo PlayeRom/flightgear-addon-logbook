@@ -10,11 +10,11 @@
 #
 
 #
-# The RecoverySQLite class saves the current flight status to the database
+# The SQLite Recovery class saves the current flight status to the database
 # at a given interval by INTERVAL_SEC.
 # When FG crashes, the log will not be lost.
 #
-var RecoverySQLite = {
+var Recovery = {
     #
     # Constants
     #
@@ -28,7 +28,7 @@ var RecoverySQLite = {
     #
     new: func(storage) {
         var me = {
-            parents     : [RecoverySQLite],
+            parents     : [Recovery],
             _storage    : storage,
             _objCallback: nil,
             _callback   : nil,
@@ -36,7 +36,7 @@ var RecoverySQLite = {
             _inserted   : false,
         };
 
-        me._timer = maketimer(RecoverySQLite.INTERVAL_SEC, me, me._update);
+        me._timer = maketimer(Recovery.INTERVAL_SEC, me, me._update);
 
         me._storage.loadAllData();
 
