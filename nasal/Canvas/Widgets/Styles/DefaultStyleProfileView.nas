@@ -147,8 +147,6 @@ DefaultStyle.widgets["profile-view"] = {
 
         # me._drawPaddingKeeper(model);
 
-        var rows = model._tractItems;
-
         var seaMeanLevel = (graphHeight / 6);
         me._xXAxis = 60 + paddingLeft;
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
@@ -199,18 +197,20 @@ DefaultStyle.widgets["profile-view"] = {
             .setColor(0.5, 0.5, 1)
             .setStrokeLineWidth(2);
 
-        var lastRecord = rows[size(rows) - 1];
-        me._maxValueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+        var lastRecord = model._tractItems[model._trackItemsSize - 1];
+        me._maxValueX = model.isDrawModeTime()
             ? lastRecord.timestamp
             : lastRecord.distance;
 
         var maxXAxisLabelsCount = 15;
-        var xAxisLabelsSeparation = math.ceil(size(rows) / maxXAxisLabelsCount);
+        var xAxisLabelsSeparation = math.ceil(model._trackItemsSize / maxXAxisLabelsCount);
+        var lastLabelX = 0;
+        var labelDistance = 35;
 
-        forindex (var index; rows) {
-            var row = rows[index];
+        forindex (var index; model._tractItems) {
+            var row = model._tractItems[index];
 
-            var valueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+            var valueX = model.isDrawModeTime()
                 ? row.timestamp
                 : row.distance;
 
@@ -228,7 +228,9 @@ DefaultStyle.widgets["profile-view"] = {
                 elevationProfile.lineTo(x, elevationY);
                 flightProfile.lineTo(x, flightY);
 
-                if (math.mod(index, xAxisLabelsSeparation) == 0) {
+                if (math.mod(index, xAxisLabelsSeparation) == 0
+                    and math.abs(x - lastLabelX) > labelDistance # <- prevents overlapping of multiple labels in distance mode.
+                ) {
                     # Labels with hours on X axis
                     me._drawTextCenter(sprintf("%.2f", row.timestamp), x, me._yXAxis + 10);
 
@@ -238,6 +240,8 @@ DefaultStyle.widgets["profile-view"] = {
                     # Draw vertical grid line
                     grid.moveTo(x, paddingTop)
                         .vert(me._yXAxis);
+
+                    lastLabelX = x;
                 }
             }
         }
@@ -278,7 +282,7 @@ DefaultStyle.widgets["profile-view"] = {
     updateAircraftPosition: func(model) {
         var row = model._tractItems[model._position];
 
-        var valueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+        var valueX = model.isDrawModeTime()
             ? row.timestamp
             : row.distance;
 

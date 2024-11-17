@@ -267,4 +267,18 @@ gui.widgets.ProfileView = {
 
         me._view.reDrawContent(me);
     },
+
+    #
+    # @return bool  Return true if draw mode is "time"
+    #
+    isDrawModeTime: func() {
+        return me._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
+    },
+
+    #
+    # @return bool  Return true if draw mode is "distance"
+    #
+    isDrawModeDistance: func() {
+        return me._drawMode == gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+    },
 };
