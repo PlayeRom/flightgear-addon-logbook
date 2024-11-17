@@ -105,7 +105,9 @@ var AboutDialog = {
         var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
             .setText(text);
 
-        label.setTextAlign("center");
+        if (Utils.isFG2024Version()) {
+            label.setTextAlign("center");
+        }
 
         return label;
     },
