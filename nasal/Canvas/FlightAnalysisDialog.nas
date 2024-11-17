@@ -407,7 +407,7 @@ var FlightAnalysisDialog = {
         me._btnBack        = me._createButtonNarrow("<",   func { me._goPrevTrack(); });
         me._btnForward     = me._createButtonNarrow(">",   func { me._goNextTrack(); });
         me._btnForwardFast = me._createButtonNarrow(">>",  func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
-        me._btnEnd         = me._createButtonNarrow(">>|", func { me._goEndTrack(); });
+        me._btnEnd         = me._createButtonNarrow(">>|", func { me.goEndTrack(); });
 
         me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
         var btnClose       = me._createButtonWide("Close", func { me.hide(); });
