@@ -81,29 +81,10 @@ DefaultStyle.widgets["profile-view"] = {
             me._isClickEventSet = 1;
 
             me._root.addEventListener("click", func(e) {
-                # Find nearest point on X axis
-                var minDiff = nil;
-                var lastDiff = nil;
-                var diff = 0;
-                var found = nil;
-                foreach (var item; me._pointsX.vector) {
-                    diff = math.abs(item.x - e.localX);
-                    if (minDiff == nil or diff < minDiff) {
-                        minDiff = diff;
-                        found = item;
-                    }
+                var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
 
-                    if (lastDiff != nil and diff > lastDiff) {
-                        break;
-                    }
-
-                    lastDiff = diff;
-                }
-
-                if (found != nil) {
-                    model.setTrackPosition(found.position);
-                    model._updatePosition();
-                }
+                model.setTrackPosition(position);
+                model._updatePosition();
             });
         }
 
@@ -112,6 +93,42 @@ DefaultStyle.widgets["profile-view"] = {
         me._drawProfile(model);
 
         me.updateAircraftPosition(model);
+    },
+
+    #
+    # Binary search for closest point to click
+    #
+    # @param  int  clickedX
+    # @param  vector  points  Vector of hashes [{ x: double, position: int }, {...}, ...]
+    # @return int  Aircraft position found
+    #
+    _findClosestXBinary: func(clickedX, points) {
+        var left = 0;
+        var right = size(points) - 1;
+        var closestIndex = -1;
+
+        while (left <= right) {
+            var mid = math.floor((left + right) / 2);
+
+            # The following doesn't make sense since points[mid].x is double and clickedX is integer
+            # if (points[mid].x == clickedX) {
+            #     return points[mid].position;
+            # }
+
+            if (points[mid].x < clickedX) {
+                left = mid + 1;
+            }
+            else {
+                right = mid - 1;
+            }
+
+            # Update nearest index if current point is closer
+            if (closestIndex == -1 or math.abs(points[mid].x - clickedX) < math.abs(points[closestIndex].x - clickedX)) {
+                closestIndex = mid;
+            }
+        }
+
+        return points[closestIndex].position;
     },
 
     #
