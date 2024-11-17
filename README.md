@@ -130,13 +130,15 @@ At the bottom of the details window there is a `Delete` button, with which you c
 
 ### Flight Analysis
 
-The details window also contains an `Analysis` button. Once you click on it, a new window will open with the flight analysis.
+The details window of logbook also contains an `Analysis` button. Once you click on it, a new window will open with the flight analysis.
 
 ![alt flight-analysis](docs/img/flight-analysis.png "Flight Analysis window")
 
 The window is divided into two parts, the upper one with the map (lateral navigation) and the lower one with the profile (vertical navigation). The path along which the flight was made is drawn in blue. The brown path on the profile is the terrain elevation.
 
-At the bottom, we have a row of buttons for zooming the map and for moving through the points of the path traveled. If the path does not fit on the map, you must zoom out of the map view or move along the path using the `<` and `>` buttons. The currently selected point is marked with the same red cross, both on the map and the profile. By default, it is the starting point. Now, using the arrow buttons, you can move through the points, while seeing a summary on the left for each of them in the form:
+Flight analysis can also be opened from the "Logbook" -> "Current Flight Analysis" menu. The difference is that this analysis always comes from your current session. Apart from that, there are no differences in operation.
+
+At the bottom, we have a row of buttons for zooming the map and for moving through the points of the path traveled. If the path does not fit on the map, you must zoom out of the map view or move along the path using the `<` and `>` buttons. The currently selected point is marked with the airplane icon both on the map and the profile. By default, it is the starting point. Now, using the arrow buttons, you can move through the points, while seeing an information on the left for each of them in the form:
 
 * geographical coordinates of the point
 * altitude at which the aircraft was located
@@ -151,12 +153,15 @@ Buttons:
 * `<` and `>` – move back or forward 1 point
 * `<<` and `>>` – move back or forward 10 points
 * `|<<` and `>>|` – jump to start or end point
+* `Play`/`Stop` – start/stop flight animation of airplane icon.
 
-To change red cross position, you can also click on the map near to the fly path or click on the profile diagram.
+To change airplane icon position, you can also click on the map near to the fly path or click on the profile diagram.
+
+At the bottom right there is also an option to change the profile drawing mode. In FlightGear version 2024.1, this is a checkbox with the options "time" and "distance". This option defines whether the X-axis should be drawn based on time or distance traveled. When based on time, the graph will be evenly and linearly distributed, even when the aircraft is stationary or hovering because time is always moving forward. So the graph won't show where the flight was faster or slower, but you will avoid overlapping points. When based on distance, the points will be drawn close to each other or overlapping when the aircraft is stationary or flying slowly, but they will be more spread out when flying fast, making it possible to recognize places where the flight was performed at higher speeds and where at lower ones. In FlightGear versions older than 2024, this option is presented as a check box. When you check it, you will enable "distance" mode.
 
 The flight analysis window is resizable, but remember that if it is too small it will not be able to draw the map or vertical profile correctly.
 
-Flight analysis will only be available for flights made in FlightGear version 2024.1 and newer.
+Flight analysis from the logbook will only be available for flights made in FlightGear 2024.1 and later. Current session analysis is available from FlightGear 2020.
 
 ### Settings
 
@@ -166,16 +171,17 @@ When you click on the `≡` button in the Logbook view, the settings window will
 
 Here you can configure the following options:
 
-1. `Date and time displayed in the Logbook view` – Logbook window shows only one `Date` and `Time` item, but triple dates and times are logged, so here you can choose which one you want to display in Logbook window, by default it is real time, taken from your operating system. These options are only available for FG >= 2024.1
-2. `Columns to display in the Logbook view` – here you can specify which columns are to be displayed in the Logbook window. The fewer columns are displayed, the faster the Logbook window will be drawn. Columns such as `Date`, `Time` and `Aircraft` are always displayed, the `Note` column will never be displayed and this cannot be changed. These options are only available for FG >= 2024.1
+1. `Date and time displayed in the Logbook view` – Logbook window shows only one `Date` and `Time` item, but triple dates and times are logged, so here you can choose which one you want to display in Logbook window, by default it is real time, taken from your operating system. These options are only available for FG >= 2024.1.
+2. `Columns to display in the Logbook view` – here you can specify which columns are to be displayed in the Logbook window. The fewer columns are displayed, the faster the Logbook window will be drawn. Columns such as `Date`, `Time` and `Aircraft` are always displayed, the `Note` column will never be displayed and this cannot be changed. These options are only available for FG >= 2024.1.
 3. `Click sound` – by default, a sound is played when you click on various buttons, you can turn this sound off here.
 4. `Items per page` – here you can specify how many rows of logs should be displayed in the Logbook view, the default is 20. The lower the number, the faster the Logbook window will be drawn.
+4. `Optimize database` – this button will defragment the database file (sqlite), which will speed up database operations and reduce its size on the disk. These option is only available for FG >= 2024.1.
 
 #### Advance settings
 
 When you save your settings, this add-on will save them to the `settings.xml` file in `$FG_HOME/Export/Addons/org.flightgear.addons.logbook` location. By editing this file you can configure more options:
 
-1. `tracker-interval-sec` – integer as the number of seconds every which data will be dumped to the log (default 5). The smaller the number, the more data you will receive and the flight analysis will be more accurate, therefore the database file will take up more space and the processor may be more loaded. If you are making a long flight on an airliner, a value of 20 seconds should be satisfactory. If you want to perform aerobatics and want to analyze your flight in detail, you can set this value even to 1 second.
+1. `tracker-interval-sec` – integer as the number of seconds every which data will be dumped to the log (default 5 seconds). The smaller the number, the more data you will receive and the flight analysis will be more accurate, therefore the database file will take up more space and the processor may be more loaded. If you are making a long flight on an airliner, a value of 20 seconds should be satisfactory. If you want to perform aerobatics and want to analyze your flight in detail, you can set this value even to 1 second or less.
 2. `real-time-duration` – if true then time spent in flight is always real time, i.e. speeding up or slowing down the simulation time will not affect Duration (default true). So if your flight would take 2 hours but you accelerate the time in the simulator twice, then you will fly in 1 real hour and the log will record 1 hour of flight. On the other hand, if you set this option to false, then in this case 2 hours would be logged, according to the simulator time.
 
 and settings available from GUI:
