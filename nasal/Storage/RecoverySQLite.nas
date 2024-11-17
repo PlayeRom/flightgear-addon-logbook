@@ -11,10 +11,15 @@
 
 #
 # The RecoverySQLite class saves the current flight status to the database
-# at a given interval by g_Settings.getTrackerIntervalSec().
+# at a given interval by INTERVAL_SEC.
 # When FG crashes, the log will not be lost.
 #
 var RecoverySQLite = {
+    #
+    # Constants
+    #
+    INTERVAL_SEC: 20,
+
     #
     # Constructor
     #
@@ -31,7 +36,7 @@ var RecoverySQLite = {
             _inserted   : false,
         };
 
-        me._timer = maketimer(g_Settings.getTrackerIntervalSec(), me, me._update);
+        me._timer = maketimer(RecoverySQLite.INTERVAL_SEC, me, me._update);
 
         me._storage.loadAllData();
 

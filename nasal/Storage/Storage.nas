@@ -92,27 +92,12 @@ var Storage = {
     # Insert current data to trackers table
     #
     # @param  int|nil  logbookId  Record ID of `logbooks` table
-    # @param  double  duration  Timestamp as duration of flight in hours
-    # @param  double  distance  In nautical miles from starting point
-    # @param  double  headingTrue
-    # @param  double  headingMag
-    # @param  double  groundspeed  In knots
-    # @param  double  airspeed  In knots
-    # @param  double  pitch  Aircraft pitch in degrees
+    # @param  hash  data  Hash with data
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed, pitch) {
+    addTrackerItem: func(logbookId, data) {
         if (me._isUsingSQLite and logbookId != nil) {
-            return me._handler.addTrackerItem(
-                logbookId,
-                duration,
-                distance,
-                headingTrue,
-                headingMag,
-                groundspeed,
-                airspeed,
-                pitch
-            );
+            return me._handler.addTrackerItem(logbookId, data);
         }
 
         return false;

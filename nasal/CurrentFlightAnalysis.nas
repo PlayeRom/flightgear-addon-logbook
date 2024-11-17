@@ -14,11 +14,6 @@
 #
 var CurrentFlightAnalysis = {
     #
-    # Constants
-    #
-    TIMER_INTERVAL: 5,
-
-    #
     # Constructor
     #
     # @return me
@@ -32,7 +27,7 @@ var CurrentFlightAnalysis = {
             _isDialogOpened   : false,
         };
 
-        me._timer = maketimer(CurrentFlightAnalysis.TIMER_INTERVAL, me, me._update);
+        me._timer = maketimer(g_Settings.getTrackerIntervalSec(), me, me._update);
 
         me._currentFlightData = std.Vector.new();
         me._currentFlightMaxAlt = 0.0;
@@ -102,7 +97,7 @@ var CurrentFlightAnalysis = {
         }
 
         data.timestamp = me._timestamp / 3600; # convert sec to hours
-        me._timestamp += CurrentFlightAnalysis.TIMER_INTERVAL;
+        me._timestamp += g_Settings.getTrackerIntervalSec();
 
         if (me._currentFlightMaxAlt < data.alt_m) {
             me._currentFlightMaxAlt = data.alt_m;

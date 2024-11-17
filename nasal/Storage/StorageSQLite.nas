@@ -256,22 +256,13 @@ var StorageSQLite = {
     # Insert current data to trackers table
     #
     # @param  int|nil  logbookId  Record ID of `logbooks` table
-    # @param  double  duration  Timestamp as duration of flight in hours
-    # @param  double  distance  In nautical miles from starting point
-    # @param  double  headingTrue
-    # @param  double  headingMag
-    # @param  double  groundspeed  In knots
-    # @param  double  airspeed  In knots
-    # @param  double  pitch  Aircraft pitch in degrees
+    # @param  hash  data  Hash with data
     # @return bool
     #
-    addTrackerItem: func(logbookId, duration, distance, headingTrue, headingMag, groundspeed, airspeed, pitch) {
+    addTrackerItem: func(logbookId, data) {
         if (logbookId == nil) {
             return false;
         }
-
-        var pos = geo.aircraft_position();
-        var elevationMeters = geo.elevation(pos.lat(), pos.lon());
 
         var query = "INSERT INTO " ~ StorageSQLite.TABLE_TRACKERS
             ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -279,17 +270,17 @@ var StorageSQLite = {
         var stmt = sqlite.prepare(me._dbHandler, query);
         sqlite.exec(me._dbHandler, stmt,
             logbookId,
-            duration,
-            pos.lat(),
-            pos.lon(),
-            pos.alt(),
-            elevationMeters,
-            distance,
-            headingTrue,
-            headingMag,
-            groundspeed,
-            airspeed,
-            pitch
+            data.timestamp,
+            data.lat,
+            data.lon,
+            data.alt_m,
+            data.elevation_m,
+            data.distance,
+            data.heading_true,
+            data.heading_mag,
+            data.groundspeed,
+            data.airspeed,
+            data.pitch
         );
 
         return true;

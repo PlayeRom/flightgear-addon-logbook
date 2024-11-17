@@ -149,7 +149,7 @@ var Logbook = {
     # @return void
     #
     _initLogbook: func() {
-        me._currentFlightAnalysis.start(me, me._updateCurrentFlightData);
+        me._currentFlightAnalysis.start(me, me._updateFlightAnalysisData);
 
         me._landingGear.recognizeGears(me._onGround);
 
@@ -292,8 +292,9 @@ var Logbook = {
 
         me._crashDetector.startGForce(me._onGround);
 
-        # Save first recovery immediately
+        # Save first recovery and flight analysis immediately
         me._recoveryCallback();
+        me._updateFlightAnalysisData();
     },
 
     #
@@ -360,16 +361,7 @@ var Logbook = {
         me._storage.saveLogData(me._logData, logbookId);
 
         # Also save data to the trackers table for a given logbook record
-        me._storage.addTrackerItem(
-            logbookId,
-            me._logData.duration,
-            me._logData.distance,
-            me._flight.getHeadingTrue(),
-            me._flight.getHeadingMag(),
-            me._flight.getGroundspeedKt(),
-            me._flight.getAirspeedKt(),
-            me._flight.getPitch()
-        );
+        me._storage.addTrackerItem(logbookId, me._buildAnalysisData(me._logData));
 
         me._logData = nil;
         me._wowSec = 0;
@@ -407,23 +399,43 @@ var Logbook = {
         recoveryData.setMaxMach(me._flight.getMaxMach());
 
         me._recovery.save(recoveryData);
+    },
 
-        if (me._isSimPaused or me._isReplayMode) {
-            # Don't save track when paused or watching replay
-            return;
+    #
+    # Gat data for analysis for save to DB and for current session
+    #
+    # @param  ghost|nil  logData
+    # @return hash
+    #
+    _buildAnalysisData: func(logData = nil) {
+        var pos = geo.aircraft_position();
+        var elevationMeters = geo.elevation(pos.lat(), pos.lon());
+
+        var timestamp = 0.0;
+        var distance = 0.0;
+
+        if (logData != nil) {
+            timestamp = logData.duration;
+            distance  = logData.distance;
+        }
+        else {
+            timestamp = me._environment.getDayHours() + me._environment.getNightHours();
+            distance  = me._flight.getFlyDistance();
         }
 
-        # Also save data to the trackers table for a given logbook record
-        me._storage.addTrackerItem(
-            me._recovery.getLogbookId(),
-            recoveryData.duration,
-            recoveryData.distance,
-            me._flight.getHeadingTrue(),
-            me._flight.getHeadingMag(),
-            me._flight.getGroundspeedKt(),
-            me._flight.getAirspeedKt(),
-            me._flight.getPitch()
-        );
+        return {
+            "timestamp"    : timestamp,                     # elapsed time in sim in hours, this is set in CurrentFlightAnalysis
+            "lat"          : pos.lat(),                     # aircraft position
+            "lon"          : pos.lon(),                     # aircraft position
+            "alt_m"        : pos.alt(),                     # aircraft altitude in meters
+            "elevation_m"  : elevationMeters,               # elevation in metres of a lat,lon point on the scenery
+            "distance"     : distance,                      # distance traveled from the starting point in nautical miles
+            "heading_true" : me._flight.getHeadingTrue(),   # aircraft true heading
+            "heading_mag"  : me._flight.getHeadingMag(),    # aircraft magnetic heading
+            "groundspeed"  : me._flight.getGroundspeedKt(), # aircraft groundspeed in knots
+            "airspeed"     : me._flight.getAirspeedKt(),    # aircraft airspeed in knots
+            "pitch"        : me._flight.getPitch(),         # aircraft pitch in deg
+        }
     },
 
     #
@@ -431,27 +443,27 @@ var Logbook = {
     #
     # @return hash
     #
-    _updateCurrentFlightData: func() {
+    _updateFlightAnalysisData: func() {
         if (me._isSimPaused or me._isReplayMode) {
+            # Don't save track when paused or watching replay
             return nil;
         }
 
-        var pos = geo.aircraft_position();
-        var elevationMeters = geo.elevation(pos.lat(), pos.lon());
+        # Set data during a fly
+        var data = me._buildAnalysisData();
 
-        return {
-            "timestamp"    : 0,                             # elapsed time in sim in hours, this is set in CurrentFlightAnalysis
-            "lat"          : pos.lat(),                     # aircraft position
-            "lon"          : pos.lon(),                     # aircraft position
-            "alt_m"        : pos.alt(),                     # aircraft altitude in meters
-            "elevation_m"  : elevationMeters,               # elevation in metres of a lat,lon point on the scenery
-            "distance"     : me._flight.getFullDistance(),  # distance traveled from the starting point in nautical miles
-            "heading_true" : me._flight.getHeadingTrue(),   # aircraft true heading
-            "heading_mag"  : me._flight.getHeadingMag(),    # aircraft magnetic heading
-            "groundspeed"  : me._flight.getGroundspeedKt(), # aircraft groundspeed in knots
-            "airspeed"     : me._flight.getAirspeedKt(),    # aircraft airspeed in knots
-            "pitch"        : me._flight.getPitch(),         # aircraft pitch in deg
-        };
+        # Also save data to the trackers table for a given logbook record
+        var logbookId = me._recovery.getLogbookId();
+        if (logbookId != nil) {
+            me._storage.addTrackerItem(logbookId, data);
+        }
+
+        # Set data for current session (including taxi),
+        # timestamp will be set in CurrentFlightAnalysis
+        data.timestamp = 0;
+        data.distance = me._flight.getFullDistance();
+
+        return data;
     },
 
     #

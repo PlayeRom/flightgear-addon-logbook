@@ -18,7 +18,7 @@ var RecoveryCsv = {
     # Constants
     #
     RECOVERY_FILE: "recovery-v%s.csv",
-    INTERVAL_SEC : 30,
+    INTERVAL_SEC : 20,
 
     #
     # Constructor
