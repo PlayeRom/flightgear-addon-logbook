@@ -28,11 +28,9 @@ var FlightAnalysisDialog = {
     #
     # Constructor
     #
-    # @param  func|nil  onCanvasClosed
-    # @param  ghost|nil   objCallback
     # @return me
     #
-    new: func(onCanvasClosed = nil, objCallback = nil) {
+    new: func() {
         var me = {
             parents: [
                 FlightAnalysisDialog,
@@ -45,8 +43,6 @@ var FlightAnalysisDialog = {
             ],
             _trackItems    : nil,
             _trackSize     : 0,
-            _onCanvasClosed: onCanvasClosed,
-            _objCallback   : objCallback,
         };
 
         me.bgImage.hide();
@@ -81,10 +77,6 @@ var FlightAnalysisDialog = {
     del: func() {
         me._playTimer.stop();
 
-        if (me._onCanvasClosed != nil) {
-            call(me._onCanvasClosed, [], me._objCallback);
-        }
-
         call(Dialog.del, [], me);
     },
 
@@ -108,10 +100,6 @@ var FlightAnalysisDialog = {
     #
     hide: func() {
         me._playTimer.stop();
-
-        if (me._onCanvasClosed != nil) {
-            call(me._onCanvasClosed, [], me._objCallback);
-        }
 
         call(Dialog.hide, [], me);
     },

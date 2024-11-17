@@ -24,7 +24,6 @@ var CurrentFlightAnalysis = {
             _objCallback      : nil,
             _callback         : nil,
             _flightAnalysisDlg: nil,
-            _isDialogOpened   : false,
         };
 
         me._timer = maketimer(g_Settings.getTrackerIntervalSec(), me, me._update);
@@ -109,7 +108,7 @@ var CurrentFlightAnalysis = {
 
         me._currentFlightData.append(data);
 
-        if (me._flightAnalysisDlg != nil and me._isDialogOpened) {
+        if (me._flightAnalysisDlg != nil and me._flightAnalysisDlg.isWindowVisible()) {
             me._flightAnalysisDlg.setData(me._currentFlightData.vector, me._currentFlightMaxAlt, false);
             me._flightAnalysisDlg.softUpdateView();
         }
@@ -123,7 +122,7 @@ var CurrentFlightAnalysis = {
     showFlightAnalysisDialog: func() {
         var firstRun = me._flightAnalysisDlg == nil;
         if (firstRun) {
-            me._flightAnalysisDlg = FlightAnalysisDialog.new(me._onCanvasClosed, me);
+            me._flightAnalysisDlg = FlightAnalysisDialog.new();
         }
 
         me._flightAnalysisDlg.setData(me._currentFlightData.vector, me._currentFlightMaxAlt, false);
@@ -139,16 +138,5 @@ var CurrentFlightAnalysis = {
         }
 
         me._flightAnalysisDlg.goEndTrack();
-
-        me._isDialogOpened = true;
-    },
-
-    #
-    # Callback function called when Flight Analysis Dialog is about to be closed
-    #
-    # @return void
-    #
-    _onCanvasClosed: func() {
-        me._isDialogOpened = false;
     },
 };
