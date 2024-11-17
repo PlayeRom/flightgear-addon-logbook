@@ -526,6 +526,15 @@ var Logbook = {
     },
 
     #
+    # Vacuum SQLite file
+    #
+    # @return bool
+    #
+    vacuumSQLite: func() {
+        me._storage.vacuumSQLite();
+    },
+
+    #
     # Reset Logbook dialog
     #
     # @return void

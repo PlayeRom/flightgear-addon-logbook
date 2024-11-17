@@ -169,7 +169,7 @@ var SettingsDialogSQLite = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawDateTimeOptions: func(vBoxLayout) {
-        vBoxLayout.addItem(me._getLabel("Date and time displayed\nin the Logbook view"));
+        vBoxLayout.addItem(me._getLabel("Date and time displayed\nin the Logbook view", { wordWrap: true }));
         vBoxLayout.addSpacing(10);
 
         # TODO: for 2024.1+ replace CheckBoxes to RadioButtons, but they don't work properly yet, maybe on "next"
@@ -279,7 +279,27 @@ var SettingsDialogSQLite = {
 
         vBoxLayout.addItem(checkboxSound);
 
-        me._drawLogItemsPerPage(vBoxLayout);
+        vBoxLayout.addItem(me._drawLogItemsPerPage());
+
+        vBoxLayout.addItem(
+            me._getLabel(
+                'The "Optimize database" button will defragment the database file, which will speed up database operations and reduce its size on the disk.',
+                { wordWrap: true }
+        ));
+        var btnVacuum = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
+            .setText("Optimize database")
+            .setFixedSize(150, 26)
+            .listen("clicked", func {
+                if (!g_isThreadPending) {
+                    if (me._logbook.vacuumSQLite()) {
+                        gui.popupTip("The database has been optimized");
+                    }
+                }
+            }
+        );
+
+        vBoxLayout.addSpacing(20);
+        vBoxLayout.addItem(btnVacuum);
 
         return vBoxLayout;
     },
@@ -287,10 +307,9 @@ var SettingsDialogSQLite = {
     #
     # Draw Items per page option
     #
-    # @param  ghost  vBoxLayout  canvas.VBoxLayout
     # @return ghost  canvas.VBoxLayout
     #
-    _drawLogItemsPerPage: func(vBoxLayout) {
+    _drawLogItemsPerPage: func() {
         var hBoxLayout = canvas.HBoxLayout.new();
 
         hBoxLayout.addItem(me._getLabel("Items per page"));
@@ -318,9 +337,7 @@ var SettingsDialogSQLite = {
 
         hBoxLayout.addStretch(1); # Decrease LineEdit width
 
-        vBoxLayout.addItem(hBoxLayout);
-
-        return vBoxLayout;
+        return hBoxLayout;
     },
 
     #
@@ -331,7 +348,7 @@ var SettingsDialogSQLite = {
     _drawColumnsVisible: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        vBoxLayout.addItem(me._getLabel("Columns to display in\nthe Logbook view"));
+        vBoxLayout.addItem(me._getLabel("Columns to display in the Logbook view", { wordWrap: true }));
         vBoxLayout.addSpacing(10);
 
         var checkboxDate = me._getCheckbox("Date", true, false);
@@ -380,10 +397,11 @@ var SettingsDialogSQLite = {
     # Get widgets.Label
     #
     # @param  string  text  Label text
+    # @param  hash  cfg
     # @return ghost  Label widget
     #
-    _getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
+    _getLabel: func(text, cfg = nil) {
+        return canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, cfg)
             .setText(text);
     },
 

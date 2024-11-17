@@ -200,4 +200,17 @@ var Storage = {
 
         return nil;
     },
+
+    #
+    # Vacuum SQLite file
+    #
+    # @return bool
+    #
+    vacuumSQLite: func() {
+        if (me._isUsingSQLite) {
+            return me._handler.vacuumSQLite();
+        }
+
+        return false;
+    },
 };

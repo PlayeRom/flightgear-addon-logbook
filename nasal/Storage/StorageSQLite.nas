@@ -755,4 +755,14 @@ var StorageSQLite = {
 
         return nil;
     },
+
+    #
+    # Vacuum SQLite file
+    #
+    # @return bool
+    #
+    vacuumSQLite: func() {
+        var rows = sqlite.exec(me._dbHandler, "VACUUM;");
+        return typeof(rows) == 'vector' and size(rows) == 0;
+    },
 };
