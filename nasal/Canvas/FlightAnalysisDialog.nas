@@ -41,8 +41,9 @@ var FlightAnalysisDialog = {
                     true, # <- resizable
                 ),
             ],
-            _trackItems    : nil,
-            _trackSize     : 0,
+            _trackItems      : nil,
+            _trackSize       : 0,
+            _isFG2024Version : Utils.isFG2024Version(),
         };
 
         me.bgImage.hide();
@@ -398,7 +399,8 @@ var FlightAnalysisDialog = {
         me._btnEnd         = me._createButtonNarrow(">>|", func { me.goEndTrack(); });
 
         me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
-        var btnClose       = me._createButtonWide("Close", func { me.hide(); });
+
+        var profileModeSelector = me._drawProfileModeSelector();
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);
@@ -413,7 +415,7 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._btnForwardFast);
         buttonBox.addItem(me._btnEnd);
         buttonBox.addStretch(1);
-        buttonBox.addItem(btnClose);
+        buttonBox.addItem(profileModeSelector);
         buttonBox.addStretch(1);
 
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
@@ -423,6 +425,55 @@ var FlightAnalysisDialog = {
         me._updateAfterChangePosition();
 
         return buttonBox;
+    },
+
+    #
+    # Draw a profile mode selection control
+    #
+    # @return ghost  Canvas object depend of FG version
+    #
+    _drawProfileModeSelector: func() {
+        if (me._isFG2024Version) {
+            var buttonBox = canvas.HBoxLayout.new();
+
+            var label = canvas.gui.widgets.Label.new(me.group, canvas.style, {})
+                .setText("Profile mode");
+
+            var comboBox = canvas.gui.widgets.ComboBox.new(me.group, {})
+                .setFixedSize(100, 26);
+            if (view.hasmember(comboBox, "createItem")) {
+                # For next addMenuItem is deprecated
+                comboBox.createItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+                comboBox.createItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
+            }
+            else { # for 2024.1
+                comboBox.addMenuItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+                comboBox.addMenuItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
+            }
+            comboBox.setSelectedByValue(canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+            comboBox.listen("selected-item-changed", func(e) {
+                me._profileView.setDrawMode(e.detail.value);
+            });
+
+            buttonBox.addItem(label);
+            buttonBox.addItem(comboBox);
+
+            return buttonBox;
+        }
+
+        var checkbox = canvas.gui.widgets.CheckBox.new(me.group, canvas.style, { wordWrap: false })
+            .setText("Profile mode as distance")
+            .setChecked(false)
+            .setEnabled(true);
+
+        checkbox.listen("toggled", func(e) {
+            var mode = e.detail.checked
+                ? canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE
+                : canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
+            me._profileView.setDrawMode(mode);
+        });
+
+        return checkbox;
     },
 
     #

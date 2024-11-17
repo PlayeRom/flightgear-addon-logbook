@@ -27,7 +27,7 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._xXAxis = 0;
         me._yXAxis = 0;
-        me._maxTimestamp = 0;
+        me._maxValueX = 0;
         me._graphWidth = 0;
         me._positiveYAxisLength = 0;
 
@@ -183,7 +183,9 @@ DefaultStyle.widgets["profile-view"] = {
             .setStrokeLineWidth(2);
 
         var lastRecord = rows[size(rows) - 1];
-        me._maxTimestamp = lastRecord.timestamp;
+        me._maxValueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+            ? lastRecord.timestamp
+            : lastRecord.distance;
 
         var maxXAxisLabelsCount = 15;
         var xAxisLabelsSeparation = math.ceil(size(rows) / maxXAxisLabelsCount);
@@ -191,7 +193,11 @@ DefaultStyle.widgets["profile-view"] = {
         forindex (var index; rows) {
             var row = rows[index];
 
-            var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
+            var valueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+                ? row.timestamp
+                : row.distance;
+
+            var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
             var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : row.elevation_m / maxAlt) * me._positiveYAxisLength);
             var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : row.alt_m / maxAlt) * me._positiveYAxisLength);
 
@@ -254,7 +260,12 @@ DefaultStyle.widgets["profile-view"] = {
     #
     updateAircraftPosition: func(model) {
         var row = model._tractItems[model._position];
-        var x = me._xXAxis + ((me._maxTimestamp == 0 ? 0 : row.timestamp / me._maxTimestamp) * me._graphWidth);
+
+        var valueX = model._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+            ? row.timestamp
+            : row.distance;
+
+        var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
         return me._drawPlaneIcon(x, y, row.pitch);

@@ -14,6 +14,12 @@
 #
 gui.widgets.ProfileView = {
     #
+    # Constants
+    #
+    DRAW_MODE_TIMESTAMP : 'timestamp',
+    DRAW_MODE_DISTANCE  : 'distance',
+
+    #
     # Constructor
     #
     # @param  ghost  parent
@@ -40,6 +46,15 @@ gui.widgets.ProfileView = {
         # Callback function called when this widget changes the aircraft's position
         me._callback = nil;
         me._objCallback = nil; # object as owner of callback function
+
+        # Defines whether the X-axis should be drawn based on time or distance traveled.
+        # When based on time, the graph will be evenly and linearly distributed, even when the aircraft is stationary
+        # or hovering because time is always moving forward. So the graph won't show where the flight was faster or
+        # slower, but you will avoid overlapping points.
+        # When based on distance, the points will be drawn close to each other or overlapping when the aircraft is
+        # stationary or flying slowly, but they will be more spread out when flying fast, making it possible to
+        # recognize places where the flight was performed at higher speeds and where at lower ones.
+        me._drawMode = gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
 
         return me;
     },
@@ -241,5 +256,15 @@ gui.widgets.ProfileView = {
         if (me._callback != nil) {
             call(me._callback, [me._position], me._objCallback);
         }
+    },
+
+    #
+    # @param  string  mode  As DRAW_MODE_TIMESTAMP or DRAW_MODE_DISTANCE
+    # @return void
+    #
+    setDrawMode: func(mode) {
+        me._drawMode = mode;
+
+        me._view.reDrawContent(me);
     },
 };
