@@ -28,41 +28,41 @@ var Logbook = {
         var me = { parents: [Logbook] };
 
         # Auxiliary variables
-        me._isUsingSQLite = Utils.isUsingSQLite();
-        me._onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
+        me._isUsingSQLite  = Utils.isUsingSQLite();
+        me._onGround       = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
         logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
-        me._initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
-        me._isSimPaused   = false;
-        me._isReplayMode  = false;
+        me._initAltAglFt   = Logbook.ALT_AGL_FT_THRESHOLD;
+        me._isSimPaused    = false;
+        me._isReplayMode   = false;
 
-        me._mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
-        me._delayInit     = maketimer(2, me, me._initLogbook);
+        me._mainTimer      = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
+        me._delayInit      = maketimer(2, me, me._initLogbook);
 
-        me._wowSec        = 0;
-        me._logData       = nil;
-        me._environment   = Environment.new();
-        me._multiplayer   = Multiplayer.new();
-        me._flight        = Flight.new();
-        me._landingGear   = LandingGear.new();
-        me._columns       = Columns.new();
-        me._filters       = Filters.new();
-        me._storage       = Storage.new(me._filters, me._columns);
-        me._spaceShuttle  = SpaceShuttle.new();
-        me._crashDetector = CrashDetector.new(me._spaceShuttle);
-        me._airport       = Airport.new();
-        me._currentFlightAnalysis = CurrentFlightAnalysis.new();
+        me._wowSec         = 0;
+        me._logData        = nil;
+        me._environment    = Environment.new();
+        me._multiplayer    = Multiplayer.new();
+        me._flight         = Flight.new();
+        me._landingGear    = LandingGear.new();
+        me._columns        = Columns.new();
+        me._filters        = Filters.new();
+        me._storage        = Storage.new(me._filters, me._columns);
+        me._spaceShuttle   = SpaceShuttle.new();
+        me._crashDetector  = CrashDetector.new(me._spaceShuttle);
+        me._airport        = Airport.new();
+        me._flightAnalysis = FlightAnalysis.new();
 
-        me._recovery      = me._isUsingSQLite
+        me._recovery       = me._isUsingSQLite
             ? RecoverySQLite.new(me._storage)
             : RecoveryCsv.new(me._storage);
 
-        me._aircraft       = Aircraft.new();
-        me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
-        me._settingsDialog = me._isUsingSQLite
+        me._aircraft        = Aircraft.new();
+        me._logbookDialog   = LogbookDialog.new(me._storage, me._filters, me._columns, me);
+        me._settingsDialog  = me._isUsingSQLite
             ? SettingsDialogSQLite.new(me._columns, me)
             : SettingsDialogCsv.new(me._columns, me);
 
-        me._aircraftType  = AircraftType.new().getType();
+        me._aircraftType    = AircraftType.new().getType();
         logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);
 
         me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
@@ -128,7 +128,7 @@ var Logbook = {
         me._logbookDialog.del();
         me._storage.del();
         me._settingsDialog.del();
-        me._currentFlightAnalysis.del();
+        me._flightAnalysis.del();
     },
 
     #
@@ -149,7 +149,7 @@ var Logbook = {
     # @return void
     #
     _initLogbook: func() {
-        me._currentFlightAnalysis.start(me, me._updateFlightAnalysisData);
+        me._flightAnalysis.start(me, me._updateFlightAnalysisData);
 
         me._landingGear.recognizeGears(me._onGround);
 
@@ -424,7 +424,7 @@ var Logbook = {
         }
 
         return {
-            "timestamp"    : timestamp,                     # elapsed time in sim in hours, this is set in CurrentFlightAnalysis
+            "timestamp"    : timestamp,                     # elapsed time in sim in hours, this is set in FlightAnalysis
             "lat"          : pos.lat(),                     # aircraft position
             "lon"          : pos.lon(),                     # aircraft position
             "alt_m"        : pos.alt(),                     # aircraft altitude in meters
@@ -459,7 +459,7 @@ var Logbook = {
         }
 
         # Set data for current session (including taxi),
-        # timestamp will be set in CurrentFlightAnalysis
+        # timestamp will be set in FlightAnalysis
         data.timestamp = 0;
         data.distance = me._flight.getFullDistance();
 
@@ -542,6 +542,6 @@ var Logbook = {
     # @return void
     #
     showCurrentFlightAnalysisDialog: func() {
-        me._currentFlightAnalysis.showFlightAnalysisDialog();
+        me._flightAnalysis.showDialog();
     },
 };

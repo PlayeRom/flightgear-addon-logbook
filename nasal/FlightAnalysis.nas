@@ -10,9 +10,9 @@
 #
 
 #
-# CurrentFlightAnalysis class used to collect data for flight analysis of the current session
+# FlightAnalysis class used to collect data for flight analysis of the current session
 #
-var CurrentFlightAnalysis = {
+var FlightAnalysis = {
     #
     # Constructor
     #
@@ -20,7 +20,7 @@ var CurrentFlightAnalysis = {
     #
     new: func() {
         var me = {
-            parents           : [CurrentFlightAnalysis],
+            parents           : [FlightAnalysis],
             _objCallback      : nil,
             _callback         : nil,
             _flightAnalysisDlg: nil,
@@ -119,7 +119,7 @@ var CurrentFlightAnalysis = {
     #
     # @return void
     #
-    showFlightAnalysisDialog: func() {
+    showDialog: func() {
         var firstRun = me._flightAnalysisDlg == nil;
         if (firstRun) {
             me._flightAnalysisDlg = FlightAnalysisDialog.new();

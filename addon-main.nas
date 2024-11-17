@@ -65,7 +65,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Counters/Multiplayer",
         "nasal/Counters/Flight",
         "nasal/Columns",
-        "nasal/CurrentFlightAnalysis",
+        "nasal/FlightAnalysis",
         "nasal/Aircraft",
         "nasal/AircraftType",
         "nasal/Airport",
