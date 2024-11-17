@@ -54,6 +54,7 @@ var init = func(addon) {
 
     # Disable Logbook menu because we have to load data first in thread
     gui.menuEnable("logbook-addon", false);
+    gui.menuEnable("logbook-addon-flight-analysis", false);
 
     # Disable others menus because of delayTimer
     gui.menuEnable("logbook-addon-help", false);
@@ -70,6 +71,7 @@ var init = func(addon) {
     var delayTimer = maketimer(3, func() {
         g_Logbook = Logbook.new();
 
+        gui.menuEnable("logbook-addon-flight-analysis", true);
         gui.menuEnable("logbook-addon-help", true);
         gui.menuEnable("logbook-addon-about", true);
     });

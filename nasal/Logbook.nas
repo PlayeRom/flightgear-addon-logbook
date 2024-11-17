@@ -29,18 +29,16 @@ var Logbook = {
 
         # Auxiliary variables
         me._isUsingSQLite = Utils.isUsingSQLite();
-        me._startFuel     = 0.0; # amount of fuel at takeoff
-        me._startOdometer = 0.0; # distance at takeoff
         me._onGround      = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
         logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
         me._initAltAglFt  = Logbook.ALT_AGL_FT_THRESHOLD;
         me._isSimPaused   = false;
         me._isReplayMode  = false;
 
-        me._wowSec        = 0;
         me._mainTimer     = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
         me._delayInit     = maketimer(2, me, me._initLogbook);
 
+        me._wowSec        = 0;
         me._logData       = nil;
         me._environment   = Environment.new();
         me._multiplayer   = Multiplayer.new();
@@ -52,6 +50,7 @@ var Logbook = {
         me._spaceShuttle  = SpaceShuttle.new();
         me._crashDetector = CrashDetector.new(me._spaceShuttle);
         me._airport       = Airport.new();
+        me._currentFlightAnalysis = CurrentFlightAnalysis.new();
 
         me._recovery      = me._isUsingSQLite
             ? RecoverySQLite.new(me._storage)
@@ -129,6 +128,7 @@ var Logbook = {
         me._logbookDialog.del();
         me._storage.del();
         me._settingsDialog.del();
+        me._currentFlightAnalysis.del();
     },
 
     #
@@ -149,6 +149,8 @@ var Logbook = {
     # @return void
     #
     _initLogbook: func() {
+        me._currentFlightAnalysis.start(me, me._updateCurrentFlightData);
+
         me._landingGear.recognizeGears(me._onGround);
 
         me._initAltAglThreshold();
@@ -278,9 +280,6 @@ var Logbook = {
         me._logData.setNote(getprop("/sim/description"));
         me._logData.setCallsign(getprop("/sim/multiplay/callsign"));
 
-        me._startFuel     = getprop("/consumables/fuel/total-fuel-gal_us");
-        me._startOdometer = getprop("/instrumentation/gps/odometer");
-
         if (me._onGround or me._spaceShuttle.isLaunched()) {
             me._logData.setFrom(me._getStartAirport());
         }
@@ -318,8 +317,8 @@ var Logbook = {
             crashed = true; # force crash state
         }
 
-        me._logData.setFuel(me._getFuel());
-        me._logData.setDistance(me._getDistance());
+        me._logData.setFuel(me._flight.getFuel());
+        me._logData.setDistance(me._flight.getFlyDistance());
 
         if (landed) {
             if (me._crashDetector.isOrientationOK()) {
@@ -383,35 +382,19 @@ var Logbook = {
     },
 
     #
-    # Get amount of fuel burned
-    #
-    # @return double
-    #
-    _getFuel: func() {
-        var fuel = getprop("/consumables/fuel/total-fuel-gal_us");
-        return math.abs(me._startFuel - fuel);
-    },
-
-    #
-    # Take the distance flown
-    #
-    # @return double
-    #
-    _getDistance: func() {
-        var odometer = getprop("/instrumentation/gps/odometer");
-        return odometer - me._startOdometer;
-    },
-
-    #
     # Callback for Recovery class. Get last statistics data and put it to Recovery.
     #
     # @return void
     #
     _recoveryCallback: func() {
+        if (me._logData == nil) {
+            return;
+        }
+
         var recoveryData = me._logData.getClone();
 
-        recoveryData.setFuel(me._getFuel());
-        recoveryData.setDistance(me._getDistance());
+        recoveryData.setFuel(me._flight.getFuel());
+        recoveryData.setDistance(me._flight.getFlyDistance());
         recoveryData.setDay(me._environment.getDayHours());
         recoveryData.setNight(me._environment.getNightHours());
         recoveryData.setInstrument(me._environment.getInstrumentHours());
@@ -441,6 +424,34 @@ var Logbook = {
             me._flight.getAirspeedKt(),
             me._flight.getPitch()
         );
+    },
+
+    #
+    # Collect data for flight analysis of the current session
+    #
+    # @return hash
+    #
+    _updateCurrentFlightData: func() {
+        if (me._isSimPaused or me._isReplayMode) {
+            return nil;
+        }
+
+        var pos = geo.aircraft_position();
+        var elevationMeters = geo.elevation(pos.lat(), pos.lon());
+
+        return {
+            "timestamp"    : 0,                             # elapsed time in sim in hours, this is set in CurrentFlightAnalysis
+            "lat"          : pos.lat(),                     # aircraft position
+            "lon"          : pos.lon(),                     # aircraft position
+            "alt_m"        : pos.alt(),                     # aircraft altitude in meters
+            "elevation_m"  : elevationMeters,               # elevation in metres of a lat,lon point on the scenery
+            "distance"     : me._flight.getFullDistance(),  # distance traveled from the starting point in nautical miles
+            "heading_true" : me._flight.getHeadingTrue(),   # aircraft true heading
+            "heading_mag"  : me._flight.getHeadingMag(),    # aircraft magnetic heading
+            "groundspeed"  : me._flight.getGroundspeedKt(), # aircraft groundspeed in knots
+            "airspeed"     : me._flight.getAirspeedKt(),    # aircraft airspeed in knots
+            "pitch"        : me._flight.getPitch(),         # aircraft pitch in deg
+        };
     },
 
     #
@@ -511,5 +522,14 @@ var Logbook = {
         me._logbookDialog.del();
         me._logbookDialog = LogbookDialog.new(me._storage, me._filters, me._columns, me);
         me.showLogbookDialog();
+    },
+
+    #
+    # Open Flight Analysis dialog for current session
+    #
+    # @return void
+    #
+    showCurrentFlightAnalysisDialog: func() {
+        me._currentFlightAnalysis.showFlightAnalysisDialog();
     },
 };

@@ -32,6 +32,15 @@
                     <script>logbook.g_Logbook.showLogbookDialog();</script>
                 </binding>
             </item>
+            <item>
+                <label>Current Flight Analysis</label>
+                <name>logbook-addon-flight-analysis</name>
+                <enabled type="bool">false</enabled>
+                <binding>
+                    <command>nasal</command>
+                    <script>logbook.g_Logbook.showCurrentFlightAnalysisDialog();</script>
+                </binding>
+            </item>
 
             <item>
                 <label>---------------------</label>

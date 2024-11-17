@@ -121,15 +121,16 @@ var FlightAnalysisDialog = {
     #
     # @param  vector  logData  Vector of hashes with all path points
     # @param  double  maxAlt  Max altitude of aircraft or terrain elevation
+    # @param  bool  withReset  If true then aircraft position will be set to 0
     # @return void
     #
-    setData: func(logData, maxAlt) {
+    setData: func(logData, maxAlt, withReset = 1) {
         me._trackItems = logData;
         me._trackSize = size(me._trackItems);
 
         # Put data to widgets
-        me._mapView.setTrackItems(me._trackItems, me._trackSize);
-        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt);
+        me._mapView.setTrackItems(me._trackItems, me._trackSize, withReset);
+        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt, withReset);
     },
 
     #
@@ -301,7 +302,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _goEndTrack: func() {
+    goEndTrack: func() {
         me._mapView.goEndTrack();
         me._profileView.goEndTrack();
 

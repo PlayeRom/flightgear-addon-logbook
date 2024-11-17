@@ -27,30 +27,39 @@ var Flight = {
             ),
         ] };
 
-        me._maxAlt  = 0.0;
-        me._maxGSKt = 0.0;
-        me._maxMach = 0.0;
+        me._maxAlt        = 0.0;
+        me._maxGSKt       = 0.0;
+        me._maxMach       = 0.0;
+        me._odometer      = 0.0;
+        me._startFuel     = 0.0; # amount of fuel at takeoff
+        me._startOdometer = 0.0; # distance at takeoff
 
-        me._propAltFt   = props.globals.getNode("/position/altitude-ft");
-        me._propGSKt    = props.globals.getNode("/velocities/groundspeed-kt");
-        me._propASKt    = props.globals.getNode("/velocities/airspeed-kt");
-        me._propMach    = props.globals.getNode("/velocities/mach");
-        me._propHdgTrue = props.globals.getNode("/orientation/heading-deg");
-        me._propHdgMag  = props.globals.getNode("/orientation/heading-magnetic-deg");
-        me._propPitch   = props.globals.getNode("/orientation/pitch-deg");
+        me._propAltFt    = props.globals.getNode("/position/altitude-ft");
+        me._propGSKt     = props.globals.getNode("/velocities/groundspeed-kt");
+        me._propASKt     = props.globals.getNode("/velocities/airspeed-kt");
+        me._propMach     = props.globals.getNode("/velocities/mach");
+        me._propHdgTrue  = props.globals.getNode("/orientation/heading-deg");
+        me._propHdgMag   = props.globals.getNode("/orientation/heading-magnetic-deg");
+        me._propPitch    = props.globals.getNode("/orientation/pitch-deg");
+        me._propFuel     = props.globals.getNode("/consumables/fuel/total-fuel-gal_us");
+        me._propOdometer = props.globals.getNode("/instrumentation/gps/odometer");
 
         return me;
     },
 
     #
-    # Reset all counters
+    # Reset all counters called on start logging flight data (after take-off)
     #
     # @return void
     #
     _onResetCounters: func() {
-        me._maxAlt  = 0.0;
-        me._maxGSKt = 0.0;
-        me._maxMach = 0.0;
+        me._maxAlt   = 0.0;
+        me._maxGSKt  = 0.0;
+        me._maxMach  = 0.0;
+        me._odometer = 0.0;
+
+        me.setStartFuel();
+        me.setStartOdometer();
     },
 
     #
@@ -147,5 +156,51 @@ var Flight = {
     #
     getPitch: func() {
         return me._propPitch.getValue();
+    },
+
+    #
+    # Record the fuel spent on a taxi
+    #
+    # @return void
+    #
+    setStartFuel: func() {
+        me._startFuel = me._propFuel.getValue();
+    },
+
+    #
+    # Get amount of fuel burned during a flight only
+    #
+    # @return double
+    #
+    getFuel: func() {
+        var currentFuel = me._propFuel.getValue();
+        return math.abs(me._startFuel - currentFuel);
+    },
+
+    #
+    # Record the distance traveled spent in a taxi
+    #
+    # @return void
+    #
+    setStartOdometer: func() {
+        me._startOdometer = me._propOdometer.getValue();
+    },
+
+    #
+    # Take the total distance traveled, including taxi
+    #
+    # @return double
+    #
+    getFullDistance: func() {
+        return me._propOdometer.getValue();
+    },
+
+    #
+    # Take the distance traveled but only the flight itself
+    #
+    # @return double
+    #
+    getFlyDistance: func() {
+        return me.getFullDistance() - me._startOdometer;
     },
 };

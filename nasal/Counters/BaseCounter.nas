@@ -23,6 +23,8 @@ var BaseCounter = {
     new: func(onResetCounters, onUpdate) {
         var me = { parents: [BaseCounter] };
 
+        me._propElapsedSec = props.globals.getNode("/sim/time/elapsed-sec");
+
         me._onResetCountersCallback = onResetCounters;
         me._onUpdateCallback        = onUpdate;
 
@@ -79,7 +81,7 @@ var BaseCounter = {
     # @return double
     #
     _getElapsedSec: func() {
-        return getprop("/sim/time/elapsed-sec");
+        return me._propElapsedSec.getValue();
     },
 
     #
