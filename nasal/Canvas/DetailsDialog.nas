@@ -141,7 +141,7 @@ var DetailsDialog = {
                 .listen("clicked", func {
                     var firstRun = me._flightAnalysisDialog == nil;
                     if (firstRun) {
-                        me._flightAnalysisDialog = FlightAnalysisDialog.new();
+                        me._flightAnalysisDialog = FlightAnalysisDialog.new("Logbook Flight Analysis");
                     }
 
                     # Get data from SQLite

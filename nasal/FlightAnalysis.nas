@@ -122,7 +122,7 @@ var FlightAnalysis = {
     showDialog: func() {
         var firstRun = me._flightAnalysisDlg == nil;
         if (firstRun) {
-            me._flightAnalysisDlg = FlightAnalysisDialog.new();
+            me._flightAnalysisDlg = FlightAnalysisDialog.new("Current Flight Analysis");
         }
 
         me._flightAnalysisDlg.setData(me._currentFlightData.vector, me._currentFlightMaxAlt, false);

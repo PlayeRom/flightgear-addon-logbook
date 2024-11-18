@@ -28,16 +28,17 @@ var FlightAnalysisDialog = {
     #
     # Constructor
     #
+    # @param  string  title
     # @return me
     #
-    new: func() {
+    new: func(title) {
         var me = {
             parents: [
                 FlightAnalysisDialog,
                 Dialog.new(
                     FlightAnalysisDialog.WINDOW_WIDTH,
                     FlightAnalysisDialog.WINDOW_HEIGHT,
-                    "Logbook Flight Analysis",
+                    title,
                     true, # <- resizable
                 ),
             ],
