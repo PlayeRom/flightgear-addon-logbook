@@ -45,7 +45,7 @@
         </short-description>
 
         <long-description type="string">
-            Each flight will be automatically logged with date, plane, airports, various statistics.
+            Each flight will be automatically saved to a logbook along with the date, aircraft, airports, various statistics and the ability to perform flight analysis.
         </long-description>
 
         <localized>
@@ -65,7 +65,7 @@
                 </short-description>
 
                 <long-description type="string">
-                    Każdy lot zostanie automatycznie zapisany do dziennika wraz z datą, samolotem, lotniskami, różnymi statystykami.
+                    Każdy lot zostanie automatycznie zapisany do dziennika wraz z datą, samolotem, lotniskami, różnymi statystykami i możliwością przeprowadzenia analizy lotu.
                 </long-description>
             </pl>
         </localized>
