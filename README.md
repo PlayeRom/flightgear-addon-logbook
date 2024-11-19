@@ -217,7 +217,14 @@ In the newer version based on the SQLite database, the recovery mechanism writes
 
 For FlightGear 2024.1 and newer, the add-on provides an "Export Logbook to CSV" menu item that will export all data from the SQLite database to a CSV file, allowing you to process this data in a spreadsheet.
 
-The CSV file will be in the format `logbook-export-YYYY-MM-DD-HH-mm-SS.csv` and will be saved in the same directory as the SQLite files. The timestamp is taken from the moment the export was made.
+This option will create two CSV files:
+
+1. the first in the format `export-YYYY-MM-DD-HH-mm-SS-logbook.csv` (suffix "logbook") for the Logbook table,
+2. the second `export-YYYY-MM-DD-HH-mm-SS-tracker.csv` (suffix "tracker") for the flight analysis table.
+
+The relationship between the files is that the "tracker" CSV file contains a `Logbook ID` column that contains the `ID` column identifiers from the "logbook" CSV file.
+
+These files will be saved in the same directory as the SQLite file. The timestamp is taken from the time the export was made and is identical for both related files.
 
 ## NOTE
 

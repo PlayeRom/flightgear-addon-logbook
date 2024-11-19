@@ -14,11 +14,6 @@
 #
 var Exporter = {
     #
-    # Constants
-    #
-    USE_FILE_SELECTOR: false,
-
-    #
     # Constructor
     #
     # @param  hash  columns  Columns object
@@ -26,8 +21,8 @@ var Exporter = {
     #
     new: func(columns) {
         return {
-            parents   : [Exporter],
-            _columns  : columns,
+            parents : [Exporter],
+            _columns: columns,
         };
     },
 
@@ -39,44 +34,27 @@ var Exporter = {
     },
 
     #
-    # Export logbook from SQLite to CSV file as a separate thread job
+    # Export logbook and trackers from SQLite to CSV file as a separate thread job
     #
     # @return void
     #
     exportToCsv: func() {
-        if (Exporter.USE_FILE_SELECTOR) {
-            var selector = gui.FileSelector.new(
-                func(node) {             # callback function
-                    me._runInThread(node.getValue());
-                },
-                "Export to CSV",         # dialog title
-                "Save",                  # button text
-                ["*.csv"],               # pattern for displayed files
-                g_Addon.storagePath,     # start dir as $FG_HOME/Export/Addons/org.flightgear.addons.logbook/
-                me._getCsvFileName()     # default file name
-            );
+        thread.newthread(func {
+            var (logbook, tracker) = me._getCsvFileNames();
 
-            selector.open();
-        }
-        else {
-            me._runInThread(sprintf("%s/%s", g_Addon.storagePath, me._getCsvFileName()));
-        }
-    },
+            me._exportLogbookToCsv(logbook);
+            me._exportTrackerToCsv(tracker);
 
-    #
-    # @param  string  fileName  Full path with file name
-    # @return bool
-    #
-    _runInThread: func(fileName) {
-        thread.newthread(func { me._exportToCsv(fileName); });
+            gui.popupTip("Exported to file " ~ logbook);
+        });
     },
 
     #
     # Get CSV file name for export
     #
-    # @return string
+    # @return vector  First file name for logbook table, second for tracker
     #
-    _getCsvFileName: func() {
+    _getCsvFileNames: func() {
         var year   = getprop("/sim/time/real/year");
         var month  = getprop("/sim/time/real/month");
         var day    = getprop("/sim/time/real/day");
@@ -84,38 +62,45 @@ var Exporter = {
         var minute = getprop("/sim/time/real/minute");
         var second = getprop("/sim/time/real/second");
 
-        return sprintf("logbook-export-%d-%02d-%02d-%02d-%02d-%02d.csv", year, month, day, hour, minute, second);
+        var timestamp = sprintf("%d-%02d-%02d-%02d-%02d-%02d", year, month, day, hour, minute, second);
+
+        return [
+            sprintf("%s/export-%s-logbook.csv", g_Addon.storagePath, timestamp),
+            sprintf("%s/export-%s-tracker.csv", g_Addon.storagePath, timestamp),
+        ];
     },
 
     #
-    # Export logbook from SQLite to CSV file
+    # Export logbooks table from SQLite to CSV file
     #
     # @param  string  fileName  Full path with file name
     # @return void
     #
-    _exportToCsv: func(fileName) {
+    _exportLogbookToCsv: func(fileName) {
         var file = io.open(fileName, "w");
 
-        var headerRow = "";
+        var headersRow = "";
         foreach (var columnItem; me._columns.getAll()) {
-            if (headerRow != "") {
-                headerRow ~= ",";
+            if (headersRow != "") {
+                headersRow ~= ",";
             }
 
-            headerRow ~= Utils.isSpace(columnItem.header)
+            headersRow ~= Utils.isSpace(columnItem.header)
                 ? '"' ~ columnItem.header ~ '"'
                 :       columnItem.header;
         }
 
-        io.write(file, headerRow ~ "\n");
+        headersRow = "ID," ~ headersRow;
 
-        var query = sprintf("SELECT * FROM %s", Storage.TABLE_LOGBOOKS);
-        foreach (var row; DB.exec(query)) {
+        io.write(file, headersRow ~ "\n");
+
+        foreach (var row; DB.exec(sprintf("SELECT * FROM %s;", Storage.TABLE_LOGBOOKS))) {
             var logData = LogData.new();
             logData.fromDb(row);
 
             io.write(file, sprintf(
-                "%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,%.0f,%.02f,\"%s\"\n",
+                "%d,%s,%s,%s,%s,%s,%s,\"%s\",%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.0f,%.0f,%.02f,\"%s\"\n",
+                row.id,
                 logData.date,
                 logData.time,
                 logData.sim_utc_date,
@@ -146,7 +131,70 @@ var Exporter = {
         }
 
         io.close(file);
+    },
 
-        gui.popupTip("Exported to file " ~ fileName);
+    #
+    # Export trackers table from SQLite to CSV file
+    #
+    # @param  string  fileName  Full path with file name
+    # @return void
+    #
+    _exportTrackerToCsv: func(fileName) {
+        var file = io.open(fileName, "w");
+
+        var headersRow = "";
+        foreach (var row; DB.exec("SELECT `name` FROM pragma_table_info(?);", Storage.TABLE_TRACKERS)) {
+            if (headersRow != "") {
+                headersRow ~= ",";
+            }
+
+            headersRow ~= me._columnNameToHuman(row.name);
+        }
+
+        io.write(file, headersRow ~ "\n");
+
+        foreach (var row; DB.exec(sprintf("SELECT * FROM %s;", Storage.TABLE_TRACKERS))) {
+            io.write(file, sprintf(
+                "%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+                row.id,
+                row.logbook_id,
+                row.timestamp,
+                row.lat,
+                row.lon,
+                row.alt_m,
+                row.elevation_m,
+                row.distance,
+                row.heading_true,
+                row.heading_mag,
+                row.groundspeed,
+                row.airspeed,
+                row.pitch,
+            ));
+        }
+
+        io.close(file);
+    },
+
+    #
+    # Change the technical name of a table column to something more human
+    #
+    # @param  string  columnName  Column nam ein DB
+    # @return string  Human column name
+    #
+    _columnNameToHuman: func(columnName) {
+             if (columnName == "id")           return 'ID';
+        else if (columnName == "logbook_id")   return '"Logbook ID"';
+        else if (columnName == "timestamp")    return 'Timestamp';
+        else if (columnName == "lat")          return 'Latitude';
+        else if (columnName == "lon")          return 'Longitude';
+        else if (columnName == "alt_m")        return '"Altitude (meters)"';
+        else if (columnName == "elevation_m")  return '"Elevation (meters)"';
+        else if (columnName == "distance")     return '"Distance (NM)"';
+        else if (columnName == "heading_true") return '"True heading (deg)"';
+        else if (columnName == "heading_mag")  return '"Magnetic heading (deg)"';
+        else if (columnName == "groundspeed")  return '"Groundspeed (kt)"';
+        else if (columnName == "airspeed")     return '"Airspeed (kt)"';
+        else if (columnName == "pitch")        return '"Pitch (deg)"';
+        else                                   return '?';
     },
 };
