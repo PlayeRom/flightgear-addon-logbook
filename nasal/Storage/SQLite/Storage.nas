@@ -43,11 +43,12 @@ var Storage = {
         };;
 
         me._filePath    = me._getPathToFile();
-        me._dbHandler   = nil;
         me._loadedData  = [];
         me._withHeaders = true;
 
-        me._openDb();
+        DB.open(me._filePath);
+
+        Migration.new().migrate();
 
         # Callback for return results of loadDataRange
         me._objCallback = nil;
@@ -65,7 +66,7 @@ var Storage = {
     #
     del: func() {
         me._exporter.del();
-        me._closeDb();
+        DB.close();
     },
 
     #
@@ -76,42 +77,12 @@ var Storage = {
     },
 
     #
-    # Open DB connection, create table if not exist and import data from CSV file
-    #
-    # @return void
-    #
-    _openDb: func() {
-        me._closeDb();
-
-        me._dbHandler = sqlite.open(me._filePath);
-
-        Migration.new(me).migrate();
-    },
-
-    #
-    # Close DB connection
-    #
-    _closeDb: func() {
-        if (me._dbHandler != nil) {
-            sqlite.close(me._dbHandler);
-            me._dbHandler = nil;
-        }
-    },
-
-    #
-    # @return ghost  DB handler object
-    #
-    getDbHandler: func() {
-        return me._dbHandler;
-    },
-
-    #
     # Export logbook from SQLite to CSV file as a separate thread job
     #
     # @return void
     #
     exportToCsv: func() {
-        me._exporter.exportToCsv(me._dbHandler);
+        me._exporter.exportToCsv();
     },
 
     #
@@ -142,19 +113,14 @@ var Storage = {
     # Insert LogData into database
     #
     # @param  hash  logData  LogData object
-    # @param  hash|nil  db  DB handler or nil
     # @return int|nil  ID of new record, or nil
     #
-    addItem: func(logData, db = nil) {
-        if (db == nil) {
-            db = me._dbHandler;
-        }
-
+    addItem: func(logData) {
         var query = "INSERT INTO " ~ Storage.TABLE_LOGBOOKS
             ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        var stmt = sqlite.prepare(db, query);
-        sqlite.exec(db, stmt,
+        DB.exec(
+            query,
             logData.date,
             logData.time,
             logData.aircraft,
@@ -183,7 +149,7 @@ var Storage = {
             logData.max_mach,
         );
 
-        var rows = sqlite.exec(db, "SELECT last_insert_rowid() AS id");
+        var rows = DB.exec("SELECT last_insert_rowid() AS id");
         if (size(rows)) {
             return rows[0].id;
         }
@@ -228,8 +194,8 @@ var Storage = {
                 `max_mach` = ?
             WHERE id = ?", Storage.TABLE_LOGBOOKS);
 
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt,
+        DB.exec(
+            query,
             logData.date,
             logData.time,
             logData.sim_utc_date,
@@ -275,8 +241,8 @@ var Storage = {
         var query = "INSERT INTO " ~ Storage.TABLE_TRACKERS
             ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt,
+        DB.exec(
+            query,
             logbookId,
             data.timestamp,
             data.lat,
@@ -369,7 +335,7 @@ var Storage = {
         }
 
         var query = sprintf(frm, sqlColumnName, Storage.TABLE_LOGBOOKS);
-        var rows = sqlite.exec(me._dbHandler, query);
+        var rows = DB.exec(query);
 
         if (size(rows)) {
             me._filters.data[columnName].clear();
@@ -442,7 +408,7 @@ var Storage = {
             ~ " " ~ where
             ~ " LIMIT " ~ count ~ " OFFSET " ~ start;
 
-        foreach (var row; sqlite.exec(me._dbHandler, query)) {
+        foreach (var row; DB.exec(query)) {
             var logData = LogData.new();
 
             append(me._loadedData, {
@@ -549,7 +515,7 @@ var Storage = {
 
         # query = "SELECT SUM(landing) as landing, SUM..., FROM logbooks WHERE ..."
         var query = sprintf("SELECT %s FROM %s %s", select, Storage.TABLE_LOGBOOKS, where);
-        var rows = sqlite.exec(me._dbHandler, query);
+        var rows = DB.exec(query);
 
         if (size(rows) == 0) {
             return;
@@ -632,9 +598,8 @@ var Storage = {
             return false;
         }
 
-        var query = sprintf("UPDATE %s SET `%s` = ? WHERE id = ?", Storage.TABLE_LOGBOOKS, columnName);
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt, value, logbookId); # always returns an empty vector
+        var query = sprintf("UPDATE `%s` SET `%s` = ? WHERE `id` = ?", Storage.TABLE_LOGBOOKS, columnName);
+        DB.exec(query, value, logbookId); # always returns an empty vector
 
         gui.popupTip("The change has been saved!");
 
@@ -650,8 +615,8 @@ var Storage = {
         # Build where from filters
         var where = me._getWhereQueryFilters();
 
-        var query = sprintf("SELECT COUNT(*) AS count FROM %s %s", Storage.TABLE_LOGBOOKS, where);
-        var rows = sqlite.exec(me._dbHandler, query);
+        var query = sprintf("SELECT COUNT(*) AS `count` FROM `%s` %s", Storage.TABLE_LOGBOOKS, where);
+        var rows = DB.exec(query);
 
         if (size(rows)) {
             return rows[0].count;
@@ -682,9 +647,7 @@ var Storage = {
         }
 
         var query = sprintf("SELECT * FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
-        var stmt = sqlite.prepare(me._dbHandler, query);
-
-        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
+        var rows = DB.exec(query, logbookId);
         if (size(rows) == 0) {
             logprint(LOG_ALERT, "Logbook Add-on - getLogData, logbookId(", logbookId, ") out of range, return nil");
             return nil;
@@ -709,13 +672,11 @@ var Storage = {
         }
 
         var query = sprintf("DELETE FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt, logbookId);
+        DB.exec(query, logbookId);
 
         # Delete data from trackers
         query = sprintf("DELETE FROM %s WHERE logbook_id = ?", Storage.TABLE_TRACKERS);
-        stmt = sqlite.prepare(me._dbHandler, query);
-        sqlite.exec(me._dbHandler, stmt, logbookId);
+        DB.exec(query, logbookId);
 
         gui.popupTip("The log has been deleted!");
 
@@ -734,8 +695,7 @@ var Storage = {
         }
 
         var query = sprintf("SELECT * FROM %s WHERE logbook_id = ?", Storage.TABLE_TRACKERS);
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
+        var rows = DB.exec(query, logbookId);
 
         return rows;
     },
@@ -754,8 +714,7 @@ var Storage = {
         var query = "SELECT MAX(CASE WHEN alt_m > elevation_m THEN alt_m ELSE elevation_m END) AS `max_alt` "
             ~ "FROM " ~ Storage.TABLE_TRACKERS
             ~ " WHERE logbook_id = ?";
-        var stmt = sqlite.prepare(me._dbHandler, query);
-        var rows = sqlite.exec(me._dbHandler, stmt, logbookId);
+        var rows = DB.exec(query, logbookId);
 
         if (size(rows)) {
             return rows[0].max_alt;
@@ -770,7 +729,7 @@ var Storage = {
     # @return bool
     #
     vacuumSQLite: func() {
-        var rows = sqlite.exec(me._dbHandler, "VACUUM;");
+        var rows = DB.exec("VACUUM;");
         return typeof(rows) == 'vector' and size(rows) == 0;
     },
 };

@@ -13,16 +13,14 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # Constructor
     #
-    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storage) {
+    new: func() {
         return {
             parents : [
                 M2024_10_30_13_01_CreateLogbooksTable,
-                MigrationBase.new(storage.getDbHandler()),
+                MigrationBase.new(),
             ],
-            _storage: storage,
         };
     },
 
@@ -81,9 +79,10 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             return;
         }
 
-        var db = me._storage.getDbHandler();
-
         var file = io.open(csvFile, "r");
+
+        var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Storage.TABLE_LOGBOOKS);
+        var stmt = DB.prepare(query);
 
         var counter = -1; # from -1 for don't count the headers
         while ((line = io.readln(file)) != nil) {
@@ -94,9 +93,8 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
             if (counter > -1) { # skip headers
                 var items = split(",", Utils.removeQuotes(line));
 
-                var query = sprintf("INSERT INTO %s VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Storage.TABLE_LOGBOOKS);
-                var stmt = sqlite.prepare(db, query);
-                sqlite.exec(db, stmt,
+                DB.exec(
+                    stmt,
                     items[0],           # date
                     items[1],           # time
                     items[2],           # aircraft
@@ -124,5 +122,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
         }
 
         io.close(file);
+
+        DB.finalize(stmt);
     },
 };

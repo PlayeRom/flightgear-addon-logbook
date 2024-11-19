@@ -13,16 +13,14 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # Constructor
     #
-    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storage) {
+    new: func() {
         return {
             parents : [
                 M2024_11_04_11_53_AddSimTimeColumns,
-                MigrationBase.new(storage.getDbHandler()),
+                MigrationBase.new(),
             ],
-            _storage: storage,
         };
     },
 
@@ -48,17 +46,17 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     _copyFromReal: func() {
         var querySelect = sprintf("SELECT `id`, `date`, `time` FROM %s", Storage.TABLE_LOGBOOKS);
-        var rows = sqlite.exec(me._storage.getDbHandler(), querySelect);
+        var rows = DB.exec(querySelect);
 
-        var queryInsert = sprintf(
-            "UPDATE %s SET `sim_utc_date` = ?, `sim_utc_time` = ?, `sim_local_date` = ?, `sim_local_time` = ? WHERE `id` = ?",
-            Storage.TABLE_LOGBOOKS
-        );
+        var queryInsert = "UPDATE " ~ Storage.TABLE_LOGBOOKS
+            ~ " SET `sim_utc_date` = ?, `sim_utc_time` = ?, `sim_local_date` = ?, `sim_local_time` = ?"
+            ~ " WHERE `id` = ?";
 
-        var stmt = sqlite.prepare(me._storage.getDbHandler(), queryInsert);
+        var stmt = DB.prepare(queryInsert);
 
         foreach (var item; rows) {
-            sqlite.exec(me._storage.getDbHandler(), stmt,
+            DB.exec(
+                stmt,
                 item.date,
                 item.time,
                 item.date,
@@ -66,5 +64,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
                 item.id
             );
         }
+
+        DB.finalize(stmt);
     },
 };

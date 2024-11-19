@@ -16,13 +16,11 @@ var MigrationBase = {
     #
     # Constructor
     #
-    # @param  hash  dbHandler  DB handler
     # @return me
     #
-    new: func(dbHandler) {
+    new: func() {
         return {
-            parents  : [MigrationBase],
-            _dbHandler: dbHandler,
+            parents: [MigrationBase],
         };
     },
 
@@ -44,7 +42,7 @@ var MigrationBase = {
         }
 
         var query = sprintf("CREATE TABLE %s (%s)", tableName, queryCols);
-        sqlite.exec(me._dbHandler, query);
+        DB.exec(query);
     },
 
     #
@@ -58,6 +56,6 @@ var MigrationBase = {
     #
     addColumnToTable: func(tableName, columnName, type = "TEXT", default = "NULL") {
         var query = sprintf("ALTER TABLE `%s` ADD COLUMN `%s` %s DEFAULT %s", tableName, columnName, type, default);
-        sqlite.exec(me._dbHandler, query);
+        DB.exec(query);
     },
 };

@@ -28,7 +28,6 @@ var Exporter = {
         return {
             parents   : [Exporter],
             _columns  : columns,
-            _dbHandler: nil,
         };
     },
 
@@ -42,12 +41,9 @@ var Exporter = {
     #
     # Export logbook from SQLite to CSV file as a separate thread job
     #
-    # @param  ghost  dbHandler
     # @return void
     #
-    exportToCsv: func(dbHandler) {
-        me._dbHandler = dbHandler;
-
+    exportToCsv: func() {
         if (Exporter.USE_FILE_SELECTOR) {
             var selector = gui.FileSelector.new(
                 func(node) {             # callback function
@@ -114,7 +110,7 @@ var Exporter = {
         io.write(file, headerRow ~ "\n");
 
         var query = sprintf("SELECT * FROM %s", Storage.TABLE_LOGBOOKS);
-        foreach (var row; sqlite.exec(me._dbHandler, query)) {
+        foreach (var row; DB.exec(query)) {
             var logData = LogData.new();
             logData.fromDb(row);
 

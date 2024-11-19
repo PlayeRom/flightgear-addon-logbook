@@ -13,14 +13,13 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # Constructor
     #
-    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storage) {
+    new: func() {
         return {
             parents : [
                 M2024_11_06_22_50_CreateTrackersTable,
-                MigrationBase.new(storage.getDbHandler()),
+                MigrationBase.new(),
             ],
         };
     },

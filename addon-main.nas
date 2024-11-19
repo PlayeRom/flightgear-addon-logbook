@@ -68,6 +68,7 @@ var loadExtraNasalFiles = func(addon) {
 
     if (isFG2024Version()) {
         modules = [
+            "nasal/Storage/SQLite/DB",
             "nasal/Storage/SQLite/Migrations/MigrationBase",
             "nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable",
             "nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable",

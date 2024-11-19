@@ -13,16 +13,14 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     #
     # Constructor
     #
-    # @param  hash  storage  SQLite Storage object
     # @return me
     #
-    new: func(storage) {
+    new: func() {
         return {
             parents : [
                 M2024_11_06_22_42_AddSpeedColumns,
-                MigrationBase.new(storage.getDbHandler()),
+                MigrationBase.new(),
             ],
-            _storage: storage,
         };
     },
 
