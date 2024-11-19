@@ -63,6 +63,13 @@ var Settings = {
             Columns.MAX_MACH,
         ];
 
+        me._itemsPerPageNode       = props.globals.getNode(me._propToSave ~ "/settings/log-items-per-page");
+        me._darkModeNode           = props.globals.getNode(me._propToSave ~ "/settings/dark-style");
+        me._realTimeNode           = props.globals.getNode(me._propToSave ~ "/settings/real-time-duration");
+        me._isSoundNode            = props.globals.getNode(me._propToSave ~ "/settings/sound-enabled");
+        me._dateTimeDisplayNode    = props.globals.getNode(me._propToSave ~ "/settings/date-time-display");
+        me._trackerIntervalSecNode = props.globals.getNode(me._propToSave ~ "/settings/tracker-interval-sec");
+
         me._load();
 
         return me;
@@ -86,6 +93,8 @@ var Settings = {
         if (io.read_properties(me._file, me._saveNode) == nil) {
             logprint(MY_LOG_LEVEL, "Logbook Add-on - Load settings failed");
         }
+
+        me._validateAllValues();
     },
 
     #
@@ -100,13 +109,66 @@ var Settings = {
     },
 
     #
+    # Validate all properties and save with correct values ​​if they were incorrect
+    #
+    # @return void
+    #
+    _validateAllValues: func() {
+        var isDirty = false;
+
+        var value = me.getLogItemsPerPage();
+        var validated = me._logItemsValidate(value);
+        if (validated != value) {
+            me.setLogItemsPerPage(validated);
+            isDirty = true;
+        }
+
+        value = me.isDarkStyle();
+        validated = me._booleanValidate(value, false);
+        if (validated != value) {
+            me.setDarkMode(validated);
+            isDirty = true;
+        }
+
+        value = me.isRealTimeDuration();
+        validated = me._booleanValidate(value, true);
+        if (validated != value) {
+            me.setRealTimeDuration(validated);
+            isDirty = true;
+        }
+
+        value = me.isSoundEnabled();
+        validated = me._booleanValidate(value, true);
+        if (validated != value) {
+            me.setSoundEnabled(validated);
+            isDirty = true;
+        }
+
+        value = me.getDateTimeDisplay();
+        if (!me._isDateTimeDisplayValid(value)) {
+            me.setDateTimeDisplay(Settings.DATE_TIME_REAL);
+            isDirty = true;
+        }
+
+        value = me.getTrackerIntervalSec();
+        if (!me._isTrackerIntervalValid(value)) {
+            me.setTrackerIntervalSec(Settings.TRACKER_INTERVAL_SEC);
+            isDirty = true;
+        }
+
+        if (isDirty) {
+            # Save to file correct values
+            me.save();
+        }
+    },
+
+    #
     # Get log items per page
     #
     # @return int
     #
     getLogItemsPerPage: func() {
-        var value = getprop(me._propToSave ~ "/settings/log-items-per-page") or Settings.MAX_LOG_ITEMS;
-        return me._logItemsValidate(value);
+        return me._itemsPerPageNode.getValue();
     },
 
     #
@@ -122,12 +184,12 @@ var Settings = {
     #
     # Validate log items per page
     #
-    # @param  int|string|nil  value
+    # @param  int|string|double|nil  value
     # @return int
     #
     _logItemsValidate: func(value) {
         value = int(value);
-        if (value == nil) {
+        if (value == nil or value == "") {
             return Settings.MAX_LOG_ITEMS;
         }
         else if (value < Settings.MIN_LOG_ITEMS) {
@@ -144,7 +206,7 @@ var Settings = {
     # @return bool
     #
     isDarkStyle: func() {
-        return getprop(me._propToSave ~ "/settings/dark-style") or false;
+        return me._darkModeNode.getBoolValue();
     },
 
     #
@@ -152,7 +214,22 @@ var Settings = {
     # @return void
     #
     setDarkMode: func(value) {
-        setprop(me._propToSave ~ "/settings/dark-style", value);
+        setprop(me._propToSave ~ "/settings/dark-style", me._booleanValidate(value, false));
+    },
+
+    #
+    # Validate boolean value
+    #
+    # @param  int|string|double|nil  value  Value to validate
+    # @param  bool  default  Default value if param value is invalid
+    # @return bool  Correct value
+    #
+    _booleanValidate: func(value, default) {
+        if (value != true or value != false) {
+            return default;
+        }
+
+        return value;
     },
 
     #
@@ -162,24 +239,24 @@ var Settings = {
     # @return bool
     #
     isRealTimeDuration: func() {
-        var isRealTimeDuration = getprop(me._propToSave ~ "/settings/real-time-duration");
-        if (isRealTimeDuration == nil) {
-            return true;
-        }
+        return me._realTimeNode.getBoolValue();
+    },
 
-        return isRealTimeDuration;
+    #
+    # Enable/disable real time duration
+    #
+    # @param  bool  value
+    # @return void
+    #
+    setRealTimeDuration: func(value) {
+        setprop(me._propToSave ~ "/settings/real-time-duration", me._booleanValidate(value, true));
     },
 
     #
     # @return bool
     #
     isSoundEnabled: func() {
-        var isSoundEnabled = getprop(me._propToSave ~ "/settings/sound-enabled");
-        if (isSoundEnabled == nil) {
-            return true;
-        }
-
-        return isSoundEnabled;
+        return me._isSoundNode.getBoolValue();
     },
 
     #
@@ -187,7 +264,28 @@ var Settings = {
     # @return void
     #
     setSoundEnabled: func(value) {
-        setprop(me._propToSave ~ "/settings/sound-enabled", value);
+        setprop(me._propToSave ~ "/settings/sound-enabled", me._booleanValidate(value, true));
+    },
+
+    #
+    # Get the options which date and time should be displayed in LogbookDialog
+    #
+    # @return string
+    #
+    getDateTimeDisplay: func() {
+        return me._dateTimeDisplayNode.getValue();
+    },
+
+    #
+    # @param  string  value
+    # @return void
+    #
+    setDateTimeDisplay: func(value) {
+        if (!me._isDateTimeDisplayValid(value)) {
+            value = Settings.DATE_TIME_REAL;
+        }
+
+        setprop(me._propToSave ~ "/settings/date-time-display", value);
     },
 
     #
@@ -198,34 +296,6 @@ var Settings = {
         return value == Settings.DATE_TIME_REAL
             or value == Settings.DATE_TIME_SIM_UTC
             or value == Settings.DATE_TIME_SIM_LOC;
-    },
-
-    #
-    # Get the options which date and time should be displayed in LogbookDialog
-    #
-    # @return string
-    #
-    getDateTimeDisplay: func() {
-        var value = getprop(me._propToSave ~ "/settings/date-time-display");
-
-        if (!me._isDateTimeDisplayValid(value)) {
-            return Settings.DATE_TIME_REAL;
-        }
-
-        return value;
-    },
-
-    #
-    # @param  string  value
-    # @return void
-    #
-    setDateTimeDisplay: func(value) {
-        if (!me._isDateTimeDisplayValid(value)) {
-            logprint(LOG_ALERT, "Incorrect value for settings/date-time-display = ", value);
-            return;
-        }
-
-        setprop(me._propToSave ~ "/settings/date-time-display", value);
     },
 
     #
@@ -254,17 +324,35 @@ var Settings = {
     },
 
     #
+    # Set number of seconds as data recording interval during flight
+    #
+    # @param  double  value
+    # @return void
+    #
+    setTrackerIntervalSec: func(value) {
+        if (!me._isTrackerIntervalValid(value)) {
+            value = Settings.TRACKER_INTERVAL_SEC;
+        }
+
+        setprop(me._propToSave ~ "/settings/tracker-interval-sec", value);
+    },
+
+    #
     # Get number of seconds as data recording interval during flight
     #
     # @return double
     #
     getTrackerIntervalSec: func() {
-        var value = getprop(me._propToSave ~ "/settings/tracker-interval-sec");
+        return me._trackerIntervalSecNode.getValue();
+    },
 
-        if (value == nil or value == "" or value == 0) {
-            return Settings.TRACKER_INTERVAL_SEC;
-        }
-
-        return value;
+    #
+    # @param  int|string|double|nil  value
+    # @return bool  Return true if given value is valid
+    #
+    _isTrackerIntervalValid: func(value) {
+        return value != nil
+            and value != ""
+            and value > 0.1;
     },
 };
