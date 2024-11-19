@@ -105,6 +105,8 @@
 
         <tags>
             <tag type="string">logbook</tag>
+            <tag type="string">flight analysis</tag>
+            <tag type="string">flight history</tag>
         </tags>
     </addon>
 </PropertyList>
