@@ -132,14 +132,21 @@ var HelpDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
+        var btnAddonDir = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Local storage directory...")
+            .setFixedSize(200, 26)
+            .listen("clicked", func {
+                fgcommand("open-browser", props.Node.new({ "path": g_Addon.storagePath }));
+            });
+
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Close")
-            .setFixedSize(75, 26);
+            .setFixedSize(75, 26)
+            .listen("clicked", func {
+                me.window.hide();
+            });
 
-        btnClose.listen("clicked", func {
-            me.window.hide();
-        });
-
+        buttonBox.addItem(btnAddonDir);
         buttonBox.addItem(btnClose);
 
         me.vbox.addSpacing(10);

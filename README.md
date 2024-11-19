@@ -37,7 +37,7 @@ on Linux:
 
 For CSV file, you can always open it and edit by any Spreadsheet program like LibreOffice Calc, MS Excel, etc. However please don't put the characters `,` in the cells, because the Logbook parser will recognize them as a column separator, which will cause errors in the operation of the add-on. It is safer to edit the log data through the GUI in the simulator.
 
-The SQLite file can also be edited using special database software such as "DB Browser for SQLite" (DB4S) or "DBeaver". To obtain data for further processing in a spreadsheet, use the "Logbook" -> "Export Logbook to CSV" menu (see [Export database to CSV file](#export-database-to-csv-file).)
+The SQLite file can also be edited using special database software such as "DB Browser for SQLite" (DB4S) or "DBeaver". To obtain data for further processing in a spreadsheet, use the "Logbook" -> "Export to CSV" menu (see [Export database to CSV file](#export-database-to-csv-file).)
 
 ## Data structure
 
@@ -215,7 +215,7 @@ In the newer version based on the SQLite database, the recovery mechanism writes
 
 ## Export database to CSV file
 
-For FlightGear 2024.1 and newer, the add-on provides an "Export Logbook to CSV" menu item that will export all data from the SQLite database to a CSV file, allowing you to process this data in a spreadsheet.
+For FlightGear 2024.1 and newer, the add-on provides an "Export to CSV" menu item that will export all data from the SQLite database to a CSV file, allowing you to process this data in a spreadsheet.
 
 This option will create two CSV files:
 

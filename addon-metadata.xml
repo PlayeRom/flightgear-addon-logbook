@@ -87,7 +87,7 @@
 
         <urls>
             <home-page type="string">
-                https://github.com/PlayeRom/flightgear-addon-logbook
+                https://wiki.flightgear.org/Logbook_Add-on
             </home-page>
 
             <download type="string">

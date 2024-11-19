@@ -47,7 +47,7 @@
                 <enabled type="bool">false</enabled>
             </item>
             <item>
-                <label>Export Logbook to CSV</label>
+                <label>Export to CSV</label>
                 <name>logbook-addon-export-csv</name>
                 <enabled type="bool">false</enabled>
                 <binding>

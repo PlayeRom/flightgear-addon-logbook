@@ -17,7 +17,7 @@ var AboutDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 280,
-    WINDOW_HEIGHT : 280,
+    WINDOW_HEIGHT : 320,
     PADDING       : 10,
 
     #
@@ -84,15 +84,31 @@ var AboutDialog = {
             vBoxLayout.addItem(me._getLabel(Utils.toString(author.name)));
         }
 
-        var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
-            .setText("Open the repository website...")
+        var btnWiki = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
+            .setText("FlightGear wiki...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({"url" : g_Addon.codeRepositoryUrl}));
+                fgcommand("open-browser", props.Node.new({ "url": g_Addon.homePage }));
+            });
+
+        var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
+            .setText("GitHub website...")
+            .setFixedSize(200, 26)
+            .listen("clicked", func {
+                fgcommand("open-browser", props.Node.new({ "url": g_Addon.codeRepositoryUrl }));
+            });
+
+        var btnAddonDir = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
+            .setText("Local storage directory...")
+            .setFixedSize(200, 26)
+            .listen("clicked", func {
+                fgcommand("open-browser", props.Node.new({ "path": g_Addon.storagePath }));
             });
 
         vBoxLayout.addStretch(1);
+        vBoxLayout.addItem(btnWiki);
         vBoxLayout.addItem(btnRepo);
+        vBoxLayout.addItem(btnAddonDir);
 
         me._scrollData.setLayout(vBoxLayout);
     },
