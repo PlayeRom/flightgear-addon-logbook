@@ -55,6 +55,7 @@ var init = func(addon) {
     # Disable Logbook menu because we have to load data first in thread
     gui.menuEnable("logbook-addon", false);
     gui.menuEnable("logbook-addon-flight-analysis", false);
+    gui.menuEnable("logbook-addon-export-csv", false); # this will be enabled only on FG version >= 2024
 
     # Disable others menus because of delayTimer
     gui.menuEnable("logbook-addon-help", false);

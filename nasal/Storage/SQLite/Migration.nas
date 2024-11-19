@@ -23,33 +23,33 @@ var Migration = {
 
         me._migrations = [
             {
-                name: "M2024_10_30_08_44_CreateMigrationsTable", function: func() {
-                    var migration = M2024_10_30_08_44_CreateMigrationsTable.new();
-                    migration.up();
+                name    : "M2024_10_30_08_44_CreateMigrationsTable",
+                function: func() {
+                    M2024_10_30_08_44_CreateMigrationsTable.new().up();
                 },
             },
             {
-                name: "M2024_10_30_13_01_CreateLogbooksTable", function: func() {
-                    var migration = M2024_10_30_13_01_CreateLogbooksTable.new();
-                    migration.up();
+                name    : "M2024_10_30_13_01_CreateLogbooksTable",
+                function: func() {
+                    M2024_10_30_13_01_CreateLogbooksTable.new().up();
                 },
             },
             {
-                name: "M2024_11_04_11_53_AddSimTimeColumns", function: func() {
-                    var migration = M2024_11_04_11_53_AddSimTimeColumns.new();
-                    migration.up();
+                name    : "M2024_11_04_11_53_AddSimTimeColumns",
+                function: func() {
+                    M2024_11_04_11_53_AddSimTimeColumns.new().up();
                 },
             },
             {
-                name: "M2024_11_06_22_42_AddSpeedColumns", function: func() {
-                    var migration = M2024_11_06_22_42_AddSpeedColumns.new();
-                    migration.up();
+                name    : "M2024_11_06_22_42_AddSpeedColumns",
+                function: func() {
+                    M2024_11_06_22_42_AddSpeedColumns.new().up();
                 },
             },
             {
-                name: "M2024_11_06_22_50_CreateTrackersTable", function: func() {
-                    var migration = M2024_11_06_22_50_CreateTrackersTable.new();
-                    migration.up();
+                name    : "M2024_11_06_22_50_CreateTrackersTable",
+                function: func() {
+                    M2024_11_06_22_50_CreateTrackersTable.new().up();
                 },
             }
             # Add next migration here...

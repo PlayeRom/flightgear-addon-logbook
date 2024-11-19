@@ -40,7 +40,7 @@ var Storage = {
             _filters : filters,
             _columns : columns,
             _exporter: Exporter.new(columns),
-        };;
+        };
 
         me._filePath    = me._getPathToFile();
         me._loadedData  = [];
