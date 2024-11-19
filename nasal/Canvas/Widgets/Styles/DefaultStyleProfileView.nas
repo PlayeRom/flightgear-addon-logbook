@@ -67,7 +67,7 @@ DefaultStyle.widgets["profile-view"] = {
     reDrawContent: func(model) {
         me._root.removeAllChildren();
 
-        if (model._tractItems == nil or model._trackItemsSize == 0) {
+        if (model._trackItems == nil or model._trackItemsSize == 0) {
             me._drawTextCenter(
                 "This log doesn't contain flight data.",
                 int(model._size[0] / 2),
@@ -197,7 +197,7 @@ DefaultStyle.widgets["profile-view"] = {
             .setColor(0.5, 0.5, 1)
             .setStrokeLineWidth(2);
 
-        var lastRecord = model._tractItems[model._trackItemsSize - 1];
+        var lastRecord = model._trackItems[model._trackItemsSize - 1];
         me._maxValueX = model.isDrawModeTime()
             ? lastRecord.timestamp
             : lastRecord.distance;
@@ -207,8 +207,8 @@ DefaultStyle.widgets["profile-view"] = {
         var lastLabelX = 0;
         var labelDistance = 35;
 
-        forindex (var index; model._tractItems) {
-            var row = model._tractItems[index];
+        forindex (var index; model._trackItems) {
+            var row = model._trackItems[index];
 
             var valueX = model.isDrawModeTime()
                 ? row.timestamp
@@ -280,7 +280,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {
-        var row = model._tractItems[model._position];
+        var row = model._trackItems[model._position];
 
         var valueX = model.isDrawModeTime()
             ? row.timestamp

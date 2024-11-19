@@ -295,7 +295,7 @@ var Logbook = {
     },
 
     #
-    # Collect all information and save it to CSV file
+    # Collect all information and save it to SQLite/CSV file
     #
     # @param bool landed - If true then aircraft landed, otherwise the flight aborted mid-air
     # @param bool crashed - Set true when aircraft crashed

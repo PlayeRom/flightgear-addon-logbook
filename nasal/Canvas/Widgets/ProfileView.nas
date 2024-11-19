@@ -34,13 +34,13 @@ gui.widgets.ProfileView = {
         me._setView(style.createWidget(parent, "profile-view", me._cfg));
 
         # Vector of hashes with flight data
-        me._tractItems = [];
+        me._trackItems = [];
         me._trackItemsSize = 0;
 
         # Maximum flight altitude or elevation
         me._maxAlt = 0;
 
-        # Current index of me._tractItems (current aircraft position)
+        # Current index of me._trackItems (current aircraft position)
         me._position = 0;
 
         # Callback function called when this widget changes the aircraft's position
@@ -101,7 +101,7 @@ gui.widgets.ProfileView = {
             }
         }
 
-        me._tractItems     = trackItems;
+        me._trackItems     = trackItems;
         me._trackItemsSize = trackItemsSize;
 
         me._maxAlt = maxAlt;
@@ -119,7 +119,7 @@ gui.widgets.ProfileView = {
     },
 
     #
-    # Get last index of me._tractItems vector
+    # Get last index of me._trackItems vector
     #
     # @return int
     #

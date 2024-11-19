@@ -35,12 +35,12 @@ gui.widgets.MapView = {
         me._setView(style.createWidget(parent, "map-view", me._cfg));
 
         # Vector of hashes with flight data
-        me._tractItems = [];
+        me._trackItems = [];
         me._trackItemsSize = 0;
 
         me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
 
-        # Current index of me._tractItems
+        # Current index of me._trackItems
         me._position = 0;
 
         # Callback function called when this widget changes the aircraft's position
@@ -76,7 +76,7 @@ gui.widgets.MapView = {
             me._position = 0;
         }
 
-        me._tractItems     = trackItems;
+        me._trackItems     = trackItems;
         me._trackItemsSize = trackItemsSize;
 
         return me;
@@ -101,7 +101,7 @@ gui.widgets.MapView = {
     },
 
     #
-    # Get last index of me._tractItems vector
+    # Get last index of me._trackItems vector
     #
     # @return int
     #

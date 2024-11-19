@@ -105,7 +105,7 @@ DefaultStyle.widgets["map-view"] = {
     reDrawContent: func(model) {
         me._content.removeAllChildren();
 
-        if (model._tractItems == nil or model._trackItemsSize == 0) {
+        if (model._trackItems == nil or model._trackItemsSize == 0) {
             me._createText(
                 int(model._size[0] / 2),
                 int(model._size[1] / 2),
@@ -272,11 +272,11 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     updateTiles: func(model) {
-        if (model._tractItems == nil or model._trackItemsSize == 0) {
+        if (model._trackItems == nil or model._trackItemsSize == 0) {
             return;
         }
 
-        var track = model._tractItems[model._position];
+        var track = model._trackItems[model._position];
 
         me._drawPlaneIcon(track.heading_true);
 
@@ -387,7 +387,7 @@ DefaultStyle.widgets["map-view"] = {
             var isBreak = 1;
 
             # The first loop is to build an array of points that are within the map
-            forindex (var index; model._tractItems) {
+            forindex (var index; model._trackItems) {
                 var pos = me._convertLatLonToPixel(model, index);
 
                 if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
@@ -424,7 +424,7 @@ DefaultStyle.widgets["map-view"] = {
             me._pointsToDraw.clear();
             me._flightPath.reset();
 
-            forindex (var index; model._tractItems) {
+            forindex (var index; model._trackItems) {
                 var pos = me._convertLatLonToPixel(model, index);
 
                 if (    pos.x < me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
@@ -452,10 +452,10 @@ DefaultStyle.widgets["map-view"] = {
     #
     _convertLatLonToPixel: func(model, index) {
         # Get lat, lon to convert to pixel
-        var targetPoint = model._tractItems[index];
+        var targetPoint = model._trackItems[index];
 
         # Get lat, lon of current aircraft position
-        var centerPoint = model._tractItems[model._position];
+        var centerPoint = model._trackItems[model._position];
 
         var x = me._lonToX(targetPoint.lon, model._zoom);
         var y = me._latToY(targetPoint.lat, model._zoom);
