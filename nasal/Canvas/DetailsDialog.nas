@@ -16,11 +16,11 @@ var DetailsDialog = {
     #
     # Constants
     #
-    WINDOW_WIDTH  : 600,
+    WINDOW_WIDTH  : 610,
     WINDOW_HEIGHT : 660,
     FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     COLUMNS_WIDTH : [
-        160, # header
+        170, # header
         400, # data
     ],
 
@@ -60,7 +60,7 @@ var DetailsDialog = {
         me.canvas.set("background", me.style.CANVAS_BG);
 
         var margins = {
-            left   : canvas.DefaultStyle.widgets["list-view"].PADDING,
+            left   : 0,
             top    : canvas.DefaultStyle.widgets["list-view"].PADDING,
             right  : 0,
             bottom : 0,
@@ -69,7 +69,6 @@ var DetailsDialog = {
         me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
-        var vBoxLayout = canvas.VBoxLayout.new();
         me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
             .setFontName(DetailsDialog.FONT_NAME)
@@ -80,6 +79,7 @@ var DetailsDialog = {
 
         me._setListViewStyle();
 
+        var vBoxLayout = canvas.VBoxLayout.new();
         vBoxLayout.addItem(me._listView);
         me._scrollData.setLayout(vBoxLayout);
 
@@ -281,7 +281,7 @@ var DetailsDialog = {
 
             append(rowsData, {
                 data : [
-                    sprintf("%15s:", columnItem.header),
+                    sprintf("%16s:", columnItem.header),
                     sprintf("%s %s",
                         me._addCommaSeparator(columnItem.name, data[index]),
                         me._getExtraText(columnItem.name, data[index])
