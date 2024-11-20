@@ -220,9 +220,13 @@ var DetailsDialog = {
         me._parent = parent;
         me._isTotals = logbookId == Columns.TOTALS_ROW_ID;
 
+        me.window.set("title", me._isTotals ? "Logbook Totals" : "Logbook Details");
+
         me._btnDelete.setEnabled(!me._isTotals);
+        me._btnDelete.setVisible(!me._isTotals);
         if (me._isUsingSQLite) {
             me._btnFlightAnalysis.setEnabled(!me._isTotals);
+            me._btnFlightAnalysis.setVisible(!me._isTotals);
         }
 
         me._inputDialog.hide();
@@ -365,10 +369,10 @@ var DetailsDialog = {
             var inMeters = value * globals.NM2M;
             if (inMeters >= 1000) {
                 var km = sprintf("%.02f", inMeters / 1000);
-                return sprintf("nm (%s km)", me._getValueWithCommaSeparator(km));
+                return sprintf("NM (%s km)", me._getValueWithCommaSeparator(km));
             }
 
-            return sprintf("nm (%.0f m)", inMeters);
+            return sprintf("NM (%.0f m)", inMeters);
         }
 
         if (columnName == Columns.FUEL) {
