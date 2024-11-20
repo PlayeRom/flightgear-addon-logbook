@@ -155,6 +155,11 @@ gui.widgets.ListView = {
         # If it's set on true, then ListView widget was recognized items as a complex structure with multi-columns
         me._isComplexItems = 0;
 
+        # If it's set on true, then the entire one row will be drawn on a single “text” element, which greater
+        # performance. If false then each cell will be a separate “text” (or "image") element. Only when it is false
+        # is it possible to draw pictures on the list.
+        me._isOptimizeRow = 0;
+
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
         me._placeholder = nil;
 
@@ -360,13 +365,23 @@ gui.widgets.ListView = {
     },
 
     #
-    # Use it for wrap text to text next line. The max text width will be column
+    # Use it for wrap text to next line. The max text width will be column
     # width so setColumnsWidth must be call too.
     #
     # @return me
     #
     useTextMaxWidth: func() {
         me._isUseTextMaxWidth = 1;
+        return me;
+    },
+
+    #
+    # Use it for crate one text element per row instead of one text element per cell
+    #
+    # @return me
+    #
+    useOptimizeRow: func() {
+        me._isOptimizeRow = 1;
         return me;
     },
 

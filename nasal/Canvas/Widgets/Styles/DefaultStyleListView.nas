@@ -15,6 +15,7 @@
 DefaultStyle.widgets["list-view"] = {
     PADDING     : 10,
     ITEM_HEIGHT : 28,
+    CHAR_WIDTH  : 7,
 
     #
     # Constructor
@@ -32,7 +33,7 @@ DefaultStyle.widgets["list-view"] = {
         me._columnsWidth = nil;
 
         me._fontSize = 14;
-        me._fontName = "LiberationFonts/LiberationSans-Regular.ttf";
+        me._fontName = "LiberationFonts/LiberationMono-Regular.ttf";
 
         me._textColor = me._style.getColor("fg_color");
         me._backgroundColor = me._style.getColor("bg_color");
@@ -365,7 +366,13 @@ DefaultStyle.widgets["list-view"] = {
     _createRow: func(model, item, x, y) {
         if (model._isComplexItems) {
             # model._items is a vector of hash, each hash has "data" key with vector of strings
-            me._createComplexRow(model, item, x, y);
+
+            if (model._isOptimizeRow) {
+                me._createComplexOptimizeRow(model, item, x, y);
+            }
+            else {
+                me._createComplexRow(model, item, x, y);
+            }
             return;
         }
 
@@ -493,6 +500,70 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         return 0;
+    },
+
+    #
+    # Create complex row but in an optimized way that there is only one text object per row,
+    # ant images are not supported, only text.
+    #
+    # @param  ghost  model  ListView model
+    # @param  string|hash  item
+    # @param  int  x, y
+    # @return void
+    #
+    _createComplexOptimizeRow: func(model, item, x, y) {
+        var hash = me._createBar(y);
+        hash.elem = [];
+
+        var rectHeight = hash.maxHeight == 0
+            ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+            : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
+        hash.rect = me._createRectangle(model, hash.group, rectHeight);
+
+        var textStr = "";
+
+        forindex (var columnIndex; me._columnsWidth) {
+            var columnWidth = me._getColumnWidth(columnIndex);
+
+            var originalTextSize = size(item.data[columnIndex]);
+            var maxChars = int(columnWidth / DefaultStyle.widgets["list-view"].CHAR_WIDTH) - 1;
+
+            var dots = originalTextSize > maxChars;
+            if (dots) {
+                if (contains(item, "id") and item.id == -1 and item.data[columnIndex] == "Totals:") {
+                    # We don't want to trim the "Totals:" text to three dots, so we back off from trimming and trim the
+                    # spaces in textStr to shift the string to the left by the missing characters.
+                    # TODO: there should be no such logic in the widget because it disrupts its universality! This
+                    # requires implementing a column span.
+                    var diff = originalTextSize - maxChars;             # how many characters are missing
+                    textStr = substr(textStr, 0, size(textStr) - diff); # cut off missing characters from the end of textStr
+                    maxChars = size(item.data[columnIndex]);            # set maxChars to full number of characters
+                    dots = 0; # cancel three dots
+                }
+                else {
+                    # The text will be cut, add 3 dots ...
+                    maxChars -= 3;
+                }
+            }
+
+            var trimmedStr = substr(item.data[columnIndex], 0, maxChars);
+            if (dots) {
+                trimmedStr ~= "...";
+            }
+
+            var currChars = math.max(size(trimmedStr), originalTextSize);
+            for (var i = 0; i < maxChars - currChars; i += 1) {
+                trimmedStr ~= " ";
+            }
+
+            textStr ~= trimmedStr ~ " "; # it must be min 1 space to keep separation
+        }
+
+        var text = me._createText(model, hash.group, x, me._getTextYOffset(), textStr);
+
+        append(hash.elem, text);
+
+        append(me._itemElements, hash);
     },
 
     #

@@ -22,7 +22,7 @@ var LogbookDialog = {
     MAX_WINDOW_HEIGHT: 680,
     MIN_WINDOW_HEIGHT: 260,
 
-    FONT_NAME        : "LiberationFonts/LiberationSans-Bold.ttf",
+    FONT_NAME        : "LiberationFonts/LiberationMono-Bold.ttf",
     FONT_SIZE        : 12,
 
     #
@@ -97,6 +97,7 @@ var LogbookDialog = {
             )
             .setFontName(LogbookDialog.FONT_NAME)
             .setColumnsWidth(me._columns.getWidths())
+            .useOptimizeRow()
             .setClickCallback(me._listViewCallback, me);
 
         me._setListViewStyle();
