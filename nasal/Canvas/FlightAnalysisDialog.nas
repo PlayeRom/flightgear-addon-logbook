@@ -91,6 +91,7 @@ var FlightAnalysisDialog = {
         g_Sound.play('paper');
 
         me._updateAfterChangePosition();
+        me._updateAfterZoom();
         me._btnPlay.setText("Play");
 
         call(Dialog.show, [], me);
