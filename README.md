@@ -116,7 +116,7 @@ The addon allows you to filter some columns in the main log window. At the momen
 
 ![alt filtering](docs/img/filtering.png "Filtering columns")
 
-For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, a `(!)` sign will be shown next to the filtered column to warn that the filter has been used.
+For filtering on the "Aircraft" column, these will be the IDs of aircraft you have flown before. For filtering by the "Type" column, these will be the names of aircraft types, etc. Each window with filters also has the "All" position, which means that the filter will be turned off and all items will be shown. When the filter is enabled, an asterisk (`*`) sign will be shown next to the filtered column to warn that the filter has been used.
 
 After using the filter, the "Totals" row will also be updated with the filtered data. In this way, you can see statistics for a specific aircraft or types of aircraft.
 

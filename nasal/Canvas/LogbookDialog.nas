@@ -387,7 +387,7 @@ var LogbookDialog = {
         }
 
         if (me._filters.isApplied(columnName)) {
-            return text ~ " (!)";
+            return text ~ "*";
         }
 
         if (columnName == Columns.INSTRUMENT) {
