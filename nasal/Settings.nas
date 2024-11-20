@@ -225,11 +225,11 @@ var Settings = {
     # @return bool  Correct value
     #
     _booleanValidate: func(value, default) {
-        if (value != true or value != false) {
-            return default;
+        if (value == true or value == false) {
+            return value;
         }
 
-        return value;
+        return default;
     },
 
     #
