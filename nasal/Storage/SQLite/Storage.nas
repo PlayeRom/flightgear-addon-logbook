@@ -598,8 +598,39 @@ var Storage = {
             return false;
         }
 
-        var query = sprintf("UPDATE `%s` SET `%s` = ? WHERE `id` = ?", Storage.TABLE_LOGBOOKS, columnName);
-        DB.exec(query, value, logbookId); # always returns an empty vector
+        if (columnName == Columns.DAY or columnName == Columns.NIGHT) {
+            # Also update duration, which is the sum of day and night
+            DB.exec("BEGIN TRANSACTION;");
+
+            var oppositeColumn = columnName == Columns.DAY ? Columns.NIGHT : Columns.DAY;
+
+            # Get value of opposite column
+            var query = "SELECT `" ~ oppositeColumn ~ "`"
+                ~ " FROM `" ~ Storage.TABLE_LOGBOOKS ~ "`"
+                ~ " WHERE `id` = ?;";
+
+            var rows = DB.exec(query, logbookId);
+            if (!size(rows)) {
+                DB.exec("ROLLBACK;");
+                return false;
+            }
+
+            var oppositeValue = rows[0][oppositeColumn];
+
+            query = "UPDATE `" ~ Storage.TABLE_LOGBOOKS ~ "`"
+                ~ " SET `" ~ columnName ~ "` = ?, `" ~ Columns.DURATION ~ "` = ? + ?"
+                ~ " WHERE `id` = ?;";
+
+            DB.exec(query, value, value, oppositeValue, logbookId); # always returns an empty vector
+            DB.exec("COMMIT;");
+        }
+        else {
+            var query = "UPDATE `" ~ Storage.TABLE_LOGBOOKS ~ "`"
+                ~ " SET `" ~ columnName ~ "` = ?"
+                ~ " WHERE `id` = ?;";
+
+            DB.exec(query, value, logbookId); # always returns an empty vector
+        }
 
         gui.popupTip("The change has been saved!");
 

@@ -321,23 +321,29 @@ var DetailsDialog = {
     # @return void
     #
     _listViewCallback: func(index) {
-        if (!g_isThreadPending) {
-            if (me._dataRow.id > Columns.TOTALS_ROW_ID) { # -1 is using for Totals row
-                g_Sound.play('paper');
-
-                me._listView.removeHighlightingRow();
-                me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
-
-                me._inputDialog.getFilterSelector().hide();
-
-                me._inputDialog.show(
-                    me,
-                    me._dataRow.id,
-                    me._dataRow.data[index],
-                    me._columns.getColumnByIndex(index)
-                );
-            }
+        if (g_isThreadPending or me._dataRow.id <= Columns.TOTALS_ROW_ID) {
+            return;
         }
+
+        var column = me._columns.getColumnByIndex(index);
+        if (column.name == Columns.DURATION) {
+            gui.popupTip("Please edit Day or Night instead");
+            return;
+        }
+
+        g_Sound.play('paper');
+
+        me._listView.removeHighlightingRow();
+        me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+
+        me._inputDialog.getFilterSelector().hide();
+
+        me._inputDialog.show(
+            me,
+            me._dataRow.id,
+            me._dataRow.data[index],
+            me._columns.getColumnByIndex(index)
+        );
     },
 
     #

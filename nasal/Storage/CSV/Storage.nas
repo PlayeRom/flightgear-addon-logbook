@@ -529,13 +529,28 @@ var Storage = {
     #
     _editData: func(rowIndex, columnName, value, columnIndex) {
         var items = me._allData.vector[rowIndex].toVector(me._columns);
+
+        if (columnName == Columns.DAY or columnName == Columns.NIGHT) {
+            # Also update duration, which is the sum of day and night
+            var oppositeColumn = columnName == Columns.DAY ? Columns.NIGHT : Columns.DAY;
+
+            var oppositeIndex = me._columns.getColumnIndexByName(oppositeColumn);
+            var durationIndex = me._columns.getColumnIndexByName(Columns.DURATION);
+
+            if (oppositeIndex == nil or durationIndex == nil) {
+                return;
+            }
+
+            items[durationIndex] = items[oppositeIndex] + value;
+        }
+
         items[columnIndex] = value;
         me._allData.vector[rowIndex].fromVector(items);
 
         var columnItem = me._columns.getColumnByName(columnName);
-        var recalcTotals = columnItem.totals != nil;
+        var reCalcTotals = columnItem.totals != nil;
         var resetFilters = me._filters.isColumnIndexFiltered(columnIndex);
-        me._saveAllData(recalcTotals, resetFilters);
+        me._saveAllData(reCalcTotals, resetFilters);
     },
 
     #
