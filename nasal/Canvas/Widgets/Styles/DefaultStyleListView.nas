@@ -40,8 +40,8 @@ DefaultStyle.widgets["list-view"] = {
         me._hoverBackgroundColor = [1.0, 1.0, 0.5, 1.0];
         me._highlightingRowColor = nil;
 
-        me._xTranslation = nil;
-        me._yTranslation = nil;
+        me._xTranslation = 0;
+        me._yTranslation = 0;
     },
 
     #
@@ -299,12 +299,8 @@ DefaultStyle.widgets["list-view"] = {
     # @return int  Height of content
     #
     _drawContentItems: func(model) {
-        if (me._xTranslation != nil and me._yTranslation != nil) {
-            me._root.setTranslation(me._xTranslation, me._yTranslation);
-        }
-
-        var x = DefaultStyle.widgets["list-view"].PADDING;
-        var y = 0;
+        var x = me._xTranslation + DefaultStyle.widgets["list-view"].PADDING;
+        var y = me._yTranslation;
 
         me._itemElements = [];
 
@@ -609,7 +605,7 @@ DefaultStyle.widgets["list-view"] = {
         return context.rect(
                 0,
                 0,
-                model._size[0] - (me._xTranslation == nil ? 0 : (me._xTranslation * 2)),
+                model._size[0],
                 math.max(textHeight, DefaultStyle.widgets["list-view"].ITEM_HEIGHT)
             )
             .setColorFill(me._backgroundColor);
