@@ -17,18 +17,6 @@ DefaultStyle.widgets["map-view"] = {
     # Constants
     #
     TILE_SIZE: 256,
-    #
-    # If true, then the path drawing method has two steps. First, the first loop will check which path points are in
-    # the map's field of view. The second loop will draw only those selected points.
-    # Advantages: reduces the number of points to draw (the more zoomed out, the less it matters). Disadvantages: less
-    # efficient path drawing because it has two loops (the more zoomed in, the less it matters).
-    # If false, all route points will be drawn in one loop.
-    # At first I used CULL_PATH = true because the MapView widget was embedded in ScrollArea, which caused the user to
-    # scroll far the entire path outside the map. So to prevent this I culled the points that would be outside the map.
-    # Now I use clip-frame, which clips the map, path and other elements to a rectangle defined by the size of the widget.
-    # So using CULL_PATH loses its meaning.
-    #
-    CULL_PATH: 0,
 
     #
     # Constructor
@@ -380,67 +368,55 @@ DefaultStyle.widgets["map-view"] = {
     # @return ghost  Path element
     #
     _drawFlightPath: func(model) {
-        if (DefaultStyle.widgets["map-view"].CULL_PATH) {
-            me._pointsToDraw.clear();
+        me._pointsToDraw.clear();
+        me._flightPath.reset();
 
-            # = true because the first point must start with moveTo method
-            var isBreak = 1;
+        var tileSizeBuffer = me._getTileSizeBuffer(model);
 
-            # The first loop is to build an array of points that are within the map
-            forindex (var index; model._trackItems) {
-                var pos = me._convertLatLonToPixel(model, index);
+        # = true because the first point must start with moveTo method
+        var discontinuity = 1;
 
-                if (   pos.x > me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
-                    or pos.y > me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
-                    or pos.x < me._minTile.x
-                    or pos.y < me._minTile.y
-                ) {
-                    # The path point is out of map tiles, so ship it
-                    isBreak = 1;
-                }
-                else {
-                    # When there was a discontinuity, we need to start drawing with the moveTo function,
-                    # so we set the moveTo flag which will tell us that
-                    pos["moveTo"] = isBreak;
-                    pos["position"] = index;
-                    isBreak = 0;
-                    me._pointsToDraw.append(pos);
-                }
-            }
+        # The first loop is to build an array of points that are within the map
+        forindex (var index; model._trackItems) {
+            var pos = me._convertLatLonToPixel(model, index);
 
-            # Draw points only those within the map
-            me._flightPath.reset();
+            if (    pos.x < me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE
+                and pos.y < me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE
+                and pos.x > me._minTile.x - tileSizeBuffer
+                and pos.y > me._minTile.y - tileSizeBuffer
+            ) {
+                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
+                me._pointsToDraw.append(pos);
 
-            foreach (var point; me._pointsToDraw.vector) {
-                if (point.moveTo) {
-                    me._flightPath.moveTo(point.x, point.y);
-                }
-                else {
-                    me._flightPath.lineTo(point.x, point.y);
-                }
-            }
-        }
-        else {
-            me._pointsToDraw.clear();
-            me._flightPath.reset();
-
-            forindex (var index; model._trackItems) {
-                var pos = me._convertLatLonToPixel(model, index);
-
-                if (    pos.x < me._maxTile.x + DefaultStyle.widgets["map-view"].TILE_SIZE
-                    and pos.y < me._maxTile.y + DefaultStyle.widgets["map-view"].TILE_SIZE
-                    and pos.x > me._minTile.x
-                    and pos.y > me._minTile.y
-                ) {
-                    # The path point is on the map, add it to me._pointsToDraw vector to use for click action
-                    me._pointsToDraw.append(pos);
-                }
-
-                index == 0
+                # Draw points only those within the map
+                discontinuity
                     ? me._flightPath.moveTo(pos.x, pos.y)
                     : me._flightPath.lineTo(pos.x, pos.y);
+
+                # We have just drawn a point, so there is no discontinuity
+                discontinuity = 0;
+            }
+            else {
+                # The path point is out of map tiles, so ship it and mark discontinuity
+                discontinuity = 1;
             }
         }
+    },
+
+    #
+    # Return an additional buffer to determine if the path point is in the field of view.
+    # The buffer will cause the points that are not in the field of view to be added as well,
+    # but it is good to drag the line to the edge of the view. And the larger the zoom,
+    # the more buffer we need, because the points are more distant from each other.
+    # TODO: for better adjustment it would be necessary to know the frequency with which waypoints were generated.
+    #
+    # @param  model  ghost  MapView model object
+    # @return int
+    #
+    _getTileSizeBuffer: func(model) {
+        return model._zoom >= 8
+            ? 3 * math.pow(2, model._zoom - 8)
+            : 0;
     },
 
     #
