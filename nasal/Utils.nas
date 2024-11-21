@@ -80,17 +80,11 @@ var Utils = {
     # @return string
     #
     decimalHoursToHuman: func(decimalHours) {
-        var digits = split(".", sprintf("%.4f", Utils.toString(decimalHours)));
-        if (size(digits) < 2) {
-            # something is wrong
-            return "";
-        }
+        var hours = math.floor(decimalHours);
+        var fractionalPart = decimalHours - hours;
 
-        var hours = int(digits[0]);
-        var fractionalPart = int(digits[1]);
-
-        var minutes = math.floor((fractionalPart / 10000) * 60);
-        var seconds = math.floor(((fractionalPart / 10000) * 60) - minutes) * 60);
+        var minutes = math.floor(fractionalPart * 60);
+        var seconds = math.floor((fractionalPart * 60 - minutes) * 60);
 
         return sprintf("%d:%02.0f:%02.0f", hours, minutes, seconds);
     },
