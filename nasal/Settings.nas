@@ -27,7 +27,7 @@ var Settings = {
     MIN_LOG_ITEMS : 5,
     MAX_LOG_ITEMS : 20,
     #
-    TRACKER_INTERVAL_SEC: 5,
+    TRACKER_INTERVAL_SEC: 0, # Default tracker interval sec, 0 means auto adjustment mode
 
     #
     # Constructor
@@ -347,12 +347,14 @@ var Settings = {
     },
 
     #
+    # Validate tracker-interval-sec option
+    #
     # @param  int|string|double|nil  value
     # @return bool  Return true if given value is valid
     #
     _isTrackerIntervalValid: func(value) {
         return value != nil
             and value != ""
-            and value > 0.1;
+            and num(value) >= FlightAnalysis.INTERVAL_AUTO_THRESHOLD;
     },
 };

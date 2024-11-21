@@ -59,7 +59,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/LandingGear",
         "nasal/LogData",
         "nasal/Logbook",
-        "nasal/Settings",
+        "nasal/Settings", # Must be after FlightAnalysis
         "nasal/SpaceShuttle",
         "nasal/Thread",
         "nasal/Sound",

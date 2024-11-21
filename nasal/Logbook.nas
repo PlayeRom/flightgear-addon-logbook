@@ -188,6 +188,8 @@ var Logbook = {
         me._multiplayer.update();
         me._flight.update();
 
+        me._flightAnalysis.updateIntervalSec();
+
         if (me._spaceShuttle.isLiftOff()) {
             logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
             me._startLogging();
