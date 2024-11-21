@@ -61,7 +61,7 @@ var Storage = {
 
         me._filePath      = me._getPathToFile(Storage.CSV_FILE_VERSION);
         me._addonNodePath = g_Addon.node.getPath();
-        me._loadedData    = [];
+        me._loadedData    = std.Vector.new();
         me._headersData   = [];
         me._withHeaders   = true;
         me._allData       = std.Vector.new();
@@ -354,13 +354,13 @@ var Storage = {
         if (!me._filters.dirty and me._cachedData.size() > 0) {
             # Use a faster loop because we know that nothing has changed in the data
 
-            me._loadedData = [];
+            me._loadedData.clear();
             var counter = 0;
 
             foreach (var hash; me._cachedData.vector[start:]) {
                 var vectorLogData = hash.logData.toVector(me._columns);
                 if (counter < count) {
-                    append(me._loadedData, {
+                    me._loadedData.append({
                         id   : hash.id,
                         data : vectorLogData,
                     });
@@ -372,7 +372,7 @@ var Storage = {
             }
 
             # Add totals row to the end
-            append(me._loadedData, me.getTotalsRow());
+            me._loadedData.append(me.getTotalsRow());
 
             # We have not used the thread here, but we must point out that it has ended
             g_isThreadPending = false;
@@ -396,7 +396,7 @@ var Storage = {
     # @return void
     #
     _loadDataRange: func(start, count) {
-        me._loadedData = [];
+        me._loadedData.clear();
 
         var counter = 0;
 
@@ -411,7 +411,7 @@ var Storage = {
             var vectorLogData = logData.toVector(me._columns);
             if (me._filters.isAllowedByFilter(logData)) {
                 if (me._totalLines >= start and counter < count) {
-                    append(me._loadedData, {
+                    me._loadedData.append({
                         id   : id,
                         data : vectorLogData,
                     });
@@ -431,7 +431,7 @@ var Storage = {
         }
 
         # Add totals row to the end
-        append(me._loadedData, me.getTotalsRow());
+        me._loadedData.append(me.getTotalsRow());
 
         me._filters.dirty = false;
 
@@ -445,7 +445,7 @@ var Storage = {
     #
     _loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me._callback, [me._loadedData, me._withHeaders], me._objCallback);
+        call(me._callback, [me._loadedData.vector, me._withHeaders], me._objCallback);
     },
 
     #
