@@ -180,14 +180,12 @@ var FlightAnalysisDialog = {
     _drawInfoLabels: func() {
         me._labelLatLon           = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Latitude, Longitude");
         me._labelLatLonValue      = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0.00, 0.00");
-        me._labelAlt              = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude");
-        me._labelAltValue         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 ft");
+        me._labelAlt              = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Altitude MSL / AGL");
+        me._labelAltValue         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 ft / 0 ft");
         me._labelHdgTrue          = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Heading true / mag");
         me._labelHdgTrueValue     = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0° / 0°");
-        me._labelAirspeed         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Airspeed");
-        me._labelAirspeedValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt");
-        me._labelGroundspeed      = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Groundspeed");
-        me._labelGroundspeedValue = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt");
+        me._labelAirspeed         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Air / Groundspeed");
+        me._labelAirspeedValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt / 0 kt");
         me._labelTimestamp        = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
         me._labelTimestampValue   = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
         me._labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
@@ -207,9 +205,6 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addStretch(1);
         vBoxLayoutInfo.addItem(me._labelAirspeed);
         vBoxLayoutInfo.addItem(me._labelAirspeedValue);
-        vBoxLayoutInfo.addStretch(1);
-        vBoxLayoutInfo.addItem(me._labelGroundspeed);
-        vBoxLayoutInfo.addItem(me._labelGroundspeedValue);
         vBoxLayoutInfo.addStretch(1);
         vBoxLayoutInfo.addItem(me._labelTimestamp);
         vBoxLayoutInfo.addItem(me._labelTimestampValue);
@@ -235,10 +230,9 @@ var FlightAnalysisDialog = {
         var row = me._trackItems[me._mapView.getTrackPosition()];
 
         me._labelLatLonValue.setText(sprintf("%.03f, %.03f", row.lat, row.lon));
-        me._labelAltValue.setText(sprintf("%.0f ft", row.alt_m * globals.M2FT));
+        me._labelAltValue.setText(sprintf("%.0f ft / %.0f ft", row.alt_m * globals.M2FT, (row.alt_m - row.elevation_m) * globals.M2FT));
         me._labelHdgTrueValue.setText(sprintf("%.0f° / %.0f°", row.heading_true, row.heading_mag));
-        me._labelAirspeedValue.setText(sprintf("%.0f kt", row.airspeed));
-        me._labelGroundspeedValue.setText(sprintf("%.0f kt", row.groundspeed));
+        me._labelAirspeedValue.setText(sprintf("%.0f kt / %.0f kt", row.airspeed, row.groundspeed));
         me._labelTimestampValue.setText(Utils.decimalHoursToHuman(row.timestamp));
         me._labelDistanceValue.setText(sprintf("%.02f NM", row.distance));
     },
