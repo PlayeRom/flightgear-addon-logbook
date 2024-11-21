@@ -330,6 +330,8 @@ var FlightAnalysisDialog = {
         var lastRowsIndex = me._mapView.getTrackLastIndex();
         var position = me._mapView.getTrackPosition();
 
+        me._labelFrame.setText(sprintf("Frame %d/%d", position + 1, me._trackSize));
+
         me._btnStart.setEnabled(position > 0);
         me._btnBackFast.setEnabled(position > 0);
         me._btnBack.setEnabled(position > 0);
@@ -388,6 +390,9 @@ var FlightAnalysisDialog = {
         me._btnZoomMinus   = me._createButtonNarrow("-",   func { me._zoomOut(); });
         me._btnZoomPlus    = me._createButtonNarrow("+",   func { me._zoomIn(); });
 
+        me._labelFrame     = canvas.gui.widgets.Label.new(me.group, canvas.style, {})
+            .setText(sprintf("Frame %d/%d", 1, me._trackSize));
+
         me._btnStart       = me._createButtonNarrow("|<<", func { me._goStartTrack(); });
         me._btnBackFast    = me._createButtonNarrow("<<",  func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
         me._btnBack        = me._createButtonNarrow("<",   func { me._goPrevTrack(); });
@@ -404,6 +409,8 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._labelZoom);
         buttonBox.addItem(me._btnZoomPlus);
         buttonBox.addStretch(1);
+        buttonBox.addItem(me._labelFrame);
+        buttonBox.addStretch(1);
         buttonBox.addItem(me._btnStart);
         buttonBox.addItem(me._btnBackFast);
         buttonBox.addItem(me._btnBack);
@@ -411,7 +418,7 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._btnForward);
         buttonBox.addItem(me._btnForwardFast);
         buttonBox.addItem(me._btnEnd);
-        buttonBox.addStretch(1);
+        buttonBox.addStretch(2.5);
         buttonBox.addItem(profileModeSelector);
         buttonBox.addStretch(1);
 
