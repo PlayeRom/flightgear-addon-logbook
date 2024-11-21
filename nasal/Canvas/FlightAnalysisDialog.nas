@@ -58,6 +58,7 @@ var FlightAnalysisDialog = {
         };
 
         me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
+        me._playSpeed = 16;
 
         me._mapView = canvas.gui.widgets.MapView.new(me.group, canvas.style, {});
         me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
@@ -402,13 +403,11 @@ var FlightAnalysisDialog = {
 
         me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
 
-        var profileModeSelector = me._drawProfileModeSelector();
-
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);
         buttonBox.addItem(me._labelZoom);
         buttonBox.addItem(me._btnZoomPlus);
-        buttonBox.addStretch(1);
+        buttonBox.addStretch(2);
         buttonBox.addItem(me._labelFrame);
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnStart);
@@ -418,8 +417,10 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._btnForward);
         buttonBox.addItem(me._btnForwardFast);
         buttonBox.addItem(me._btnEnd);
-        buttonBox.addStretch(2.5);
-        buttonBox.addItem(profileModeSelector);
+        buttonBox.addStretch(1);
+        buttonBox.addItem(me._drawSpeedSelector());
+        buttonBox.addStretch(2);
+        buttonBox.addItem(me._drawProfileModeSelector());
         buttonBox.addStretch(1);
 
         me.vbox.addSpacing(FlightAnalysisDialog.PADDING);
@@ -429,6 +430,53 @@ var FlightAnalysisDialog = {
         me._updateAfterChangePosition();
 
         return buttonBox;
+    },
+
+    #
+    # Draw animation speed selection control
+    #
+    # @return ghost  Canvas object depend of FG version
+    #
+    _drawSpeedSelector: func() {
+        if (me._isFG2024Version) {
+            var buttonBox = canvas.HBoxLayout.new();
+
+            var label = canvas.gui.widgets.Label.new(me.group, canvas.style, {})
+                .setText("Speed");
+
+            var comboBox = canvas.gui.widgets.ComboBox.new(me.group, {})
+                .setFixedSize(70, 26);
+            if (view.hasmember(comboBox, "createItem")) {
+                # For next addMenuItem is deprecated
+                comboBox.createItem( "1x",  1);
+                comboBox.createItem( "2x",  2);
+                comboBox.createItem( "4x",  4);
+                comboBox.createItem( "8x",  8);
+                comboBox.createItem("16x", 16);
+                comboBox.createItem("32x", 32);
+            }
+            else { # for 2024.1
+                comboBox.addMenuItem( "1x",  1);
+                comboBox.addMenuItem( "2x",  2);
+                comboBox.addMenuItem( "4x",  4);
+                comboBox.addMenuItem( "8x",  8);
+                comboBox.addMenuItem("16x", 16);
+                comboBox.addMenuItem("32x", 32);
+            }
+            comboBox.setSelectedByValue(me._playSpeed);
+            comboBox.listen("selected-item-changed", func(e) {
+                me._playSpeed = e.detail.value;
+            });
+
+            buttonBox.addItem(label);
+            buttonBox.addItem(comboBox);
+
+            return buttonBox;
+        }
+
+        # Canvas in the FG 2020 version does not have a combobox, so we only have information about the speed
+        return canvas.gui.widgets.Label.new(me.group, canvas.style, {})
+            .setText("Speed " ~ me._playSpeed ~ "x");
     },
 
     #
@@ -539,7 +587,7 @@ var FlightAnalysisDialog = {
                 # Real speed animation:
                 var interval = (me._trackItems[position + 1].timestamp - me._trackItems[position].timestamp) * 3600;
                 # 16x faster:
-                interval /= 16;
+                interval /= me._playSpeed;
 
                 me._playTimer.restart(interval);
             }
