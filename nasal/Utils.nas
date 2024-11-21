@@ -74,18 +74,24 @@ var Utils = {
     },
 
     #
-    # Convert decimal hours to hours and minutes, e.g. 1.5 -> 1:30
+    # Convert decimal hours to hours:minutes:seconds, e.g. 1.5 -> 1:30
     #
     # @param  double|string  hoursDecimal
     # @return string
     #
     decimalHoursToHuman: func(decimalHours) {
-        var digits = split(".", sprintf("%.2f", Utils.toString(decimalHours)));
+        var digits = split(".", sprintf("%.4f", Utils.toString(decimalHours)));
         if (size(digits) < 2) {
             # something is wrong
             return "";
         }
 
-        return sprintf("%d:%02.0f", digits[0], (digits[1] / 100) * 60);
+        var hours = int(digits[0]);
+        var fractionalPart = int(digits[1]);
+
+        var minutes = math.floor((fractionalPart / 10000) * 60);
+        var seconds = math.floor(((fractionalPart / 10000) * 60) - minutes) * 60);
+
+        return sprintf("%d:%02.0f:%02.0f", hours, minutes, seconds);
     },
 };
