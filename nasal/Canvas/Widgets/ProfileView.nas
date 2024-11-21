@@ -54,7 +54,7 @@ gui.widgets.ProfileView = {
         # When based on distance, the points will be drawn close to each other or overlapping when the aircraft is
         # stationary or flying slowly, but they will be more spread out when flying fast, making it possible to
         # recognize places where the flight was performed at higher speeds and where at lower ones.
-        me._drawMode = gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
+        me._drawMode = gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
 
         return me;
     },

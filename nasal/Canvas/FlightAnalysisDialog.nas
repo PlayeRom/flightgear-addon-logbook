@@ -446,14 +446,14 @@ var FlightAnalysisDialog = {
                 .setFixedSize(100, 26);
             if (view.hasmember(comboBox, "createItem")) {
                 # For next addMenuItem is deprecated
-                comboBox.createItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
                 comboBox.createItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
+                comboBox.createItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
             }
             else { # for 2024.1
-                comboBox.addMenuItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
                 comboBox.addMenuItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
+                comboBox.addMenuItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
             }
-            comboBox.setSelectedByValue(canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+            comboBox.setSelectedByValue(canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
             comboBox.listen("selected-item-changed", func(e) {
                 me._profileView.setDrawMode(e.detail.value);
             });
@@ -465,14 +465,14 @@ var FlightAnalysisDialog = {
         }
 
         var checkbox = canvas.gui.widgets.CheckBox.new(me.group, canvas.style, { wordWrap: false })
-            .setText("Profile mode as distance")
+            .setText("Profile mode as time")
             .setChecked(false)
             .setEnabled(true);
 
         checkbox.listen("toggled", func(e) {
             var mode = e.detail.checked
-                ? canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE
-                : canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
+                ? canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
+                : canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
             me._profileView.setDrawMode(mode);
         });
 
