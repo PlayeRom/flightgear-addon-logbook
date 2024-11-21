@@ -134,29 +134,33 @@ var DetailsDialog = {
             }
         );
 
+        me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText("Analysis")
+            .setFixedSize(75, 26);
+
         if (me._isUsingSQLite) {
-            me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-                .setText("Analysis")
-                .setFixedSize(75, 26)
-                .listen("clicked", func {
-                    var firstRun = me._flightAnalysisDialog == nil;
-                    if (firstRun) {
-                        me._flightAnalysisDialog = FlightAnalysisDialog.new("Logbook Flight Analysis");
-                    }
-
-                    # Get data from SQLite
-                    var trackItems = me._storage.getLogbookTracker(me._logbookId);
-                    var maxAlt     = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
-
-                    me._flightAnalysisDialog.setData(trackItems, maxAlt);
-
-                    if (!firstRun) {
-                        me._flightAnalysisDialog.hardUpdateView();
-                    }
-
-                    me._flightAnalysisDialog.show();
+            me._btnFlightAnalysis.listen("clicked", func {
+                var firstRun = me._flightAnalysisDialog == nil;
+                if (firstRun) {
+                    me._flightAnalysisDialog = FlightAnalysisDialog.new("Logbook Flight Analysis");
                 }
-            );
+
+                # Get data from SQLite
+                var trackItems = me._storage.getLogbookTracker(me._logbookId);
+                var maxAlt     = me._storage.getLogbookTrackerMaxAlt(me._logbookId);
+
+                me._flightAnalysisDialog.setData(trackItems, maxAlt);
+
+                if (!firstRun) {
+                    me._flightAnalysisDialog.hardUpdateView();
+                }
+
+                me._flightAnalysisDialog.show();
+            });
+        }
+        else {
+            me._btnFlightAnalysis.setEnabled(false);
+            me._btnFlightAnalysis.setVisible(false);
         }
 
         me._btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
@@ -169,11 +173,9 @@ var DetailsDialog = {
             }
         );
 
-        buttonBox.addStretch(me._isUsingSQLite ? 1 : 3);
-        if (me._isUsingSQLite) {
-            buttonBox.addItem(me._btnFlightAnalysis);
-            buttonBox.addStretch(1);
-        }
+        buttonBox.addStretch(1);
+        buttonBox.addItem(me._btnFlightAnalysis);
+        buttonBox.addStretch(1);
         buttonBox.addItem(btnClose);
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnDelete);
