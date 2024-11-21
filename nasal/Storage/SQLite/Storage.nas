@@ -43,16 +43,11 @@ var Storage = {
         };
 
         me._filePath    = me._getPathToFile();
-        me._loadedData  = [];
-        me._withHeaders = true;
+        me._loadedData  = std.Vector.new();
 
         DB.open(me._filePath);
 
         Migration.new().migrate();
-
-        # Callback for return results of loadDataRange
-        me._objCallback = nil;
-        me._callback    = func;
 
         gui.menuEnable("logbook-addon-export-csv", true);
 
@@ -370,7 +365,7 @@ var Storage = {
     #
     # Load logbook data with given range, called when user open the Logbook dialog or change its page
     #
-    # @param  hash  objCallback  Owner object of callback function
+    # @param  ghost  objCallback  Owner object of callback function
     # @param  func  callback  Callback function called on finish
     # @param  int  start  Start index counting from 0 as a first row of data
     # @param  int  count  How many rows should be returned
@@ -378,40 +373,19 @@ var Storage = {
     # @return void
     #
     loadDataRange: func(objCallback, callback, start, count, withHeaders) {
-        me._objCallback = objCallback;
-        me._callback    = callback;
-        me._withHeaders = withHeaders;
-
-        Thread.new().run(
-            func { me._loadDataRange(start, count); },
-            me,
-            me._loadDataRangeThreadFinish,
-            false
-        );
-    },
-
-
-    #
-    # Load logbook data with given range
-    #
-    # @param  int  start  Start index counting from 0 as a first row of data
-    # @param  int  count  How many rows should be returned
-    # @return void
-    #
-    _loadDataRange: func(start, count) {
-        me._loadedData = [];
+        me._loadedData.clear();
 
         var where = me._getWhereQueryFilters();
 
         var query = "SELECT " ~ me._getSelectLoadDataRange()
             ~ " FROM " ~ Storage.TABLE_LOGBOOKS
             ~ " " ~ where
-            ~ " LIMIT " ~ count ~ " OFFSET " ~ start;
+            ~ " LIMIT ? OFFSET ?;";
 
-        foreach (var row; DB.exec(query)) {
+        foreach (var row; DB.exec(query, count, start)) {
             var logData = LogData.new();
 
-            append(me._loadedData, {
+            me._loadedData.append({
                 id   : row.id,
                 data : logData.fromDbToVector(row, me._columns),
             });
@@ -420,7 +394,7 @@ var Storage = {
         me._updateTotalsValues(where);
 
         # Add totals row to the end
-        append(me._loadedData, me.getTotalsRow());
+        me._loadedData.append(me.getTotalsRow());
 
         # Update aircraft variants filter, to show only variant of selected aircraft
         var aircraft = me._filters.getAppliedValueForFilter(Columns.AIRCRAFT);
@@ -434,17 +408,8 @@ var Storage = {
             me._updateFilterData(Columns.VARIANT, where, start, count);
         }
 
-        g_isThreadPending = false;
-    },
-
-    #
-    # Callback function when the loadDataRange finishes work
-    #
-    # @return void
-    #
-    _loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me._callback, [me._loadedData, me._withHeaders], me._objCallback);
+        call(callback, [me._loadedData.vector, withHeaders], objCallback);
     },
 
     #
