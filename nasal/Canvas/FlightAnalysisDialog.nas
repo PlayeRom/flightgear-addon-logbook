@@ -533,6 +533,15 @@ var FlightAnalysisDialog = {
         var position = me._mapView.getTrackPosition();
         if (position < me._trackSize - 1) {
             me._goNextTrack();
+
+            if (position < me._trackSize - 2) {
+                # Real speed animation:
+                var interval = (me._trackItems[position + 1].timestamp - me._trackItems[position].timestamp) * 3600;
+                # 16x faster:
+                interval /= 16;
+
+                me._playTimer.restart(interval);
+            }
         }
         else {
             me._playTimer.stop();
