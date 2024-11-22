@@ -218,6 +218,7 @@ var LogbookDialog = {
         foreach (var listener; me._listeners.vector) {
             removelistener(listener);
         }
+        me._listeners.clear();
 
         me._detailsDialog.del();
         me._filterSelector.del();
