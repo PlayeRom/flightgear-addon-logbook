@@ -221,7 +221,7 @@ var Environment = {
     #
     # Update all environment counters
     #
-    # @param double diffElapsedSec
+    # @param  double  diffElapsedSec
     # @return void
     #
     _onUpdate: func(diffElapsedSec) {

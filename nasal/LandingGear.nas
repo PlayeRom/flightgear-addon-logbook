@@ -40,8 +40,8 @@ var LandingGear = {
     #
     # Recognize and count landing gears if possible
     #
-    # @param bool onGround - If true then aircraft start on the ground, otherwise in air
-    # @return int - number of found wheels/landing gears
+    # @param  bool  onGround  If true then aircraft start on the ground, otherwise in air
+    # @return int  Number of found wheels/landing gears
     #
     recognizeGears: func(onGround) {
         me._resetLandingWithNoGearRecognized();
@@ -84,7 +84,7 @@ var LandingGear = {
     #     </by-id>
     # </addons>
     #
-    # @return bool - Return true if gears have been loaded from the hints
+    # @return bool  Return true if gears have been loaded from the hints
     #
     _recognizeGearsByAddonHints: func() {
         if (me._addonHintsNode != nil) {
@@ -111,7 +111,7 @@ var LandingGear = {
     #
     # Check the WoW state of all landing gears
     #
-    # @param bool onGround
+    # @param  bool  onGround
     # @return bool
     #
     checkWow: func(onGround) {
@@ -143,8 +143,8 @@ var LandingGear = {
     #
     # Check Wow with gear recognized.
     #
-    # @param hash counters
-    # @param bool onGround
+    # @param  hash  counters
+    # @param  bool  onGround
     # @return hash
     #
     _checkWowWithGearRecognized: func(counters, onGround) {
@@ -192,7 +192,7 @@ var LandingGear = {
     #
     # Try to check WoW with NO gear recognized by check all of them. It make sense for landing only.
     #
-    # @param hash counters
+    # @param  hash  counters
     # @return hash
     #
     _checkWowWithNoGearRecognized: func(counters) {
@@ -234,7 +234,7 @@ var LandingGear = {
     #
     # Check if the airplane has water drag on the floats (JSBSim only).
     #
-    # @return bool - Return true if drag force detected.
+    # @return bool  Return true if drag force detected.
     #
     _isFloatsDragOnWater: func() {
         var fDragLbs = getprop("/fdm/jsbsim/hydro/fdrag-lbs");
@@ -252,7 +252,7 @@ var LandingGear = {
     #
     # Loop through all gears properties
     #
-    # @param func callback - Function that will be called with the gear index of which WoW is true.
+    # @param  func  callback  Function that will be called with the gear index of which WoW is true.
     # @return void
     #
     _loopThroughGears: func(callback) {
@@ -267,7 +267,7 @@ var LandingGear = {
     #
     # MD-11 is take off on 4 gears but can landing on 3 gears when `center-gear-up` is enabled.
     #
-    # @return bool - Return true when center gear up is blocked and we will land on 3 gears.
+    # @return bool  Return true when center gear up is blocked and we will land on 3 gears.
     #
     _isMD11CenterGearUp: func() {
         return getprop("/controls/gear/center-gear-up") or false;

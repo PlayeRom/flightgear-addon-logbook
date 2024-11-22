@@ -49,7 +49,7 @@ var Multiplayer = {
     #
     # Update all counters
     #
-    # @param double diffElapsedSec
+    # @param  double  diffElapsedSec
     # @return void
     #
     _onUpdate: func(diffElapsedSec) {

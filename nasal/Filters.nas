@@ -61,7 +61,7 @@ var Filters = {
     #
     # Append single row of data to filter data
     #
-    # @param hash logData - LogData object
+    # @param  hash  logData  LogData object
     # @return void
     #
     append: func(logData) {
@@ -88,8 +88,8 @@ var Filters = {
     },
 
     #
-    # @param hash filterData - FilterData as {"columnName": column name, "value": "text"}
-    # @return bool - Return true if filter is applied
+    # @param  hash  filterData  FilterData as {"columnName": column name, "value": "text"}
+    # @return bool  Return true if filter is applied
     #
     applyFilter: func(filterData) {
         foreach (var item; me.appliedFilters.vector) {
@@ -178,7 +178,7 @@ var Filters = {
     },
 
     #
-    # @param int column
+    # @param  int  column
     # @return bool
     #
     isColumnIndexFiltered: func(column) {

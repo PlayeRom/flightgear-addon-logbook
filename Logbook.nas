@@ -15,8 +15,6 @@
 #
 var MY_LOG_LEVEL = LOG_INFO;
 
-var ADDON_ID = "org.flightgear.addons.logbook";
-
 #
 # Global object of addons.Addon
 #
@@ -46,7 +44,7 @@ var g_isThreadPending = false;
 #
 # Initialize Logbook
 #
-# @param hash addon - addons.Addon object
+# @param  ghost  addon  addons.Addon object
 # @return void
 #
 var init = func(addon) {

@@ -23,10 +23,10 @@ var Migration = {
     },
 
     #
-    # @param string oldFilePath
-    # @param string newFilePath
-    # @param func headerLineCallback
-    # @param func dataRowCallback
+    # @param  string  oldFilePath
+    # @param  string  newFilePath
+    # @param  func  headerLineCallback
+    # @param  func  dataRowCallback
     # @return void
     #
     _migrate: func(oldFilePath, newFilePath, headerLineCallback, dataRowCallback) {
@@ -56,8 +56,8 @@ var Migration = {
     },
 
     #
-    # @param string oldFilePath
-    # @param string newFilePath
+    # @param  string  oldFilePath
+    # @param  string  newFilePath
     # @return void
     #
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
@@ -106,8 +106,8 @@ var Migration = {
     },
 
     #
-    # @param string oldFilePath
-    # @param string newFilePath
+    # @param  string  oldFilePath
+    # @param  string  newFilePath
     # @return void
     #
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
@@ -158,8 +158,8 @@ var Migration = {
     },
 
     #
-    # @param string oldFilePath
-    # @param string newFilePath
+    # @param  string  oldFilePath
+    # @param  string  newFilePath
     # @return void
     #
     migrateToFileVersion_4: func(oldFilePath, newFilePath) {
@@ -210,8 +210,8 @@ var Migration = {
     },
 
     #
-    # @param string oldFilePath
-    # @param string newFilePath
+    # @param  string  oldFilePath
+    # @param  string  newFilePath
     # @return void
     #
     migrateToFileVersion_5: func(oldFilePath, newFilePath) {

@@ -55,7 +55,7 @@ var Sound = {
     #
     # Play given sample
     #
-    # @param string sampleName
+    # @param  string  sampleName
     # @return bool
     #
     play: func(sampleName) {

@@ -129,6 +129,8 @@ var FlightAnalysisDialog = {
     #
     # Redraw hole widgets from strach
     #
+    # @return void
+    #
     hardUpdateView: func() {
         me._mapView.hardUpdateView();
         me._profileView.hardUpdateView();
@@ -138,6 +140,8 @@ var FlightAnalysisDialog = {
 
     #
     # Soft redraw widgets, however profile must be always hard redraw
+    #
+    # @return void
     #
     softUpdateView: func() {
         me._mapView.softUpdateView();

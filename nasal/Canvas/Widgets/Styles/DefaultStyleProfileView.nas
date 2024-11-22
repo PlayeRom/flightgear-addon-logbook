@@ -43,7 +43,7 @@ DefaultStyle.widgets["profile-view"] = {
     # Callback called when user resized the window
     #
     # @param  ghost  model  ProfileView model
-    # @param  int w, h  Width and height of widget
+    # @param  int  w, h  Width and height of widget
     # @return me
     #
     setSize: func(model, w, h) {

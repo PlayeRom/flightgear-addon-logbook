@@ -22,7 +22,7 @@ var ConfirmationDialog = {
     #
     # Constructor
     #
-    # @param string title
+    # @param  string  title
     # @return me
     #
     new: func(title) {
@@ -82,7 +82,7 @@ var ConfirmationDialog = {
     #
     # Set label text
     #
-    # @param string label
+    # @param  string  label
     # @return void
     #
     setLabel: func(label) {
@@ -90,8 +90,8 @@ var ConfirmationDialog = {
     },
 
     #
-    # @param int logIndex
-    # @param hash|nil parentObj - Dialog parent class
+    # @param  int logIndex
+    # @param  hash|nil  parentObj  Dialog parent class
     # @return void
     #
     show: func(logIndex, parentObj = nil) {

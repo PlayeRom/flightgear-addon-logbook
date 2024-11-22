@@ -17,7 +17,7 @@ var Utils = {
     # Check that file already exists.
     # From FG 2024.x we have io.exists() but for older versions we have to write it ourselves.
     #
-    # @param string path
+    # @param  string  path
     # @return bool
     #
     fileExists: func(path) {
@@ -27,7 +27,7 @@ var Utils = {
     #
     # Remove all quotes from given text and return a new text without quotes
     #
-    # @param string text
+    # @param  string  text
     # @return string
     #
     removeQuotes: func(text) {
@@ -66,7 +66,7 @@ var Utils = {
     #
     # Convert value to string
     #
-    # @param  string|int|double value
+    # @param  string|int|double  value
     # @return string
     #
     toString: func(value) {

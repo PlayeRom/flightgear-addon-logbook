@@ -54,8 +54,8 @@ var Aircraft = {
     #
     # Remove hangar name from aircraft ID
     #
-    # @param string|nil aircraft - Aircraft ID probably with hangar name
-    # @return string|nil - Aircraft ID without hangar name
+    # @param  string|nil  aircraft  Aircraft ID probably with hangar name
+    # @return string|nil  Aircraft ID without hangar name
     #
     _removeHangarName: func(aircraft) {
         if (aircraft == nil) {
@@ -97,7 +97,7 @@ var Aircraft = {
     #
     # Return true when aircraftId is UFO or FG Video Assistant
     #
-    # @param string aircraftId
+    # @param  string  aircraftId
     # @return bool
     #
     isUfo: func(aircraftId) {

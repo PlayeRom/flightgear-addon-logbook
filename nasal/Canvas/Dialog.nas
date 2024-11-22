@@ -89,7 +89,7 @@ var Dialog = {
     # @param  int  height
     # @param  string  title
     # @param  bool  resize
-    # @return hash  Canvas Window object
+    # @return ghost  Canvas Window object
     #
     _createCanvasWindow: func(width, height, title, resize) {
         var window = canvas.Window.new([width, height], "dialog")
@@ -148,7 +148,7 @@ var Dialog = {
     #
     # @param  vector|nil  bgColor
     # @param  hash|nil  margins  Margins hash or nil
-    # @return hash  gui.widgets.ScrollArea object
+    # @return ghost  gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
@@ -162,11 +162,11 @@ var Dialog = {
     },
 
     #
-    # @param  hash  cGroup  Parent object as ScrollArea widget
+    # @param  ghost  cGroup  Parent object as ScrollArea widget
     # @param  string|nil  font  Font file name
     # @param  int|nil fontSize  Font size
     # @param  string|nil  alignment  Content alignment value
-    # @return hash  content group of ScrollArea
+    # @return ghost  content group of ScrollArea
     #
     getScrollAreaContent: func(cGroup, font = nil, fontSize = nil, alignment = nil) {
         var scrollContent = cGroup.getContent();

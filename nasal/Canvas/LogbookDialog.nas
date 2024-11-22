@@ -353,13 +353,13 @@ var LogbookDialog = {
     },
 
     #
-    # @param  string  columName
+    # @param  string  columnName
     # @param  string  value
     # @return void
     #
-    _filterSelectorCallback: func(columName, value) {
+    _filterSelectorCallback: func(columnName, value) {
         me._detailsDialog.hide();
-        me.reloadData(true, FilterData.new(columName, value));
+        me.reloadData(true, FilterData.new(columnName, value));
     },
 
     #
@@ -408,10 +408,10 @@ var LogbookDialog = {
     #
     # Draw text
     #
-    # @param  hash  cGroup  Parent canvas group
+    # @param  ghost  cGroup  Parent canvas group
     # @param  int  x, y  Position of text
     # @param  string  text  Text to draw
-    # @return hash  Text canvas element
+    # @return ghost  Text canvas element
     #
     _drawText: func(cGroup, x, y, text) {
         return cGroup.createChild("text")

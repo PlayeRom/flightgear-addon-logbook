@@ -150,11 +150,11 @@ var AircraftType = {
     #
     # Serach group of tags
     #
-    # @param hash itemsToSearch - Hash with 2 key "or" and "and" indicated to the vectors of tags.
+    # @param  hash  itemsToSearch  Hash with 2 key "or" and "and" indicated to the vectors of tags.
     #       Vector of "or" means that this function return true if at least one is found.
     #       Vector of "and" means that this function return true if all of them are found.
     #       Both vectors ("or" and "and") are working with "or" logic.
-    # @return bool - Return true if tag or group of tags is found
+    # @return bool  Return true if tag or group of tags is found
     #
     _searchTag: func(itemsToSearch) {
         var andCounter = 0;

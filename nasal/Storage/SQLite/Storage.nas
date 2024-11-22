@@ -86,7 +86,7 @@ var Storage = {
     # @param  hash  logData  LogData object
     # @param  int|nil  logbookId  Record ID of `logbooks` table
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
-    #                       without rest of stuff (used only for CSV recovery)
+    #     without rest of stuff (used only for CSV recovery)
     # @return void
     #
     saveLogData: func(logData, logbookId = nil, onlyIO = 0) {
@@ -284,6 +284,8 @@ var Storage = {
     #
     # Load all filters from database
     #
+    # @return void
+    #
     _loadAllFilters: func() {
         me._filters.clear();
 
@@ -313,25 +315,23 @@ var Storage = {
             sqlColumnName = "strftime('%Y', " ~ sqlColumnName ~ ")"; # get only a year from `date` column
         }
 
-        # COLLATE NOCASE - ignore case sensitivity during sorting
-        var frm = "
+        var query = "
             SELECT
-                DISTINCT %s AS value
-            FROM %s";
+                DISTINCT " ~ sqlColumnName ~ " AS `value`
+            FROM `" ~ Storage.TABLE_LOGBOOKS ~ "`";
 
         if (where != nil) {
-            frm ~= sprintf(" WHERE `%s` = '%s'", where.column, where.value);
+            query ~= sprintf(" WHERE `%s` = '%s'", where.column, where.value);
         }
 
-        frm ~= " ORDER BY value COLLATE NOCASE ASC";
+        # COLLATE NOCASE - ignore case sensitivity during sorting
+        query ~= " ORDER BY value COLLATE NOCASE ASC";
 
         if (start > -1 and count > -1) {
-            frm ~= sprintf(" LIMIT %d OFFSET %d", count, start);
+            query ~= sprintf(" LIMIT %d OFFSET %d", count, start);
         }
 
-        var query = sprintf(frm, sqlColumnName, Storage.TABLE_LOGBOOKS);
         var rows = DB.exec(query);
-
         if (size(rows)) {
             me._filters.data[columnName].clear();
 
@@ -365,7 +365,7 @@ var Storage = {
     #
     # Load logbook data with given range, called when user open the Logbook dialog or change its page
     #
-    # @param  ghost  objCallback  Owner object of callback function
+    # @param  hash  objCallback  Owner object of callback function
     # @param  func  callback  Callback function called on finish
     # @param  int  start  Start index counting from 0 as a first row of data
     # @param  int  count  How many rows should be returned

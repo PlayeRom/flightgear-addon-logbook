@@ -97,7 +97,7 @@ var FilterSelector = {
     },
 
     #
-    # @param int x, y
+    # @param  int  x, y
     # @return me
     #
     setPosition: func(x, y) {
@@ -106,7 +106,7 @@ var FilterSelector = {
     },
 
     #
-    # @param string title
+    # @param  string  title
     # @return me
     #
     setTitle: func(title) {
@@ -121,8 +121,8 @@ var FilterSelector = {
     },
 
     #
-    # @param vector items
-    # @param bool withDefaultAll
+    # @param  vector  items
+    # @param  bool  withDefaultAll
     # @return me
     #
     setItems: func(items, withDefaultAll = 1) {
@@ -177,8 +177,8 @@ var FilterSelector = {
     #
     # Set callback function (with object) which will be call to apply filter
     #
-    # @param hash objCallback - The class object which contains the callback function
-    # @param func callback
+    # @param  hash  objCallback - The class object which contains the callback function
+    # @param  func  callback
     # @return me
     #
     setCallback: func(objCallback, callback) {
@@ -188,7 +188,7 @@ var FilterSelector = {
     },
 
     #
-    # @param hash style
+    # @param  hash  style
     # @return me
     #
     setStyle: func(style) {
@@ -257,7 +257,7 @@ var FilterSelector = {
     # The click callback on the ListView widget.
     # Call other callback passed by parent object by setCallback and hide this dialog.
     #
-    # @param int index
+    # @param  int  index
     # @return void
     #
     _listViewCallback: func(index) {

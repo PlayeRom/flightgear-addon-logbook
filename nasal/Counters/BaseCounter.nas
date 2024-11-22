@@ -16,8 +16,8 @@ var BaseCounter = {
     #
     # Constructor
     #
-    # @param func onResetCounters
-    # @param func onUpdate
+    # @param  func  onResetCounters
+    # @param  func  onUpdate
     # @return me
     #
     new: func(onResetCounters, onUpdate) {
@@ -88,7 +88,7 @@ var BaseCounter = {
     # Set replay mode flag. If true then sim is in replay mode and the counters should not be updated.
     # The problem is that elapsed-sec in reply mode is continuing counting, so we have to handle it manually.
     #
-    # @param bool isReplayMode
+    # @param  bool  isReplayMode
     # @return void
     #
     # _setReplayMode: func(isReplayMode) {

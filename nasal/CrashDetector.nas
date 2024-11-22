@@ -21,7 +21,7 @@ var CrashDetector = {
     #
     # Constructor
     #
-    # @param hash spaceShuttle - SpaceShuttle object
+    # @param  hash  spaceShuttle  SpaceShuttle object
     # @return me
     #
     new: func(spaceShuttle) {
@@ -58,8 +58,8 @@ var CrashDetector = {
     #
     # Check different values
     #
-    # @param bool withOrientation - Set false for exclude isOrientationOK,
-    #                               needed for space shuttle where pitch is 90 degree for takeoff
+    # @param  bool  withOrientation  Set false for exclude isOrientationOK,
+    #     needed for space shuttle where pitch is 90 degree for takeoff
     # @return bool
     #
     isCrash: func(withOrientation = 1) {
@@ -74,7 +74,7 @@ var CrashDetector = {
     #
     # Return true if _testCrash positive within 3 seconds
     #
-    # @param bool onGround
+    # @param  bool  onGround
     # @return bool
     #
     isCrashByTesting: func(onGround) {
@@ -92,7 +92,7 @@ var CrashDetector = {
     #
     # Return true if possible crash occurred
     #
-    # @param bool onGround
+    # @param  bool  onGround
     # @return bool
     #
     _testCrash: func(onGround) {
@@ -189,7 +189,7 @@ var CrashDetector = {
     #
     # Start timer for collection G-force values
     #
-    # @param bool onGround
+    # @param  bool  onGround
     # @return void
     #
     startGForce: func(onGround) {
@@ -210,7 +210,7 @@ var CrashDetector = {
     },
 
     #
-    # @return bool - Return true if G-Force in the last 12 seconds exceeds 3.0 g
+    # @return bool  Return true if G-Force in the last 12 seconds exceeds 3.0 g
     #
     _isGForceAbnormal: func() {
         foreach (var valueZeroBase; me._lastGForces.vector) {

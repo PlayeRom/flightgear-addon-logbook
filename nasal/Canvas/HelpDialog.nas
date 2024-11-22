@@ -91,9 +91,9 @@ var HelpDialog = {
     },
 
     #
-    # @param int x
-    # @param int y
-    # @param int|nil maxWidth
+    # @param  int  x
+    # @param  int  y
+    # @param  int|nil  maxWidth
     # @return void
     #
     _reDrawTexts: func(x, y, maxWidth = nil) {
@@ -127,7 +127,7 @@ var HelpDialog = {
     },
 
     #
-    # @return hash - HBoxLayout object with button
+    # @return ghost  HBoxLayout object with button
     #
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -157,7 +157,7 @@ var HelpDialog = {
     },
 
     #
-    # @param hash style
+    # @param  hash  style
     # @return void
     #
     setStyle: func(style) {

@@ -101,7 +101,7 @@ var InputDialog = {
     #
     # Set label text
     #
-    # @param string label
+    # @param  string  label
     # @return void
     #
     _setLabel: func(label) {
@@ -113,7 +113,7 @@ var InputDialog = {
     #
     # Set input text
     #
-    # @param string text
+    # @param  string  text
     # @return void
     #
     _setLineEdit: func(text) {
@@ -154,7 +154,7 @@ var InputDialog = {
     },
 
     #
-    # @param hash style
+    # @param  hash  style
     # @return me
     #
     setStyle: func(style) {
@@ -244,8 +244,8 @@ var InputDialog = {
     #
     # Validate the value according to header
     #
-    # @param string value
-    # @return bool - Return true if value is correct
+    # @param  string  value
+    # @return bool  Return true if value is correct
     #
     _validate: func(value) {
         if (!Utils.isUsingSQLite()) {
@@ -333,7 +333,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateDate: func(value) {
@@ -341,7 +341,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateTime: func(value) {
@@ -349,7 +349,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateVariant: func(value) {
@@ -365,7 +365,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateAircraftType: func(value) {
@@ -379,7 +379,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateBoolean: func(value) {
@@ -389,7 +389,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateDecimal: func(value) {
@@ -408,7 +408,7 @@ var InputDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return bool
     #
     _validateNumber: func(value) {

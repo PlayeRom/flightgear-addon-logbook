@@ -23,7 +23,7 @@ var Recovery = {
     #
     # Constructor
     #
-    # @param storage - Storage object
+    # @param  storage  Storage object
     # @return me
     #
     new: func(storage) {
@@ -53,8 +53,8 @@ var Recovery = {
     },
 
     #
-    # @param hash objCallback - Class as owner of callback
-    # @param func callback
+    # @param  hash  objCallback  Class as owner of callback
+    # @param  func  callback
     # @return void
     #
     start: func(objCallback, callback) {
@@ -86,7 +86,7 @@ var Recovery = {
     #
     # Save log data to recovery file
     #
-    # @param hash logData - LogData object
+    # @param  hash  logData  LogData object
     # @return void
     #
     save: func(logData) {

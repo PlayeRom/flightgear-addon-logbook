@@ -91,8 +91,8 @@ var Storage = {
     },
 
     #
-    # @param string version
-    # @return string - full path to file
+    # @param  string  version
+    # @return string  Full path to file
     #
     _getPathToFile: func(version) {
         return g_Addon.storagePath ~ "/" ~ sprintf(Storage.CSV_LOGBOOK_FILE, version);
@@ -169,8 +169,8 @@ var Storage = {
     #
     # Copy file from older version to the newest
     #
-    # @param string oldFile
-    # @param string newFile
+    # @param  string  oldFile
+    # @param  string  newFile
     # @return void
     #
     _copyFile: func(oldFile, newFile) {
@@ -228,7 +228,7 @@ var Storage = {
     # @param  hash  logData  LogData object
     # @param  int  id|nil  Logbook ID for SQLite storage
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
-    #                       without rest of stuff (used only for CSV recovery)
+    #     without rest of stuff (used only for CSV recovery)
     # @return void
     #
     saveLogData: func(logData, id = nil, onlyIO = 0) {
@@ -247,8 +247,8 @@ var Storage = {
     },
 
     #
-    # @param hash logData - LogData object
-    # @param hash file - file handler
+    # @param  hash  logData  LogData object
+    # @param  hash  file  file handler
     # @return void
     #
     addItem: func(logData, file) {
@@ -391,8 +391,8 @@ var Storage = {
     },
 
     #
-    # @param int start - Start index counting from 0 as a first row of data
-    # @param int count - How many rows should be returned
+    # @param  int  start  Start index counting from 0 as a first row of data
+    # @param  int  count  How many rows should be returned
     # @return void
     #
     _loadDataRange: func(start, count) {
@@ -566,11 +566,11 @@ var Storage = {
     },
 
     #
-    # @param bool recalcTotals - Set true for recalculate totals, because data can changed
+    # @param bool reCalcTotals - Set true for recalculate totals, because data can changed
     # @param bool resetFilters - Set true for reload filters, because data can changed
     # @return void
     #
-    _saveAllData: func(recalcTotals, resetFilters) {
+    _saveAllData: func(reCalcTotals, resetFilters) {
         # Do backup
         me._copyFile(me._filePath, me._filePath ~ ".bak");
 
@@ -579,7 +579,7 @@ var Storage = {
         # Save headers
         io.write(file, me._getHeaderLine() ~ "\n");
 
-        if (recalcTotals) {
+        if (reCalcTotals) {
             me._resetTotals();
         }
 
@@ -591,7 +591,7 @@ var Storage = {
         foreach (var logData; me._allData.vector) {
             me.addItem(logData, file);
 
-            if (recalcTotals) {
+            if (reCalcTotals) {
                 me._countTotals(logData.toVector(me._columns));
             }
 
@@ -610,7 +610,7 @@ var Storage = {
     #
     # Search header by text in given vector and return index of it
     #
-    # @param string headerText
+    # @param  string  headerText
     # @return int|nil
     #
     _getHeaderIndex: func(headerText) {
@@ -695,7 +695,7 @@ var Storage = {
     },
 
     #
-    # @param int index - Index to delete
+    # @param  int  index  Index to delete
     # @return bool
     #
     deleteLog: func(index) {
@@ -712,7 +712,7 @@ var Storage = {
     },
 
     #
-    # @param int index - Index to delete
+    # @param  int  index  Index to delete
     # @return void
     #
     _deleteLog: func(index) {
@@ -720,9 +720,9 @@ var Storage = {
 
         me._totalLines -= 1;
 
-        var recalcTotals = true;
+        var reCalcTotals = true;
         var resetFilters = true;
-        me._saveAllData(recalcTotals, resetFilters);
+        me._saveAllData(reCalcTotals, resetFilters);
     },
 
     #

@@ -129,7 +129,7 @@ var Logbook = {
     },
 
     #
-    # @return string - ICAO code or empty
+    # @return string  ICAO code or empty
     #
     _getStartAirport: func() {
         # Try to get nearest airport
@@ -299,8 +299,8 @@ var Logbook = {
     #
     # Collect all information and save it to SQLite/CSV file
     #
-    # @param bool landed - If true then aircraft landed, otherwise the flight aborted mid-air
-    # @param bool crashed - Set true when aircraft crashed
+    # @param  bool  landed  If true then aircraft landed, otherwise the flight aborted mid-air
+    # @param  bool  crashed  Set true when aircraft crashed
     # @return void
     #
     _stopLogging: func(landed, crashed = 0) {
@@ -405,7 +405,7 @@ var Logbook = {
     #
     # Gat data for analysis for save to DB and for current session
     #
-    # @param  ghost|nil  logData
+    # @param  hash|nil  logData
     # @return hash
     #
     _buildAnalysisData: func(logData = nil) {

@@ -12,7 +12,7 @@
 #
 # Main Nasal function
 #
-# @param hash addon - addons.Addon object
+# @param  ghost  addon  addons.Addon object
 # @return void
 #
 var main = func(addon) {
@@ -29,7 +29,7 @@ var main = func(addon) {
 #
 # Load extra Nasal files in main add-on directory
 #
-# @param hash addon - addons.Addon object
+# @param  ghost  addon  addons.Addon object
 # @return void
 #
 var loadExtraNasalFiles = func(addon) {
@@ -119,9 +119,9 @@ var isFG2024Version = func() {
 }
 
 #
-# @param hash addon - addons.Addon object
-# @param vector modules
-# @param string namespace
+# @param  ghost  addon  addons.Addon object
+# @param  vector  modules
+# @param  string  namespace
 # @return void
 #
 var loadVectorOfModules = func(addon, modules, namespace) {
@@ -147,7 +147,7 @@ var loadVectorOfModules = func(addon, modules, namespace) {
 # Other resources should be freed by adding the corresponding code here,
 # e.g. myCanvas.del();
 #
-# @param hash addon - addons.Addon object
+# @param  ghost  addon  addons.Addon object
 # @return void
 #
 var unload = func(addon) {

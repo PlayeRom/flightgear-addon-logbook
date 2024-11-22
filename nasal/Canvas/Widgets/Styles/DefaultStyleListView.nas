@@ -48,7 +48,7 @@ DefaultStyle.widgets["list-view"] = {
     # Callback called when user resized the window
     #
     # @param  ghost  model  ListView model
-    # @param  int  w, h - Width and height of widget
+    # @param  int  w, h  Width and height of widget
     # @return me
     #
     setSize: func(model, w, h) {

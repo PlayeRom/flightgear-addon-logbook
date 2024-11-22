@@ -114,7 +114,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return ghost  InputDialog object
+    # @return hash  InputDialog object
     #
     getInputDialog: func() {
         return me._inputDialog;
@@ -187,7 +187,7 @@ var DetailsDialog = {
     },
 
     #
-    # @param hash style
+    # @param  hash  style
     # @return void
     #
     setStyle: func(style) {
@@ -202,7 +202,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return hash - ListView widget
+    # @return ghost  ListView widget
     #
     _setListViewStyle: func() {
         return me._listView
@@ -270,7 +270,7 @@ var DetailsDialog = {
     #
     # Prepare columns data for ListView
     #
-    # @param vector data
+    # @param  vector  data
     # @return vector
     #
     _getListViewRows: func(data) {
@@ -319,7 +319,7 @@ var DetailsDialog = {
     #
     # The click callback on the ListView widget. Open the inputDialog.
     #
-    # @param int index
+    # @param  int  index
     # @return void
     #
     _listViewCallback: func(index) {
@@ -424,7 +424,7 @@ var DetailsDialog = {
     },
 
     #
-    # @param string value
+    # @param  string  value
     # @return string
     #
     _getValueWithCommaSeparator: func(value) {

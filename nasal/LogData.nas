@@ -82,7 +82,7 @@ var LogData = {
     #
     # Set the take-off real date
     #
-    # @param string date - Take-off date
+    # @param  string  date  Take-off date
     # @return me
     #
     setRealDate: func(date) {
@@ -122,7 +122,7 @@ var LogData = {
     #
     # Set the take-off real time
     #
-    # @param string time - Take-off time
+    # @param  string  time  Take-off time
     # @return me
     #
     setRealTime: func(time) {
@@ -135,7 +135,7 @@ var LogData = {
     #
     # Set the take-off sim UTC date
     #
-    # @param string date - Take-off date
+    # @param  string  date  Take-off date
     # @return me
     #
     setSimUtcDate: func(date) {
@@ -148,7 +148,7 @@ var LogData = {
     #
     # Set the take-off sim UTC time
     #
-    # @param string time - Take-off time
+    # @param  string  time  Take-off time
     # @return me
     #
     setSimUtcTime: func(time) {
@@ -161,7 +161,7 @@ var LogData = {
     #
     # Set the take-off sim local date
     #
-    # @param string date - Take-off date
+    # @param  string  date  Take-off date
     # @return me
     #
     setSimLocalDate: func(date) {
@@ -174,7 +174,7 @@ var LogData = {
     #
     # Set the take-off sim local time
     #
-    # @param string time - Take-off time
+    # @param  string  time  Take-off time
     # @return me
     #
     setSimLocalTime: func(time) {
@@ -187,7 +187,7 @@ var LogData = {
     #
     # Set the primary aircraft from /sim/aircraft-dir
     #
-    # @param string aircraft
+    # @param  string  aircraft
     # @return me
     #
     setAircraft: func(aircraft) {
@@ -200,7 +200,7 @@ var LogData = {
     #
     # Set the aircraft variant as /sim/aircraft. If not exist then use /sim/aircraft-id.
     #
-    # @param string aircraftId
+    # @param  string  aircraftId
     # @return me
     #
     setVariant: func(aircraftId) {
@@ -213,7 +213,7 @@ var LogData = {
     #
     # Set the aircraft type
     #
-    # @param string type
+    # @param  string  type
     # @return me
     #
     setAircraftType: func(type) {
@@ -226,7 +226,7 @@ var LogData = {
     #
     # Set the callsign
     #
-    # @param string callsign
+    # @param  string  callsign
     # @return me
     #
     setCallsign: func(callsign) {
@@ -239,7 +239,7 @@ var LogData = {
     #
     # Set the ICAO departure airport
     #
-    # @param string from - ICAO departure airport
+    # @param  string  from  ICAO departure airport
     # @return me
     #
     setFrom: func(from) {
@@ -252,7 +252,7 @@ var LogData = {
     #
     # Set the ICAO destination airport
     #
-    # @param string to - ICAO destination airport
+    # @param  string  to  ICAO destination airport
     # @return me
     #
     setTo: func(to) {
@@ -307,7 +307,7 @@ var LogData = {
     #
     # Set the total flight time during the day (in h)
     #
-    # @param double day - Total flight time during the day (in h)
+    # @param  double  day  Total flight time during the day (in h)
     # @return me
     #
     setDay: func(day) {
@@ -321,7 +321,7 @@ var LogData = {
     #
     # Set the total flight time during the night (in h)
     #
-    # @param double night - Total flight time during the night (in h)
+    # @param  double  night  Total flight time during the night (in h)
     # @return me
     #
     setNight: func(night) {
@@ -335,7 +335,7 @@ var LogData = {
     #
     # Set the total flight time during the IMC (in h)
     #
-    # @param double instrument - Total flight time during the IMC (in h)
+    # @param  double  instrument  Total flight time during the IMC (in h)
     # @return me
     #
     setInstrument: func(instrument) {
@@ -348,7 +348,7 @@ var LogData = {
     #
     # Set the total flight time in multiplayer mode (hours)
     #
-    # @param double multiplayer - Total flight time in multiplayer mode (hours)
+    # @param  double  multiplayer  Total flight time in multiplayer mode (hours)
     # @return me
     #
     setMultiplayer: func(multiplayer) {
@@ -361,7 +361,7 @@ var LogData = {
     #
     # Set the total flight time with connection to swift (hours)
     #
-    # @param double multiplayer - Total flight time with connection to swift (hours)
+    # @param  double  multiplayer  Total flight time with connection to swift (hours)
     # @return me
     #
     setSwift: func(swift) {
@@ -373,6 +373,7 @@ var LogData = {
 
     #
     # Set the total flight time as sum of day and night
+    #
     # @return me
     #
     setDuration: func() {
@@ -385,7 +386,7 @@ var LogData = {
     #
     # Set the distance traveled during the flight in nautical miles
     #
-    # @param double distance - distance traveled during the flight in nautical miles
+    # @param  double  distance  Distance traveled during the flight in nautical miles
     # @return me
     #
     setDistance: func(distance) {
@@ -398,7 +399,7 @@ var LogData = {
     #
     # Set the amount of fuel used
     #
-    # @param double fuel - amount of fuel used
+    # @param  double  fuel  Amount of fuel used
     # @return me
     #
     setFuel: func(fuel) {
@@ -411,7 +412,7 @@ var LogData = {
     #
     # Set the max altitude
     #
-    # @param double maxAlt - max altitude in feet
+    # @param  double  maxAlt  Max altitude in feet
     # @return me
     #
     setMaxAlt: func(maxAlt) {
@@ -450,7 +451,7 @@ var LogData = {
     #
     # Set the note
     #
-    # @param string note - note
+    # @param  string  note
     # @return me
     #
     setNote: func(note) {
@@ -461,7 +462,7 @@ var LogData = {
     },
 
     #
-    # @param string|nil text
+    # @param  string|nil  text
     # @return string
     #
     _getCsvSafeText: func(text) {
@@ -492,7 +493,7 @@ var LogData = {
     #
     # Apply given vector to this object (only for CSV)
     #
-    # @param vector items
+    # @param  vector  items
     # @return void
     #
     fromVector: func(items) {
@@ -617,7 +618,7 @@ var LogData = {
     #
     # Get copy object of me
     #
-    # @return hash - LogData object
+    # @return hash  LogData object
     #
     getClone: func() {
         return LogData.new(

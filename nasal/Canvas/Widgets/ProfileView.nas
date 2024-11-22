@@ -236,8 +236,8 @@ gui.widgets.ProfileView = {
 
     #
     # @param  func|nil  callback  Callback function, if nil then callback will be disabled
-    # @param  ghost|nil  objCallback  Class as owner of callback function,
-    #                                 if nil then reference for callback will not be used
+    # @param  hash|nil  objCallback  Class as owner of callback function,
+    #     if nil then reference for callback will not be used
     # @return me
     #
     setUpdateCallback: func(callback, objCallback) {

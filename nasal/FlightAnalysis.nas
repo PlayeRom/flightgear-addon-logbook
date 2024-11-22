@@ -121,8 +121,8 @@ var FlightAnalysis = {
     },
 
     #
-    # @param hash objCallback - Class as owner of callback
-    # @param func callback
+    # @param  hash  objCallback  Class as owner of callback
+    # @param  func  callback
     # @return void
     #
     start: func(objCallback, callback) {
