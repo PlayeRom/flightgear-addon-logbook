@@ -572,6 +572,7 @@ var FlightAnalysisDialog = {
             me._btnPlay.setText("Play");
         }
         else {
+            me._restartPlayInterval(me._mapView.getTrackPosition());
             me._playTimer.start();
             me._btnPlay.setText("Stop");
         }
@@ -587,18 +588,22 @@ var FlightAnalysisDialog = {
         if (position < me._trackSize - 1) {
             me._goNextTrack();
 
-            if (position < me._trackSize - 2) {
-                # Real speed animation:
-                var interval = (me._trackItems[position + 1].timestamp - me._trackItems[position].timestamp) * 3600;
-                # 16x faster:
-                interval /= me._playSpeed;
-
-                me._playTimer.restart(interval);
-            }
+            me._restartPlayInterval(position);
         }
         else {
             me._playTimer.stop();
             me._btnPlay.setText("Play");
+        }
+    },
+
+    _restartPlayInterval: func(position) {
+        if (position < me._trackSize - 2) {
+            # Real speed animation:
+            var interval = (me._trackItems[position + 1].timestamp - me._trackItems[position].timestamp) * 3600;
+            # Speed up interval:
+            interval /= me._playSpeed;
+
+            me._playTimer.restart(interval);
         }
     },
 };
