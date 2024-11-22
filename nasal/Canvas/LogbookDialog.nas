@@ -63,6 +63,10 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
+        if (me._isUsingSQLite) {
+            me._storage.loadAllData();
+        }
+
         me._itemsPerPage = g_Settings.getLogItemsPerPage();
 
         me._addonNodePath = g_Addon.node.getPath();

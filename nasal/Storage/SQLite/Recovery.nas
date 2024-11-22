@@ -38,8 +38,6 @@ var Recovery = {
 
         me._timer = maketimer(Recovery.INTERVAL_SEC, me, me._update);
 
-        me._storage.loadAllData();
-
         return me;
     },
 
