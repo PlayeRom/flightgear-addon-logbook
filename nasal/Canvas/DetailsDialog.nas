@@ -18,7 +18,6 @@ var DetailsDialog = {
     #
     WINDOW_WIDTH  : 610,
     WINDOW_HEIGHT : 660,
-    FONT_NAME     : "LiberationFonts/LiberationMono-Bold.ttf",
     COLUMNS_WIDTH : [
         170, # header
         400, # data
@@ -71,7 +70,10 @@ var DetailsDialog = {
 
         me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
-            .setFontName(DetailsDialog.FONT_NAME)
+            .setFontNameColumns([
+                "LiberationFonts/LiberationMono-Regular.ttf",
+                "LiberationFonts/LiberationMono-Bold.ttf",
+            ])
             .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
             .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()

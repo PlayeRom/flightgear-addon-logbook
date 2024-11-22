@@ -22,9 +22,6 @@ var LogbookDialog = {
     MAX_WINDOW_HEIGHT: 680,
     MIN_WINDOW_HEIGHT: 260,
 
-    FONT_NAME        : "LiberationFonts/LiberationMono-Bold.ttf",
-    FONT_SIZE        : 12,
-
     #
     # Constructor
     #
@@ -99,7 +96,7 @@ var LogbookDialog = {
                 canvas.DefaultStyle.widgets["list-view"].PADDING,
                 canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             )
-            .setFontName(LogbookDialog.FONT_NAME)
+            .setFontName("LiberationFonts/LiberationMono-Regular.ttf")
             .setColumnsWidth(me._columns.getWidths())
             .useOptimizeRow()
             .setClickCallback(me._listViewCallback, me);
@@ -275,8 +272,8 @@ var LogbookDialog = {
         me._headersContent = me.group.createChild("group");
         me._headersContent.setTranslation(0, 0);
         me._headersContent
-            .set("font", LogbookDialog.FONT_NAME)
-            .set("character-size", LogbookDialog.FONT_SIZE)
+            .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
+            .set("character-size", 12)
             .set("alignment", "left-baseline");
 
         # There is no need to re-draw headers here because the data loads in a separate thread so we may not have them

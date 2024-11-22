@@ -15,7 +15,7 @@
 DefaultStyle.widgets["list-view"] = {
     PADDING     : 10,
     ITEM_HEIGHT : 28,
-    CHAR_WIDTH  : 7,
+    CHAR_WIDTH  : 7, # TODO: it's hardcoded only for font size = 12
 
     #
     # Constructor
@@ -34,6 +34,7 @@ DefaultStyle.widgets["list-view"] = {
 
         me._fontSize = 14;
         me._fontName = "LiberationFonts/LiberationMono-Regular.ttf";
+        me._fontNameColumns = nil;
 
         me._textColor = me._style.getColor("fg_color");
         me._backgroundColor = me._style.getColor("bg_color");
@@ -206,12 +207,45 @@ DefaultStyle.widgets["list-view"] = {
             if (typeof(hash.elem) == "vector") {
                 foreach (var elem; hash.elem) {
                     if (elem.getType() == "text") {
-                        elem.setFont(color);
+                        elem.setFont(font);
                     }
                 }
             }
             else if (hash.elem.getType() == "text") {
                 hash.elem.setFont(font);
+            }
+        }
+
+        return me;
+    },
+
+    #
+    # @param  ghost  model  ListView model
+    # @param  vector  fonts  Vector of strings with font names. Each item corresponds to the next column.
+    # @return me
+    #
+    setFontNameColumns: func(model, fonts) {
+        me._fontNameColumns = fonts;
+
+        if (me._loadingText != nil) {
+            me._loadingText.setFont(fonts[0]);
+        }
+
+        if (me._titleElement != nil) {
+            me._titleElement.setFont(fonts[0]);
+        }
+
+        foreach (var hash; me._itemElements) {
+            if (typeof(hash.elem) == "vector") {
+                forindex (var index; hash.elem) {
+                    var elem = hash.elem[index];
+                    if (elem.getType() == "text") {
+                        elem.setFont(fonts[index]);
+                    }
+                }
+            }
+            else if (hash.elem.getType() == "text") {
+                hash.elem.setFont(font[0]);
             }
         }
 
@@ -460,7 +494,16 @@ DefaultStyle.widgets["list-view"] = {
             var columnWidth = me._getColumnWidth(columnIndex);
 
             if (item["types"] == nil or item.types[columnIndex] == "string") {
-                var text = me._createText(model, hash.group, x, me._getTextYOffset(), item.data[columnIndex]);
+                var text = me._createText(
+                    model,
+                    hash.group,
+                    x,
+                    me._getTextYOffset(),
+                    item.data[columnIndex],
+                    "left-baseline",
+                    me._fontNameColumns == nil ? nil : me._fontNameColumns[columnIndex],
+                );
+
                 if (model._isUseTextMaxWidth) {
                     text.setMaxWidth(columnWidth);
                 }
@@ -516,6 +559,8 @@ DefaultStyle.widgets["list-view"] = {
             : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
+        var isTotalsRow = contains(item, "id") and item.id == -1;
+
         var textStr = "";
 
         forindex (var columnIndex; me._columnsWidth) {
@@ -526,7 +571,7 @@ DefaultStyle.widgets["list-view"] = {
 
             var dots = originalTextSize > maxChars;
             if (dots) {
-                if (contains(item, "id") and item.id == -1 and item.data[columnIndex] == "Totals:") {
+                if (isTotalsRow and item.data[columnIndex] == "Totals:") {
                     # We don't want to trim the "Totals:" text to three dots, so we back off from trimming and trim the
                     # spaces in textStr to shift the string to the left by the missing characters.
                     # TODO: there should be no such logic in the widget because it disrupts its universality! This
@@ -555,7 +600,16 @@ DefaultStyle.widgets["list-view"] = {
             textStr ~= trimmedStr ~ " "; # it must be min 1 space to keep separation
         }
 
-        var text = me._createText(model, hash.group, x, me._getTextYOffset(), textStr);
+        var text = me._createText(
+            model,
+            hash.group,
+            x,
+            me._getTextYOffset(),
+            textStr,
+            "left-baseline",
+            # TODO: there should be no such logic in the widget because it disrupts its universality!
+            isTotalsRow ? "LiberationFonts/LiberationMono-Bold.ttf" : me._fontName
+        );
 
         append(hash.elem, text);
 
@@ -619,13 +673,17 @@ DefaultStyle.widgets["list-view"] = {
     # @param  string  alignment
     # @return ghost  Text element
     #
-    _createText: func(model, context, x, y, text, alignment = "left-baseline") {
+    _createText: func(model, context, x, y, text, alignment = "left-baseline", fontName = nil) {
         if (model._placeholder != nil and string.trim(text) == "") {
             text = model._placeholder;
         }
 
+        if (fontName == nil) {
+            fontName = me._fontName;
+        }
+
         return context.createChild("text")
-            .setFont(me._fontName)
+            .setFont(fontName)
             .setFontSize(me._fontSize)
             .setAlignment(alignment)
             .setTranslation(x, y)

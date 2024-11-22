@@ -265,6 +265,15 @@ gui.widgets.ListView = {
     },
 
     #
+    # @param  vector  fonts  Vector of strings with font names. Each item corresponds to the next column.
+    # @return me
+    #
+    setFontNameColumns: func(fonts) {
+        me._view.setFontNameColumns(me, fonts);
+        return me;
+    },
+
+    #
     # Set columns widths in pixels as a vector (each item as an int). It's needed if you have to draw many columns
     # with data. When you use it, then for setItems you have to pass vector of hashes.
     #
