@@ -42,6 +42,8 @@ DefaultStyle.widgets["map-view"] = {
         me._centerTileOffset = { x: 0, y: 0 };
         me._lastTile = { x: -1, y: -1 };
 
+        me._flightPathLineWidth = 2;
+        me._isFlightPathRendered = 0;
         me._flightPath = nil;
         me._tiles = [];
 
@@ -143,8 +145,10 @@ DefaultStyle.widgets["map-view"] = {
 
         me._flightPath = me._content.createChild("path", "flight")
             .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(2)
+            .setStrokeLineWidth(me._flightPathLineWidth)
             .set("z-index", 1);
+
+        me._isFlightPathRendered = 0;
 
         me._calculateNumTiles(model);
 
@@ -358,48 +362,102 @@ DefaultStyle.widgets["map-view"] = {
         me._lastTile.x = tileIndex.x;
         me._lastTile.y = tileIndex.y;
 
-        me._drawFlightPath(model);
+        me._isFlightPathRendered
+            ? me._transformFlightPath(model)
+            : me._drawFlightPath(model);
     },
 
     #
-    # Redraw flight path. We have to redraw if zoom was changed
+    # Redraw whole flight path and create vector of points visible on the map for click action.
     #
     # @param  ghost  model  MapView model
     # @return ghost  Path element
     #
     _drawFlightPath: func(model) {
-        me._pointsToDraw.clear();
-        me._flightPath.reset();
+        # me._flightPath.reset();
 
         var tileSizeBuffer = me._getTileSizeBuffer(model);
 
-        # = true because the first point must start with moveTo method
-        var discontinuity = 1;
+        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var minTileX = me._minTile.x - tileSizeBuffer;
+        var minTileY = me._minTile.y - tileSizeBuffer;
 
-        # The first loop is to build an array of points that are within the map
+        # The loop to build an array of points that are within the map view and draw flight path
+        me._pointsToDraw.clear();
         forindex (var index; model._trackItems) {
             var pos = me._convertLatLonToPixel(model, index);
 
-            if (    pos.x < me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE
-                and pos.y < me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE
-                and pos.x > me._minTile.x - tileSizeBuffer
-                and pos.y > me._minTile.y - tileSizeBuffer
+            if (    pos.x < maxTileX
+                and pos.y < maxTileY
+                and pos.x > minTileX
+                and pos.y > minTileY
             ) {
                 # The path point is on the map, add it to me._pointsToDraw vector to use for click action
                 me._pointsToDraw.append(pos);
-
-                # Draw points only those within the map
-                discontinuity
-                    ? me._flightPath.moveTo(pos.x, pos.y)
-                    : me._flightPath.lineTo(pos.x, pos.y);
-
-                # We have just drawn a point, so there is no discontinuity
-                discontinuity = 0;
             }
-            else {
-                # The path point is out of map tiles, so ship it and mark discontinuity
-                discontinuity = 1;
+
+            # Draw all path point
+            index == 0
+                ? me._flightPath.moveTo(pos.x, pos.y)
+                : me._flightPath.lineTo(pos.x, pos.y);
+        }
+
+        me._isFlightPathRendered = 1;
+    },
+
+    #
+    # Path transformations by airplane icon offset and map zoom
+    # and recreate vector of points visible on the map for click action.
+    #
+    # @param  ghost  model
+    # @return void
+    #
+    _transformFlightPath: func(model) {
+        me._pointsToDraw.clear();
+
+        var tileSizeBuffer = me._getTileSizeBuffer(model);
+
+        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var minTileX = me._minTile.x - tileSizeBuffer;
+        var minTileY = me._minTile.y - tileSizeBuffer;
+
+        var firstPos = nil;
+        var currentPos = nil;
+
+        # Generate a new vector with points visible on the map
+        forindex (var index; model._trackItems) {
+            var pos = me._convertLatLonToPixel(model, index);
+
+            if (    pos.x < maxTileX
+                and pos.y < maxTileY
+                and pos.x > minTileX
+                and pos.y > minTileY
+            ) {
+                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
+                me._pointsToDraw.append(pos);
             }
+
+            if (index == 0) {
+                firstPos = pos;
+            }
+
+            if (index == model._position) {
+                currentPos = pos;
+            }
+        }
+
+        if (firstPos != nil and currentPos != nil) {
+            var scale = math.pow(2, model._zoom - gui.widgets.MapView.ZOOM_DEFAULT);
+
+            me._flightPath
+                .setStrokeLineWidth(me._flightPathLineWidth / scale)
+                .setScale(scale)
+                .setTranslation(
+                    (firstPos.x - currentPos.x) - (DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
+                    (firstPos.y - currentPos.y) - (DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
+                );
         }
     },
 
