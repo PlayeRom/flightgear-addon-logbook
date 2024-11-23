@@ -208,15 +208,15 @@ DefaultStyle.widgets["profile-view"] = {
         var labelDistance = 35;
 
         forindex (var index; model._trackItems) {
-            var row = model._trackItems[index];
+            var item = model._trackItems[index];
 
             var valueX = model.isDrawModeTime()
-                ? row.timestamp
-                : row.distance;
+                ? item.timestamp
+                : item.distance;
 
             var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
-            var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : row.elevation_m / maxAlt) * me._positiveYAxisLength);
-            var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : row.alt_m / maxAlt) * me._positiveYAxisLength);
+            var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : item.elevation_m / maxAlt) * me._positiveYAxisLength);
+            var flightY    = me._yXAxis - ((maxAlt == 0 ? 0 : item.alt_m / maxAlt) * me._positiveYAxisLength);
 
             me._pointsX.append({ x: x, position: index });
 
@@ -232,10 +232,10 @@ DefaultStyle.widgets["profile-view"] = {
                     and math.abs(x - lastLabelX) > labelDistance # <- prevents overlapping of multiple labels in distance mode.
                 ) {
                     # Labels with hours on X axis
-                    me._drawTextCenter(sprintf("%.2f", row.timestamp), x, me._yXAxis + 10);
+                    me._drawTextCenter(sprintf("%.2f", item.timestamp), x, me._yXAxis + 10);
 
                     # Labels with distance on X axis
-                    me._drawTextCenter(sprintf("%.1f", row.distance), x, me._yXAxis + 30);
+                    me._drawTextCenter(sprintf("%.1f", item.distance), x, me._yXAxis + 30);
 
                     # Draw vertical grid line
                     grid.moveTo(x, paddingTop)
@@ -280,16 +280,16 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {
-        var row = model._trackItems[model._position];
+        var item = model._trackItems[model._position];
 
         var valueX = model.isDrawModeTime()
-            ? row.timestamp
-            : row.distance;
+            ? item.timestamp
+            : item.distance;
 
         var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
-        var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : row.alt_m / model._maxAlt) * me._positiveYAxisLength);
+        var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : item.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
-        return me._drawPlaneIcon(x, y, row.pitch);
+        return me._drawPlaneIcon(x, y, item.pitch);
     },
 
     #
