@@ -187,7 +187,7 @@ var FlightAnalysis = {
         me._currentFlightData.append(data);
 
         if (me._flightAnalysisDlg != nil and me._flightAnalysisDlg.isWindowVisible()) {
-            me._flightAnalysisDlg.setData(me._currentFlightData.vector, me._currentFlightMaxAlt, false);
+            me._flightAnalysisDlg.appendData(data, me._currentFlightMaxAlt);
             me._flightAnalysisDlg.softUpdateView();
         }
     },

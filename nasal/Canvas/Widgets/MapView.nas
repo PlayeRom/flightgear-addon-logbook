@@ -60,14 +60,14 @@ gui.widgets.MapView = {
     # Set track items
     #
     # @param  vector  trackItems  Vector of hashes with flight data:
-    #                             [
-    #                                  {
-    #                                       lat         : double,
-    #                                       lon         : double,
-    #                                       heading_true: double,
-    #                                   },
-    #                                   ... etc.
-    #                             ]
+    #     [
+    #          {
+    #               lat         : double,
+    #               lon         : double,
+    #               heading_true: double,
+    #          },
+    #          ... etc.
+    #     ]
     # @param  int  trackItemsSize
     # @param  bool  withReset
     # @return me
@@ -79,6 +79,25 @@ gui.widgets.MapView = {
         }
 
         me._trackItems     = trackItems;
+        me._trackItemsSize = trackItemsSize;
+
+        return me;
+    },
+
+    #
+    # Append one track item
+    #
+    # @param  hash  trackItem  Hash with flight data:
+    #     {
+    #          lat         : double,
+    #          lon         : double,
+    #          heading_true: double,
+    #     },
+    # @param  int  trackItemsSize
+    # @return me
+    #
+    appendTrackItem: func(trackItem, trackItemsSize) {
+        append(me._trackItems, trackItem);
         me._trackItemsSize = trackItemsSize;
 
         return me;

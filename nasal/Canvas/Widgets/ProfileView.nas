@@ -63,19 +63,19 @@ gui.widgets.ProfileView = {
     # Set track items and max altitude
     #
     # @param  vector  trackItems  Vector of hashes with flight data:
-    #                             [
-    #                                  {
-    #                                       timestamp   : double,
-    #                                       alt_m       : double,
-    #                                       elevation_m : double,
-    #                                       distance    : double,
-    #                                       pitch       : double,
-    #                                   },
-    #                                   ... etc.
-    #                             ]
+    #     [
+    #          {
+    #               timestamp   : double,
+    #               alt_m       : double,
+    #               elevation_m : double,
+    #               distance    : double,
+    #               pitch       : double,
+    #          },
+    #          ... etc.
+    #     ]
     # @param  int  trackItemsSize
     # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
-    #                             If not given then it will be obtained from rows (slow performance).
+    #     If not given then it will be obtained from rows (slow performance).
     # @param  bool  withReset
     # @return me
     #
@@ -102,6 +102,31 @@ gui.widgets.ProfileView = {
         }
 
         me._trackItems     = trackItems;
+        me._trackItemsSize = trackItemsSize;
+
+        me._maxAlt = maxAlt;
+
+        return me;
+    },
+
+    #
+    # Append one track item and max altitude
+    #
+    # @param  hash  trackItem  Hash with flight data:
+    #     {
+    #          timestamp   : double,
+    #          alt_m       : double,
+    #          elevation_m : double,
+    #          distance    : double,
+    #          pitch       : double,
+    #     },
+    # @param  int  trackItemsSize
+    # @param  double  maxAlt  Maximum flight altitude or elevation.
+    #     If not given then it will be obtained from rows (slow performance).
+    # @return me
+    #
+    appendTrackItem: func(trackItem, trackItemsSize, maxAlt) {
+        append(me._trackItems, trackItem);
         me._trackItemsSize = trackItemsSize;
 
         me._maxAlt = maxAlt;
