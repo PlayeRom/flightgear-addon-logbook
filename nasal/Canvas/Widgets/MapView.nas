@@ -68,18 +68,17 @@ gui.widgets.MapView = {
     #          },
     #          ... etc.
     #     ]
-    # @param  int  trackItemsSize
-    # @param  bool  withReset
+    # @param  bool  withResetPosition
     # @return me
     #
-    setTrackItems: func(trackItems, trackItemsSize, withReset = 1) {
-        if (withReset) {
+    setTrackItems: func(trackItems, withResetPosition = 1) {
+        if (withResetPosition) {
             me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
             me._position = 0;
         }
 
         me._trackItems     = trackItems;
-        me._trackItemsSize = trackItemsSize;
+        me._trackItemsSize = size(me._trackItems);
 
         return me;
     },
@@ -93,12 +92,11 @@ gui.widgets.MapView = {
     #          lon         : double,
     #          heading_true: double,
     #     },
-    # @param  int  trackItemsSize
     # @return me
     #
-    appendTrackItem: func(trackItem, trackItemsSize) {
+    appendTrackItem: func(trackItem) {
         append(me._trackItems, trackItem);
-        me._trackItemsSize = trackItemsSize;
+        me._trackItemsSize = size(me._trackItems);
 
         return me;
     },
@@ -138,6 +136,31 @@ gui.widgets.MapView = {
     #
     getTrackLastIndex: func() {
         return me._trackItemsSize - 1;
+    },
+
+    #
+    # @return int
+    #
+    getTrackItemsSize: func() {
+        return me._trackItemsSize;
+    },
+
+    #
+    # Get track item from current position
+    #
+    # @return hash
+    #
+    getCurrentTrackItem: func() {
+        return me.getTrackItemByPosition(me._position);
+    },
+
+    #
+    # Get track item from given position
+    #
+    # @return hash
+    #
+    getTrackItemByPosition: func(position) {
+        return me._trackItems[position];
     },
 
     #

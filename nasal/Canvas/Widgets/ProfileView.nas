@@ -73,14 +73,13 @@ gui.widgets.ProfileView = {
     #          },
     #          ... etc.
     #     ]
-    # @param  int  trackItemsSize
     # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
     #     If not given then it will be obtained from rows (slow performance).
-    # @param  bool  withReset
+    # @param  bool  withResetPosition
     # @return me
     #
-    setTrackItems: func(trackItems, trackItemsSize, maxAlt = nil, withReset = 1) {
-        if (withReset) {
+    setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = 1) {
+        if (withResetPosition) {
             me._position = 0;
         }
 
@@ -102,7 +101,7 @@ gui.widgets.ProfileView = {
         }
 
         me._trackItems     = trackItems;
-        me._trackItemsSize = trackItemsSize;
+        me._trackItemsSize = size(me._trackItems);
 
         me._maxAlt = maxAlt;
 
@@ -120,14 +119,13 @@ gui.widgets.ProfileView = {
     #          distance    : double,
     #          pitch       : double,
     #     },
-    # @param  int  trackItemsSize
     # @param  double  maxAlt  Maximum flight altitude or elevation.
     #     If not given then it will be obtained from rows (slow performance).
     # @return me
     #
-    appendTrackItem: func(trackItem, trackItemsSize, maxAlt) {
+    appendTrackItem: func(trackItem, maxAlt) {
         append(me._trackItems, trackItem);
-        me._trackItemsSize = trackItemsSize;
+        me._trackItemsSize = size(me._trackItems);
 
         me._maxAlt = maxAlt;
 
@@ -150,6 +148,31 @@ gui.widgets.ProfileView = {
     #
     getTrackLastIndex: func() {
         return me._trackItemsSize - 1;
+    },
+
+        #
+    # @return int
+    #
+    getTrackItemsSize: func() {
+        return me._trackItemsSize;
+    },
+
+    #
+    # Get track item from current position
+    #
+    # @return hash
+    #
+    getCurrentTrackItem: func() {
+        return me.getTrackItemByPosition(me._position);
+    },
+
+    #
+    # Get track item from given position
+    #
+    # @return hash
+    #
+    getTrackItemByPosition: func(position) {
+        return me._trackItems[position];
     },
 
     #

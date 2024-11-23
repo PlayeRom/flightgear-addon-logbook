@@ -43,8 +43,6 @@ var FlightAnalysisDialog = {
                     true, # <- resizable
                 ),
             ],
-            _trackItems      : nil,
-            _trackSize       : 0,
             _isFG2024Version : Utils.isFG2024Version(),
         };
 
@@ -120,12 +118,9 @@ var FlightAnalysisDialog = {
     # @return void
     #
     setData: func(trackItems, maxAlt, withResetPosition = 1) {
-        me._trackItems = trackItems;
-        me._trackSize = size(me._trackItems);
-
         # Put data to widgets
-        me._mapView.setTrackItems(me._trackItems, me._trackSize, withResetPosition);
-        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt, withResetPosition);
+        me._mapView.setTrackItems(trackItems, withResetPosition);
+        me._profileView.setTrackItems(trackItems, maxAlt, withResetPosition);
     },
 
     #
@@ -136,12 +131,9 @@ var FlightAnalysisDialog = {
     # @return void
     #
     appendData: func(trackItem, maxAlt) {
-        append(me._trackItems, trackItem);
-        me._trackSize = size(me._trackItems);
-
         # Put data to widgets
-        me._mapView.appendTrackItem(trackItem, me._trackSize);
-        me._profileView.appendTrackItem(trackItem, me._trackSize, maxAlt, false);
+        me._mapView.appendTrackItem(trackItem);
+        me._profileView.appendTrackItem(trackItem, maxAlt, false);
     },
 
     #
@@ -246,18 +238,18 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _updateLabelValues: func() {
-        if (me._trackItems == nil or me._trackSize == 0) {
+        if (me._mapView.getTrackItemsSize() <= 0) {
             return;
         }
 
-        var row = me._trackItems[me._mapView.getTrackPosition()];
+        var item = me._mapView.getCurrentTrackItem();
 
-        me._labelLatLonValue.setText(sprintf("%.03f, %.03f", row.lat, row.lon));
-        me._labelAltValue.setText(sprintf("%.0f ft / %.0f ft", row.alt_m * globals.M2FT, (row.alt_m - row.elevation_m) * globals.M2FT));
-        me._labelHdgTrueValue.setText(sprintf("%.0f° / %.0f°", row.heading_true, row.heading_mag));
-        me._labelAirspeedValue.setText(sprintf("%.0f kt / %.0f kt", row.airspeed, row.groundspeed));
-        me._labelTimestampValue.setText(Utils.decimalHoursToHuman(row.timestamp));
-        me._labelDistanceValue.setText(sprintf("%.02f NM", row.distance));
+        me._labelLatLonValue.setText(sprintf("%.03f, %.03f", item.lat, item.lon));
+        me._labelAltValue.setText(sprintf("%.0f ft / %.0f ft", item.alt_m * globals.M2FT, (item.alt_m - item.elevation_m) * globals.M2FT));
+        me._labelHdgTrueValue.setText(sprintf("%.0f° / %.0f°", item.heading_true, item.heading_mag));
+        me._labelAirspeedValue.setText(sprintf("%.0f kt / %.0f kt", item.airspeed, item.groundspeed));
+        me._labelTimestampValue.setText(Utils.decimalHoursToHuman(item.timestamp));
+        me._labelDistanceValue.setText(sprintf("%.02f NM", item.distance));
     },
 
     #
@@ -353,7 +345,7 @@ var FlightAnalysisDialog = {
         var lastRowsIndex = me._mapView.getTrackLastIndex();
         var position = me._mapView.getTrackPosition();
 
-        me._labelFrame.setText(sprintf("Frame %d/%d", position + 1, me._trackSize));
+        me._labelFrame.setText(sprintf("Frame %d/%d", position + 1, me._mapView.getTrackItemsSize()));
 
         me._btnStart.setEnabled(position > 0);
         me._btnBackFast.setEnabled(position > 0);
@@ -414,7 +406,7 @@ var FlightAnalysisDialog = {
         me._btnZoomPlus    = me._createButtonNarrow("+",   func { me._zoomIn(); });
 
         me._labelFrame     = canvas.gui.widgets.Label.new(me.group, canvas.style, {})
-            .setText(sprintf("Frame %d/%d", 1, me._trackSize));
+            .setText(sprintf("Frame %d/%d", 1, me._mapView.getTrackItemsSize()));
 
         me._btnStart       = me._createButtonNarrow("|<<", func { me._goStartTrack(); });
         me._btnBackFast    = me._createButtonNarrow("<<",  func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
@@ -603,7 +595,7 @@ var FlightAnalysisDialog = {
     #
     _onPlayUpdate: func() {
         var position = me._mapView.getTrackPosition();
-        if (position < me._trackSize - 1) {
+        if (position < me._mapView.getTrackLastIndex() - 1) {
             me._goNextTrack();
 
             me._restartPlayInterval(position);
@@ -615,9 +607,12 @@ var FlightAnalysisDialog = {
     },
 
     _restartPlayInterval: func(position) {
-        if (position < me._trackSize - 2) {
+        if (position < me._mapView.getTrackLastIndex() - 1) {
+            var nextPoint    = me._mapView.getTrackItemByPosition(position + 1);
+            var currentPoint = me._mapView.getTrackItemByPosition(position);
+
             # Real speed animation:
-            var interval = (me._trackItems[position + 1].timestamp - me._trackItems[position].timestamp) * 3600;
+            var interval = (nextPoint.timestamp - currentPoint.timestamp) * 3600;
             # Speed up interval:
             interval /= me._playSpeed;
 
