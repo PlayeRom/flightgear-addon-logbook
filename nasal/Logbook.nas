@@ -474,7 +474,11 @@ var Logbook = {
     deleteLog: func(logbookId) {
         var deleted = me._storage.deleteLog(logbookId);
         if (deleted) {
-            me._recovery.clear(); # for set logbookId to nil
+            if (logbookId == me._recovery.getLogbookId()) {
+                # If I deleted the current record, then clear the ID in recovery class
+                me._recovery.clear();
+            }
+
             return true;
         }
 
