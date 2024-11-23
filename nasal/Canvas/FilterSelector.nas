@@ -44,7 +44,7 @@ var FilterSelector = {
         };
 
         me._font     = "LiberationFonts/LiberationSans-Bold.ttf";
-        me._fontSize = 16;
+        me._fontSize = 14;
         me._title    = "Filter";
 
         me.window.set("decoration-border", "0 0 0");
@@ -242,7 +242,7 @@ var FilterSelector = {
             .setTitle(me._title)
             .useTextMaxWidth()
             .setColumnsWidth([FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2)])
-            .setFontSizeLarge()
+            .setFontSizeMedium()
             .setColorText(me.style.TEXT_COLOR)
             .setColorBackground(me.style.CANVAS_BG)
             .setColorHoverBackground(me.style.HOVER_BG)

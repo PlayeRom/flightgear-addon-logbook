@@ -429,7 +429,7 @@ DefaultStyle.widgets["list-view"] = {
             var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), item)
                 .setMaxWidth(me._columnsWidth[0]);
 
-            height = tempText.getSize()[1];
+            height = tempText.getSize()[1] + 1;
             if (height > hash.maxHeight) {
                 hash.maxHeight = height;
             }
