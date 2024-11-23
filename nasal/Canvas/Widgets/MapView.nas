@@ -51,6 +51,8 @@ gui.widgets.MapView = {
         me._callbackZoom    = nil;
         me._objCallbackZoom = nil;
 
+        me._isLiveUpdateMode = 0;
+
         return me;
     },
 
@@ -98,6 +100,16 @@ gui.widgets.MapView = {
     #
     hardUpdateView: func() {
         me._view.reDrawContent(me);
+    },
+
+    #
+    # Set to true if the flight path should be updated live
+    #
+    # @param  bool  value
+    # @return void
+    #
+    setLiveUpdateMode: func(value) {
+        me._isLiveUpdateMode = value;
     },
 
     #

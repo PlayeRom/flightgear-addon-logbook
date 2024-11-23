@@ -29,9 +29,10 @@ var FlightAnalysisDialog = {
     # Constructor
     #
     # @param  string  title
+    # @param  bool  liveUpdateMode
     # @return me
     #
-    new: func(title) {
+    new: func(title, liveUpdateMode = false) {
         var me = {
             parents: [
                 FlightAnalysisDialog,
@@ -63,6 +64,7 @@ var FlightAnalysisDialog = {
         me._mapView = canvas.gui.widgets.MapView.new(me.group, canvas.style, {});
         me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
         me._mapView.setUpdateZoomCallback(me._mapViewUpdateZoom, me);
+        me._mapView.setLiveUpdateMode(liveUpdateMode);
 
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
@@ -114,16 +116,16 @@ var FlightAnalysisDialog = {
     #
     # @param  vector  logData  Vector of hashes with all path points
     # @param  double  maxAlt  Max altitude of aircraft or terrain elevation
-    # @param  bool  withReset  If true then aircraft position will be set to 0
+    # @param  bool  withResetPosition  If true then aircraft position will be set to 0
     # @return void
     #
-    setData: func(logData, maxAlt, withReset = 1) {
+    setData: func(logData, maxAlt, withResetPosition = 1) {
         me._trackItems = logData;
         me._trackSize = size(me._trackItems);
 
         # Put data to widgets
-        me._mapView.setTrackItems(me._trackItems, me._trackSize, withReset);
-        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt, withReset);
+        me._mapView.setTrackItems(me._trackItems, me._trackSize, withResetPosition);
+        me._profileView.setTrackItems(me._trackItems, me._trackSize, maxAlt, withResetPosition);
     },
 
     #

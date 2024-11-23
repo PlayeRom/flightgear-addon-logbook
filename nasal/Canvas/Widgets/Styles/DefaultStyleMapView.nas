@@ -362,9 +362,62 @@ DefaultStyle.widgets["map-view"] = {
         me._lastTile.x = tileIndex.x;
         me._lastTile.y = tileIndex.y;
 
-        me._isFlightPathRendered
-            ? me._transformFlightPath(model)
-            : me._drawFlightPath(model);
+        if (model._isLiveUpdateMode) {
+            me._drawFlightPathInLiveMode(model);
+        }
+        else {
+            # Render 7x faster with once-drawn and next path transformation
+            me._isFlightPathRendered
+                ? me._transformFlightPath(model)
+                : me._drawFullFlightPath(model);
+        }
+    },
+
+    #
+    # Redraw flight path in live mode, for current flight analysis.
+    #
+    # @param  ghost  model  MapView model
+    # @return ghost  Path element
+    #
+    _drawFlightPathInLiveMode: func(model) {
+        me._pointsToDraw.clear();
+        me._flightPath.reset();
+
+        var tileSizeBuffer = me._getTileSizeBuffer(model);
+
+        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
+        var minTileX = me._minTile.x - tileSizeBuffer;
+        var minTileY = me._minTile.y - tileSizeBuffer;
+
+        # = true because the first point must start with moveTo method
+        var discontinuity = 1;
+
+        # The first loop is to build an array of points that are within the map
+        forindex (var index; model._trackItems) {
+            var pos = me._convertLatLonToPixel(model, index);
+
+            if (    pos.x < maxTileX
+                and pos.y < maxTileY
+                and pos.x > minTileX
+                and pos.y > minTileY
+            ) {
+                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
+                me._pointsToDraw.append(pos);
+
+                # Draw points only those within the map
+                discontinuity
+                    ? me._flightPath.moveTo(pos.x, pos.y)
+                    : me._flightPath.lineTo(pos.x, pos.y);
+
+                # We have just drawn a point, so there is no discontinuity
+                discontinuity = 0;
+            }
+            else {
+                # The path point is out of map tiles, so ship it and mark discontinuity
+                discontinuity = 1;
+            }
+        }
     },
 
     #
@@ -373,7 +426,7 @@ DefaultStyle.widgets["map-view"] = {
     # @param  ghost  model  MapView model
     # @return ghost  Path element
     #
-    _drawFlightPath: func(model) {
+    _drawFullFlightPath: func(model) {
         # me._flightPath.reset();
 
         var tileSizeBuffer = me._getTileSizeBuffer(model);
