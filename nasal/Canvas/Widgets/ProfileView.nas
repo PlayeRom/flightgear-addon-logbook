@@ -37,7 +37,7 @@ gui.widgets.ProfileView = {
         me._trackItems = [];
         me._trackItemsSize = 0;
 
-        # Maximum flight altitude or elevation
+        # Maximum flight altitude or elevation from all me._trackItems provided
         me._maxAlt = 0;
 
         # Current index of me._trackItems (current aircraft position)
@@ -119,15 +119,25 @@ gui.widgets.ProfileView = {
     #          distance    : double,
     #          pitch       : double,
     #     },
-    # @param  double  maxAlt  Maximum flight altitude or elevation.
-    #     If not given then it will be obtained from rows (slow performance).
+    # @param  double|nil  maxAlt  Optional maximum flight altitude or altitude from all data provided.
     # @return me
     #
-    appendTrackItem: func(trackItem, maxAlt) {
+    appendTrackItem: func(trackItem, maxAlt = nil) {
         append(me._trackItems, trackItem);
         me._trackItemsSize = size(me._trackItems);
 
-        me._maxAlt = maxAlt;
+        if (maxAlt == nil) {
+            if (me._maxAlt < trackItem.alt_m) {
+                me._maxAlt = trackItem.alt_m;
+            }
+
+            if (me._maxAlt < trackItem.elevation_m) {
+                me._maxAlt = trackItem.elevation_m;
+            }
+        }
+        else {
+            me._maxAlt = maxAlt;
+        }
 
         return me;
     },
