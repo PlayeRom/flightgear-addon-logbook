@@ -383,12 +383,7 @@ DefaultStyle.widgets["map-view"] = {
         me._pointsToDraw.clear();
         me._flightPath.reset();
 
-        var tileSizeBuffer = me._getTileSizeBuffer(model);
-
-        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var minTileX = me._minTile.x - tileSizeBuffer;
-        var minTileY = me._minTile.y - tileSizeBuffer;
+        var edgeTiles = me._getTileThresholds(model);
 
         # = true because the first point must start with moveTo method
         var discontinuity = 1;
@@ -397,10 +392,10 @@ DefaultStyle.widgets["map-view"] = {
         forindex (var index; model._trackItems) {
             var pos = me._convertLatLonToPixel(model, index);
 
-            if (    pos.x < maxTileX
-                and pos.y < maxTileY
-                and pos.x > minTileX
-                and pos.y > minTileY
+            if (    pos.x < edgeTiles.maxX
+                and pos.y < edgeTiles.maxY
+                and pos.x > edgeTiles.minX
+                and pos.y > edgeTiles.minY
             ) {
                 # The path point is on the map, add it to me._pointsToDraw vector to use for click action
                 me._pointsToDraw.append(pos);
@@ -429,22 +424,17 @@ DefaultStyle.widgets["map-view"] = {
     _drawFullFlightPath: func(model) {
         # me._flightPath.reset();
 
-        var tileSizeBuffer = me._getTileSizeBuffer(model);
-
-        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var minTileX = me._minTile.x - tileSizeBuffer;
-        var minTileY = me._minTile.y - tileSizeBuffer;
+        var edgeTiles = me._getTileThresholds(model);
 
         # The loop to build an array of points that are within the map view and draw flight path
         me._pointsToDraw.clear();
         forindex (var index; model._trackItems) {
             var pos = me._convertLatLonToPixel(model, index);
 
-            if (    pos.x < maxTileX
-                and pos.y < maxTileY
-                and pos.x > minTileX
-                and pos.y > minTileY
+            if (    pos.x < edgeTiles.maxX
+                and pos.y < edgeTiles.maxY
+                and pos.x > edgeTiles.minX
+                and pos.y > edgeTiles.minY
             ) {
                 # The path point is on the map, add it to me._pointsToDraw vector to use for click action
                 me._pointsToDraw.append(pos);
@@ -469,12 +459,7 @@ DefaultStyle.widgets["map-view"] = {
     _transformFlightPath: func(model) {
         me._pointsToDraw.clear();
 
-        var tileSizeBuffer = me._getTileSizeBuffer(model);
-
-        var maxTileX = me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var maxTileY = me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE;
-        var minTileX = me._minTile.x - tileSizeBuffer;
-        var minTileY = me._minTile.y - tileSizeBuffer;
+        var edgeTiles = me._getTileThresholds(model);
 
         var firstPos = nil;
         var currentPos = nil;
@@ -483,10 +468,10 @@ DefaultStyle.widgets["map-view"] = {
         forindex (var index; model._trackItems) {
             var pos = me._convertLatLonToPixel(model, index);
 
-            if (    pos.x < maxTileX
-                and pos.y < maxTileY
-                and pos.x > minTileX
-                and pos.y > minTileY
+            if (    pos.x < edgeTiles.maxX
+                and pos.y < edgeTiles.maxY
+                and pos.x > edgeTiles.minX
+                and pos.y > edgeTiles.minY
             ) {
                 # The path point is on the map, add it to me._pointsToDraw vector to use for click action
                 me._pointsToDraw.append(pos);
@@ -512,6 +497,24 @@ DefaultStyle.widgets["map-view"] = {
                     (firstPos.y - currentPos.y) - (DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
                 );
         }
+    },
+
+    #
+    # Get the maximum and minimum X and Y values ​​in pixels of the outermost tiles,
+    # taking into account the buffer based on zoom
+    #
+    # @param  ghost  model
+    # @return hash
+    #
+    _getTileThresholds: func(model) {
+        var tileSizeBuffer = me._getTileSizeBuffer(model);
+
+        return {
+            maxX: me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE,
+            maxY: me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE,
+            minX: me._minTile.x - tileSizeBuffer,
+            minY: me._minTile.y - tileSizeBuffer,
+        };
     },
 
     #
