@@ -160,7 +160,7 @@ gui.widgets.ProfileView = {
         return me._trackItemsSize - 1;
     },
 
-        #
+    #
     # @return int
     #
     getTrackItemsSize: func() {

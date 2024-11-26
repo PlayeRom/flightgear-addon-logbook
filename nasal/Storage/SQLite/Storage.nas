@@ -544,6 +544,7 @@ var Storage = {
         return {
             id  : Columns.TOTALS_ROW_ID,
             data: totalsData,
+            font: "LiberationFonts/LiberationMono-Bold.ttf",
         };
     },
 

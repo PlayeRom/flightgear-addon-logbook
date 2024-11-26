@@ -600,6 +600,10 @@ DefaultStyle.widgets["list-view"] = {
             textStr ~= trimmedStr ~ " "; # it must be min 1 space to keep separation
         }
 
+        var fontName = contains(item, "font")
+            ? item.font
+            : nil;
+
         var text = me._createText(
             model,
             hash.group,
@@ -607,8 +611,7 @@ DefaultStyle.widgets["list-view"] = {
             me._getTextYOffset(),
             textStr,
             "left-baseline",
-            # TODO: there should be no such logic in the widget because it disrupts its universality!
-            isTotalsRow ? "LiberationFonts/LiberationMono-Bold.ttf" : me._fontName
+            fontName
         );
 
         append(hash.elem, text);

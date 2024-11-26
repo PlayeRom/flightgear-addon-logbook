@@ -61,7 +61,8 @@
 #                 "Row 3 column 1",
 #                 "Row 3 column 2",
 #                 "Row 3 column 3",
-#             ]
+#             ],
+#             font: "LiberationFonts/LiberationMono-Bold.ttf", # <- optional, change font for this row
 #         },
 #     ]);
 #############################################################################################
