@@ -106,7 +106,10 @@ var Logbook = {
             if (node.getBoolValue()) {
                 # sim is going to exit, save the logData
                 me._stopLogging(false);
-                DB.close();
+
+                if (me._isUsingSQLite) {
+                    DB.close();
+                }
             }
         });
 
