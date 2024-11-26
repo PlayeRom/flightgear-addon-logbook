@@ -483,8 +483,8 @@ var LogData = {
     toVector: func(columns) {
         var vector = [];
 
-        foreach (var columItem; columns.getAll()) {
-            append(vector, me._formatData(columItem.name));
+        foreach (var columnItem; columns.getAll()) {
+            append(vector, me._formatData(columnItem.name));
         }
 
         return vector;
@@ -545,11 +545,11 @@ var LogData = {
     fromDbToVector: func(row, columns) {
         var vector = [];
 
-        foreach (var columItem; columns.getAll()) {
-            if (contains(row, columItem.name)) {
-                me[columItem.name] = row[columItem.name];
+        foreach (var columnItem; columns.getAll()) {
+            if (contains(row, columnItem.name)) {
+                me[columnItem.name] = row[columnItem.name];
 
-                append(vector, me._formatData(columItem.name));
+                append(vector, me._formatData(columnItem.name));
             }
         }
 
