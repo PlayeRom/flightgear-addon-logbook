@@ -15,7 +15,6 @@
 DefaultStyle.widgets["list-view"] = {
     PADDING     : 10,
     ITEM_HEIGHT : 28,
-    CHAR_WIDTH  : 7, # TODO: it's hardcoded only for font size = 12
 
     #
     # Constructor
@@ -486,6 +485,21 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
+    # Get character width according to font size for mono regular font
+    #
+    # @return double
+    #
+    _getMonoCharWidth: func() {
+        # Unfortunately, the more characters, the more pixels per character, even though the font is mono.
+        # The following calculations are for a string with 12 characters.
+        #      if (me._fontSize == 12) return 7;   # 7.0625
+        # else if (me._fontSize == 14) return 8.2; # 8.2395
+        # else if (me._fontSize == 16) return 9.4; # 9.4166
+
+        return 0.588525 * me._fontSize + 0.000183;
+    },
+
+    #
     # Create complex row but in an optimized way that there is only one text object per row,
     # ant images are not supported, only text.
     #
@@ -505,7 +519,7 @@ DefaultStyle.widgets["list-view"] = {
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
         var textStr = "";
-
+        var charWidth = me._getMonoCharWidth();
         var columnsSize = size(item.columns);
 
         forindex (var columnIndex; item.columns) {
@@ -527,7 +541,7 @@ DefaultStyle.widgets["list-view"] = {
             }
 
             var originalTextSize = size(column.data);
-            var maxChars = int(columnWidth / DefaultStyle.widgets["list-view"].CHAR_WIDTH) - 1;
+            var maxChars = int(columnWidth / charWidth) - 1;
 
             var dots = originalTextSize > maxChars;
             if (dots) {
