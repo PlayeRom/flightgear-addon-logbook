@@ -10,16 +10,16 @@
 #
 
 #
-# Migration class for CSV file
+# Migration class for CSV file. This file is using also for SQLite version
 #
-var Migration = {
+var MigrationCsv = {
     #
     # Constructor
     #
     # @return me
     #
     new: func() {
-        return { parents: [Migration] };
+        return { parents: [MigrationCsv] };
     },
 
     #

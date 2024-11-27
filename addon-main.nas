@@ -35,6 +35,7 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
+        "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/Dialog",
@@ -87,7 +88,6 @@ var loadExtraNasalFiles = func(addon) {
         # so for them add Boolean.nas file
         modules = [
             "Boolean",
-            "nasal/Storage/CSV/Migration",
             "nasal/Storage/CSV/Storage",
             "nasal/Storage/CSV/Recovery",
             "nasal/Canvas/CSV/SettingsDialog",

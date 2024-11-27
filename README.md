@@ -36,9 +36,13 @@ on Linux:
 
 `/home/{user name}/.fgfs/`
 
-For CSV file, you can always open it and edit by any Spreadsheet program like LibreOffice Calc, MS Excel, etc. However please don't put the characters `,` in the cells, because the Logbook parser will recognize them as a column separator, which will cause errors in the operation of the add-on. It is safer to edit the log data through the GUI in the simulator.
+For CSV file, you can always open it and edit by any spreadsheet program like LibreOffice Calc, MS Excel, etc. However please don't put the characters `,` in the cells, because the Logbook parser will recognize them as a column separator, which will cause errors in the operation of the add-on. It is safer to edit the log data through the GUI in the simulator.
 
 The SQLite file can also be edited using special database software such as "DB Browser for SQLite" (DB4S) or "DBeaver". To obtain data for further processing in a spreadsheet, use the "Logbook" -> "Export to CSV" menu (see [Export database to CSV file](#export-database-to-csv-file).)
+
+## Migrating CSV to SQLite
+
+When you run Logbook version 2.x on FlightGear version 2024.1.x or later first time, it will automatically migrate your log data from the CSV file to the SQLite database file. This doesn't require any intervention.
 
 ## Data structure
 
@@ -291,7 +295,7 @@ These files will be saved in the same directory as the SQLite file. The timestam
 
 1. If you properly close the simulator during the flight ("File" -> "Exit"), the current flight status will be saved to the logbook (without landing information, of course).
 
-2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every 30 or 20 seconds.
+2. If the simulator will be closed incorrectly during flight, e.g. via the [X] button on the window bar, or a crash occurs, the logbook data should be saved in the `recovery-v5.csv` file. The data in the `recovery-v5.csv` file will be automatically transferred to the `logbook-v5.csv` file when the simulator is restarted. For version 2024.1 and later, the data is always, cyclically written directly to the SQLite database, so the `recovery-v5.csv` file is not used. Data for recovery mode is saved every 30 or 20 seconds.
 
 3. To count as a landing, the aircraft must rest on all wheels and maintain this state for at least 3 seconds. In this way, an ugly bounce off the runway will not be counted as a landing by the add-on.
 

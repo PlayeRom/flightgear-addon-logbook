@@ -115,7 +115,7 @@ var Storage = {
     # @return bool - Return true if migration was done
     #
     _migrateVersion: func() {
-        var migrationCsv = Migration.new();
+        var migrationCsv = MigrationCsv.new();
 
         var olderReleases = [
             # Keep the order from the newest to oldest
