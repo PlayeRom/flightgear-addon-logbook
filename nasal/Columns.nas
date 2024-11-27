@@ -122,8 +122,6 @@ var Columns = {
 
         me._allColumnsSize = size(me._allColumns);
 
-        me._widths = std.Vector.new();
-
         me.updateColumnsVisible();
 
         return me;
@@ -143,15 +141,6 @@ var Columns = {
     #
     getAll: func() {
         return me._allColumns;
-    },
-
-    #
-    # Get vector of widths for visible columns
-    #
-    # @return vector  Vector of integers
-    #
-    getWidths: func() {
-        return me._widths.vector;
     },
 
     #
@@ -271,29 +260,25 @@ var Columns = {
     # @return void
     #
     updateColumnsVisible: func() {
-        var dataTimeDisplay = g_Settings.getDateTimeDisplay();
-        var columnsVisible = g_Settings.getColumnsVisible();
+        if (!me._isUsingSQLite) {
+            return;
+        }
 
-        me._widths.clear();
+        var dataTimeDisplay = g_Settings.getDateTimeDisplay();
+        var columnsVisible  = g_Settings.getColumnsVisible();
 
         foreach (var columnItem; me._allColumns) {
-            if (me._isUsingSQLite) {
-                if (columnItem.name == Columns.DATE or columnItem.name == Columns.TIME) {
-                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_REAL;
-                }
-                else if (columnItem.name == Columns.SIM_UTC_DATE or columnItem.name == Columns.SIM_UTC_TIME) {
-                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
-                }
-                else if (columnItem.name == Columns.SIM_LOC_DATE or columnItem.name == Columns.SIM_LOC_TIME) {
-                    columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
-                }
-                else if (contains(columnsVisible, columnItem.name)) {
-                    columnItem.visible = columnsVisible[columnItem.name];
-                }
+            if (columnItem.name == Columns.DATE or columnItem.name == Columns.TIME) {
+                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_REAL;
             }
-
-            if (columnItem.visible) {
-                me._widths.append(columnItem.width);
+            else if (columnItem.name == Columns.SIM_UTC_DATE or columnItem.name == Columns.SIM_UTC_TIME) {
+                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
+            }
+            else if (columnItem.name == Columns.SIM_LOC_DATE or columnItem.name == Columns.SIM_LOC_TIME) {
+                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
+            }
+            else if (contains(columnsVisible, columnItem.name)) {
+                columnItem.visible = columnsVisible[columnItem.name];
             }
         }
     },

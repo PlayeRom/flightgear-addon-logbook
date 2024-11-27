@@ -9,8 +9,14 @@
 # under the GNU Public License v3 (GPLv3)
 #
 #############################################################################################
-# Simplest example of use:
+# Example of use:
 #############################################################################################
+# Notes for images:
+# 1. All images will have the same height, default 64 px. To change this value, use setImageHeight().
+# 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImageAspectRatio().
+# 3. ListView doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
+#    just pass a larger value for the column by `width` field.
+#
 # var window = canvas.Window.new([600, 480], "dialog").set("title", "ListView demo");
 # var myCanvas = window.createCanvas().set("background", canvas.style.getColor("bg_color"));
 # var root = myCanvas.createGroup();
@@ -26,93 +32,158 @@
 #         gui.popupTip("Clicked on row " ~ index);
 #     })
 #     .setItems([
-#         "Item text 1",
-#         "Item text 2",
-#         "Item text 3",
-#         "Item text 4",
-#         "Item text 5",
+#         # First row:
+#         {
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       type   : "string",                                     # <- optional, default is string
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       font   : "LiberationFonts/LiberationSans-Regular.ttf", # <- optional, set font for this cell
+#                       data   : "Row 1 column 1",                             # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       type   : "string",                                     # <- optional, default is string
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       font   : "LiberationFonts/LiberationSans-Bold.ttf",    # <- optional, set font for this cell
+#                       data   : "Row 1 column 2",                             # <- required, text in cell
+#                  },
+#             ],
+#             font: "LiberationFonts/LiberationSans-Regular.ttf",              # <- optional, set font for whole row (profity has column font)
+#         },
+#         # Second row with image:
+#         {
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       type   : "image",                                      # <- indicate that data is path to image, not text to print
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       data   : "Textures/Splash1.png",                       # <- path to the image instead of text
+#                  },
+#                  {
+#                       width  : 150,
+#                       type   : "string",                                     # <- optional, default is string
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       font   : "LiberationFonts/LiberationSans-Bold.ttf",    # <- optional, set font for this cell
+#                       data   : "Row 2 column 2",                             # <- required, text in cell
+#                  },
+#             ],
+#             font: "LiberationFonts/LiberationSans-Regular.ttf",              # <- optional, set font for whole row (profity has column font)
+#         }
+#         # Third row with colspan:
+#         {
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       type   : "string",                                     # <- optional, default is string
+#                       colspan: 2,                                            # <- this column will span to the next one,
+#                       font   : "LiberationFonts/LiberationSans-Regular.ttf", # <- optional, set font for this cell
+#                       data   : "Row 3 - some log text with span columns",    # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 0,                                            # <- must be 0, if previous column has colspan > 1,
+#                  },
+#             ],
+#             font: "LiberationFonts/LiberationSans-Regular.ttf",              # <- optional, set font for whole row (profity has column font)
+#         }
 #     ]);
 #
 #############################################################################################
-# The simplest use case with multiple columns:
+# Example of use with useOptimizeRow():
 #############################################################################################
-# listView
-#     .setClickCallback(func(index) {
-#         gui.popupTip("Clicked on row " ~ index);
-#     })
-#     .setColumnsWidth([150, 150, 150])
-#     .setItems([
-#         {
-#             data: [
-#                 "Row 1 column 1",
-#                 "Row 1 column 2",
-#                 "Row 1 column 3",
-#             ]
-#         },
-#         {
-#             data: [
-#                 "Row 2 column 1",
-#                 "Row 2 column 2",
-#                 "Row 2 column 3",
-#             ]
-#         },
-#         {
-#             data: [
-#                 "Row 3 column 1",
-#                 "Row 3 column 2",
-#                 "Row 3 column 3",
-#             ],
-#             font: "LiberationFonts/LiberationMono-Bold.ttf", # <- optional, change font for this row
-#         },
-#     ]);
-#############################################################################################
-# The simplest use case with multiple columns and images in the columns:
-#############################################################################################
-# Notes for images:
-# 1. All images will have the same height, default 64 px. To change this value, use setImageHeight().
-# 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImageAspectRatio().
-# 3. ListView doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
-#    just pass a larger value for the column by using setColumnsWidth() method.
+# Notes: This is a more efficient method, where the entire row is rendered as a single text element (instead of
+# creating a text element per cell). So if you have 20 rows, each with 30 columns, only 20 text elements are created,
+# instead of 600!
+#
+# Limitations:
+# 1. The font must be mono everywhere, because only then it's possible to align the columns.
+# 2. You cannot use a different font for the cell, only for the entire row (still must be mono, but you can choose
+#    regular or bold).
+# 3. You cannot use images.
+#
+# Additional options:
+# 1. For the cell, you can use the `align` field with the value "left" (default) or "right".
 #
 # listView
+#     .useOptimizeRow()
 #     .setClickCallback(func(index) {
 #         gui.popupTip("Clicked on row " ~ index);
 #     })
-#     .setColumnsWidth([150, 150, 150])
 #     .setItems([
+#         # First row:
 #         {
-#             types: [
-#                 "string",
-#                 "string",
-#                 "image", # <- indicate that 3rd column is an image
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 1 column 1",                             # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 1 column 2",                             # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 1 column 3",                             # <- required, text in cell
+#                  },
 #             ],
-#             data: [
-#                 "Row 1 column 1",
-#                 "Row 1 column 2",
-#                 "Textures/Splash1.png", # <- path to the image instead of text
-#             ],
+#             font: "LiberationFonts/LiberationMono-Regular.ttf",              # <- optional, set font for whole row
 #         },
+#         # Second row:
 #         {
-#             types: [
-#                 "string",
-#                 "image", # <- indicate that 2nd column is an image
-#                 "string",
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 2 column 1",                             # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 2 column 2",                             # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 2 column 3",                             # <- required, text in cell
+#                  },
 #             ],
-#             data: [
-#                 "Row 2 column 1",
-#                 "Textures/Splash2.png", # <- path to the image instead of text
-#                 "Row 2 column 3",
-#             ],
+#             font: "LiberationFonts/LiberationMono-Regular.ttf",              # <- optional, set font for whole row
 #         },
+#         # Third row:
 #         {
-#             # There is no need to include "types", since there is a string in all columns.
-#             data: [
-#                 "Row 3 column 1",
-#                 "Row 3 column 2",
-#                 "Row 3 column 3",
+#             columns: [
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 2,                                            # <- this column will span to the next one,
+#                       align  : "right",                                      # <- align text to right
+#                       data   : "Totals:",                                    # <- required, text in cell
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 0,                                            # <- must be 0, if previous column has colspan,
+#                  },
+#                  {
+#                       width  : 150,                                          # <- required, column width in pixels
+#                       colspan: 1,                                            # <- optional, default is 1
+#                       align  : "left",                                       # <- optional, text align, default "left"
+#                       data   : "Row 3 column 3",                             # <- required, text in cell
+#                  },
 #             ],
-#         },
+#             font: "LiberationFonts/LiberationMono-Bold.ttf",                 # <- optional, set font for whole row
+#         }
 #     ]);
+#
 
 #
 # ListView widget Model
@@ -152,9 +223,6 @@ gui.widgets.ListView = {
 
         # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
         me._isUseTextMaxWidth = 0;
-
-        # If it's set on true, then ListView widget was recognized items as a complex structure with multi-columns
-        me._isComplexItems = 0;
 
         # If it's set on true, then the entire one row will be drawn on a single “text” element, which greater
         # performance. If false then each cell will be a separate “text” (or "image") element. Only when it is false
@@ -266,34 +334,43 @@ gui.widgets.ListView = {
     },
 
     #
-    # @param  vector  fonts  Vector of strings with font names. Each item corresponds to the next column.
-    # @return me
+    # Set vector of hashes as ListView data to display. Each hash in vector is a one row. Each row has `columns` key and
+    # optional `font` (string as file font to apply to whole row).
+    # Each `column` is another vector of hashes. Each hash represent a one column. Each column has following keys:
+    # `width`   - width of column in pixels, it's required for all columns.
+    # `type`    - type of column, can be "string" (default) or "image". Image in not supported with useOptimizeRow().
+    # `colspan` - default 1. If more than 1, it means that the column will span the width of the next columns that
+    #             follow it. Columns that will be absorbed by the previous span must have colspan set to 0. So if you
+    #             set colspan to 2, then the next one column must have colspan 0. If you set colspan to 3, then the next
+    #             two columns must have colspan 0, etc.
+    # `font`    - font file name which will be applied to gibne column. Font in not supported with useOptimizeRow().
+    # `data`    - text to display (if type is "string") or path to image file (if type is "image").
+    # `align`   - text align, it can be "left" (default) or "right", only with useOptimizeRow().
     #
-    setFontNameColumns: func(fonts) {
-        me._view.setFontNameColumns(me, fonts);
-        return me;
-    },
-
-    #
-    # Set columns widths in pixels as a vector (each item as an int). It's needed if you have to draw many columns
-    # with data. When you use it, then for setItems you have to pass vector of hashes.
-    #
-    # @param  vector  columnsWidth  e.g. [200, 300, 150, ...]
-    # @return me
-    #
-    setColumnsWidth: func(columnsWidth) {
-        me._view.setColumnsWidth(me, columnsWidth);
-        return me;
-    },
-
-    #
-    # If you didn't use setColumnsWidth then items is a vector of strings. Then each string will be a row. If you used
-    # setColumnsWidth then items is a vector of hashes, where each hash must have "data" key with a vector of strings.
-    # Then each hash will be a row and each string will be a column in its row. In this case, the size of the string
-    # vector must be the same as the size of the vector given in setColumnsWidth.
-    #
-    # @param  vector  items  ["Item 1", "Item 2", ...] or
-    #                        [{data: ["Row 1 Col 1", "Row 1 Col 2", ...]}, {data: ["Row 2 Col 1", "Row 2 col 2", ...]}, ...]
+    # @param  vector  items
+    # [
+    #     {
+    #         columns: [
+    #              {
+    #                   width  : 150,                                          # <- required, column width in pixels
+    #                   type   : "string",                                     # <- optional, default is string
+    #                   colspan: 1,                                            # <- optional, default is 1
+    #                   font   : "LiberationFonts/LiberationSans-Regular.ttf", # <- optional, set font for this cell
+    #                   data   : "Row 1 column 1",
+    #              },
+    #              {
+    #                   width  : 150,                                          # <- required, column width in pixels
+    #                   type   : "string",                                     # <- optional, default is string
+    #                   colspan: 1,                                            # <- optional, default is 1
+    #                   font   : "LiberationFonts/LiberationSans-Bold.ttf",    # <- optional, set font for this cell
+    #                   data   : "Row 1 column 2",
+    #              },
+    #              ... next columns
+    #         ],
+    #         font: "LiberationFonts/LiberationSans-Regular.ttf",              # <- optional, set font for whole row (profity has column font)
+    #     },
+    #     ... next rows
+    # ]
     # @param  bool  disableLoading
     # @return me
     #
@@ -303,7 +380,7 @@ gui.widgets.ListView = {
         }
 
         me._items = items;
-        me._isComplexItems = size(me._items) > 0 ? typeof(me._items[0]) == "hash" : 0;
+
         me._view.reDrawContent(me);
 
         return me;
@@ -387,6 +464,7 @@ gui.widgets.ListView = {
 
     #
     # Use it for crate one text element per row instead of one text element per cell
+    # NOTE: here the font has to be mono!
     #
     # @return me
     #

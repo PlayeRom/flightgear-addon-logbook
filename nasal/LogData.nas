@@ -475,9 +475,9 @@ var LogData = {
     },
 
     #
-    # Convert hash to vector using all columns
+    # Convert LogData to vector using all columns (only for CSV)
     #
-    # @param  hash columns  Columns object
+    # @param  hash  columns  Columns object
     # @return vector
     #
     toVector: func(columns) {
@@ -485,6 +485,25 @@ var LogData = {
 
         foreach (var columnItem; columns.getAll()) {
             append(vector, me._formatData(columnItem.name));
+        }
+
+        return vector;
+    },
+
+    #
+    # Convert LogData to vector for using in ListView widget (only for CSV)
+    #
+    # @param  hash  columns  Columns object
+    # @return vector
+    #
+    toListViewColumns: func(columns) {
+        var vector = [];
+
+        foreach (var columnItem; columns.getAll()) {
+            append(vector, {
+                width  : columnItem.width,
+                data   : me._formatData(columnItem.name),
+            });
         }
 
         return vector;
@@ -536,20 +555,23 @@ var LogData = {
     },
 
     #
-    # Apply given hash from DB to this object and return vector with data
+    # Apply given row hash from DB to this object and return vector of columns for ListView widget
     #
     # @param  hash  row  Hash from DB, not all columns can be included here, depending on SELECT in SQL query
     # @param  hash  columns  Columns object
     # @return vector
     #
-    fromDbToVector: func(row, columns) {
+    fromDbToListViewColumns: func(row, columns) {
         var vector = [];
 
         foreach (var columnItem; columns.getAll()) {
             if (contains(row, columnItem.name)) {
                 me[columnItem.name] = row[columnItem.name];
 
-                append(vector, me._formatData(columnItem.name));
+                append(vector, {
+                    width  : columnItem.width,
+                    data   : me._formatData(columnItem.name),
+                });
             }
         }
 

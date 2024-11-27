@@ -241,7 +241,7 @@ var Storage = {
             me._filters.append(logData);
             me._filters.sort();
             me._totalLines += 1;
-            me._countTotals(logData.toVector(me._columns));
+            me._countTotals(logData.toListViewColumns(me._columns));
             me._filters.dirty = true;
         }
     },
@@ -311,7 +311,7 @@ var Storage = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me._countTotals(items);
+                me._countTotals(logData.toListViewColumns(me._columns));
 
                 me._filters.append(logData);
                 me._allData.append(logData);
@@ -358,11 +358,11 @@ var Storage = {
             var counter = 0;
 
             foreach (var hash; me._cachedData.vector[start:]) {
-                var vectorLogData = hash.logData.toVector(me._columns);
+                var listViewColumns = hash.logData.toListViewColumns(me._columns);
                 if (counter < count) {
                     me._loadedData.append({
-                        id   : hash.id,
-                        data : vectorLogData,
+                        id     : hash.id,
+                        columns: listViewColumns,
                     });
                     counter += 1;
                 }
@@ -408,22 +408,22 @@ var Storage = {
         me._totalLines = 0;
 
         foreach (var logData; me._allData.vector) {
-            var vectorLogData = logData.toVector(me._columns);
+            var listViewColumns = logData.toListViewColumns(me._columns);
             if (me._filters.isAllowedByFilter(logData)) {
                 if (me._totalLines >= start and counter < count) {
                     me._loadedData.append({
-                        id   : id,
-                        data : vectorLogData,
+                        id     : id,
+                        columns: listViewColumns,
                     });
                     counter += 1;
                 }
 
                 me._totalLines += 1;
-                me._countTotals(vectorLogData);
+                me._countTotals(listViewColumns);
 
                 me._cachedData.append({
-                    id      : id,
-                    logData : logData,
+                    id     : id,
+                    logData: logData,
                 });
             }
 
@@ -464,26 +464,37 @@ var Storage = {
             # }
 
             if (columnItem.totals == nil) {
-                append(totalsData, "");
+                append(totalsData, {
+                    width: columnItem.width,
+                    data : "", # blank column
+                });
             }
             else {
                 if (!setTotalsLabel) {
                     # Set the "Totals" label for the last added empty item
                     var count = size(totalsData);
-                    if (count > 0) {
-                        totalsData[count - 1] = "Totals:";
+                    if (count > 1) {
+                        totalsData[count - 2].colspan = 2;
+                        totalsData[count - 2].align   = "right";
+                        totalsData[count - 2].data    = "Totals:";
+
+                        totalsData[count - 1].colspan = 0;
+
                         setTotalsLabel = true;
                     }
                 }
 
-                append(totalsData, sprintf(columnItem.totalFrm, columnItem.totalVal));
+                append(totalsData, {
+                    width: columnItem.width,
+                    data : sprintf(columnItem.totalFrm, columnItem.totalVal),
+                });
             }
         }
 
         return {
-            id  : Columns.TOTALS_ROW_ID,
-            data: totalsData,
-            font: "LiberationFonts/LiberationMono-Bold.ttf",
+            id     : Columns.TOTALS_ROW_ID,
+            columns: totalsData,
+            font   : "LiberationFonts/LiberationMono-Bold.ttf",
         };
     },
 
@@ -567,8 +578,8 @@ var Storage = {
     },
 
     #
-    # @param bool reCalcTotals - Set true for recalculate totals, because data can changed
-    # @param bool resetFilters - Set true for reload filters, because data can changed
+    # @param  bool  reCalcTotals  Set true for recalculate totals, because data can changed
+    # @param  bool  resetFilters  Set true for reload filters, because data can changed
     # @return void
     #
     _saveAllData: func(reCalcTotals, resetFilters) {
@@ -593,7 +604,7 @@ var Storage = {
             me.addItem(logData, file);
 
             if (reCalcTotals) {
-                me._countTotals(logData.toVector(me._columns));
+                me._countTotals(logData.toListViewColumns(me._columns));
             }
 
             if (resetFilters) {
@@ -634,13 +645,12 @@ var Storage = {
     #
     # Increase values in totals with given items data
     #
-    # @param  vector  items
+    # @param  vector  columns  Vector of hashes, prepared to list view
     # @return void
     #
-    _countTotals: func(items) {
-        var index = -1;
-        foreach (var value; items) {
-            index += 1;
+    _countTotals: func(columns) {
+        forindex (var index; columns) {
+            var column = columns[index];
 
             var columnItem = me._columns.getColumnByIndex(index);
             if (columnItem == nil or columnItem.totals == nil) {
@@ -648,12 +658,12 @@ var Storage = {
             }
 
             if (columnItem.name == Columns.MAX_ALT) {
-                if (num(value) > columnItem.totalVal) {
-                    me._columns.setTotalValueByColumnName(columnItem.name, num(value));
+                if (num(column.data) > columnItem.totalVal) {
+                    me._columns.setTotalValueByColumnName(columnItem.name, num(column.data));
                 }
             }
             else {
-                value = columnItem.totalVal + (value == "" ? 0 : num(value));
+                var value = columnItem.totalVal + (column.data == "" ? 0 : num(column.data));
                 me._columns.setTotalValueByColumnName(columnItem.name, value);
             }
         }
@@ -690,8 +700,8 @@ var Storage = {
         }
 
         return {
-            id   : index,
-            data : me._allData.vector[index].toVector(me._columns)
+            id     : index,
+            columns: me._allData.vector[index].toListViewColumns(me._columns)
         };
     },
 

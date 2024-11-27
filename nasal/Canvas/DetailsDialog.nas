@@ -18,10 +18,6 @@ var DetailsDialog = {
     #
     WINDOW_WIDTH  : 610,
     WINDOW_HEIGHT : 660,
-    COLUMNS_WIDTH : [
-        170, # header
-        400, # data
-    ],
 
     #
     # Constructor
@@ -70,11 +66,6 @@ var DetailsDialog = {
 
         me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
-            .setFontNameColumns([
-                "LiberationFonts/LiberationMono-Regular.ttf",
-                "LiberationFonts/LiberationMono-Bold.ttf",
-            ])
-            .setColumnsWidth(DetailsDialog.COLUMNS_WIDTH)
             .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()
             .setEmptyPlaceholder("-");
@@ -241,7 +232,7 @@ var DetailsDialog = {
         # Get data from storage
         me._dataRow = me._storage.getLogData(me._logbookId);
 
-        me._listView.setItems(me._getListViewRows(me._dataRow.data));
+        me._listView.setItems(me._getListViewRows(me._dataRow.columns));
 
         call(Dialog.show, [], me);
     },
@@ -272,10 +263,10 @@ var DetailsDialog = {
     #
     # Prepare columns data for ListView
     #
-    # @param  vector  data
+    # @param  vector  columns  Vector of hashes with columns for ListView widget
     # @return vector
     #
-    _getListViewRows: func(data) {
+    _getListViewRows: func(columns) {
         var rowsData = [];
         var index = -1;
 
@@ -288,12 +279,20 @@ var DetailsDialog = {
             }
 
             append(rowsData, {
-                data : [
-                    sprintf("%16s:", columnItem.header),
-                    sprintf("%s %s",
-                        me._addCommaSeparator(columnItem.name, data[index]),
-                        me._getExtraText(columnItem.name, data[index])
-                    ),
+                columns : [
+                    {
+                        width  : 170,
+                        font   : "LiberationFonts/LiberationMono-Regular.ttf",
+                        data   : sprintf("%16s:", columnItem.header),
+                    },
+                    {
+                        width  : 400,
+                        font   : "LiberationFonts/LiberationMono-Bold.ttf",
+                        data   : sprintf("%s %s",
+                            me._addCommaSeparator(columnItem.name, columns[index].data),
+                            me._getExtraText(columnItem.name, columns[index].data)
+                        ),
+                    },
                 ],
             });
         }
@@ -307,15 +306,17 @@ var DetailsDialog = {
     # @return void
     #
     reload: func() {
-        if (me._logbookId != nil) {
-            me._dataRow = me._storage.getLogData(me._logbookId);
-            if (me._dataRow == nil) {
-                call(DetailsDialog.hide, [false], me);
-                return;
-            }
-
-            me._listView.setItems(me._getListViewRows(me._dataRow.data));
+        if (me._logbookId == nil) {
+            return;
         }
+
+        me._dataRow = me._storage.getLogData(me._logbookId);
+        if (me._dataRow == nil) {
+            call(DetailsDialog.hide, [false], me);
+            return;
+        }
+
+        me._listView.setItems(me._getListViewRows(me._dataRow.columns));
     },
 
     #
@@ -345,7 +346,7 @@ var DetailsDialog = {
         me._inputDialog.show(
             me,
             me._dataRow.id,
-            me._dataRow.data[index],
+            me._dataRow.columns[index].data,
             me._columns.getColumnByIndex(index)
         );
     },

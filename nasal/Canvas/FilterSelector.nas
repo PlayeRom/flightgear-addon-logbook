@@ -121,18 +121,32 @@ var FilterSelector = {
     },
 
     #
-    # @param  vector  items
+    # @param  vector  items  Vector of strings
     # @param  bool  withDefaultAll
     # @return me
     #
     setItems: func(items, withDefaultAll = 1) {
         me._items.clear();
 
+        var columnWidth = FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2);
+
         if (withDefaultAll) {
-            me._items.append(FilterSelector.CLEAR_FILTER_VALUE);
+            me._items.append({
+                columns: [{
+                    width: columnWidth,
+                    data : FilterSelector.CLEAR_FILTER_VALUE,
+                }],
+            });
         }
 
-        me._items.extend(items);
+        foreach (var text; items) {
+            me._items.append({
+                columns: [{
+                    width: columnWidth,
+                    data : text,
+                }],
+            });
+        }
 
         if (me._listView != nil) {
             me._listView.setItems(me._items.vector);
@@ -241,7 +255,6 @@ var FilterSelector = {
         me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
             .setTitle(me._title)
             .useTextMaxWidth()
-            .setColumnsWidth([FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2)])
             .setFontSizeMedium()
             .setColorText(me.style.TEXT_COLOR)
             .setColorBackground(me.style.CANVAS_BG)
@@ -257,13 +270,13 @@ var FilterSelector = {
     # The click callback on the ListView widget.
     # Call other callback passed by parent object by setCallback and hide this dialog.
     #
-    # @param  int  index
+    # @param  int  index  Index of row
     # @return void
     #
     _listViewCallback: func(index) {
         g_Sound.play('paper');
 
-        var text = me._items.vector[index];
+        var text = me._items.vector[index].columns[0].data;
 
         call(me._callback, [me._columnName, text], me._objCallback);
         me.hide();

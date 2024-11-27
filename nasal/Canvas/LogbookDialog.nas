@@ -96,8 +96,6 @@ var LogbookDialog = {
                 canvas.DefaultStyle.widgets["list-view"].PADDING,
                 canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             )
-            .setFontName("LiberationFonts/LiberationMono-Regular.ttf")
-            .setColumnsWidth(me._columns.getWidths())
             .useOptimizeRow()
             .setClickCallback(me._listViewCallback, me);
 

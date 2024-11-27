@@ -263,8 +263,7 @@ var Storage = {
     #
     _dbRowToVector: func(row) {
         var logData = LogData.new();
-        logData.fromDb(row);
-        return logData.toVector(me._columns);
+        return logData.fromDbToListViewColumns(row, me._columns);
     },
 
     #
@@ -386,8 +385,8 @@ var Storage = {
             var logData = LogData.new();
 
             me._loadedData.append({
-                id   : row.id,
-                data : logData.fromDbToVector(row, me._columns),
+                id     : row.id,
+                columns: logData.fromDbToListViewColumns(row, me._columns),
             });
         }
 
@@ -517,34 +516,49 @@ var Storage = {
             }
 
             if (columnItem.totals == nil) {
-                append(totalsData, "");
+                append(totalsData, {
+                    width: columnItem.width,
+                    data : "", # blank column
+                });
             }
             else {
                 if (!setTotalsLabel) {
                     # Set the "Totals" label for the last added empty item
                     var count = size(totalsData);
-                    if (count > 0) {
-                        totalsData[count - 1] = "Totals:";
+                    if (count > 1) {
+                        totalsData[count - 2].colspan = 2;
+                        totalsData[count - 2].align   = "right";
+                        totalsData[count - 2].data    = "Totals:";
+
+                        totalsData[count - 1].colspan = 0;
+
                         setTotalsLabel = true;
                     }
                 }
 
-                append(totalsData, sprintf(columnItem.totalFrm, columnItem.totalVal));
+                append(totalsData, {
+                    width: columnItem.width,
+                    data : sprintf(columnItem.totalFrm, columnItem.totalVal),
+                });
             }
         }
 
         if (!setTotalsLabel) {
             # The Totals label is still not set, because each column with totals is not displayed, so set it to the last column
             var count = size(totalsData);
-            if (count > 0) {
-                totalsData[count - 1] = "Totals";
+            if (count > 1) {
+                totalsData[count - 2].colspan = 2;
+                totalsData[count - 2].align   = "right";
+                totalsData[count - 2].data    = "Totals";
+
+                totalsData[count - 1].colspan = 0;
             }
         }
 
         return {
-            id  : Columns.TOTALS_ROW_ID,
-            data: totalsData,
-            font: "LiberationFonts/LiberationMono-Bold.ttf",
+            id     : Columns.TOTALS_ROW_ID,
+            columns: totalsData,
+            font   : "LiberationFonts/LiberationMono-Bold.ttf",
         };
     },
 
@@ -653,8 +667,8 @@ var Storage = {
         var row = rows[0];
 
         return {
-            id   : row.id,
-            data : me._dbRowToVector(row),
+            id     : row.id,
+            columns: me._dbRowToVector(row),
         };
     },
 

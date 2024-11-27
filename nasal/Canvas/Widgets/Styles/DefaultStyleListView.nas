@@ -30,11 +30,9 @@ DefaultStyle.widgets["list-view"] = {
         me._titleElement = nil;
         me._itemElements = [];
         me._loadingText = nil;
-        me._columnsWidth = nil;
 
         me._fontSize = 14;
         me._fontName = "LiberationFonts/LiberationMono-Regular.ttf";
-        me._fontNameColumns = nil;
 
         me._textColor = me._style.getColor("fg_color");
         me._backgroundColor = me._style.getColor("bg_color");
@@ -64,16 +62,6 @@ DefaultStyle.widgets["list-view"] = {
     #
     update: func(model) {
         # nothing here
-    },
-
-    #
-    # @param  ghost  model  ListView model
-    # @param  vector  columnsWidth
-    # @return me
-    #
-    setColumnsWidth: func(model, columnsWidth) {
-        me._columnsWidth = columnsWidth;
-        return me;
     },
 
     #
@@ -213,39 +201,6 @@ DefaultStyle.widgets["list-view"] = {
             }
             else if (hash.elem.getType() == "text") {
                 hash.elem.setFont(font);
-            }
-        }
-
-        return me;
-    },
-
-    #
-    # @param  ghost  model  ListView model
-    # @param  vector  fonts  Vector of strings with font names. Each item corresponds to the next column.
-    # @return me
-    #
-    setFontNameColumns: func(model, fonts) {
-        me._fontNameColumns = fonts;
-
-        if (me._loadingText != nil) {
-            me._loadingText.setFont(fonts[0]);
-        }
-
-        if (me._titleElement != nil) {
-            me._titleElement.setFont(fonts[0]);
-        }
-
-        foreach (var hash; me._itemElements) {
-            if (typeof(hash.elem) == "vector") {
-                forindex (var index; hash.elem) {
-                    var elem = hash.elem[index];
-                    if (elem.getType() == "text") {
-                        elem.setFont(fonts[index]);
-                    }
-                }
-            }
-            else if (hash.elem.getType() == "text") {
-                hash.elem.setFont(font[0]);
             }
         }
 
@@ -394,56 +349,9 @@ DefaultStyle.widgets["list-view"] = {
     # @return void
     #
     _createRow: func(model, item, x, y) {
-        if (model._isComplexItems) {
-            # model._items is a vector of hash, each hash has "data" key with vector of strings
-
-            if (model._isOptimizeRow) {
-                me._createComplexOptimizeRow(model, item, x, y);
-            }
-            else {
-                me._createComplexRow(model, item, x, y);
-            }
-            return;
-        }
-
-        # model._items is a vector of strings
-        me._createSimpleRow(model, item, x, y);
-    },
-
-    #
-    # Create simple row
-    #
-    # @param  ghost  model  ListView model
-    # @param  string|hash  item
-    # @param  int  x, y
-    # @return void
-    #
-    _createSimpleRow: func(model, item, x, y) {
-        var hash = me._createBar(y);
-
-        # Create temporary text element for get his height
-        # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
-        # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
-        var height = DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
-        if (model._isUseTextMaxWidth) {
-            var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), item)
-                .setMaxWidth(me._columnsWidth[0]);
-
-            height = tempText.getSize()[1] + 1;
-            if (height > hash.maxHeight) {
-                hash.maxHeight = height;
-            }
-            tempText.del();
-        }
-
-        hash.rect = me._createRectangle(model, hash.group, height + me._getHeightItemPadding(hash.maxHeight));
-
-        hash.elem = me._createText(model, hash.group, x, me._getTextYOffset(), item);
-        if (model._isUseTextMaxWidth) {
-            hash.elem.setMaxWidth(me._columnsWidth[0]);
-        }
-
-        append(me._itemElements, hash);
+        model._isOptimizeRow
+            ? me._createComplexOptimizeRow(model, item, x, y)
+            : me._createComplexRow(model, item, x, y);
     },
 
     #
@@ -458,19 +366,27 @@ DefaultStyle.widgets["list-view"] = {
         var hash = me._createBar(y);
         hash.elem = [];
 
+        # Get row font
+        var rowFont = contains(item, "font") ? item.font : nil;
+
         # Create temporary text elements to get their height
         # TODO: It would be nice to optimize here so as not to draw these temporary texts, but I need to first
         # draw a rectangle and know its height based on the text that will be there, and then draw the final text.
         if (model._isUseTextMaxWidth) {
             var tempText = me._createText(model, hash.group, x, me._getTextYOffset(), "temp");
-            forindex (var columnIndex; me._columnsWidth) {
-                if (item["types"] == nil or item.types[columnIndex] == "string") {
-                    # If item has not declared "type" then assume that it's a string
-                    tempText
-                        .setText(item.data[columnIndex])
-                        .setMaxWidth(me._getColumnWidth(columnIndex));
+            forindex (var columnIndex; item.columns) {
+                var column = item.columns[columnIndex];
 
-                    var height = tempText.getSize()[1];
+                # If item has not declared "type" then assume that it's a string
+                if (me._isColTypeString(column)) {
+                    var font = me._getCellFont(rowFont, column);
+
+                    tempText
+                        .setFont(font == nil ? me._fontName : font)
+                        .setText(column.data)
+                        .setMaxWidth(column.width);
+
+                    var height = tempText.getSize()[1] + 1;
                     if (height > hash.maxHeight) {
                         hash.maxHeight = height;
                     }
@@ -488,41 +404,58 @@ DefaultStyle.widgets["list-view"] = {
         var rectHeight = hash.maxHeight == 0
             ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
+
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
-        forindex (var columnIndex; me._columnsWidth) {
-            var columnWidth = me._getColumnWidth(columnIndex);
+        forindex (var columnIndex; item.columns) {
+            var column = item.columns[columnIndex];
 
-            if (item["types"] == nil or item.types[columnIndex] == "string") {
+            if (me._isColTypeString(column)) {
                 var text = me._createText(
                     model,
                     hash.group,
                     x,
                     me._getTextYOffset(),
-                    item.data[columnIndex],
+                    column.data,
                     "left-baseline",
-                    me._fontNameColumns == nil ? nil : me._fontNameColumns[columnIndex],
+                    me._getCellFont(rowFont, column)
                 );
 
                 if (model._isUseTextMaxWidth) {
-                    text.setMaxWidth(columnWidth);
+                    text.setMaxWidth(column.width);
                 }
 
                 append(hash.elem, text);
             }
-            else if (item.types[columnIndex] == "image") {
+            else if (me._isColTypeImage(column)) {
                 var image = hash.group.createChild("image")
-                    .setFile(item.data[columnIndex])
+                    .setFile(column.data)
                     .setTranslation(x, me._getHeightItemPadding(hash.maxHeight) / 2)
                     .setSize(int(model._imgHeight * model._imgAspectRatio), model._imgHeight);
 
                 append(hash.elem, image);
             }
 
-            x += columnWidth;
+            x += column.width;
         }
 
         append(me._itemElements, hash);
+    },
+
+    #
+    # @param  hash  column
+    # @return bool
+    #
+    _isColTypeString: func(column) {
+        return !contains(column, "type") or column.type == "string";
+    },
+
+    #
+    # @param  hash  column
+    # @return bool
+    #
+    _isColTypeImage: func(column) {
+        return contains(column, "type") and column.type == "image";
     },
 
     #
@@ -530,11 +463,9 @@ DefaultStyle.widgets["list-view"] = {
     # @return bool
     #
     _isImageInRow: func(item) {
-        if (item["types"] != nil) {
-            foreach (var type; item.types) {
-                if (type == "image") {
-                    return 1;
-                }
+        foreach (var column; item.columns) {
+            if (me._isColTypeImage(column)) {
+                return 1;
             }
         }
 
@@ -542,11 +473,24 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
+    # @param  string|nil  rowFont  Font file name passed for the row
+    # @param  hash  column
+    # @return  string|nil  Font file name or nil
+    #
+    _getCellFont: func(rowFont, column) {
+        # Get column font
+        var columnFont = contains(column, "font") ? column.font : nil;
+
+        # Column font has priority
+        return columnFont != nil ? columnFont : rowFont;
+    },
+
+    #
     # Create complex row but in an optimized way that there is only one text object per row,
     # ant images are not supported, only text.
     #
     # @param  ghost  model  ListView model
-    # @param  string|hash  item
+    # @param  hash  item
     # @param  int  x, y
     # @return void
     #
@@ -557,45 +501,56 @@ DefaultStyle.widgets["list-view"] = {
         var rectHeight = hash.maxHeight == 0
             ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
             : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
-        hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
-        var isTotalsRow = contains(item, "id") and item.id == -1;
+        hash.rect = me._createRectangle(model, hash.group, rectHeight);
 
         var textStr = "";
 
-        forindex (var columnIndex; me._columnsWidth) {
-            var columnWidth = me._getColumnWidth(columnIndex);
+        var columnsSize = size(item.columns);
 
-            var originalTextSize = size(item.data[columnIndex]);
+        forindex (var columnIndex; item.columns) {
+            var column = item.columns[columnIndex];
+
+            var colspan = contains(column, "colspan") ? column.colspan : 1; # 1 as default value
+
+            if (colspan == 0) {
+                continue; # skip column with colspan 0
+            }
+
+            var columnWidth = column.width;
+
+            # If colspan > 1, then add column width from next columns
+            for (var i = 1; i < colspan; i += 1) {
+                if (columnIndex + i < columnsSize) {
+                    columnWidth += item.columns[columnIndex + 1].width;
+                }
+            }
+
+            var originalTextSize = size(column.data);
             var maxChars = int(columnWidth / DefaultStyle.widgets["list-view"].CHAR_WIDTH) - 1;
 
             var dots = originalTextSize > maxChars;
             if (dots) {
-                if (isTotalsRow and item.data[columnIndex] == "Totals:") {
-                    # We don't want to trim the "Totals:" text to three dots, so we back off from trimming and trim the
-                    # spaces in textStr to shift the string to the left by the missing characters.
-                    # TODO: there should be no such logic in the widget because it disrupts its universality! This
-                    # requires implementing a column span.
-                    var diff = originalTextSize - maxChars;             # how many characters are missing
-                    textStr = substr(textStr, 0, size(textStr) - diff); # cut off missing characters from the end of textStr
-                    maxChars = size(item.data[columnIndex]);            # set maxChars to full number of characters
-                    dots = 0; # cancel three dots
-                }
-                else {
-                    # The text will be cut, add 3 dots ...
-                    maxChars -= 3;
-                }
+                # The text will be cut, add 3 dots ...
+                maxChars -= 3;
             }
 
-            var trimmedStr = substr(item.data[columnIndex], 0, maxChars);
+            var trimmedStr = substr(column.data, 0, maxChars);
             if (dots) {
                 trimmedStr ~= "...";
             }
 
+            var align = contains(column, "align") ? column.align : "left";
+
             var currChars = math.max(size(trimmedStr), originalTextSize);
+            var spaces = "";
             for (var i = 0; i < maxChars - currChars; i += 1) {
-                trimmedStr ~= " ";
+                spaces ~= " ";
             }
+
+            trimmedStr = align == "right"
+                ? spaces ~ trimmedStr
+                : trimmedStr ~ spaces;
 
             textStr ~= trimmedStr ~ " "; # it must be min 1 space to keep separation
         }
@@ -617,16 +572,6 @@ DefaultStyle.widgets["list-view"] = {
         append(hash.elem, text);
 
         append(me._itemElements, hash);
-    },
-
-    #
-    # Get width of column for given index
-    #
-    # @param  int  index
-    # @return int
-    #
-    _getColumnWidth: func(index) {
-        return me._columnsWidth[index];
     },
 
     #
