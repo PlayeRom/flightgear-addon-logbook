@@ -38,9 +38,9 @@ DefaultStyle.widgets["map-view"] = {
         me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
         me._makePath = string.compileTemplate(mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
 
-        me._numTiles = { x: 6, y: 4 };
-        me._centerTileOffset = { x: 0, y: 0 };
-        me._lastTile = { x: -1, y: -1 };
+        me._numTiles         = { x:  6, y:  4 };
+        me._centerTileOffset = { x:  0, y:  0 };
+        me._lastTile         = { x: -1, y: -1 };
 
         me._flightPathLineWidth = 2;
         me._isFlightPathRendered = 0;
@@ -205,8 +205,7 @@ DefaultStyle.widgets["map-view"] = {
         me._svgPlane = me._content.createChild("group").set("z-index", 2);
         canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
 
-        me._planeIconWidth  = me._svgPlane.getSize()[0];
-        me._planeIconHeight = me._svgPlane.getSize()[1];
+        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
     },
 
     #
@@ -599,4 +598,3 @@ DefaultStyle.widgets["map-view"] = {
             .setStrokeLineWidth(1);
     },
 };
-

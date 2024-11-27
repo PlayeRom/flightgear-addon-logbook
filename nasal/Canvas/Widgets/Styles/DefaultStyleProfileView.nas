@@ -359,8 +359,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._svgPlane = me._root.createChild("group").set("z-index", 1);
         canvas.parsesvg(me._svgPlane, "Textures/plane-side.svg");
 
-        me._planeIconWidth  = me._svgPlane.getSize()[0];
-        me._planeIconHeight = me._svgPlane.getSize()[1];
+        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
     },
 
     #
