@@ -595,7 +595,7 @@ var FlightAnalysisDialog = {
     #
     _onPlayUpdate: func() {
         var position = me._mapView.getTrackPosition();
-        if (position < me._mapView.getTrackLastIndex() - 1) {
+        if (position < me._mapView.getTrackLastIndex()) {
             me._goNextTrack();
 
             me._restartPlayInterval(position);
