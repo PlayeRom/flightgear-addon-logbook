@@ -55,6 +55,10 @@ var Migration = {
             # Add next migration here...
         ];
 
+        # Helper flag so that we don't have to make many of the same queries to
+        # the database about whether the `migrations` table exists in the database.
+        me._isMigrationsTable = false;
+
         return me;
     },
 
@@ -73,18 +77,11 @@ var Migration = {
 
                 me._confirmMigration(migration.name);
             }
-        }
-    },
 
-    #
-    # Check if the table in the database exists
-    #
-    # @return bool  True if the table already exists
-    #
-    _isTableExist: func(tableName) {
-        var query = sprintf("SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", tableName);
-        var result = DB.exec(query);
-        return size(result);
+            if (migration.name == "M2024_10_30_08_44_CreateMigrationsTable") {
+                me._isMigrationsTable = true;
+            }
+        }
     },
 
     #
@@ -94,7 +91,7 @@ var Migration = {
     # @return bool
     #
     _isMigrationExists: func(migrationName) {
-        if (!me._isTableExist(Storage.TABLE_MIGRATIONS)) {
+        if (!me._isMigrationsTableExists()) {
             # We don't even have the migrations table yet, this is when we first run it
             return false;
         }
@@ -102,6 +99,21 @@ var Migration = {
         var query = sprintf("SELECT * FROM `%s` WHERE `migration` = ?", Storage.TABLE_MIGRATIONS);
         var rows = DB.exec(query, migrationName);
         return size(rows);
+    },
+
+    #
+    # Check if the `migration` table in the database exists
+    #
+    # @return bool  True if the `migrations` table already exists
+    #
+    _isMigrationsTableExists: func() {
+        if (me._isMigrationsTable) {
+            return true;
+        }
+
+        var query = sprintf("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?");
+        var result = DB.exec(query, Storage.TABLE_MIGRATIONS);
+        return size(result);
     },
 
     #
