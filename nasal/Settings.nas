@@ -10,23 +10,21 @@
 #
 
 #
-# Settings class to save/load settings to/from XML file
+# Settings class to set/get settings from property list.
+# FlightGear will save them to the autosave.xml file automatically.
 #
 var Settings = {
     #
     # Constants
     #
-    SAVE_FILE    : "settings.xml",
-    #
     # Possible options for date and time display:
-    #
     DATE_TIME_REAL   : "real",      # real time from OS
     DATE_TIME_SIM_UTC: "sim-utc",   # UTC time in simulator
     DATE_TIME_SIM_LOC: "sim-local", # local time in simulator
-    #
+
     MIN_LOG_ITEMS : 5,
     MAX_LOG_ITEMS : 20,
-    #
+
     TRACKER_INTERVAL_SEC: 0, # Default tracker interval sec, 0 means auto adjustment mode
 
     #
@@ -37,9 +35,8 @@ var Settings = {
     new: func() {
         var me = { parents: [Settings] };
 
-        me._file = g_Addon.storagePath ~ "/" ~ Settings.SAVE_FILE;
-        me._propToSave = g_Addon.node.getPath() ~ "/addon-devel/save";
-        me._saveNode = props.globals.getNode(me._propToSave); # node object with data to save/load
+        me._pathToSettingsProp = g_Addon.node.getPath() ~ "/addon-devel/settings";
+        me._settingsNode = props.globals.getNode(me._pathToSettingsProp); # node object with data to save/load
 
         # Name of columns that can be hidden/shown
         me._columnsVisible = [
@@ -63,14 +60,12 @@ var Settings = {
             Columns.MAX_MACH,
         ];
 
-        me._itemsPerPageNode       = props.globals.getNode(me._propToSave ~ "/settings/log-items-per-page");
-        me._darkModeNode           = props.globals.getNode(me._propToSave ~ "/settings/dark-style");
-        me._realTimeNode           = props.globals.getNode(me._propToSave ~ "/settings/real-time-duration");
-        me._isSoundNode            = props.globals.getNode(me._propToSave ~ "/settings/sound-enabled");
-        me._dateTimeDisplayNode    = props.globals.getNode(me._propToSave ~ "/settings/date-time-display");
-        me._trackerIntervalSecNode = props.globals.getNode(me._propToSave ~ "/settings/tracker-interval-sec");
-
-        me._load();
+        me._itemsPerPageNode       = props.globals.getNode(me._pathToSettingsProp ~ "/log-items-per-page");
+        me._darkModeNode           = props.globals.getNode(me._pathToSettingsProp ~ "/dark-style");
+        me._realTimeNode           = props.globals.getNode(me._pathToSettingsProp ~ "/real-time-duration");
+        me._soundEnabledNode       = props.globals.getNode(me._pathToSettingsProp ~ "/sound-enabled");
+        me._dateTimeDisplayNode    = props.globals.getNode(me._pathToSettingsProp ~ "/date-time-display");
+        me._trackerIntervalSecNode = props.globals.getNode(me._pathToSettingsProp ~ "/tracker-interval-sec");
 
         return me;
     },
@@ -81,85 +76,7 @@ var Settings = {
     # @return void
     #
     del: func() {
-        me.save();
-    },
-
-    #
-    # Load settings properties tree
-    #
-    # @return void
-    #
-    _load: func() {
-        if (io.read_properties(me._file, me._saveNode) == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - Load settings failed");
-        }
-
-        me._validateAllValues();
-    },
-
-    #
-    # Save settings properties tree
-    #
-    # @return void
-    #
-    save: func() {
-        if (io.write_properties(me._file, me._saveNode) == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - Save settings failed");
-        }
-    },
-
-    #
-    # Validate all properties and save with correct values ​​if they were incorrect
-    #
-    # @return void
-    #
-    _validateAllValues: func() {
-        var isDirty = false;
-
-        var value = me.getLogItemsPerPage();
-        var validated = me._logItemsValidate(value);
-        if (validated != value) {
-            me.setLogItemsPerPage(validated);
-            isDirty = true;
-        }
-
-        value = me.isDarkStyle();
-        validated = me._booleanValidate(value, false);
-        if (validated != value) {
-            me.setDarkMode(validated);
-            isDirty = true;
-        }
-
-        value = me.isRealTimeDuration();
-        validated = me._booleanValidate(value, true);
-        if (validated != value) {
-            me.setRealTimeDuration(validated);
-            isDirty = true;
-        }
-
-        value = me.isSoundEnabled();
-        validated = me._booleanValidate(value, true);
-        if (validated != value) {
-            me.setSoundEnabled(validated);
-            isDirty = true;
-        }
-
-        value = me.getDateTimeDisplay();
-        if (!me._isDateTimeDisplayValid(value)) {
-            me.setDateTimeDisplay(Settings.DATE_TIME_REAL);
-            isDirty = true;
-        }
-
-        value = me.getTrackerIntervalSec();
-        if (!me._isTrackerIntervalValid(value)) {
-            me.setTrackerIntervalSec(Settings.TRACKER_INTERVAL_SEC);
-            isDirty = true;
-        }
-
-        if (isDirty) {
-            # Save to file correct values
-            me.save();
-        }
+        #
     },
 
     #
@@ -178,7 +95,7 @@ var Settings = {
     # @return void
     #
     setLogItemsPerPage: func(value) {
-        setprop(me._propToSave ~ "/settings/log-items-per-page", me._logItemsValidate(value));
+        me._itemsPerPageNode.setIntValue(me._logItemsValidate(value));
     },
 
     #
@@ -214,7 +131,7 @@ var Settings = {
     # @return void
     #
     setDarkMode: func(value) {
-        setprop(me._propToSave ~ "/settings/dark-style", me._booleanValidate(value, false));
+        me._darkModeNode.setBoolValue(me._booleanValidate(value, false));
     },
 
     #
@@ -225,7 +142,7 @@ var Settings = {
     # @return bool  Correct value
     #
     _booleanValidate: func(value, default) {
-        if (value == true or value == false) {
+        if (isscalar(value) and (value == true or value == false)) {
             return value;
         }
 
@@ -249,14 +166,14 @@ var Settings = {
     # @return void
     #
     setRealTimeDuration: func(value) {
-        setprop(me._propToSave ~ "/settings/real-time-duration", me._booleanValidate(value, true));
+        me._realTimeNode.setBoolValue(me._booleanValidate(value, true));
     },
 
     #
     # @return bool
     #
     isSoundEnabled: func() {
-        return me._isSoundNode.getBoolValue();
+        return me._soundEnabledNode.getBoolValue();
     },
 
     #
@@ -264,7 +181,12 @@ var Settings = {
     # @return void
     #
     setSoundEnabled: func(value) {
-        setprop(me._propToSave ~ "/settings/sound-enabled", me._booleanValidate(value, true));
+        value = me._booleanValidate(value, true);
+        # For some unknown reason, in this case I can't use setBoolValue, where I directly pass the value, I just need
+        # to convert it to 1 or 0. Why? setprop works without the need to pass it to 1 or 0.
+        # me._soundEnabledNode.setBoolValue(value ? 1 : 0);
+        me._soundEnabledNode.setBoolValue(value ? 1 : 0);
+        # setprop(me._pathToSettingsProp ~ "/sound-enabled", me._booleanValidate(value, true));
     },
 
     #
@@ -285,7 +207,7 @@ var Settings = {
             value = Settings.DATE_TIME_REAL;
         }
 
-        setprop(me._propToSave ~ "/settings/date-time-display", value);
+        me._dateTimeDisplayNode.setValue(value);
     },
 
     #
@@ -302,7 +224,7 @@ var Settings = {
     # @return hash
     #
     getColumnsVisible: func() {
-        var columnsVisibleNode = me._saveNode.getNode("settings/columns-visible");
+        var columnsVisibleNode = me._settingsNode.getNode("columns-visible");
 
         var hash = {};
 
@@ -319,7 +241,7 @@ var Settings = {
     #
     setColumnsVisible: func(columnsVisible) {
         foreach (var columnName; me._columnsVisible) {
-            setprop(me._propToSave ~ "/settings/columns-visible/" ~ columnName, columnsVisible[columnName]);
+            setprop(me._pathToSettingsProp ~ "/columns-visible/" ~ columnName, columnsVisible[columnName]);
         }
     },
 
@@ -334,7 +256,7 @@ var Settings = {
             value = Settings.TRACKER_INTERVAL_SEC;
         }
 
-        setprop(me._propToSave ~ "/settings/tracker-interval-sec", value);
+        me._trackerIntervalSecNode.setDoubleValue(value);
     },
 
     #

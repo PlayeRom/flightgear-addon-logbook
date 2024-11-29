@@ -109,8 +109,6 @@ var SettingsDialog = {
         g_Settings.setColumnsVisible(me._columnsVisible);
         g_Settings.setLogItemsPerPage(me._logItemsPerPage);
 
-        g_Settings.save();
-
         me._columns.updateColumnsVisible();
 
         me._logbook.resetLogbookDialog();
@@ -441,7 +439,7 @@ var SettingsDialog = {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnSave = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Save")
+            .setText("OK")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._save(); });
 

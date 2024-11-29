@@ -518,7 +518,6 @@ var LogbookDialog = {
             : me.getStyle().dark;
 
         g_Settings.setDarkMode(me.style.NAME == "dark");
-        g_Settings.save();
 
         me.toggleBgImage();
 

@@ -238,7 +238,7 @@ Here you can configure the following options:
 
 #### Advance settings
 
-When you save your settings, this add-on will save them to the `settings.xml` file in `$FG_HOME/Export/Addons/org.flightgear.addons.logbook` location. By editing this file you can configure more options:
+When you close the simulator, the settings will save to the `autosave_{version}.xml` file in `$FG_HOME` location. By editing this file you can configure more options. First, find the `org.flightgear.addons.logbook` tag, which will contain the following settings:
 
 1. `tracker-interval-sec` – integer as the number of seconds every which data will be dumped for flight analysis. The smaller the number, the more data you will receive and the flight analysis will be more accurate, therefore the database file will take up more space and the processor may be a little more loaded. If you are making a long flight on an airliner, a value of 20 seconds should be satisfactory. If you want to perform aerobatics and want to analyze your flight in detail, you can set this value even to 1 second. A value less than 1 second (this is the default) means automatic mode, i.e. the add-on will dynamically adjust the time interval seconds. By default, it will be 15 seconds, but during turns, i.e. bank greater than 5 degrees and at an altitude of less than 2000 ft above ground level, the interval will change to 5 seconds. Thanks to this, flight close to the terrain will be recorded more accurately and turns on the map will be more rounded.
 
@@ -259,7 +259,7 @@ and settings available from GUI:
 
 7. `columns-visible` – which column should be visible in main Logbook view.
 
-NOTE. Before editing the `settings.xml` file, close the simulator.
+NOTE. Before editing the `autosave.xml` file, close the simulator.
 
 ## Backup (for FG 2020.3 and older)
 
@@ -277,7 +277,7 @@ This add-on includes a mechanism to save the current flight status to a separate
 
 In the newer version based on the SQLite database, the recovery mechanism writes data every 20 seconds directly to the main database, so data will be preserved even if FlightGear crashes and that data will be available for viewing during flight.
 
-## Export database to CSV file
+## Export database to CSV file (2024.1 and later)
 
 For FlightGear 2024.1 and newer, the add-on provides an "Export to CSV" menu item that will export all data from the SQLite database to a CSV file, allowing you to process this data in a spreadsheet.
 

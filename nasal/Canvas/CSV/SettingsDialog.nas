@@ -37,7 +37,7 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
-        me._soundOption     = g_Settings.isSoundEnabled();
+        me._soundOption = g_Settings.isSoundEnabled();
 
         me.bgImage.hide();
 
@@ -84,8 +84,6 @@ var SettingsDialog = {
         # Set values to Settings object
         g_Settings.setSoundEnabled(me._soundOption);
         g_Settings.setLogItemsPerPage(me._lineEditItemsPerPage.text());
-
-        g_Settings.save();
 
         me._logbook.resetLogbookDialog();
 
@@ -211,7 +209,7 @@ var SettingsDialog = {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnSave = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
-            .setText("Save")
+            .setText("OK")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._save(); });
 

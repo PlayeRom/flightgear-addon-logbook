@@ -17,43 +17,41 @@
         <by-id>
             <org.flightgear.addons.logbook>
                 <addon-devel>
-                    <save>
-                        <settings>
-                            <dark-style type="bool">false</dark-style>
-                            <real-time-duration type="bool">true</real-time-duration>
-                            <sound-enabled type="bool">true</sound-enabled>
-                            <!-- possible value for date-time-display: real, sim-utc, sim-local -->
-                            <date-time-display type="string">real</date-time-display>
-                            <log-items-per-page type="int">10</log-items-per-page>
+                    <settings>
+                        <dark-style type="bool" userarchive="y">false</dark-style>
+                        <real-time-duration type="bool" userarchive="y">true</real-time-duration>
+                        <sound-enabled type="bool" userarchive="y">true</sound-enabled>
+                        <!-- possible value for date-time-display: real, sim-utc, sim-local -->
+                        <date-time-display type="string" userarchive="y">real</date-time-display>
+                        <log-items-per-page type="int" userarchive="y">10</log-items-per-page>
 
-                            <!-- Option to specify how often in seconds the tracker data for Flight Analysis should
-                                be saved. Zero (actually less than 1.0) means automatic mode - the add-on will adjust
-                                the interval itself according to the situation. -->
-                            <tracker-interval-sec type="double">0</tracker-interval-sec>
+                        <!-- Option to specify how often in seconds the tracker data for Flight Analysis should
+                            be saved. Zero (actually less than 1.0) means automatic mode - the add-on will adjust
+                            the interval itself according to the situation. -->
+                        <tracker-interval-sec type="double" userarchive="y">0</tracker-interval-sec>
 
-                            <columns-visible>
-                                <!-- Which columns should be displayed: -->
-                                <variant type="bool">true</variant>
-                                <aircraft_type type="bool">true</aircraft_type>
-                                <callsign type="bool">false</callsign>
-                                <from type="bool">true</from>
-                                <to type="bool">true</to>
-                                <landing type="bool">true</landing>
-                                <crash type="bool">true</crash>
-                                <day type="bool">true</day>
-                                <night type="bool">true</night>
-                                <instrument type="bool">true</instrument>
-                                <multiplayer type="bool">false</multiplayer>
-                                <swift type="bool">false</swift>
-                                <duration type="bool">true</duration>
-                                <distance type="bool">true</distance>
-                                <fuel type="bool">true</fuel>
-                                <max_alt type="bool">true</max_alt>
-                                <max_groundspeed_kt type="bool">true</max_groundspeed_kt>
-                                <max_mach type="bool">true</max_mach>
-                            </columns-visible>
-                        </settings>
-                    </save>
+                        <columns-visible>
+                            <!-- Which columns should be displayed: -->
+                            <variant type="bool" userarchive="y">true</variant>
+                            <aircraft_type type="bool" userarchive="y">true</aircraft_type>
+                            <callsign type="bool" userarchive="y">false</callsign>
+                            <from type="bool" userarchive="y">true</from>
+                            <to type="bool" userarchive="y">true</to>
+                            <landing type="bool" userarchive="y">true</landing>
+                            <crash type="bool" userarchive="y">true</crash>
+                            <day type="bool" userarchive="y">true</day>
+                            <night type="bool" userarchive="y">true</night>
+                            <instrument type="bool" userarchive="y">true</instrument>
+                            <multiplayer type="bool" userarchive="y">false</multiplayer>
+                            <swift type="bool" userarchive="y">false</swift>
+                            <duration type="bool" userarchive="y">true</duration>
+                            <distance type="bool" userarchive="y">true</distance>
+                            <fuel type="bool" userarchive="y">true</fuel>
+                            <max_alt type="bool" userarchive="y">true</max_alt>
+                            <max_groundspeed_kt type="bool" userarchive="y">true</max_groundspeed_kt>
+                            <max_mach type="bool" userarchive="y">true</max_mach>
+                        </columns-visible>
+                    </settings>
 
                     <!-- This flag is set on true after edit logbook. Then listener is triggered and reload the logbook data.-->
                     <reload-logbook type="bool">false</reload-logbook>
