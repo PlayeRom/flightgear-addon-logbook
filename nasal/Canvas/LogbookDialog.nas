@@ -118,6 +118,17 @@ var LogbookDialog = {
 
         me._listeners = std.Vector.new();
 
+        me._setListeners();
+
+        return me;
+    },
+
+    #
+    # Set listeners
+    #
+    # @return void
+    #
+    _setListeners: func() {
         # User clicked delete entry
         me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
             if (node.getBoolValue()) {
@@ -175,8 +186,6 @@ var LogbookDialog = {
                 me._detailsDialog.getInputDialog().getFilterSelector().hide();
             }
         }));
-
-        return me;
     },
 
     #
@@ -208,16 +217,25 @@ var LogbookDialog = {
     },
 
     #
+    # Remove all listeners created by _setListeners
+    #
+    # @return void
+    #
+    _removeListeners: func() {
+        foreach (var listener; me._listeners.vector) {
+            removelistener(listener);
+        }
+
+        me._listeners.clear();
+    },
+
+    #
     # Destructor
     #
     # @return void
     #
     del: func() {
-        foreach (var listener; me._listeners.vector) {
-            removelistener(listener);
-        }
-        me._listeners.clear();
-
+        me._removeListeners();
         me._detailsDialog.del();
         me._filterSelector.del();
         me.helpDialog.del();
@@ -313,15 +331,15 @@ var LogbookDialog = {
     },
 
     #
-    # @param  hash  rowGroup  Canvas group
-    # @param  hash  rect  Rectangle canvas object
+    # @param  ghost  rowGroup  Canvas group
+    # @param  ghost  rect  Rectangle canvas object
     # @param  vector|nil  items  Items for FilterSelector
-    # @param  string|nil  title  FilterSelector title dialog
+    # @param  string  title  FilterSelector title dialog
     # @param  string  columnName  Column name
     # @return void
     #
     _setMouseHoverHeadersListener: func(rowGroup, rect, items, title, columnName) {
-        if (items == nil or title == nil or columnName == nil) {
+        if (items == nil) {
             # No filters for this column, skip it
             return;
         }
@@ -625,7 +643,7 @@ var LogbookDialog = {
     # Reload logbook data
     #
     # @param  bool  withHeaders  Set true when headers/filters must be change too.
-    # @param  hash  filter  FilterData object as {"columnName": name, "value": "text"}
+    # @param  hash|nil  filter  FilterData object as {"columnName": name, "value": "text"}
     # @return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
@@ -647,7 +665,7 @@ var LogbookDialog = {
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # @param  vector  data  Vector of hashes {"id": index, "data": vector}
+    # @param  vector  data  Vector of hashes {"id": index, "columns": vector}
     # @param  bool  withHeaders
     # @return void
     #
@@ -719,7 +737,7 @@ var LogbookDialog = {
         if (!g_isThreadPending) {
             g_Sound.play('paper');
 
-            var hash = me._data[index]; # = hash {"id": index, "data": vector}
+            var hash = me._data[index]; # = hash {"id": index, "columns": vector}
 
             me._setHighlightingRow(hash.id, index);
 

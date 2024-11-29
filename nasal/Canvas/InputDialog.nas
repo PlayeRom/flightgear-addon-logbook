@@ -123,8 +123,8 @@ var InputDialog = {
     #
     # @param  hash  parent  DetailsDialog object
     # @param  int  id  Record ID in SQLite or index of whole CSV file
-    # @param  hash  columnItem  Column item from Columns class
     # @param  string  value  Value to edit
+    # @param  hash  columnItem  Column item from Columns class
     # @return void
     #
     show: func(parent, id, value, columnItem) {

@@ -606,6 +606,12 @@ var FlightAnalysisDialog = {
         }
     },
 
+    #
+    # Calculate animation speed
+    #
+    # @param  int  position
+    # @return void
+    #
     _restartPlayInterval: func(position) {
         if (position < me._mapView.getTrackLastIndex() - 1) {
             var nextPoint    = me._mapView.getTrackItemByPosition(position + 1);
