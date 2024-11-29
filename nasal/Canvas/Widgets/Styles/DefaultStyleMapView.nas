@@ -58,8 +58,6 @@ DefaultStyle.widgets["map-view"] = {
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
         me._planeIconHeight = 0;
-
-        me._lastSize = { w: nil, h: nil };
     },
 
     #
@@ -70,12 +68,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return me
     #
     setSize: func(model, w, h) {
-        if (me._lastSize.w != w or me._lastSize.h != h) {
-            me.reDrawContent(model);
-        }
-
-        me._lastSize.w = w;
-        me._lastSize.h = h;
+        me.reDrawContent(model);
 
         return me;
     },
