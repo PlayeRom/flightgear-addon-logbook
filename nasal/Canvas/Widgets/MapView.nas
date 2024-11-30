@@ -310,7 +310,7 @@ gui.widgets.MapView = {
     },
 
     #
-    # Get current max zool level
+    # Get current zool level
     #
     # @return int  Map zoom level
     #

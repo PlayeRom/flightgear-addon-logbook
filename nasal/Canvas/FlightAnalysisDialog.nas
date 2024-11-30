@@ -65,7 +65,8 @@ var FlightAnalysisDialog = {
         me._mapView.setLiveUpdateMode(liveUpdateMode);
 
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
-        me._profileView.setUpdateCallback(me._profileViewUpdatePosition, me);
+        me._profileView.setUpdatePositionCallback(me._profileViewUpdatePosition, me);
+        me._profileView.setUpdateZoomCallback(me._profileViewUpdateZoom, me);
 
         me._drawContent();
 
@@ -258,7 +259,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _zoomIn: func() {
-        me._mapView.zoomIn();
+        me._profileView.zoomIn();
         me._updateAfterZoom();
     },
 
@@ -268,7 +269,7 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _zoomOut: func() {
-        me._mapView.zoomOut();
+        me._profileView.zoomOut();
         me._updateAfterZoom();
     },
 
@@ -278,12 +279,12 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _updateAfterZoom: func() {
-        var zoom = me._mapView.getZoomLevel();
+        var zoom = me._profileView.getZoomLevel();
 
-        me._labelZoom.setText("Zoom " ~ zoom);
+        me._labelZoom.setText("Zoom " ~ zoom ~ "x");
 
-        me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.MapView.ZOOM_MIN);
-        me._btnZoomPlus.setEnabled(zoom < canvas.gui.widgets.MapView.ZOOM_MAX);
+        me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.ProfileView.ZOOM_MIN);
+        me._btnZoomPlus.setEnabled(zoom < canvas.gui.widgets.ProfileView.ZOOM_MAX);
     },
 
     #
@@ -376,6 +377,15 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _mapViewUpdateZoom: func() {
+        # nothing here
+    },
+
+    #
+    # Callback function called from ProfileView when user change zoom by scroll
+    #
+    # @return void
+    #
+    _profileViewUpdateZoom: func() {
         me._updateAfterZoom();
     },
 

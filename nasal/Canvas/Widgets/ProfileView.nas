@@ -19,6 +19,10 @@ gui.widgets.ProfileView = {
     DRAW_MODE_TIMESTAMP : 'timestamp',
     DRAW_MODE_DISTANCE  : 'distance',
 
+    ZOOM_MIN    : 1,
+    ZOOM_MAX    : 32,
+    ZOOM_DEFAULT: 1,
+
     #
     # Constructor
     #
@@ -44,8 +48,12 @@ gui.widgets.ProfileView = {
         me._position = 0;
 
         # Callback function called when this widget changes the aircraft's position
-        me._callback = nil;
-        me._objCallback = nil; # object as owner of callback function
+        me._callbackPos = nil;
+        me._objCallbackPos = nil; # object as owner of callback function
+
+        # Callback function called when this widget changes the profile zoom
+        me._callbackZoom    = nil;
+        me._objCallbackZoom = nil;
 
         # Defines whether the X-axis should be drawn based on time or distance traveled.
         # When based on time, the graph will be evenly and linearly distributed, even when the aircraft is stationary
@@ -55,6 +63,8 @@ gui.widgets.ProfileView = {
         # stationary or flying slowly, but they will be more spread out when flying fast, making it possible to
         # recognize places where the flight was performed at higher speeds and where at lower ones.
         me._drawMode = gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+
+        me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
 
         return me;
     },
@@ -80,6 +90,7 @@ gui.widgets.ProfileView = {
     #
     setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = 1) {
         if (withResetPosition) {
+            me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
             me._position = 0;
         }
 
@@ -298,9 +309,9 @@ gui.widgets.ProfileView = {
     #     if nil then reference for callback will not be used
     # @return me
     #
-    setUpdateCallback: func(callback, objCallback) {
-        me._callback = callback;
-        me._objCallback = objCallback;
+    setUpdatePositionCallback: func(callback, objCallback) {
+        me._callbackPos = callback;
+        me._objCallbackPos = objCallback;
 
         return me;
     },
@@ -311,8 +322,8 @@ gui.widgets.ProfileView = {
     # @return void
     #
     _updatePosition: func() {
-        if (me._callback != nil) {
-            call(me._callback, [me._position], me._objCallback);
+        if (me._callbackPos != nil) {
+            call(me._callbackPos, [me._position], me._objCallbackPos);
         }
     },
 
@@ -338,5 +349,85 @@ gui.widgets.ProfileView = {
     #
     isDrawModeDistance: func() {
         return me._drawMode == gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+    },
+
+    #
+    # Zoom in the profile view and redrew it
+    #
+    # @return me
+    #
+    zoomIn: func() {
+        if (me._changeZoom(1)) {
+            me._view.reDrawContent(me);
+        }
+
+        return me;
+    },
+
+    #
+    # Zoom out the profile view and redrew it
+    #
+    # @return me
+    #
+    zoomOut: func() {
+        if (me._changeZoom(-1)) {
+            me._view.reDrawContent(me);
+        }
+
+        return me;
+    },
+
+    #
+    # Sev value of zoom level within certain limits
+    #
+    # @param  int  direction  If 0 then without changing, -1 for zoom out or +1 for zoom in
+    # @return bool  Return true if zoom has been changed
+    #
+    _changeZoom: func(direction) {
+        if (direction == 1 and me._zoom < gui.widgets.ProfileView.ZOOM_MAX) {
+            me._zoom *= 2;
+            return true;
+        }
+
+        if (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
+            me._zoom /= 2;
+            return true;
+        }
+
+        return false;
+    },
+
+    #
+    # Get current zool level
+    #
+    # @return int  Profile zoom level
+    #
+    getZoomLevel: func() {
+        return me._zoom;
+    },
+
+     #
+    # Set callback function for zoom update
+    #
+    # @param  func|nil  callback  Callback function, if nil then callback will be disabled
+    # @param  hash|nil  objCallback  Class as owner of callback function, if nil then reference for callback will not be used
+    # @return me
+    #
+    setUpdateZoomCallback: func(callback, objCallback = nil) {
+        me._callbackZoom = callback;
+        me._objCallbackZoom = objCallback;
+
+        return me;
+    },
+
+    #
+    # Call the callback that the widget itself updated the zoom of profile
+    #
+    # @return void
+    #
+    _updateZoom: func() {
+        if (me._callbackZoom != nil) {
+            call(me._callbackZoom, [], me._objCallbackZoom);
+        }
     },
 };

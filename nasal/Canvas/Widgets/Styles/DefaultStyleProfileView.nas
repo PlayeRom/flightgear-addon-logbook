@@ -37,6 +37,14 @@ DefaultStyle.widgets["profile-view"] = {
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
         me._planeIconHeight = 0;
+
+        me._trackItemsSize = 0;
+        me._trackItems     = nil;
+
+        # If zoom is used, in which fraction of the graph is the plane located
+        me._fractionIndex = 0;
+        me._fractionIndexItemsSize = 0;
+        me._firstValueX = 0;
     },
 
     #
@@ -81,6 +89,7 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._createPlaneIcon();
 
+        me._setRangeOfPointsToDraw(model);
         me._drawProfile(model);
 
         me.updateAircraftPosition(model);
@@ -103,8 +112,18 @@ DefaultStyle.widgets["profile-view"] = {
         me._root.addEventListener("click", func(e) {
             var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
 
-            model.setTrackPosition(position);
+            model.setTrackPosition(position + me._gerFirstIndexOfFraction(model));
             model._updatePosition();
+        });
+
+        # Zoom by scroll wheel
+        me._root.addEventListener("wheel", func(e) {
+            # e.deltaY = 1 or -1
+            if (model._changeZoom(e.deltaY)) {
+                model._updateZoom();
+
+                me.reDrawContent(model);
+            }
         });
     },
 
@@ -142,6 +161,65 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         return points[closestIndex].position;
+    },
+
+    #
+    # Set range of points to draw according to zoom level
+    #
+    # @param  ghost  model  ProfileView model
+    # @return void
+    #
+    _setRangeOfPointsToDraw: func(model) {
+        me._trackItemsSize = math.round(model._trackItemsSize / model._zoom);
+
+        # Save current value of me._trackItemsSize, it will be needed for calculate current fraction index
+        # and the value of me._trackItemsSize may change a few lines below.
+        me._fractionIndexItemsSize = me._trackItemsSize;
+
+        var firstIndex = me._gerFirstIndexOfFraction(model);
+        var lastIndex  = firstIndex + me._trackItemsSize - 1;
+
+        if (lastIndex > model._trackItemsSize - 1
+            or me._fractionIndex + 1 == model._zoom
+        ) {
+            # We are at the last fraction of the graph, and since we are doing math.round there may be missing calculated
+            # positions in the last fraction, so we always take the last index of whole path paints.
+            lastIndex = model._trackItemsSize - 1;
+
+            # Recalculate me._trackItemsSize
+            me._trackItemsSize = lastIndex - firstIndex + 1;
+        }
+
+        me._trackItems = model._trackItems[firstIndex:lastIndex];
+    },
+
+    #
+    # Return first index of current fraction. For example, if zool level is 2 and aircraft is in fraction 1 (2nd & last fraction)
+    # and we have 100 points of path, then this function return 50.
+    #
+    # @param  ghost  model  ProfileView model
+    # @return int
+    #
+    _gerFirstIndexOfFraction: func(model) {
+        me._fractionIndex = me._getCurrentFractionIndex(model);
+
+        return me._fractionIndex * me._fractionIndexItemsSize;
+    },
+
+    #
+    # Return the index of the part of the graph where the aircraft is currently located.
+    # For example, if zoom level is 8, it can be index from 0 do 7.
+    #
+    # @param  ghost  model  ProfileView model
+    # @return int
+    #
+    _getCurrentFractionIndex: func(model) {
+        var fractionIndex = math.floor(model._position / me._fractionIndexItemsSize);
+        if (fractionIndex > model._zoom - 1) {
+            fractionIndex = model._zoom - 1;
+        }
+
+        return fractionIndex;
     },
 
     #
@@ -210,22 +288,31 @@ DefaultStyle.widgets["profile-view"] = {
             .setColor(0.5, 0.5, 1)
             .setStrokeLineWidth(2);
 
-        var lastRecord = model._trackItems[model._trackItemsSize - 1];
+        # Shift X according to zoom level
+        me._firstValueX = model.isDrawModeTime()
+            ? me._trackItems[0].timestamp
+            : me._trackItems[0].distance;
+
+        var lastRecord = me._trackItems[me._trackItemsSize - 1];
         me._maxValueX = model.isDrawModeTime()
             ? lastRecord.timestamp
             : lastRecord.distance;
 
+        me._maxValueX -= me._firstValueX;
+
         var maxXAxisLabelsCount = 15;
-        var xAxisLabelsSeparation = math.ceil(model._trackItemsSize / maxXAxisLabelsCount);
+        var xAxisLabelsSeparation = math.ceil(me._trackItemsSize / maxXAxisLabelsCount);
         var lastLabelX = 0;
         var labelDistance = 35;
 
-        forindex (var index; model._trackItems) {
-            var item = model._trackItems[index];
+        forindex (var index; me._trackItems) {
+            var item = me._trackItems[index];
 
             var valueX = model.isDrawModeTime()
                 ? item.timestamp
                 : item.distance;
+
+            valueX -= me._firstValueX;
 
             var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
             var elevationY = me._yXAxis - ((maxAlt == 0 ? 0 : item.elevation_m / maxAlt) * me._positiveYAxisLength);
@@ -293,11 +380,21 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {
-        var item = model._trackItems[model._position];
+        var fractionIndex = me._getCurrentFractionIndex(model);
+        if (fractionIndex != me._fractionIndex) {
+            # The aircraft is in a different fraction of the graph, so redraw the whole graph
+            me.reDrawContent(model);
+            return;
+        }
+
+        var index = model._position - me._gerFirstIndexOfFraction(model);
+        var item = me._trackItems[index];
 
         var valueX = model.isDrawModeTime()
             ? item.timestamp
             : item.distance;
+
+        valueX -= me._firstValueX;
 
         var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : item.alt_m / model._maxAlt) * me._positiveYAxisLength);
