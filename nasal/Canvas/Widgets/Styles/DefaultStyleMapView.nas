@@ -54,6 +54,11 @@ DefaultStyle.widgets["map-view"] = {
         me._svgPlane = nil;
         me._planeIconWidth  = 0;
         me._planeIconHeight = 0;
+
+        me._refPosition = 0;
+        me._refZoom = gui.widgets.MapView.ZOOM_DEFAULT;
+
+        me._lastSize = { w: nil, h: nil };
     },
 
     #
@@ -64,7 +69,12 @@ DefaultStyle.widgets["map-view"] = {
     # @return me
     #
     setSize: func(model, w, h) {
-        me.reDrawContent(model);
+        if (me._lastSize.w != w or me._lastSize.h != h) {
+            me.reDrawContent(model);
+        }
+
+        me._lastSize.w = w;
+        me._lastSize.h = h;
 
         return me;
     },
@@ -425,6 +435,11 @@ DefaultStyle.widgets["map-view"] = {
     _drawFullFlightPath: func(model) {
         # me._flightPath.reset();
 
+        # Set the reference position and zoom to the values ​​we have during full drawing.
+        # These values ​​will be needed to perform the flight path transformation.
+        me._refPosition = model._position;
+        me._refZoom     = model._zoom;
+
         var edgeTiles = me._getTileThresholds(model);
 
         # The loop to build an array of points that are within the map view and draw flight path
@@ -462,7 +477,7 @@ DefaultStyle.widgets["map-view"] = {
 
         var edgeTiles = me._getTileThresholds(model);
 
-        var firstPos = nil;
+        var refPos = nil;
         var currentPos = nil;
 
         # Generate a new vector with points visible on the map
@@ -478,24 +493,26 @@ DefaultStyle.widgets["map-view"] = {
                 me._pointsToDraw.append(pos);
             }
 
-            if (index == 0) {
-                firstPos = pos;
+            if (index == me._refPosition) {
+                # Take a reference point when drawing the full flight path
+                refPos = pos;
             }
 
             if (index == model._position) {
+                # Take current aircraft position point to calculate translation
                 currentPos = pos;
             }
         }
 
-        if (firstPos != nil and currentPos != nil) {
-            var scale = math.pow(2, model._zoom - gui.widgets.MapView.ZOOM_DEFAULT);
+        if (refPos != nil and currentPos != nil) {
+            var scale = math.pow(2, model._zoom - me._refZoom);
 
             me._flightPath
                 .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH / scale)
                 .setScale(scale)
                 .setTranslation(
-                    (firstPos.x - currentPos.x) - (me._TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
-                    (firstPos.y - currentPos.y) - (me._TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
+                    (refPos.x - currentPos.x) - (me._TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
+                    (refPos.y - currentPos.y) - (me._TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
                 );
         }
     },
