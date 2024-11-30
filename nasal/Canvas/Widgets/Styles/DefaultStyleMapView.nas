@@ -14,11 +14,6 @@
 #
 DefaultStyle.widgets["map-view"] = {
     #
-    # Constants
-    #
-    TILE_SIZE: 256,
-
-    #
     # Constructor
     #
     # @param  ghost  parent
@@ -34,6 +29,7 @@ DefaultStyle.widgets["map-view"] = {
         me._textColor = me._style.getColor("fg_color");
 
         # Variables for map
+        me._TILE_SIZE = 256;
         var mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
         me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
         me._makePath = string.compileTemplate(mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
@@ -42,7 +38,7 @@ DefaultStyle.widgets["map-view"] = {
         me._centerTileOffset = { x:  0, y:  0 };
         me._lastTile         = { x: -1, y: -1 };
 
-        me._flightPathLineWidth = 2;
+        me._FLIGHT_LINE_WIDTH = 2;
         me._isFlightPathRendered = 0;
         me._flightPath = nil;
         me._tiles = [];
@@ -99,46 +95,13 @@ DefaultStyle.widgets["map-view"] = {
             return;
         }
 
-        if (!me._isClickEventSet) {
-            me._isClickEventSet = 1;
-
-            me._content.addEventListener("click", func(e) {
-                # Find the path point closest to the click
-                var minDistance = nil;
-                var position = nil;
-                var distance = 0;
-                foreach (var point; me._pointsToDraw.vector) {
-                    distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
-
-                    if (distance < 50 # <- ignore points further than 50 px
-                        and (minDistance == nil or distance < minDistance)
-                    ) {
-                        minDistance = distance;
-                        position = point.position;
-                    }
-                }
-
-                if (position != nil) {
-                    model.setTrackPosition(position);
-                    model._updatePosition();
-                }
-            });
-
-            # Zoom map by scroll wheel
-            me._content.addEventListener("wheel", func(e) {
-                # e.deltaY = 1 or -1
-                model._changeZoom(e.deltaY);
-                model._updateZoom();
-
-                me.updateTiles(model);
-            });
-        }
+        me._addEvents(model);
 
         me._createPlaneIcon();
 
         me._flightPath = me._content.createChild("path", "flight")
             .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(me._flightPathLineWidth)
+            .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH)
             .set("z-index", 1);
 
         me._isFlightPathRendered = 0;
@@ -158,6 +121,52 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
+    # Add mouse events to map view
+    #
+    # @param  ghost  model  MapView model
+    # @return void
+    #
+    _addEvents: func(model) {
+        if (me._isClickEventSet) {
+            # Events should be added only once, otherwise they will be called multiple times
+            return;
+        }
+
+        me._isClickEventSet = 1;
+
+        me._content.addEventListener("click", func(e) {
+            # Find the path point closest to the click
+            var minDistance = nil;
+            var position = nil;
+            var distance = 0;
+            foreach (var point; me._pointsToDraw.vector) {
+                distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
+
+                if (distance < 50 # <- ignore points further than 50 px
+                    and (minDistance == nil or distance < minDistance)
+                ) {
+                    minDistance = distance;
+                    position = point.position;
+                }
+            }
+
+            if (position != nil) {
+                model.setTrackPosition(position);
+                model._updatePosition();
+            }
+        });
+
+        # Zoom map by scroll wheel
+        me._content.addEventListener("wheel", func(e) {
+            # e.deltaY = 1 or -1
+            model._changeZoom(e.deltaY);
+            model._updateZoom();
+
+            me.updateTiles(model);
+        });
+    },
+
+    #
     # Calculate distance between 2 points
     #
     # @param  hash  p1
@@ -172,8 +181,8 @@ DefaultStyle.widgets["map-view"] = {
     # Calculate how many tiles you need in width and height depending on the widget size
     #
     _calculateNumTiles: func(model) {
-        me._numTiles.x = math.ceil(model._size[0] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
-        me._numTiles.y = math.ceil(model._size[1] / DefaultStyle.widgets["map-view"].TILE_SIZE) + 1;
+        me._numTiles.x = math.ceil(model._size[0] / me._TILE_SIZE) + 1;
+        me._numTiles.y = math.ceil(model._size[1] / me._TILE_SIZE) + 1;
     },
 
     #
@@ -213,8 +222,8 @@ DefaultStyle.widgets["map-view"] = {
 
         me._svgPlane.setRotation(headingInRad);
         me._svgPlane.setTranslation(
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
-            DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
+            me._TILE_SIZE * me._centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
+            me._TILE_SIZE * me._centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
         );
     },
 
@@ -290,8 +299,8 @@ DefaultStyle.widgets["map-view"] = {
         for (var x = 0; x < me._numTiles.x; x += 1) {
             for (var y = 0; y < me._numTiles.y; y += 1) {
                 var trans = {
-                    x: int((ox + x) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5),
-                    y: int((oy + y) * DefaultStyle.widgets["map-view"].TILE_SIZE + 0.5),
+                    x: int((ox + x) * me._TILE_SIZE + 0.5),
+                    y: int((oy + y) * me._TILE_SIZE + 0.5),
                 };
 
                 me._tiles[x][y].setTranslation(trans.x, trans.y);
@@ -482,11 +491,11 @@ DefaultStyle.widgets["map-view"] = {
             var scale = math.pow(2, model._zoom - gui.widgets.MapView.ZOOM_DEFAULT);
 
             me._flightPath
-                .setStrokeLineWidth(me._flightPathLineWidth / scale)
+                .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH / scale)
                 .setScale(scale)
                 .setTranslation(
-                    (firstPos.x - currentPos.x) - (DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
-                    (firstPos.y - currentPos.y) - (DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
+                    (firstPos.x - currentPos.x) - (me._TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
+                    (firstPos.y - currentPos.y) - (me._TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
                 );
         }
     },
@@ -502,8 +511,8 @@ DefaultStyle.widgets["map-view"] = {
         var tileSizeBuffer = me._getTileSizeBuffer(model);
 
         return {
-            maxX: me._maxTile.x + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE,
-            maxY: me._maxTile.y + tileSizeBuffer + DefaultStyle.widgets["map-view"].TILE_SIZE,
+            maxX: me._maxTile.x + tileSizeBuffer + me._TILE_SIZE,
+            maxY: me._maxTile.y + tileSizeBuffer + me._TILE_SIZE,
             minX: me._minTile.x - tileSizeBuffer,
             minY: me._minTile.y - tileSizeBuffer,
         };
@@ -546,8 +555,8 @@ DefaultStyle.widgets["map-view"] = {
         var centerY = me._latToY(centerPoint.lat, model._zoom);
 
         # Offset from the center of the map
-        var pixelX = x - centerX + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.x;
-        var pixelY = y - centerY + DefaultStyle.widgets["map-view"].TILE_SIZE * me._centerTileOffset.y;
+        var pixelX = x - centerX + me._TILE_SIZE * me._centerTileOffset.x;
+        var pixelY = y - centerY + me._TILE_SIZE * me._centerTileOffset.y;
 
         return { x: pixelX, y: pixelY, position: index };
     },
@@ -560,7 +569,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return double  The X position
     #
     _lonToX: func(lon, zoom) {
-        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
+        var scale = me._TILE_SIZE * math.pow(2, zoom);
         return (lon + 180) / 360 * scale;
     },
 
@@ -572,7 +581,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return double  The Y position
     #
     _latToY: func(lat, zoom) {
-        var scale = DefaultStyle.widgets["map-view"].TILE_SIZE * math.pow(2, zoom);
+        var scale = me._TILE_SIZE * math.pow(2, zoom);
         var sinLat = math.sin(lat * math.pi / 180);
         return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
     },

@@ -77,22 +77,35 @@ DefaultStyle.widgets["profile-view"] = {
             return;
         }
 
-        if (!me._isClickEventSet) {
-            me._isClickEventSet = 1;
-
-            me._root.addEventListener("click", func(e) {
-                var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
-
-                model.setTrackPosition(position);
-                model._updatePosition();
-            });
-        }
+        me._addEvents(model);
 
         me._createPlaneIcon();
 
         me._drawProfile(model);
 
         me.updateAircraftPosition(model);
+    },
+
+    #
+    # Add mouse events to profile view
+    #
+    # @param  ghost  model  ProfileView model
+    # @return void
+    #
+    _addEvents: func(model) {
+        if (me._isClickEventSet) {
+            # Events should be added only once, otherwise they will be called multiple times
+            return;
+        }
+
+        me._isClickEventSet = 1;
+
+        me._root.addEventListener("click", func(e) {
+            var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
+
+            model.setTrackPosition(position);
+            model._updatePosition();
+        });
     },
 
     #
