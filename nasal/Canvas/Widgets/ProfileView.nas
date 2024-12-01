@@ -22,7 +22,7 @@ gui.widgets.ProfileView = {
     # Max zoom cannot be too large, because there may be a lack of points for individual fractions,
     # especially if the user has used the time acceleration during the flight
     ZOOM_MIN    : 1,
-    ZOOM_MAX    : 8,
+    ZOOM_MAX    : 16,
     ZOOM_DEFAULT: 1,
 
     #
