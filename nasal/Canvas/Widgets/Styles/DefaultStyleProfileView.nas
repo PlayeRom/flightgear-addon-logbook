@@ -51,6 +51,7 @@ DefaultStyle.widgets["profile-view"] = {
         };
         me._isZoomFractionsBuilt = 0;
         me._firstFractionPosition = nil;
+        me._isZoomBlocked = 0;
     },
 
     #
@@ -91,11 +92,12 @@ DefaultStyle.widgets["profile-view"] = {
             return;
         }
 
+        me._buildZoomFractions(model);
+
         me._addEvents(model);
 
         me._createPlaneIcon();
 
-        me._buildZoomFractions(model);
         me._setRangeOfPointsToDraw(model);
         me._drawProfile(model);
 
@@ -134,18 +136,21 @@ DefaultStyle.widgets["profile-view"] = {
             model._updatePosition();
         });
 
-        # Zoom is disabled for live update mode
-        if (!model._isLiveUpdateMode) {
-            # Zoom by scroll wheel
-            me._root.addEventListener("wheel", func(e) {
-                # e.deltaY = 1 or -1
-                if (model._changeZoom(e.deltaY)) {
-                    model._updateZoom();
 
-                    me.reDrawContent(model);
-                }
-            });
-        }
+        # Zoom by scroll wheel
+        me._root.addEventListener("wheel", func(e) {
+            if (model._isLiveUpdateMode or me._isZoomBlocked) {
+                # Zoom is disabled for live update mode or if zoom is blocked
+                return;
+            }
+
+            # e.deltaY = 1 or -1
+            if (model._changeZoom(e.deltaY)) {
+                model._updateZoom();
+
+                me.reDrawContent(model);
+            }
+        });
     },
 
     #
@@ -223,16 +228,25 @@ DefaultStyle.widgets["profile-view"] = {
             itemsSize    : 0,
         };
 
+        var distCounter = 0;
+        var timeCounter = 0;
+
+        me._isZoomBlocked = 0;
+
         forindex (var index; model._trackItems) {
             var item = model._trackItems[index];
 
             var isLast = index == lastIndex;
 
-            (nextDistValue, distObj) = me._buildZoomFraction(index, item, "distance", nextDistValue, distFraction, distObj, isLast);
-            (nextTimeValue, timeObj) = me._buildZoomFraction(index, item, "timestamp", nextTimeValue, timeFraction, timeObj, isLast);
+            (nextDistValue, distObj, distCounter) = me._buildZoomFraction(index, item, "distance",  nextDistValue, distFraction, distObj, isLast, distCounter);
+            (nextTimeValue, timeObj, timeCounter) = me._buildZoomFraction(index, item, "timestamp", nextTimeValue, timeFraction, timeObj, isLast, timeCounter);
         }
 
-        # TODO: If each faction does not have min 2 path points, you cannot use zoom
+        if (me._isZoomBlocked) {
+            if (model.setDefaultZoom()) {
+                model._updateZoom();
+            }
+        }
     },
 
     #
@@ -245,9 +259,10 @@ DefaultStyle.widgets["profile-view"] = {
     # @param  double  fractionValue  A fractional part of a time or distance value
     # @param  hash  fractionObj  Fraction object with min and max positions, vector of points and size of vector
     # @param  bool  isLast  True if it's last index of model._trackItems vector
+    # @param  int  counter
     # @return vector  New value of nextValue and fractionObj
     #
-    _buildZoomFraction: func(index, item, key, nextValue, fractionValue, fractionObj, isLast) {
+    _buildZoomFraction: func(index, item, key, nextValue, fractionValue, fractionObj, isLast, counter) {
         if (item[key] <= nextValue or isLast) {
             if (fractionObj.firstPosition == nil) {
                 fractionObj.firstPosition = index;
@@ -257,9 +272,17 @@ DefaultStyle.widgets["profile-view"] = {
             fractionObj.itemsSize += 1;
 
             append(fractionObj.items, item);
+            counter += 1;
         }
 
         if (item[key] > nextValue or isLast) {
+            if (counter < 2) {
+                # Block change zoom level when zoom fraction hasn't min 2 points
+                me._isZoomBlocked = 1;
+            }
+
+            counter = 0;
+
             me._zoomFractions[key].append(fractionObj);
 
             if (!isLast) {
@@ -276,7 +299,7 @@ DefaultStyle.widgets["profile-view"] = {
             }
         }
 
-        return [nextValue, fractionObj];
+        return [nextValue, fractionObj, counter];
     },
 
     #
@@ -522,6 +545,10 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {
+        if (model._trackItemsSize == 0) {
+            return;
+        }
+
         if (!model._isLiveUpdateMode) {
             var fractionIndex = me._getIndexMergedFractions(model, me._getCurrentFractionIndex(model));
             if (fractionIndex != me._fractionIndex) {

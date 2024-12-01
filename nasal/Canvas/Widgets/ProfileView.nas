@@ -19,7 +19,7 @@ gui.widgets.ProfileView = {
     DRAW_MODE_TIMESTAMP : 'timestamp',
     DRAW_MODE_DISTANCE  : 'distance',
 
-    # Max zoom cannot be too large, because there may be a lack of points for individual factions,
+    # Max zoom cannot be too large, because there may be a lack of points for individual fractions,
     # especially if the user has used the time acceleration during the flight
     ZOOM_MIN    : 1,
     ZOOM_MAX    : 8,
@@ -377,7 +377,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomIn: func() {
-        if (me._changeZoom(1)) {
+        if (!me._view._isZoomBlocked and me._changeZoom(1)) {
             me._view.reDrawContent(me);
         }
 
@@ -390,7 +390,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomOut: func() {
-        if (me._changeZoom(-1)) {
+        if (!me._view._isZoomBlocked and me._changeZoom(-1)) {
             me._view.reDrawContent(me);
         }
 
@@ -415,6 +415,17 @@ gui.widgets.ProfileView = {
         }
 
         return false;
+    },
+
+    #
+    # Set zool level to default value
+    #
+    # @return bool  Return true if zoom level has been changed
+    #
+    setDefaultZoom: func() {
+        var prevZoom = me._zoom;
+        me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
+        return prevZoom != me._zoom;
     },
 
     #
