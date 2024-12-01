@@ -168,7 +168,7 @@ The details window of logbook also contains an `Analysis` button. Once you click
 
 The window is divided into two parts, the upper one with the map (lateral navigation) and the lower one with the profile (vertical navigation). The path along which the flight was made is drawn in blue. The brown path on the profile is the terrain elevation.
 
-Flight analysis can also be opened from the "Logbook" -> "Current Flight Analysis" menu. The difference is that this analysis always comes from your current session. Apart from that, there are no differences in operation.
+Flight analysis can also be opened from the "Logbook" -> "Current Flight Analysis" menu. The difference is that this analysis always comes from your current session. The difference in operation is that in "Current Flight Analysis" you cannot change the zoom level for the vertical profile.
 
 Flight analysis from the logbook will only be available for flights made in FlightGear 2024.1 and later. Current session analysis is available from FlightGear 2020.
 
@@ -178,7 +178,9 @@ At the bottom we have a number of elements to control the flight analysis:
 
 #### Zoom
 
-You can change the map zoom using the `-`/`+` buttons. You can also do this using the mouse wheel when the cursor is over the map. The zoom range is from 3 to 14. The current zoom level is indicated by the text between the buttons. If the flight path does not fit on the map, you must zoom out of the map view or move along the path by click on the path or by using the `<` and `>` buttons to see the rest of the path.
+You can change the vertical profile zoom using the `-`/`+` buttons. You can also do this using the mouse wheel when the cursor is over the graph. The zoom range is: 1x (the entire graph is visible), 2x (the graph is divided into 2 parts), 4x (division into 4 parts), 8x (division into 8 parts) and a maximum of 16x (division into 16 parts). The current zoom level is indicated by the text between the buttons.
+
+The map view can also be zoomed using the mouse wheel. There are no buttons or level indications for zoom here. The zoom range for map is from 3 to 14. The default zoom level is set to 10. If the flight path does not fit on the map, you must zoom out of the map view or move along the path by click on the path or by using the `<` and `>` buttons to see the rest of the path.
 
 #### Frame
 
@@ -197,7 +199,7 @@ To change airplane icon position, you can also click on the map near to the fly 
 
 #### Speed
 
-With the "Speed" option you can change the animation speed of the airplane icon movement, where `1x` is the real-time flight speed, up to a maximum of `32x` faster. This option is only available from FlightGear version 2024.1. Older versions use a fixed animation speed of `16x`.
+With the "Speed" option you can change the animation speed of the airplane icon movement, where `1x` is the real-time flight speed, up to a maximum of `32x` faster. This option is only available from FlightGear version 2024.1. Older versions use a fixed animation speed of `16x` (because the GUI doesn't include a combobox.)
 
 #### Profile mode
 
@@ -217,6 +219,12 @@ To the left of the map, there is recorded information about the given path point
 * airspeed and groundspeed in knots that the aircraft was flying at the given point,
 * flight time at the given point,
 * distance traveled at the given point.
+
+#### Vertical profile graph
+
+The vertical profile shows a side view of our flight, where the vertical axis shows altitude in feet, the horizontal axis contains two values. The first is time in hours, the second below is distance in NM.
+
+The blue line is the flight path, the brown line is the elevation of the terrain.
 
 ### Settings
 
@@ -353,7 +361,9 @@ Thanks to MariuszXC for this feature.
 
 ## Authors
 
-- Roman "PlayeRom" Ludwicki
+- Roman "PlayeRom" Ludwicki (SP-ROM)
+
+Logbook uses © [OpenStreetMap](https://www.openstreetmap.org/copyright) to draw the map.
 
 ## License
 
