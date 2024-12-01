@@ -17,7 +17,7 @@ var AboutDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 280,
-    WINDOW_HEIGHT : 320,
+    WINDOW_HEIGHT : 350,
     PADDING       : 10,
 
     #
@@ -84,6 +84,9 @@ var AboutDialog = {
             vBoxLayout.addItem(me._getLabel(Utils.toString(author.name)));
         }
 
+        vBoxLayout.addStretch(1);
+        vBoxLayout.addItem(me._getLabel("This add-on uses © OpenStreetMap to draw the map."));
+
         var btnWiki = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
             .setText("FlightGear wiki...")
             .setFixedSize(200, 26)
@@ -118,7 +121,7 @@ var AboutDialog = {
     # @return ghost  Label widget
     #
     _getLabel: func(text) {
-        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
+        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {wordWrap: 1})
             .setText(text);
 
         if (Utils.isFG2024Version()) {
