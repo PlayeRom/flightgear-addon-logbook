@@ -424,7 +424,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._drawTextRight("0", me._xXAxis - 5, me._yXAxis); # 0 ft altitude
 
         var maxAltFt = maxAlt * globals.M2FT;
-        var graduation = me._roundToHundreds(maxAltFt / 4);
+        var graduation = me._roundAltitude(maxAltFt / 4);
         for (var i = 1; i <= 5; i += 1) {
             var altFt = graduation * i;
             var y = me._yXAxis - ((maxAltFt == 0 ? 0 : altFt / maxAltFt) * me._positiveYAxisLength);
@@ -680,11 +680,30 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Round the given number to hundreds, e.g. 185 => 100, 6486 => 6400, etc.
     #
-    # @param  double  number
+    # @param  double  number  Max alt in feet divided by 4
     # @return double
     #
-    _roundToHundreds: func(number) {
-        var magnitude = 100;
+    _roundAltitude: func(number) {
+        var magnitude = me._getAltMagnitude(number);
+
         return math.floor(number / magnitude) * magnitude;
+    },
+
+    #
+    # Get magnitude to alt
+    #
+    # @param  double  number  Max alt in feet divided by 4
+    # @return double
+    #
+    _getAltMagnitude: func(number) {
+        if (number <= 250) {
+            return 10;
+        }
+
+        if (number <= 2000) {
+            return 100;
+        }
+
+        return 1000;
     },
 };
