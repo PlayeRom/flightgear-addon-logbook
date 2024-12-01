@@ -44,6 +44,7 @@ var FlightAnalysisDialog = {
                 ),
             ],
             _isFG2024Version : Utils.isFG2024Version(),
+            _liveUpdateMode  : liveUpdateMode,
         };
 
         me.bgImage.hide();
@@ -67,6 +68,7 @@ var FlightAnalysisDialog = {
         me._profileView = canvas.gui.widgets.ProfileView.new(me.group, canvas.style, {});
         me._profileView.setUpdatePositionCallback(me._profileViewUpdatePosition, me);
         me._profileView.setUpdateZoomCallback(me._profileViewUpdateZoom, me);
+        me._profileView.setLiveUpdateMode(liveUpdateMode);
 
         me._drawContent();
 
@@ -134,7 +136,7 @@ var FlightAnalysisDialog = {
     appendData: func(trackItem, maxAlt) {
         # Put data to widgets
         me._mapView.appendTrackItem(trackItem);
-        me._profileView.appendTrackItem(trackItem, maxAlt, false);
+        me._profileView.appendTrackItem(trackItem, maxAlt);
     },
 
     #
@@ -259,6 +261,10 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _zoomIn: func() {
+        if (me._liveUpdateMode) {
+            return;
+        }
+
         me._profileView.zoomIn();
         me._updateAfterZoom();
     },
@@ -269,6 +275,10 @@ var FlightAnalysisDialog = {
     # @return void
     #
     _zoomOut: func() {
+        if (me._liveUpdateMode) {
+            return;
+        }
+
         me._profileView.zoomOut();
         me._updateAfterZoom();
     },
@@ -282,6 +292,12 @@ var FlightAnalysisDialog = {
         var zoom = me._profileView.getZoomLevel();
 
         me._labelZoom.setText("Zoom " ~ zoom ~ "x");
+
+        if (me._liveUpdateMode) {
+            me._btnZoomMinus.setEnabled(false);
+            me._btnZoomPlus.setEnabled(false);
+            return;
+        }
 
         me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.ProfileView.ZOOM_MIN);
         me._btnZoomPlus.setEnabled(zoom < canvas.gui.widgets.ProfileView.ZOOM_MAX);

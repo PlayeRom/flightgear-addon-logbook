@@ -43,8 +43,14 @@ DefaultStyle.widgets["profile-view"] = {
 
         # If zoom is used, in which fraction of the graph is the plane located
         me._fractionIndex = 0;
-        me._fractionIndexItemsSize = 0;
         me._firstValueX = 0;
+
+        me._zoomFractions = {
+            distance : std.Vector.new(),
+            timestamp: std.Vector.new(),
+        };
+        me._isZoomFractionsBuilt = 0;
+        me._firstFractionPosition = nil;
     },
 
     #
@@ -89,10 +95,22 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._createPlaneIcon();
 
+        me._buildZoomFractions(model);
         me._setRangeOfPointsToDraw(model);
         me._drawProfile(model);
 
         me.updateAircraftPosition(model);
+    },
+
+    #
+    # @return int
+    #
+    _getFirstFractionPosition: func() {
+        if (me._firstFractionPosition == nil) {
+            return 0;
+        }
+
+        return me._firstFractionPosition;
     },
 
     #
@@ -112,19 +130,22 @@ DefaultStyle.widgets["profile-view"] = {
         me._root.addEventListener("click", func(e) {
             var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
 
-            model.setTrackPosition(position + me._gerFirstIndexOfFraction(model));
+            model.setTrackPosition(position + me._getFirstFractionPosition());
             model._updatePosition();
         });
 
-        # Zoom by scroll wheel
-        me._root.addEventListener("wheel", func(e) {
-            # e.deltaY = 1 or -1
-            if (model._changeZoom(e.deltaY)) {
-                model._updateZoom();
+        # Zoom is disabled for live update mode
+        if (!model._isLiveUpdateMode) {
+            # Zoom by scroll wheel
+            me._root.addEventListener("wheel", func(e) {
+                # e.deltaY = 1 or -1
+                if (model._changeZoom(e.deltaY)) {
+                    model._updateZoom();
 
-                me.reDrawContent(model);
-            }
-        });
+                    me.reDrawContent(model);
+                }
+            });
+        }
     },
 
     #
@@ -164,46 +185,133 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
+    # Build zoom fractions, once for model._trackItems data
+    #
+    # @param  ghost  model  ProfileView model
+    # @return void
+    #
+    _buildZoomFractions: func(model) {
+        if (me._isZoomFractionsBuilt or model._isLiveUpdateMode) {
+            return;
+        }
+
+        me._isZoomFractionsBuilt = 1;
+
+        me._zoomFractions.distance.clear();
+        me._zoomFractions.timestamp.clear();
+
+        var lastIndex = model._trackItemsSize - 1;
+        var lastItem  = model._trackItems[lastIndex];
+
+        var distFraction = lastItem.distance  / gui.widgets.ProfileView.ZOOM_MAX;
+        var timeFraction = lastItem.timestamp / gui.widgets.ProfileView.ZOOM_MAX;
+
+        var nextDistValue = distFraction;
+        var nextTimeValue = timeFraction;
+
+        var distObj = {
+            firstPosition: nil,
+            lastPosition : nil,
+            items        : [],
+            itemsSize    : 0,
+        };
+
+        var timeObj = {
+            firstPosition: nil,
+            lastPosition : nil,
+            items        : [],
+            itemsSize    : 0,
+        };
+
+        forindex (var index; model._trackItems) {
+            var item = model._trackItems[index];
+
+            var isLast = index == lastIndex;
+
+            (nextDistValue, distObj) = me._buildZoomFraction(index, item, "distance", nextDistValue, distFraction, distObj, isLast);
+            (nextTimeValue, timeObj) = me._buildZoomFraction(index, item, "timestamp", nextTimeValue, timeFraction, timeObj, isLast);
+        }
+
+        # TODO: If each faction does not have min 2 path points, you cannot use zoom
+    },
+
+    #
+    # Build zoom fraction for distance or timestamp
+    #
+    # @param  int  index  Current index of model._trackItems
+    # @param  hash  item  Current item of model._trackItems
+    # @param  string  key  "distance" or "timestamp"
+    # @param  double  nextValue  Limit value for current faction
+    # @param  double  fractionValue  A fractional part of a time or distance value
+    # @param  hash  fractionObj  Fraction object with min and max positions, vector of points and size of vector
+    # @param  bool  isLast  True if it's last index of model._trackItems vector
+    # @return vector  New value of nextValue and fractionObj
+    #
+    _buildZoomFraction: func(index, item, key, nextValue, fractionValue, fractionObj, isLast) {
+        if (item[key] <= nextValue or isLast) {
+            if (fractionObj.firstPosition == nil) {
+                fractionObj.firstPosition = index;
+            }
+
+            fractionObj.lastPosition = index;
+            fractionObj.itemsSize += 1;
+
+            append(fractionObj.items, item);
+        }
+
+        if (item[key] > nextValue or isLast) {
+            me._zoomFractions[key].append(fractionObj);
+
+            if (!isLast) {
+                fractionObj = {
+                    firstPosition: index,
+                    lastPosition : index,
+                    items        : [],
+                    itemsSize    : 1,
+                };
+
+                append(fractionObj.items, item);
+
+                nextValue += fractionValue;
+            }
+        }
+
+        return [nextValue, fractionObj];
+    },
+
+    #
     # Set range of points to draw according to zoom level
     #
     # @param  ghost  model  ProfileView model
     # @return void
     #
     _setRangeOfPointsToDraw: func(model) {
-        me._trackItemsSize = math.round(model._trackItemsSize / model._zoom);
-
-        # Save current value of me._trackItemsSize, it will be needed for calculate current fraction index
-        # and the value of me._trackItemsSize may change a few lines below.
-        me._fractionIndexItemsSize = me._trackItemsSize;
-
-        var firstIndex = me._gerFirstIndexOfFraction(model);
-        var lastIndex  = firstIndex + me._trackItemsSize - 1;
-
-        if (lastIndex > model._trackItemsSize - 1
-            or me._fractionIndex + 1 == model._zoom
-        ) {
-            # We are at the last fraction of the graph, and since we are doing math.round there may be missing calculated
-            # positions in the last fraction, so we always take the last index of whole path paints.
-            lastIndex = model._trackItemsSize - 1;
-
-            # Recalculate me._trackItemsSize
-            me._trackItemsSize = lastIndex - firstIndex + 1;
+        if (model._isLiveUpdateMode) {
+            # For live mode the zoom is disabled
+            me._trackItems     = model._trackItems;
+            me._trackItemsSize = model._trackItemsSize;
+            return;
         }
 
-        me._trackItems = model._trackItems[firstIndex:lastIndex];
-    },
+        var fractions = me._getZoomFractions(model);
 
-    #
-    # Return first index of current fraction. For example, if zool level is 2 and aircraft is in fraction 1 (2nd & last fraction)
-    # and we have 100 points of path, then this function return 50.
-    #
-    # @param  ghost  model  ProfileView model
-    # @return int
-    #
-    _gerFirstIndexOfFraction: func(model) {
-        me._fractionIndex = me._getCurrentFractionIndex(model);
+        var indexAllFractions = me._getCurrentFractionIndex(model);
+        var invert = math.min(fractions.size(), gui.widgets.ProfileView.ZOOM_MAX) / model._zoom;
+        var firstIndex = (math.floor(indexAllFractions / invert)) * invert;
 
-        return me._fractionIndex * me._fractionIndexItemsSize;
+        me._trackItems = [];
+        me._trackItemsSize = 0;
+        me._firstFractionPosition = nil;
+
+        foreach (var item; fractions.vector[firstIndex:(firstIndex + invert - 1)]) {
+            me._trackItems ~= item.items; # merge vectors
+            me._trackItemsSize += item.itemsSize;
+            if (me._firstFractionPosition == nil) {
+                me._firstFractionPosition = item.firstPosition;
+            }
+        }
+
+        me._fractionIndex = me._getIndexMergedFractions(model, indexAllFractions);
     },
 
     #
@@ -214,12 +322,46 @@ DefaultStyle.widgets["profile-view"] = {
     # @return int
     #
     _getCurrentFractionIndex: func(model) {
-        var fractionIndex = math.floor(model._position / me._fractionIndexItemsSize);
-        if (fractionIndex > model._zoom - 1) {
-            fractionIndex = model._zoom - 1;
+        var vector = me._getZoomFractions(model).vector;
+        forindex (var index; vector) {
+            var item = vector[index];
+
+            if (item.firstPosition == nil) {
+                return 0;
+            }
+
+            if (    model._position >= item.firstPosition
+                and model._position <= item.lastPosition
+            ) {
+                return index;
+            }
         }
 
-        return fractionIndex;
+        return 0;
+    },
+
+    #
+    # Get vector of zoom fractions depend of draw mode
+    #
+    # @param  ghost  model  ProfileView model
+    # @return std.Vector
+    #
+    _getZoomFractions: func(model) {
+        return model.isDrawModeTime()
+            ? me._zoomFractions.timestamp
+            : me._zoomFractions.distance;
+    },
+
+    #
+    # Returned index value depend of zoom level. The fractions vectors have been merged according to zoom level
+    # e.g. when zoom = 2, then ZOOM_MAX vectors will be merged to 2 vectors, then this function will return 0 or 1.
+    #
+    # @param  ghost model  ProfileView mode
+    # @param  int  indexAllFractions
+    # @return int
+    #
+    _getIndexMergedFractions: func(model, indexAllFractions) {
+        return math.floor(indexAllFractions / (gui.widgets.ProfileView.ZOOM_MAX / model._zoom));
     },
 
     #
@@ -259,7 +401,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._drawTextRight("0", me._xXAxis - 5, me._yXAxis); # 0 ft altitude
 
         var maxAltFt = maxAlt * globals.M2FT;
-        var graduation = me._roundToNearestPowerOfTen(maxAltFt / 4);
+        var graduation = me._roundToHundreds(maxAltFt / 4);
         for (var i = 1; i <= 5; i += 1) {
             var altFt = graduation * i;
             var y = me._yXAxis - ((maxAltFt == 0 ? 0 : altFt / maxAltFt) * me._positiveYAxisLength);
@@ -380,14 +522,16 @@ DefaultStyle.widgets["profile-view"] = {
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {
-        var fractionIndex = me._getCurrentFractionIndex(model);
-        if (fractionIndex != me._fractionIndex) {
-            # The aircraft is in a different fraction of the graph, so redraw the whole graph
-            me.reDrawContent(model);
-            return;
+        if (!model._isLiveUpdateMode) {
+            var fractionIndex = me._getIndexMergedFractions(model, me._getCurrentFractionIndex(model));
+            if (fractionIndex != me._fractionIndex) {
+                # The aircraft is in a different fraction of the graph, so redraw the whole graph
+                me.reDrawContent(model);
+                return;
+            }
         }
 
-        var index = model._position - me._gerFirstIndexOfFraction(model);
+        var index = model._position - me._getFirstFractionPosition();
         var item = me._trackItems[index];
 
         var valueX = model.isDrawModeTime()
@@ -507,13 +651,13 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
-    # Round given number to nearest power of ten, e.g. 185 => 100, 6486 => 6000, etc.
+    # Round the given number to hundreds, e.g. 185 => 100, 6486 => 6400, etc.
     #
     # @param  double  number
     # @return double
     #
-    _roundToNearestPowerOfTen: func(number) {
-        var magnitude = math.pow(10, math.floor(math.log10(number) / math.log10(10)));
+    _roundToHundreds: func(number) {
+        var magnitude = 100;
         return math.floor(number / magnitude) * magnitude;
     },
 };

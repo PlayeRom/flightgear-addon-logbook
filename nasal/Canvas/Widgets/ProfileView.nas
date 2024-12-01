@@ -19,8 +19,10 @@ gui.widgets.ProfileView = {
     DRAW_MODE_TIMESTAMP : 'timestamp',
     DRAW_MODE_DISTANCE  : 'distance',
 
+    # Max zoom cannot be too large, because there may be a lack of points for individual factions,
+    # especially if the user has used the time acceleration during the flight
     ZOOM_MIN    : 1,
-    ZOOM_MAX    : 32,
+    ZOOM_MAX    : 8,
     ZOOM_DEFAULT: 1,
 
     #
@@ -65,6 +67,8 @@ gui.widgets.ProfileView = {
         me._drawMode = gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
 
         me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
+
+        me._isLiveUpdateMode = 0;
 
         return me;
     },
@@ -116,6 +120,9 @@ gui.widgets.ProfileView = {
 
         me._maxAlt = maxAlt;
 
+        # Rebuild structure of zoom fractions
+        me._view._isZoomFractionsBuilt = 0;
+
         return me;
     },
 
@@ -150,6 +157,9 @@ gui.widgets.ProfileView = {
             me._maxAlt = maxAlt;
         }
 
+        # Rebuild structure of zoom fractions
+        me._view._isZoomFractionsBuilt = 0;
+
         return me;
     },
 
@@ -160,6 +170,16 @@ gui.widgets.ProfileView = {
     #
     hardUpdateView: func() {
         me._view.reDrawContent(me);
+    },
+
+    #
+    # Set to true if the flight path should be updated live
+    #
+    # @param  bool  value
+    # @return void
+    #
+    setLiveUpdateMode: func(value) {
+        me._isLiveUpdateMode = value;
     },
 
     #
