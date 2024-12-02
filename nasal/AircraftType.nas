@@ -209,7 +209,7 @@ var AircraftType = {
     },
 
     #
-    # Get vector for all types
+    # Get vector with all types
     #
     # @return vector
     #

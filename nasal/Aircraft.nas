@@ -104,4 +104,14 @@ var Aircraft = {
         return aircraftId == "ufo"
             or aircraftId == "mibs";
     },
+
+    #
+    # Return true when aircraftPrimary is SpaceShuttle
+    #
+    # @param  string  aircraftPrimary
+    # @return bool
+    #
+    isSpaceShuttle: func(aircraftPrimary) {
+        return aircraftPrimary == "SpaceShuttle";
+    },
 };

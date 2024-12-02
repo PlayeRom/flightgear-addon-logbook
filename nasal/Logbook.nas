@@ -51,15 +51,14 @@ var Logbook = {
         me._crashDetector  = CrashDetector.new(me._spaceShuttle);
         me._airport        = Airport.new();
         me._flightAnalysis = FlightAnalysis.new();
-
         me._recovery       = Recovery.new(me._storage);
-
         me._aircraft       = Aircraft.new();
         me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
         me._settingsDialog = SettingsDialog.new(me._columns, me);
 
-        me._aircraftType   = AircraftType.new().getType();
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - Aircraft Type = ", me._aircraftType);
+        me._aircraftPrimary = "";
+        me._aircraftId      = "";
+        me._aircraftType    = "";
 
         me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
@@ -149,11 +148,16 @@ var Logbook = {
     # @return void
     #
     _initLogbook: func() {
-        me._flightAnalysis.start(me, me._updateFlightAnalysisData);
+        me._aircraftPrimary = me._aircraft.getAircraftPrimary();
+        me._aircraftId      = me._aircraft.getAircraftId();
+        me._aircraftType    = AircraftType.new().getType();
+        logprint(LOG_ALERT, "Logbook Add-on - Aircraft: primary = ", me._aircraftPrimary, ", id = ", me._aircraftId, ", type = ", me._aircraftType);
 
         me._landingGear.recognizeGears(me._onGround);
 
         me._initAltAglThreshold();
+
+        me._flightAnalysis.start(me, me._updateFlightAnalysisData);
 
         if (!me._onGround and !me._spaceShuttle.isPreLaunch()) {
             # We start in air, start logging immediately
@@ -208,7 +212,8 @@ var Logbook = {
 
         me._crashDetector.startGForce(me._onGround);
 
-        if (me._landingGear.checkWow(me._onGround) and !me._crashDetector.isCrash(false)) {
+        var withOrientation = !me._aircraft.isSpaceShuttle(me._aircraftPrimary);
+        if (me._landingGear.checkWow(me._onGround) and !me._crashDetector.isCrash(withOrientation)) {
             if (me._onGround) {
                 # Our state is on the ground and all wheels are in the air - we have take-off
                 me._wowSec += 1;
@@ -254,9 +259,7 @@ var Logbook = {
             return;
         }
 
-        var aircraftId = me._aircraft.getAircraftId();
-
-        if (me._aircraft.isUfo(aircraftId)) {
+        if (me._aircraft.isUfo(me._aircraftId)) {
             # We don't log UFO, FG Video Assistant
             return;
         }
@@ -276,8 +279,8 @@ var Logbook = {
         me._logData.setSimLocalDate(me._environment.getSimLocalDateString());
         me._logData.setSimLocalTime(me._environment.getSimLocalTimeString());
 
-        me._logData.setAircraft(me._aircraft.getAircraftPrimary());
-        me._logData.setVariant(aircraftId);
+        me._logData.setAircraft(me._aircraftPrimary);
+        me._logData.setVariant(me._aircraftId);
         me._logData.setAircraftType(me._aircraftType);
         me._logData.setNote(getprop("/sim/description"));
         me._logData.setCallsign(getprop("/sim/multiplay/callsign"));
