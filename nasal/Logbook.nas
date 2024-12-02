@@ -60,6 +60,9 @@ var Logbook = {
         me._aircraftId      = "";
         me._aircraftType    = "";
 
+        me._isLoggingStarted = false;
+        me._firstTrackPoint = nil;
+
         me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
         var runListenerOnInit = true;
@@ -161,6 +164,7 @@ var Logbook = {
 
         if (!me._onGround and !me._spaceShuttle.isPreLaunch()) {
             # We start in air, start logging immediately
+            me._preStartLogging();
             me._startLogging();
         }
 
@@ -199,6 +203,7 @@ var Logbook = {
 
         if (me._spaceShuttle.isLiftOff()) {
             logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
+            me._preStartLogging();
             me._startLogging();
             return;
         }
@@ -218,6 +223,12 @@ var Logbook = {
                 # Our state is on the ground and all wheels are in the air - we have take-off
                 me._wowSec += 1;
                 logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me._wowSec);
+
+                # We probably took off
+                # Create a log data and reset the counters now before we count down 3 seconds
+                # to get a more accurate reading of the start time
+                me._preStartLogging();
+
                 if (me._wowSec > 2) {
                     # We recognize that we taken off after testing WoW for 3 seconds.
                     # This is to not recognize the takeoff when we bounce off the ground.
@@ -240,20 +251,49 @@ var Logbook = {
             return;
         }
 
+        if (me._logData != nil and !me._isLoggingStarted) {
+            # The case when we detected the takeoff and the _preStartLogging() function was called,
+            # but the takeoff was not confirmed for another 3 seconds (_startLogging() was not called),
+            # so we remove _logData and _firstTrackPoint
+            me._cancelPreStartLogging();
+        }
+
         me._wowSec = 0;
 
-        var isLogging = me._logData != nil;
-        if (isLogging and me._crashDetector.isCrashByTesting(me._onGround)) {
+        if (me._isLoggingStarted and me._crashDetector.isCrashByTesting(me._onGround)) {
             me._stopLogging(false, true);
         }
     },
 
     #
-    # Call when aircraft is in the air
+    # Run before _startLogging() to capture the moment of takeoff,
+    # even if we are not sure that we have actually taken off.
     #
     # @return void
     #
-    _startLogging: func() {
+    _preStartLogging: func() {
+        me._createLogData();
+
+        # Set data for flight analysis as a first track point
+        if (me._firstTrackPoint == nil) {
+            me._firstTrackPoint = me._buildAnalysisData();
+        }
+    },
+
+    #
+    # @return void
+    #
+    _cancelPreStartLogging: func() {
+        me._logData = nil;
+        me._firstTrackPoint = nil;
+    },
+
+    #
+    # Crate LogData object for collecting log data
+    #
+    # @return void
+    #
+    _createLogData: func() {
         if (me._logData != nil) {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - _startLogging: invalid state, it's trying to run start again without stop.");
             return;
@@ -263,10 +303,6 @@ var Logbook = {
             # We don't log UFO, FG Video Assistant
             return;
         }
-
-        logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
-
-        me._recovery.start(me, me._recoveryCallback);
 
         me._logData = LogData.new();
 
@@ -292,6 +328,28 @@ var Logbook = {
         me._environment.resetCounters();
         me._multiplayer.resetCounters();
         me._flight.resetCounters();
+    },
+
+    #
+    # Call when we are sure that aircraft is in the air
+    #
+    # @return void
+    #
+    _startLogging: func() {
+        if (me._aircraft.isUfo(me._aircraftId)) {
+            # We don't log UFO, FG Video Assistant
+            return;
+        }
+
+        me._isLoggingStarted = true;
+
+        logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
+
+        me._recovery.start(me, me._recoveryCallback);
+
+        if (me._logData == nil) {
+            me._createLogData();
+        }
 
         me._onGround = false;
 
@@ -299,7 +357,13 @@ var Logbook = {
 
         # Save first recovery and flight analysis immediately
         me._recoveryCallback();
-        me._updateFlightAnalysisData();
+
+        # Save me._firstTrackPoint
+        if (me._firstTrackPoint != nil) {
+            var logbookId = me._recovery.getLogbookId();
+            me._storage.addTrackerItem(logbookId, me._firstTrackPoint);
+            me._firstTrackPoint = nil;
+        }
     },
 
     #
@@ -314,6 +378,8 @@ var Logbook = {
             # logprint(MY_LOG_LEVEL, "Logbook Add-on - _stopLogging: invalid state, it's trying to run stop without running start.");
             return;
         }
+
+        me._isLoggingStarted = false;
 
         me._recovery.stop();
         me._crashDetector.stopGForce();
@@ -461,9 +527,7 @@ var Logbook = {
 
         # Also save data to the trackers table for a given logbook record
         var logbookId = me._recovery.getLogbookId();
-        if (logbookId != nil) {
-            me._storage.addTrackerItem(logbookId, data);
-        }
+        me._storage.addTrackerItem(logbookId, data);
 
         # Set data for current session (including taxi),
         # timestamp will be set in FlightAnalysis
