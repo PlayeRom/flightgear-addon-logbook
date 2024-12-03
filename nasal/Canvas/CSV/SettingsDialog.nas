@@ -104,7 +104,7 @@ var SettingsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(nil, margins);
+        me._scrollData = me.createScrollArea(margins: margins);
 
         me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 

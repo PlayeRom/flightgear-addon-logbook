@@ -271,12 +271,12 @@ DefaultStyle.widgets["list-view"] = {
     #
     _drawContentLoading: func(model) {
         me._loadingText = me._createText(
-            model,
-            me._root,
-            int(model._size[0] / 2),
-            int(model._size[1] / 2),
-            "Loading...",
-            "center-center"
+            model    : model,
+            context  : me._root,
+            x        : int(model._size[0] / 2),
+            y        : int(model._size[1] / 2),
+            label    : "Loading...",
+            alignment: "center-center"
         );
 
         return model._size[1];
@@ -294,7 +294,13 @@ DefaultStyle.widgets["list-view"] = {
 
         if (model._title != nil) {
             var group = me._createBarGroup(y);
-            me._titleElement = me._createText(model, group, x, me._getTextYOffset(), model._title);
+            me._titleElement = me._createText(
+                model  : model,
+                context: group,
+                x      : x,
+                y      : me._getTextYOffset(),
+                label  : model._title
+            );
 
             y += int(DefaultStyle.widgets["list-view"].ITEM_HEIGHT + DefaultStyle.widgets["list-view"].ITEM_HEIGHT / 4);
         }
@@ -411,13 +417,13 @@ DefaultStyle.widgets["list-view"] = {
 
             if (me._isColTypeString(column)) {
                 var text = me._createText(
-                    model,
-                    hash.group,
-                    x,
-                    me._getTextYOffset(),
-                    column.data,
-                    "left-baseline",
-                    me._getCellFont(rowFont, column)
+                    model    : model,
+                    context  : hash.group,
+                    x        : x,
+                    y        : me._getTextYOffset(),
+                    label    : column.data,
+                    alignment: "left-baseline",
+                    fontName : me._getCellFont(rowFont, column)
                 );
 
                 if (model._isUseTextMaxWidth) {
@@ -574,13 +580,13 @@ DefaultStyle.widgets["list-view"] = {
             : nil;
 
         var text = me._createText(
-            model,
-            hash.group,
-            x,
-            me._getTextYOffset(),
-            textStr,
-            "left-baseline",
-            fontName
+            model    : model,
+            context  : hash.group,
+            x        : x,
+            y        : me._getTextYOffset(),
+            label    : textStr,
+            alignment: "left-baseline",
+            fontName : fontName
         );
 
         append(hash.elem, text);
@@ -631,13 +637,13 @@ DefaultStyle.widgets["list-view"] = {
     # @param  ghost  model  ListView model
     # @param  hash  context  Parent element
     # @param  int  x, y
-    # @param  string  text
+    # @param  string  label
     # @param  string  alignment
     # @return ghost  Text element
     #
-    _createText: func(model, context, x, y, text, alignment = "left-baseline", fontName = nil) {
-        if (model._placeholder != nil and string.trim(text) == "") {
-            text = model._placeholder;
+    _createText: func(model, context, x, y, label, alignment = "left-baseline", fontName = nil) {
+        if (model._placeholder != nil and string.trim(label) == "") {
+            label = model._placeholder;
         }
 
         if (fontName == nil) {
@@ -650,7 +656,7 @@ DefaultStyle.widgets["list-view"] = {
             .setAlignment(alignment)
             .setTranslation(x, y)
             .setColor(me._textColor)
-            .setText(text);
+            .setText(label);
     },
 
     #

@@ -84,9 +84,9 @@ DefaultStyle.widgets["profile-view"] = {
 
         if (model._trackItems == nil or model._trackItemsSize == 0) {
             me._drawTextCenter(
-                "This log doesn't contain flight data.",
-                int(model._size[0] / 2),
-                int(model._size[1] / 2)
+                x: int(model._size[0] / 2),
+                y: int(model._size[1] / 2),
+                label: "This log doesn't contain flight data."
             );
 
             return;
@@ -410,8 +410,20 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (me._planeIconWidth / 2);
 
-        me._drawText("Time (hours) and Distance (NM)", model._size[0] / 2, model._size[1], "center-bottom");
-        me._drawText("Altitude (feet)", paddingLeft, graphHeight / 2, "center-top", -90);
+        me._drawText(
+            x: model._size[0] / 2,
+            y: model._size[1],
+            label: "Time (hours) and Distance (NM)",
+            alignment: "center-bottom",
+        );
+
+        me._drawText(
+            x: paddingLeft,
+            y: graphHeight / 2,
+            label: "Altitude (feet)",
+            alignment: "center-top",
+            rotate: -90
+        );
 
         var maxAlt = model._maxAlt;
 
@@ -421,7 +433,11 @@ DefaultStyle.widgets["profile-view"] = {
             .setColor(0.8, 0.8, 0.8)
             .setStrokeLineWidth(1);
 
-        me._drawTextRight("0", me._xXAxis - 5, me._yXAxis); # 0 ft altitude
+        me._drawTextRight(
+            x: me._xXAxis - 5,
+            y: me._yXAxis,
+            label: "0", # 0 ft altitude
+        );
 
         var maxAltFt = maxAlt * globals.M2FT;
         var graduation = me._roundAltitude(maxAltFt / 4);
@@ -433,7 +449,11 @@ DefaultStyle.widgets["profile-view"] = {
                 break;
             }
 
-            me._drawTextRight(sprintf("%.0f", altFt), me._xXAxis - 5, y);
+            me._drawTextRight(
+                x: me._xXAxis - 5,
+                y: y,
+                label: sprintf("%.0f", altFt),
+            );
 
             # Draw horizontal grid line
             grid.moveTo(me._xXAxis, y)
@@ -497,10 +517,18 @@ DefaultStyle.widgets["profile-view"] = {
                     and math.abs(x - lastLabelX) > labelDistance # <- prevents overlapping of multiple labels in distance mode.
                 ) {
                     # Labels with hours on X axis
-                    me._drawTextCenter(sprintf("%.2f", item.timestamp), x, me._yXAxis + 10);
+                    me._drawTextCenter(
+                        x: x,
+                        y: me._yXAxis + 10,
+                        label: sprintf("%.2f", item.timestamp),
+                    );
 
                     # Labels with distance on X axis
-                    me._drawTextCenter(sprintf("%.1f", item.distance), x, me._yXAxis + 30);
+                    me._drawTextCenter(
+                        x: x,
+                        y: me._yXAxis + 30,
+                        label: sprintf("%.1f", item.distance),
+                    );
 
                     # Draw vertical grid line
                     grid.moveTo(x, paddingTop)
@@ -576,40 +604,40 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Draw text center-center
     #
-    # @param  string  text
     # @param  double  x
     # @param  double  y
+    # @param  string  label
     # @param  double  rotate
     # @return ghost  Text element
     #
-    _drawTextCenter: func(text, x, y, rotate = 0) {
-        return me._drawText(text, x, y, "center-center", rotate);
+    _drawTextCenter: func(x, y, label, rotate = 0) {
+        return me._drawText(x, y, label, "center-center", rotate);
     },
 
     #
     # Draw text right-center
     #
-    # @param  string  text
     # @param  double  x
     # @param  double  y
+    # @param  string  label
     # @param  double  rotate
     # @return ghost  Text element
     #
-    _drawTextRight: func(text, x, y, rotate = 0) {
-        return me._drawText(text, x, y, "right-center", rotate);
+    _drawTextRight: func(x, y, label, rotate = 0) {
+        return me._drawText(x, y, label, "right-center", rotate);
     },
 
     #
     # Draw text with given alignment
     #
-    # @param  string  text
     # @param  double  x
     # @param  double  y
+    # @param  string  label
     # @param  string  alignment
     # @param  double  rotate
     # @return ghost  Text element
     #
-    _drawText: func(text, x, y, alignment = "center-center", rotate = 0) {
+    _drawText: func(x, y, label, alignment = "center-center", rotate = 0) {
         return me._root.createChild("text")
             .setColor(me._textColor)
             .setAlignment(alignment)
@@ -617,7 +645,7 @@ DefaultStyle.widgets["profile-view"] = {
             .setFontSize(12)
             .setTranslation(x, y)
             .setRotation(rotate * globals.D2R)
-            .setText(text);
+            .setText(label);
     },
 
     #

@@ -176,7 +176,7 @@ var InputDialog = {
     #
     _actionTypeSelect: func() {
         me._filterSelector
-            .setItems(AircraftType.getVector(), false)
+            .setItems(items: AircraftType.getVector(), disableLoading: false)
             .setColumnName(Columns.AC_TYPE)
             .setPosition(
                 getprop("/devices/status/mice/mouse/x") or 0,

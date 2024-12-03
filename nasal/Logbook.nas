@@ -88,7 +88,7 @@ var Logbook = {
             # User probably used the "Location" -> "in air" or change airport even during a flight
             if (!oldOnGround and me._onGround) {
                 # I was in the air, now I'm on the ground, try to stop logging
-                me._stopLogging(false);
+                me._stopLogging(landed: false);
             }
 
             # me._initLogbook(); # _initLogbook will be run in "/sim/signals/fdm-initialized"
@@ -107,7 +107,7 @@ var Logbook = {
         setlistener("/sim/signals/exit", func(node) {
             if (node.getBoolValue()) {
                 # sim is going to exit, save the logData
-                me._stopLogging(false);
+                me._stopLogging(landed: false);
 
                 if (me._isUsingSQLite) {
                     DB.close();
@@ -243,7 +243,7 @@ var Logbook = {
                 if (me._wowSec > 2) {
                     # We recognize that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognize the landing when we bounce off the ground.
-                    me._stopLogging(true);
+                    me._stopLogging(landed: true);
                     me._wowSec = 0;
                 }
             }
@@ -261,7 +261,7 @@ var Logbook = {
         me._wowSec = 0;
 
         if (me._isLoggingStarted and me._crashDetector.isCrashByTesting(me._onGround)) {
-            me._stopLogging(false, true);
+            me._stopLogging(landed: false, crashed: true);
         }
     },
 

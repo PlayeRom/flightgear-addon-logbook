@@ -37,10 +37,10 @@ var FlightAnalysisDialog = {
             parents: [
                 FlightAnalysisDialog,
                 Dialog.new(
-                    FlightAnalysisDialog.WINDOW_WIDTH,
-                    FlightAnalysisDialog.WINDOW_HEIGHT,
-                    title,
-                    true, # <- resizable
+                    width : FlightAnalysisDialog.WINDOW_WIDTH,
+                    height: FlightAnalysisDialog.WINDOW_HEIGHT,
+                    title : title,
+                    resize: true,
                 ),
             ],
             _isFG2024Version : Utils.isFG2024Version(),

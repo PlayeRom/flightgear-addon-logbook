@@ -96,10 +96,10 @@ DefaultStyle.widgets["map-view"] = {
 
         if (model._trackItems == nil or model._trackItemsSize == 0) {
             me._createText(
-                int(model._size[0] / 2),
-                int(model._size[1] / 2),
-                "This log doesn't contain flight data.",
-                "center-center"
+                x        : int(model._size[0] / 2),
+                y        : int(model._size[1] / 2),
+                label    : "This log doesn't contain flight data.",
+                alignment: "center-center"
             );
 
             return;
@@ -254,18 +254,18 @@ DefaultStyle.widgets["map-view"] = {
 
     #
     # @param  int  x, y
-    # @param  string  text
+    # @param  string  label
     # @param  string  alignment
     # @return ghost  Text element
     #
-    _createText: func(x, y, text, alignment = "left-baseline") {
+    _createText: func(x, y, label, alignment = "left-baseline") {
         return me._content.createChild("text")
             .setFont("LiberationFonts/LiberationMono-Regular.ttf")
             .setFontSize(12)
             .setAlignment(alignment)
             .setTranslation(x, y)
             .setColor(me._textColor)
-            .setText(text);
+            .setText(label);
     },
 
     #

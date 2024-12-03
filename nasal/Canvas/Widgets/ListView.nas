@@ -304,7 +304,7 @@ gui.widgets.ListView = {
     # @return me
     #
     setFontSizeSmall: func() {
-        me._view.setFontSize(me, 12);
+        me._view.setFontSize(model: me, fontSize: 12);
         return me;
     },
 
@@ -312,7 +312,7 @@ gui.widgets.ListView = {
     # @return me
     #
     setFontSizeMedium: func() {
-        me._view.setFontSize(me, 14);
+        me._view.setFontSize(model: me, fontSize: 14);
         return me;
     },
 
@@ -320,7 +320,7 @@ gui.widgets.ListView = {
     # @return me
     #
     setFontSizeLarge: func() {
-        me._view.setFontSize(me, 16);
+        me._view.setFontSize(model: me, fontSize: 16);
         return me;
     },
 

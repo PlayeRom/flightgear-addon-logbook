@@ -162,14 +162,14 @@ var Dialog = {
     },
 
     #
-    # @param  ghost  cGroup  Parent object as ScrollArea widget
+    # @param  ghost  context  Parent object as ScrollArea widget
     # @param  string|nil  font  Font file name
     # @param  int|nil  fontSize  Font size
     # @param  string|nil  alignment  Content alignment value
     # @return ghost  content group of ScrollArea
     #
-    getScrollAreaContent: func(cGroup, font = nil, fontSize = nil, alignment = nil) {
-        var scrollContent = cGroup.getContent();
+    getScrollAreaContent: func(context, font = nil, fontSize = nil, alignment = nil) {
+        var scrollContent = context.getContent();
 
         if (font != nil) {
             scrollContent.set("font", font);

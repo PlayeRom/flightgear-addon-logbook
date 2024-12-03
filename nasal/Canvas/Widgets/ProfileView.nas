@@ -66,8 +66,11 @@ gui.widgets.ProfileView = {
         # recognize places where the flight was performed at higher speeds and where at lower ones.
         me._drawMode = gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
 
+        # Graph zoom level
         me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
 
+        # A mode where new track points are added live.
+        # In this mode, the ability to change the zoom level is disabled.
         me._isLiveUpdateMode = 0;
 
         return me;
@@ -377,7 +380,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomIn: func() {
-        if (!me._view._isZoomBlocked and me._changeZoom(1)) {
+        if (!me._view._isZoomBlocked and me._changeZoom(direction: 1)) {
             me._view.reDrawContent(me);
         }
 
@@ -390,7 +393,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomOut: func() {
-        if (!me._view._isZoomBlocked and me._changeZoom(-1)) {
+        if (!me._view._isZoomBlocked and me._changeZoom(direction: -1)) {
             me._view.reDrawContent(me);
         }
 

@@ -51,6 +51,8 @@ gui.widgets.MapView = {
         me._callbackZoom    = nil;
         me._objCallbackZoom = nil;
 
+        # A mode where new track points are added live.
+        # In this mode, drawing the flight path is less optimal.
         me._isLiveUpdateMode = 0;
 
         return me;
@@ -169,7 +171,7 @@ gui.widgets.MapView = {
     # @return me
     #
     zoomIn: func() {
-        me._changeZoom(1);
+        me._changeZoom(direction: 1);
 
         me._view.updateTiles(me);
 
@@ -182,7 +184,7 @@ gui.widgets.MapView = {
     # @return me
     #
     zoomOut: func() {
-        me._changeZoom(-1);
+        me._changeZoom(direction: -1);
 
         me._view.updateTiles(me);
 

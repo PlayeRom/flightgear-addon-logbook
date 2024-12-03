@@ -30,11 +30,11 @@ var HelpDialog = {
         var me = { parents: [
             HelpDialog,
             Dialog.new(
-                HelpDialog.WINDOW_WIDTH,
-                HelpDialog.WINDOW_HEIGHT,
-                HelpDialog.TITLE,
-                true,
-                func(w, h) { me._onResize(w, h); }
+                width   : HelpDialog.WINDOW_WIDTH,
+                height  : HelpDialog.WINDOW_HEIGHT,
+                title   : HelpDialog.TITLE,
+                resize  : true,
+                onResize: func(w, h) { me._onResize(w, h); }
             ),
         ] };
 
@@ -55,16 +55,16 @@ var HelpDialog = {
         me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
         me._scrollDataContent = me.getScrollAreaContent(
-            me._scrollData,
-            "LiberationFonts/LiberationSans-Regular.ttf",
-            16,
-            "left-baseline"
+            context  : me._scrollData,
+            font     : "LiberationFonts/LiberationSans-Regular.ttf",
+            fontSize : 16,
+            alignment: "left-baseline"
         );
 
         me._helpTexts = std.Vector.new();
         me._propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
 
-        me._reDrawTexts(0, 0, HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        me._reDrawTexts(x: 0, y: 0, maxWidth: HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
         me._drawBottomBar();
 
         return me;
@@ -87,7 +87,7 @@ var HelpDialog = {
     # @return void
     #
     _onResize: func(width, height) {
-        me._reDrawTexts(0, 0, width - (HelpDialog.PADDING * 2));
+        me._reDrawTexts(x: 0, y: 0, maxWidth: width - (HelpDialog.PADDING * 2));
     },
 
     #

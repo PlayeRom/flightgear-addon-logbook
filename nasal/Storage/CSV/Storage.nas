@@ -691,7 +691,7 @@ var Storage = {
         }
 
         if (index == Columns.TOTALS_ROW_ID) {
-            return me.getTotalsRow(false);
+            return me.getTotalsRow();
         }
 
         if (index == nil or index < 0 or index >= me._allData.size()) {

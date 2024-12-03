@@ -497,14 +497,14 @@ var Storage = {
     #
     # Append totals row to loadedData
     #
-    # @param  bool  withCheckVisible  If true false return even those columns which have visible set to false
+    # @param  bool  withCheckVisible  If false then return even those columns which have visible set to false
     # @return void
     #
     getTotalsRow: func(withCheckVisible = 1) {
         if (!withCheckVisible) {
             # Build where from filters
             var where = me._getWhereQueryFilters();
-            me._updateTotalsValues(where, false);
+            me._updateTotalsValues(where: where, withCheckVisible: false);
         }
 
         var totalsData = [];
@@ -649,7 +649,7 @@ var Storage = {
         }
 
         if (logbookId == Columns.TOTALS_ROW_ID) {
-            return me.getTotalsRow(false);
+            return me.getTotalsRow(withCheckVisible: false);
         }
 
         if (logbookId == nil) {

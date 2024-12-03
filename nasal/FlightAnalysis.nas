@@ -200,10 +200,14 @@ var FlightAnalysis = {
     showDialog: func() {
         var firstRun = me._flightAnalysisDlg == nil;
         if (firstRun) {
-            me._flightAnalysisDlg = FlightAnalysisDialog.new("Current Flight Analysis", true);
+            me._flightAnalysisDlg = FlightAnalysisDialog.new(title: "Current Flight Analysis", liveUpdateMode: true);
         }
 
-        me._flightAnalysisDlg.setData(me._currentFlightData.vector, me._currentFlightMaxAlt, false);
+        me._flightAnalysisDlg.setData(
+            trackItems       : me._currentFlightData.vector,
+            maxAlt           : me._currentFlightMaxAlt,
+            withResetPosition: false,
+        );
 
         if (firstRun) {
             me._flightAnalysisDlg.hardUpdateView();

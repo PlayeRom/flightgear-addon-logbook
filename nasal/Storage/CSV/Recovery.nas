@@ -128,7 +128,11 @@ var Recovery = {
                 var logData = LogData.new();
                 logData.fromVector(items);
 
-                me._storage.saveLogData(logData, nil, true);
+                me._storage.saveLogData(
+                    logData: logData,
+                    id     : nil,
+                    onlyIO : true
+                );
 
                 me.clear();
             }

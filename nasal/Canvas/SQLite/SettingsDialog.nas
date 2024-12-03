@@ -130,7 +130,7 @@ var SettingsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(nil, margins);
+        me._scrollData = me.createScrollArea(margins: margins);
 
         me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
@@ -203,9 +203,9 @@ var SettingsDialog = {
         # vBoxLayout.addItem(radio2);
         # vBoxLayout.addItem(radio3);
 
-        me._checkboxReal     = me._getCheckbox("Real date & time (from your OS)", me._dateTimeDisplay == Settings.DATE_TIME_REAL);
-        me._checkboxSimUtc   = me._getCheckbox("UTC time in simulator", me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
-        me._checkboxSimLocal = me._getCheckbox("Local time in simulator", me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
+        me._checkboxReal     = me._getCheckbox(text: "Real date & time (from your OS)", isChecked: me._dateTimeDisplay == Settings.DATE_TIME_REAL);
+        me._checkboxSimUtc   = me._getCheckbox(text: "UTC time in simulator",           isChecked: me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
+        me._checkboxSimLocal = me._getCheckbox(text: "Local time in simulator",         isChecked: me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
 
         me._checkboxReal.listen("toggled", func(e) {
             if (e.detail.checked) {
@@ -270,7 +270,7 @@ var SettingsDialog = {
         vBoxLayout.addSpacing(30);
         vBoxLayout.addItem(me._getLabel("Miscellaneous Options"));
 
-        var checkboxSound = me._getCheckbox("Click sound", me._soundOption);
+        var checkboxSound = me._getCheckbox(text: "Click sound", isChecked: me._soundOption);
         checkboxSound.listen("toggled", func(e) {
             me._soundOption = e.detail.checked;
         });
@@ -349,8 +349,8 @@ var SettingsDialog = {
         vBoxLayout.addItem(me._getLabel("Columns to display in the Logbook view", { wordWrap: true }));
         vBoxLayout.addSpacing(10);
 
-        var checkboxDate = me._getCheckbox("Date", true, false);
-        var checkboxTime = me._getCheckbox("Time", true, false);
+        var checkboxDate = me._getCheckbox(text: "Date", isChecked: true, isEnabled: false);
+        var checkboxTime = me._getCheckbox(text: "Time", isChecked: true, isEnabled: false);
         vBoxLayout.addItem(checkboxDate);
         vBoxLayout.addItem(checkboxTime);
 

@@ -257,7 +257,7 @@ var LogbookDialog = {
 
         # We need to redraw the headers too, because when the window was created,
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
-        me.reloadData(true);
+        me.reloadData(withHeaders: true);
 
         call(Dialog.show, [], me);
     },
@@ -316,7 +316,12 @@ var LogbookDialog = {
             var rect = rowGroup.rect(0, 0, columnItem.width, canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
-            me._drawText(rowGroup, 0, 20, me._getReplaceHeaderText(columnItem.name, columnItem.header));
+            me._drawText(
+                context: rowGroup,
+                x: 0,
+                y: 20,
+                label: me._getReplaceHeaderText(columnItem.name, columnItem.header)
+            );
 
             me._setMouseHoverHeadersListener(
                 rowGroup,
@@ -377,7 +382,7 @@ var LogbookDialog = {
     #
     _filterSelectorCallback: func(columnName, value) {
         me._detailsDialog.hide();
-        me.reloadData(true, FilterData.new(columnName, value));
+        me.reloadData(withHeaders: true, filter: FilterData.new(columnName, value));
     },
 
     #
@@ -426,16 +431,16 @@ var LogbookDialog = {
     #
     # Draw text
     #
-    # @param  ghost  cGroup  Parent canvas group
+    # @param  ghost  context  Parent canvas group
     # @param  int  x, y  Position of text
-    # @param  string  text  Text to draw
+    # @param  string  label  Text to draw
     # @return ghost  Text canvas element
     #
-    _drawText: func(cGroup, x, y, text) {
-        return cGroup.createChild("text")
+    _drawText: func(context, x, y, label) {
+        return context.createChild("text")
             .setTranslation(x, y)
             .setColor(me.style.TEXT_COLOR)
-            .setText(text);
+            .setText(label);
     },
 
     #
@@ -571,7 +576,7 @@ var LogbookDialog = {
             me._startIndex = 0;
             me._filterSelector.hide();
             me._detailsDialog.hide();
-            me.reloadData(false);
+            me.reloadData(withHeaders: false);
         }
     },
 
@@ -591,7 +596,7 @@ var LogbookDialog = {
             me._startIndex -= me._itemsPerPage;
             me._filterSelector.hide();
             me._detailsDialog.hide();
-            me.reloadData(false);
+            me.reloadData(withHeaders: false);
         }
     },
 
@@ -611,7 +616,7 @@ var LogbookDialog = {
             me._startIndex += me._itemsPerPage;
             me._filterSelector.hide();
             me._detailsDialog.hide();
-            me.reloadData(false);
+            me.reloadData(withHeaders: false);
         }
     },
 
@@ -634,7 +639,7 @@ var LogbookDialog = {
 
             me._filterSelector.hide();
             me._detailsDialog.hide();
-            me.reloadData(false);
+            me.reloadData(withHeaders: false);
         }
     },
 
