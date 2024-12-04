@@ -40,7 +40,7 @@ var Airport = {
     #
     # Get nearest airport distance in meters.
     #
-    # @return  hash|nil  Hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
+    # @return hash|nil  Hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
     _getNearestAirportDistanceM: func() {
         var nearestAirport = airportinfo();

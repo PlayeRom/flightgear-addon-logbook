@@ -480,7 +480,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  string|nil  rowFont  Font file name passed for the row
     # @param  hash  column
-    # @return  string|nil  Font file name or nil
+    # @return string|nil  Font file name or nil
     #
     _getCellFont: func(rowFont, column) {
         # Get column font

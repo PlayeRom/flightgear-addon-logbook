@@ -349,7 +349,7 @@ var Storage = {
     #
     _gatValueFilter: func(value, columnName) {
         if (columnName == me._columns.getColumnDate()) {
-            return  substr(value, 0, 4) # get year only
+            return substr(value, 0, 4) # get year only
         }
         else if (columnName == Columns.LANDING
               or columnName == Columns.CRASH

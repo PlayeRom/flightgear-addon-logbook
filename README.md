@@ -178,7 +178,7 @@ At the bottom we have a number of elements to control the flight analysis:
 
 #### Zoom
 
-You can change the vertical profile zoom using the `-`/`+` buttons. You can also do this using the mouse wheel when the cursor is over the graph. The zoom range is: 1x (the entire graph is visible), 2x (the graph is divided into 2 parts), 4x (division into 4 parts), 8x (division into 8 parts) and a maximum of 16x (division into 16 parts). The current zoom level is indicated by the text between the buttons.
+You can change the vertical profile zoom using the `-`/`+` buttons. You can also do this using the mouse wheel when the cursor is over the graph. The zoom range is: 1x (the entire graph is visible), 2x (the graph is divided into 2 parts), 4x (division into 4 parts), 8x (division into 8 parts) and a maximum of 16x (division into 16 parts). The current zoom level is indicated by the text between the buttons. However, please note that changing the zoom level will be impossible if the number of track points recorded is too small.
 
 The map view can also be zoomed using the mouse wheel. There are no buttons or level indications for zoom here. The zoom range for map is from 3 to 14. The default zoom level is set to 10. If the flight path does not fit on the map, you must zoom out of the map view or move along the path by click on the path or by using the `<` and `>` buttons to see the rest of the path.
 
