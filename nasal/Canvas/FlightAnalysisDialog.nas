@@ -300,7 +300,7 @@ var FlightAnalysisDialog = {
         }
 
         me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.ProfileView.ZOOM_MIN);
-        me._btnZoomPlus.setEnabled(zoom < canvas.gui.widgets.ProfileView.ZOOM_MAX);
+        me._btnZoomPlus.setEnabled(zoom < me._profileView.getMaxZoomLevel());
     },
 
     #

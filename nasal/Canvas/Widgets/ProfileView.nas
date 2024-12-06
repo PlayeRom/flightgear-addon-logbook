@@ -380,7 +380,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomIn: func() {
-        if (!me._view._isZoomBlocked and me._changeZoom(direction: 1)) {
+        if (me._changeZoom(direction: 1)) {
             me._view.reDrawContent(me);
         }
 
@@ -393,7 +393,7 @@ gui.widgets.ProfileView = {
     # @return me
     #
     zoomOut: func() {
-        if (!me._view._isZoomBlocked and me._changeZoom(direction: -1)) {
+        if (me._changeZoom(direction: -1)) {
             me._view.reDrawContent(me);
         }
 
@@ -407,28 +407,16 @@ gui.widgets.ProfileView = {
     # @return bool  Return true if zoom has been changed
     #
     _changeZoom: func(direction) {
-        if (direction == 1 and me._zoom < gui.widgets.ProfileView.ZOOM_MAX) {
+        if (direction == 1 and me._zoom < me._view.maxZoomLevel) {
             me._zoom *= 2;
             return true;
         }
-
-        if (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
+        else if (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
             me._zoom /= 2;
             return true;
         }
 
         return false;
-    },
-
-    #
-    # Set zool level to default value
-    #
-    # @return bool  Return true if zoom level has been changed
-    #
-    setDefaultZoom: func() {
-        var prevZoom = me._zoom;
-        me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
-        return prevZoom != me._zoom;
     },
 
     #
@@ -438,6 +426,15 @@ gui.widgets.ProfileView = {
     #
     getZoomLevel: func() {
         return me._zoom;
+    },
+
+    #
+    # Get max zool level
+    #
+    # @return int  Max zoom level
+    #
+    getMaxZoomLevel: func() {
+        return me._view.maxZoomLevel;
     },
 
      #

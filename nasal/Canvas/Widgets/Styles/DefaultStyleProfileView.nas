@@ -45,13 +45,14 @@ DefaultStyle.widgets["profile-view"] = {
         me._fractionIndex = 0;
         me._firstValueX = 0;
 
+        me.maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
+
         me._zoomFractions = {
             distance : std.Vector.new(),
             timestamp: std.Vector.new(),
         };
         me._isZoomFractionsBuilt = 0;
         me._firstFractionPosition = nil;
-        me._isZoomBlocked = 0;
     },
 
     #
@@ -139,7 +140,7 @@ DefaultStyle.widgets["profile-view"] = {
 
         # Zoom by scroll wheel
         me._root.addEventListener("wheel", func(e) {
-            if (model._isLiveUpdateMode or me._isZoomBlocked) {
+            if (model._isLiveUpdateMode) {
                 # Zoom is disabled for live update mode or if zoom is blocked
                 return;
             }
@@ -202,14 +203,43 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._isZoomFractionsBuilt = 1;
 
+        me.maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
+
+        while (me.maxZoomLevel >= gui.widgets.ProfileView.ZOOM_MIN) {
+            if (me._tryCatch(me._buildZoomFractionsInternal, [model])) {
+                break; # No errors, break the loop
+            }
+
+            # Reduce the number of fractions by half
+            me.maxZoomLevel = int(me.maxZoomLevel / 2);
+        }
+    },
+
+    #
+    # @param  func  function
+    # @param  vector  params
+    # @return bool  Return true if given function was called without errors (die)
+    #
+    _tryCatch: func(function, params) {
+        var errors = [];
+        call(function, params, me, nil, errors);
+
+        return !size(errors);
+    },
+
+    #
+    # @param  ghost  model
+    # @return void
+    #
+    _buildZoomFractionsInternal: func(model) {
         me._zoomFractions.distance.clear();
         me._zoomFractions.timestamp.clear();
 
         var lastIndex = model._trackItemsSize - 1;
         var lastItem  = model._trackItems[lastIndex];
 
-        var distFraction = lastItem.distance  / gui.widgets.ProfileView.ZOOM_MAX;
-        var timeFraction = lastItem.timestamp / gui.widgets.ProfileView.ZOOM_MAX;
+        var distFraction = lastItem.distance  / me.maxZoomLevel;
+        var timeFraction = lastItem.timestamp / me.maxZoomLevel;
 
         var nextDistValue = distFraction;
         var nextTimeValue = timeFraction;
@@ -231,8 +261,6 @@ DefaultStyle.widgets["profile-view"] = {
         var distCounter = 0;
         var timeCounter = 0;
 
-        me._isZoomBlocked = 0;
-
         forindex (var index; model._trackItems) {
             var item = model._trackItems[index];
 
@@ -240,12 +268,6 @@ DefaultStyle.widgets["profile-view"] = {
 
             (nextDistValue, distObj, distCounter) = me._buildZoomFraction(index, item, "distance",  nextDistValue, distFraction, distObj, isLast, distCounter);
             (nextTimeValue, timeObj, timeCounter) = me._buildZoomFraction(index, item, "timestamp", nextTimeValue, timeFraction, timeObj, isLast, timeCounter);
-        }
-
-        if (me._isZoomBlocked) {
-            if (model.setDefaultZoom()) {
-                model._updateZoom();
-            }
         }
     },
 
@@ -276,9 +298,11 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         if (item[key] > nextValue or isLast) {
-            if (counter < 2) {
-                # Block change zoom level when zoom fraction hasn't min 2 points
-                me._isZoomBlocked = 1;
+            if (counter < 2 and me.maxZoomLevel > gui.widgets.ProfileView.ZOOM_MIN) {
+                # With the current maxZoomLevel value, the number of points per fraction is less than 2,
+                # this is unacceptable, so throw an exception to decrease the maxZoomLevel,
+                # unless the maxZoomLevel has reached its minimum
+                die("Max zoom level to height");
             }
 
             counter = 0;
@@ -319,7 +343,7 @@ DefaultStyle.widgets["profile-view"] = {
         var fractions = me._getZoomFractions(model);
 
         var indexAllFractions = me._getCurrentFractionIndex(model);
-        var invert = math.min(fractions.size(), gui.widgets.ProfileView.ZOOM_MAX) / model._zoom;
+        var invert = math.min(fractions.size(), me.maxZoomLevel) / model._zoom;
         var firstIndex = (math.floor(indexAllFractions / invert)) * invert;
 
         me._trackItems = [];
@@ -377,14 +401,14 @@ DefaultStyle.widgets["profile-view"] = {
 
     #
     # Returned index value depend of zoom level. The fractions vectors have been merged according to zoom level
-    # e.g. when zoom = 2, then ZOOM_MAX vectors will be merged to 2 vectors, then this function will return 0 or 1.
+    # e.g. when zoom = 2, then me.maxZoomLevel vectors will be merged to 2 vectors, then this function will return 0 or 1.
     #
     # @param  ghost model  ProfileView mode
     # @param  int  indexAllFractions
     # @return int
     #
     _getIndexMergedFractions: func(model, indexAllFractions) {
-        return math.floor(indexAllFractions / (gui.widgets.ProfileView.ZOOM_MAX / model._zoom));
+        return math.floor(indexAllFractions / (me.maxZoomLevel / model._zoom));
     },
 
     #
