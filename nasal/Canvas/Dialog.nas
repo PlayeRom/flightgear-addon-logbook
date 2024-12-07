@@ -232,7 +232,7 @@ var Dialog = {
             "light": {
                 NAME         : "light",
                 CANVAS_BG    : canvas.style.getColor("bg_color"),
-                LIST_BG      : [1.0, 1.0, 1.0, 0.01], # NOTE: opacity cannot be 0.0 because scroll bars glitches
+                LIST_BG      : [1.0, 1.0, 1.0, 0.0022], # TODO: opacity should be 0.0 but isn't because scroll bars glitches
                 TEXT_COLOR   : [0.3, 0.3, 0.3],
                 HOVER_BG     : [1.0, 1.0, 0.5, 1.0],
                 SELECTED_BAR : [0.5, 1.0, 0.5, 1.0],
