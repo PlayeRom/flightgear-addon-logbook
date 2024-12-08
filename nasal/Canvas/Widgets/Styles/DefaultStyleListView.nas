@@ -624,12 +624,8 @@ DefaultStyle.widgets["list-view"] = {
     # @return ghost  Path element
     #
     _createRectangle: func(model, context, textHeight) {
-        return context.rect(
-                0,
-                0,
-                model._size[0],
-                math.max(textHeight, DefaultStyle.widgets["list-view"].ITEM_HEIGHT)
-            )
+        var height = int(math.max(textHeight, DefaultStyle.widgets["list-view"].ITEM_HEIGHT));
+        return context.rect(0, 0, model._size[0], height)
             .setColorFill(me._backgroundColor);
     },
 
@@ -672,7 +668,7 @@ DefaultStyle.widgets["list-view"] = {
 
     #
     # @param  int  maxHeight  Max height of content
-    # @return double
+    # @return int
     #
     _getHeightItemPadding: func(maxHeight) {
         return maxHeight == 0
