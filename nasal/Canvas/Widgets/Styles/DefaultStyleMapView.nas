@@ -30,9 +30,6 @@ DefaultStyle.widgets["map-view"] = {
 
         # Variables for map
         me._TILE_SIZE = 256;
-        var mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
-        me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
-        me._makePath = string.compileTemplate(mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
 
         me._numTiles         = { x:  6, y:  4 };
         me._centerTileOffset = { x:  0, y:  0 };
@@ -125,7 +122,7 @@ DefaultStyle.widgets["map-view"] = {
         me._lastTile.x = -1;
         me._lastTile.y = -1;
 
-        me._createTiles();
+        me._createTiles(model);
 
         me.updateTiles(model);
     },
@@ -198,14 +195,15 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Initialize the map by setting up a grid of raster images
     #
-    _createTiles: func() {
+    _createTiles: func(model) {
         me._tiles = setsize([], me._numTiles.x);
 
         for (var x = 0; x < me._numTiles.x; x += 1) {
             me._tiles[x] = setsize([], me._numTiles.y);
 
             for (var y = 0; y < me._numTiles.y; y += 1) {
-                me._tiles[x][y] = me._content.createChild("image", "map-tile");
+                me._tiles[x][y] = me._content.createChild("image", "map-tile")
+                    .setColorFill(model._colorFill);
             }
         }
     },
@@ -272,9 +270,10 @@ DefaultStyle.widgets["map-view"] = {
     # This is the callback that will be regularly called by the timer to update the map
     #
     # @param  ghost  model  MapView model
+    # @param  bool  forceSetTile
     # @return void
     #
-    updateTiles: func(model) {
+    updateTiles: func(model, forceSetTile = 0) {
         if (model._trackItems == nil or model._trackItemsSize == 0) {
             return;
         }
@@ -335,6 +334,7 @@ DefaultStyle.widgets["map-view"] = {
                 # Update tiles if needed
                 if (   tileIndex.x != me._lastTile.x
                     or tileIndex.y != me._lastTile.y
+                    or forceSetTile
                 ) {
                     var pos = {
                         z: model._zoom,
@@ -343,26 +343,26 @@ DefaultStyle.widgets["map-view"] = {
                     };
 
                     (func {
-                        var imgPath = me._makePath(pos);
+                        var imgPath = model._makePath(pos);
                         var tile = me._tiles[x][y];
 
                         if (io.stat(imgPath) == nil) {
                             # image not found in cache, save in $FG_HOME
-                            var imgUrl = me._makeUrl(pos);
+                            var imgUrl = model._makeUrl(pos);
 
-                            # logprint(LOG_INFO, 'MapView Add-on - requesting ', imgUrl);
+                            # logprint(LOG_INFO, 'MapView Widget - requesting ', imgUrl);
 
                             http.save(imgUrl, imgPath)
                                 .done(func {
-                                    # logprint(LOG_INFO, 'MapView Add-on - received image ', imgPath);
+                                    # logprint(LOG_INFO, 'MapView Widget - received image ', imgPath);
                                     tile.set("src", imgPath);
                                 })
                                 .fail(func(response) {
-                                    logprint(LOG_ALERT, 'MapView Add-on - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
+                                    logprint(LOG_ALERT, 'MapView Widget - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
                                 });
                         }
                         else { # cached image found, reusing
-                            # logprint(LOG_INFO, 'MapView Add-on - loading ', imgPath);
+                            # logprint(LOG_INFO, 'MapView Widget - loading ', imgPath);
                             tile.set("src", imgPath);
                         }
                     })();

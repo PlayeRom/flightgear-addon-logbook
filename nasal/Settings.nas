@@ -27,6 +27,9 @@ var Settings = {
 
     TRACKER_INTERVAL_SEC: 0, # Default tracker interval sec, 0 means auto adjustment mode
 
+    MAP_PROVIDER_OSM : 'OpenStreetMap',
+    MAP_PROVIDER_TOPO: 'OpenTopoMap',
+
     #
     # Constructor
     #
@@ -66,6 +69,7 @@ var Settings = {
         me._soundEnabledNode       = props.globals.getNode(me._pathToSettingsProp ~ "/sound-enabled");
         me._dateTimeDisplayNode    = props.globals.getNode(me._pathToSettingsProp ~ "/date-time-display");
         me._trackerIntervalSecNode = props.globals.getNode(me._pathToSettingsProp ~ "/tracker-interval-sec");
+        me._mapProviderNode        = props.globals.getNode(me._pathToSettingsProp ~ "/map-provider");
 
         return me;
     },
@@ -85,7 +89,7 @@ var Settings = {
     # @return int
     #
     getLogItemsPerPage: func() {
-        return me._itemsPerPageNode.getValue();
+        return me._itemsPerPageNode.getIntValue();
     },
 
     #
@@ -246,6 +250,15 @@ var Settings = {
     },
 
     #
+    # Get number of seconds as data recording interval during flight
+    #
+    # @return double
+    #
+    getTrackerIntervalSec: func() {
+        return me._trackerIntervalSecNode.getDoubleValue();
+    },
+
+    #
     # Set number of seconds as data recording interval during flight
     #
     # @param  double  value
@@ -260,15 +273,6 @@ var Settings = {
     },
 
     #
-    # Get number of seconds as data recording interval during flight
-    #
-    # @return double
-    #
-    getTrackerIntervalSec: func() {
-        return me._trackerIntervalSecNode.getValue();
-    },
-
-    #
     # Validate tracker-interval-sec option
     #
     # @param  int|string|double|nil  value
@@ -278,5 +282,39 @@ var Settings = {
         return value != nil
             and value != ""
             and num(value) >= FlightAnalysis.INTERVAL_AUTO_THRESHOLD;
+    },
+
+    #
+    # Get map provider name
+    #
+    # @return string
+    #
+    getMapProvider: func() {
+        return me._mapProviderNode.getValue();
+    },
+
+    #
+    # Set map provider name
+    #
+    # @param  string  name
+    # @return void
+    #
+    setMapProvider: func(name) {
+        if (!me._isMapProviderValid(name)) {
+            name = Settings.MAP_PROVIDER_OSM;
+        }
+
+        me._mapProviderNode.setValue(name);
+    },
+
+    #
+    # Validate map provider option
+    #
+    # @param  string  name
+    # @return bool
+    #
+    _isMapProviderValid: func(name) {
+        return name == Settings.MAP_PROVIDER_OSM
+            or name == Settings.MAP_PROVIDER_TOPO;
     },
 };

@@ -94,6 +94,9 @@ var FlightAnalysisDialog = {
     show: func() {
         g_Sound.play('paper');
 
+        me.setMapProvider(g_Settings.getMapProvider());
+        me._mapView.softUpdateView(forceSetTile: true); # to change map provider
+
         me._updateAfterChangePosition();
         me._updateAfterZoom();
         me._btnPlay.setText("Play");
@@ -110,6 +113,21 @@ var FlightAnalysisDialog = {
         me._playTimer.stop();
 
         call(Dialog.hide, [], me);
+    },
+
+    #
+    # Set map provider by name
+    #
+    # @param  string  name  Map provider name: "OpenStreetMap" or "OpenTopoMap"
+    # @return void
+    #
+    setMapProvider: func(name) {
+        if (name == Settings.MAP_PROVIDER_TOPO) {
+            me._mapView.setOpenTopoMap();
+        }
+        else { # OpenStreetMap as default
+            me._mapView.setOpenStreetMap();
+        }
     },
 
     #

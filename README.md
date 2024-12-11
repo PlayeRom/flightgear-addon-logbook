@@ -238,11 +238,13 @@ Here you can configure the following options:
 
 2. `Columns to display in the Logbook view` – here you can specify which columns are to be displayed in the Logbook window. The fewer columns are displayed, the faster the Logbook window will be drawn. Columns such as `Date`, `Time` and `Aircraft` are always displayed, the `Note` column will never be displayed and this cannot be changed. These options are only available for FG >= 2024.1.
 
-3. `Click sound` – by default, a sound is played when you click on various buttons, you can turn this sound off here.
+3. `Map provider` – here you can specify the map tile provider in the Flight Analysis view. Available providers are `OpenStreetMap` and `OpenTopoMap`,
 
-4. `Items per page` – here you can specify how many rows of logs should be displayed in the Logbook view, the default is 20. The lower the number, the faster the Logbook window will be drawn.
+4. `Click sound` – by default, a sound is played when you click on various buttons, you can turn this sound off here.
 
-4. `Optimize database` – this button will defragment the database file (sqlite), which will speed up database operations and reduce its size on the disk. These option is only available for FG >= 2024.1.
+5. `Items per page` – here you can specify how many rows of logs should be displayed in the Logbook view, the default is 20. The lower the number, the faster the Logbook window will be drawn.
+
+6. `Optimize database` – this button will defragment the database file (sqlite), which will speed up database operations and reduce its size on the disk. These option is only available for FG >= 2024.1.
 
 #### Advance settings
 

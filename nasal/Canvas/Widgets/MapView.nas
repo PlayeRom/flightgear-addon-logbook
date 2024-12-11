@@ -34,6 +34,16 @@ gui.widgets.MapView = {
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "map-view", me._cfg));
 
+        # Variables for map
+        me._mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
+        me._makeUrl  = nil;
+        me._makePath = nil;
+
+        # The background color of the map, where the alpha channel makes the map more faded
+        me._colorFill = [1.0, 1.0, 1.0, 1.0];
+
+        me.setOpenStreetMap();
+
         # Vector of hashes with flight data
         me._trackItems = [];
         me._trackItemsSize = 0;
@@ -56,6 +66,29 @@ gui.widgets.MapView = {
         me._isLiveUpdateMode = 0;
 
         return me;
+    },
+
+    #
+    # Use OpenStreetMap tiles
+    #
+    # @return void
+    #
+    setOpenStreetMap: func() {
+        me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
+        me._makePath = string.compileTemplate(me._mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
+        me._colorFill = [1.0, 1.0, 1.0, 0.7];
+    },
+
+    #
+    # Use OpenTopoMap tiles
+    # https://opentopomap.org/about
+    #
+    # @return void
+    #
+    setOpenTopoMap: func() {
+        me._makeUrl  = string.compileTemplate('https://tile.opentopomap.org/{z}/{x}/{y}.png');
+        me._makePath = string.compileTemplate(me._mapsBase ~ '/opentopomap-cache/{z}/{x}/{y}.png');
+        me._colorFill = [1.0, 1.0, 1.0, 0.5];
     },
 
     #
@@ -106,10 +139,11 @@ gui.widgets.MapView = {
     #
     # Soft redraw tiles and path
     #
+    # @param  bool  forceSetTile
     # @return void
     #
-    softUpdateView: func() {
-        me._view.updateTiles(me);
+    softUpdateView: func(forceSetTile = 0) {
+        me._view.updateTiles(me, forceSetTile);
     },
 
     #

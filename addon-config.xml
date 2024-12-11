@@ -21,7 +21,7 @@
                         <dark-style type="bool" userarchive="y">false</dark-style>
                         <real-time-duration type="bool" userarchive="y">true</real-time-duration>
                         <sound-enabled type="bool" userarchive="y">true</sound-enabled>
-                        <!-- possible value for date-time-display: real, sim-utc, sim-local -->
+                        <!-- Possible values for date-time-display: real, sim-utc, sim-local -->
                         <date-time-display type="string" userarchive="y">real</date-time-display>
                         <log-items-per-page type="int" userarchive="y">10</log-items-per-page>
 
@@ -29,6 +29,9 @@
                             be saved. Zero (actually less than 1.0) means automatic mode - the add-on will adjust
                             the interval itself according to the situation. -->
                         <tracker-interval-sec type="double" userarchive="y">0</tracker-interval-sec>
+
+                        <!-- Possible values: OpenStreetMap, OpenTopoMap -->
+                        <map-provider type="string" userarchive="y">OpenStreetMap</map-provider>
 
                         <columns-visible>
                             <!-- Which columns should be displayed: -->

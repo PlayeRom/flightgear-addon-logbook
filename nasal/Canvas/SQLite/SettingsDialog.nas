@@ -40,6 +40,7 @@ var SettingsDialog = {
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
         me._logItemsPerPage = g_Settings.getLogItemsPerPage();
+        me._mapProvider     = g_Settings.getMapProvider();
         me._columnsVisible  = {};
         me._loadColumnsVisible();
 
@@ -77,6 +78,7 @@ var SettingsDialog = {
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
         me._logItemsPerPage = g_Settings.getLogItemsPerPage();
+        me._mapProvider     = g_Settings.getMapProvider();
         me._loadColumnsVisible();
 
         me._drawContent();
@@ -108,6 +110,7 @@ var SettingsDialog = {
         g_Settings.setSoundEnabled(me._soundOption);
         g_Settings.setColumnsVisible(me._columnsVisible);
         g_Settings.setLogItemsPerPage(me._logItemsPerPage);
+        g_Settings.setMapProvider(me._mapProvider);
 
         me._columns.updateColumnsVisible();
 
@@ -151,10 +154,12 @@ var SettingsDialog = {
 
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawDateTimeOptions(vBoxLayout);
+        me._drawFlightAnalysisOptions(vBoxLayout);
         me._drawMiscellaneousOptions(vBoxLayout);
         vBoxLayout.addStretch(1);
-        me._hBoxLayout.addItem(vBoxLayout);
 
+        me._hBoxLayout.addItem(vBoxLayout);
+        me._hBoxLayout.addSpacing(30);
         me._hBoxLayout.addItem(me._drawColumnsVisible());
 
         me._scrollData.setLayout(me._hBoxLayout);
@@ -261,6 +266,53 @@ var SettingsDialog = {
     },
 
     #
+    # Draw Flight Analysis Options
+    #
+    # @param  ghost  vBoxLayout  canvas.VBoxLayout
+    # @return ghost  canvas.VBoxLayout
+    #
+    _drawFlightAnalysisOptions: func(vBoxLayout) {
+        vBoxLayout.addSpacing(30);
+        vBoxLayout.addItem(me._getLabel("Flight Analysis Options"));
+        vBoxLayout.addItem(me._drawMapProvider());
+
+        return vBoxLayout;
+    },
+
+    #
+    # Draw Map Provider combo box
+    #
+    # @return ghost  canvas.VBoxLayout
+    #
+    _drawMapProvider: func() {
+        var hBoxLayout = canvas.HBoxLayout.new();
+
+        hBoxLayout.addItem(me._getLabel("Map provider"));
+
+        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
+        if (view.hasmember(comboBox, "createItem")) {
+            # For next addMenuItem is deprecated
+            comboBox.createItem("OpenStreetMap", "OpenStreetMap");
+            comboBox.createItem("OpenTopoMap",   "OpenTopoMap");
+        }
+        else { # for 2024.1
+            comboBox.addMenuItem("OpenStreetMap", "OpenStreetMap");
+            comboBox.addMenuItem("OpenTopoMap",   "OpenTopoMap");
+        }
+        comboBox.setSelectedByValue(g_Settings.getMapProvider());
+        comboBox.listen("selected-item-changed", func(e) {
+            me._mapProvider = e.detail.value;
+        });
+
+        hBoxLayout.addItem(comboBox, 1);
+        # hBoxLayout.addSpacing(20);
+
+        # hBoxLayout.addStretch(1); # Decrease combo width
+
+        return hBoxLayout;
+    },
+
+    #
     # Draw Miscellaneous Options
     #
     # @param  ghost  vBoxLayout  canvas.VBoxLayout
@@ -315,13 +367,13 @@ var SettingsDialog = {
         var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
         if (view.hasmember(comboBox, "createItem")) {
             # For next addMenuItem is deprecated
-            comboBox.createItem("5", 5);
+            comboBox.createItem( "5",  5);
             comboBox.createItem("10", 10);
             comboBox.createItem("15", 15);
             comboBox.createItem("20", 20);
         }
         else { # for 2024.1
-            comboBox.addMenuItem("5", 5);
+            comboBox.addMenuItem( "5",  5);
             comboBox.addMenuItem("10", 10);
             comboBox.addMenuItem("15", 15);
             comboBox.addMenuItem("20", 20);
@@ -333,7 +385,7 @@ var SettingsDialog = {
 
         hBoxLayout.addItem(comboBox);
 
-        hBoxLayout.addStretch(1); # Decrease LineEdit width
+        hBoxLayout.addStretch(1); # Decrease combo width
 
         return hBoxLayout;
     },
