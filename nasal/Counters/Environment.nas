@@ -44,6 +44,9 @@ var Environment = {
         me._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
         me._propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
 
+        me._propWindHeading    = props.globals.getNode("/environment/wind-from-heading-deg");
+        me._propWindSpeed      = props.globals.getNode("/environment/wind-speed-kt");
+
         return me;
     },
 
@@ -278,5 +281,23 @@ var Environment = {
     #
     getInstrumentHours: func() {
         return me._instrumentCounter / 3600;
+    },
+
+    #
+    # Get current wind heading in deg
+    #
+    # @return double
+    #
+    getWindHeading: func() {
+        return me._propWindHeading.getDoubleValue();
+    },
+
+    #
+    # Get current wind speed in knots
+    #
+    # @return double
+    #
+    getWindSpeed: func() {
+        return me._propWindSpeed.getDoubleValue();
     },
 };

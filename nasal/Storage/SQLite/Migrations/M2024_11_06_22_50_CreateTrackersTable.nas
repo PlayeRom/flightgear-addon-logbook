@@ -53,6 +53,8 @@ var M2024_11_06_22_50_CreateTrackersTable = {
             { name: "groundspeed",  type: "REAL" }, # aircraft groundspeed in knots
             { name: "airspeed",     type: "REAL" }, # aircraft airspeed in knots
             { name: "pitch",        type: "REAL" }, # aircraft pitch in deg
+            { name: "wind_heading", type: "REAL" }, # wind from heading deg
+            { name: "wind_speed",   type: "REAL" }, # wind speed in kt
         ];
 
         me.createTable(Storage.TABLE_TRACKERS, columns);

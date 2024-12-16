@@ -234,7 +234,7 @@ var Storage = {
         }
 
         var query = "INSERT INTO " ~ Storage.TABLE_TRACKERS
-            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ~ " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         DB.exec(
             query,
@@ -249,7 +249,9 @@ var Storage = {
             data.heading_mag,
             data.groundspeed,
             data.airspeed,
-            data.pitch
+            data.pitch,
+            data.wind_heading,
+            data.wind_speed,
         );
 
         return true;

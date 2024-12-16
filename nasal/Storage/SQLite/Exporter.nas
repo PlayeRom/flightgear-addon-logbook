@@ -155,7 +155,7 @@ var Exporter = {
 
         foreach (var row; DB.exec(sprintf("SELECT * FROM %s;", Storage.TABLE_TRACKERS))) {
             io.write(file, sprintf(
-                "%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+                "%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
                 row.id,
                 row.logbook_id,
                 row.timestamp,
@@ -169,6 +169,8 @@ var Exporter = {
                 row.groundspeed,
                 row.airspeed,
                 row.pitch,
+                row.wind_heading,
+                row.wind_speed,
             ));
         }
 
@@ -195,6 +197,8 @@ var Exporter = {
         else if (columnName == "groundspeed")  return '"Groundspeed (kt)"';
         else if (columnName == "airspeed")     return '"Airspeed (kt)"';
         else if (columnName == "pitch")        return '"Pitch (deg)"';
+        else if (columnName == "wind_heading") return '"Wind heading (deg)"';
+        else if (columnName == "wind_speed")   return '"Wind speed (kt)"';
         else                                   return '?';
     },
 };

@@ -497,17 +497,19 @@ var Logbook = {
         }
 
         return {
-            "timestamp"    : timestamp,                     # elapsed time in sim in hours, this is set in FlightAnalysis
-            "lat"          : pos.lat(),                     # aircraft position
-            "lon"          : pos.lon(),                     # aircraft position
-            "alt_m"        : pos.alt(),                     # aircraft altitude in meters
-            "elevation_m"  : elevationMeters,               # elevation in metres of a lat,lon point on the scenery
-            "distance"     : distance,                      # distance traveled from the starting point in nautical miles
-            "heading_true" : me._flight.getHeadingTrue(),   # aircraft true heading
-            "heading_mag"  : me._flight.getHeadingMag(),    # aircraft magnetic heading
-            "groundspeed"  : me._flight.getGroundspeedKt(), # aircraft groundspeed in knots
-            "airspeed"     : me._flight.getAirspeedKt(),    # aircraft airspeed in knots
-            "pitch"        : me._flight.getPitch(),         # aircraft pitch in deg
+            "timestamp"    : timestamp,                        # elapsed time in sim in hours, this is set in FlightAnalysis
+            "lat"          : pos.lat(),                        # aircraft position
+            "lon"          : pos.lon(),                        # aircraft position
+            "alt_m"        : pos.alt(),                        # aircraft altitude in meters
+            "elevation_m"  : elevationMeters,                  # elevation in metres of a lat,lon point on the scenery
+            "distance"     : distance,                         # distance traveled from the starting point in nautical miles
+            "heading_true" : me._flight.getHeadingTrue(),      # aircraft true heading
+            "heading_mag"  : me._flight.getHeadingMag(),       # aircraft magnetic heading
+            "groundspeed"  : me._flight.getGroundspeedKt(),    # aircraft groundspeed in knots
+            "airspeed"     : me._flight.getAirspeedKt(),       # aircraft airspeed in knots
+            "pitch"        : me._flight.getPitch(),            # aircraft pitch in deg
+            "wind_heading" : me._environment.getWindHeading(), # wind from heading in deg
+            "wind_speed"   : me._environment.getWindSpeed(),   # wind speed in kt
         }
     },
 

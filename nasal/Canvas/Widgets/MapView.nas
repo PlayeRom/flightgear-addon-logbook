@@ -100,6 +100,8 @@ gui.widgets.MapView = {
     #               lat         : double,
     #               lon         : double,
     #               heading_true: double,
+    #               wind_heading: double,
+    #               wind_speed  : double,
     #          },
     #          ... etc.
     #     ]
@@ -126,6 +128,8 @@ gui.widgets.MapView = {
     #          lat         : double,
     #          lon         : double,
     #          heading_true: double,
+    #          wind_heading: double,
+    #          wind_speed  : double,
     #     },
     # @return me
     #

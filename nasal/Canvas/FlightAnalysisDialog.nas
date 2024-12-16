@@ -222,6 +222,8 @@ var FlightAnalysisDialog = {
         me._labelHdgTrueValue     = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0° / 0°");
         me._labelAirspeed         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Air / Groundspeed");
         me._labelAirspeedValue    = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0 kt / 0 kt");
+        me._labelWind             = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Wind");
+        me._labelWindValue        = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0° / 0 kt");
         me._labelTimestamp        = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Flight Duration");
         me._labelTimestampValue   = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("0");
         me._labelDistance         = canvas.gui.widgets.Label.new(me.group, canvas.style, {}).setText("Distance");
@@ -241,6 +243,9 @@ var FlightAnalysisDialog = {
         vBoxLayoutInfo.addStretch(1);
         vBoxLayoutInfo.addItem(me._labelAirspeed);
         vBoxLayoutInfo.addItem(me._labelAirspeedValue);
+        vBoxLayoutInfo.addStretch(1);
+        vBoxLayoutInfo.addItem(me._labelWind);
+        vBoxLayoutInfo.addItem(me._labelWindValue);
         vBoxLayoutInfo.addStretch(1);
         vBoxLayoutInfo.addItem(me._labelTimestamp);
         vBoxLayoutInfo.addItem(me._labelTimestampValue);
@@ -269,6 +274,7 @@ var FlightAnalysisDialog = {
         me._labelAltValue.setText(sprintf("%.0f ft / %.0f ft", item.alt_m * globals.M2FT, (item.alt_m - item.elevation_m) * globals.M2FT));
         me._labelHdgTrueValue.setText(sprintf("%.0f° / %.0f°", item.heading_true, item.heading_mag));
         me._labelAirspeedValue.setText(sprintf("%.0f kt / %.0f kt", item.airspeed, item.groundspeed));
+        me._labelWindValue.setText(sprintf("%.0f° / %.0f kt", item.wind_heading, item.wind_speed));
         me._labelTimestampValue.setText(Utils.decimalHoursToHuman(item.timestamp));
         me._labelDistanceValue.setText(sprintf("%.02f NM", item.distance));
     },
