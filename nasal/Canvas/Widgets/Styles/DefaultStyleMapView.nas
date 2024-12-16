@@ -27,6 +27,7 @@ DefaultStyle.widgets["map-view"] = {
             .set("clip-frame", Element.PARENT);
 
         me._textColor = me._style.getColor("fg_color");
+        me._bgColor   = me._style.getColor("bg_color");
 
         # Variables for map
         me._TILE_SIZE = 256;
@@ -56,6 +57,10 @@ DefaultStyle.widgets["map-view"] = {
         me._refZoom = gui.widgets.MapView.ZOOM_DEFAULT;
 
         me._lastSize = { w: nil, h: nil };
+
+        me._zoomLabel = nil;
+
+        me._isReDrew = 0;
     },
 
     #
@@ -102,6 +107,8 @@ DefaultStyle.widgets["map-view"] = {
             return;
         }
 
+        me._isReDrew = 1;
+
         me._addEvents(model);
 
         me._createPlaneIcon();
@@ -125,6 +132,15 @@ DefaultStyle.widgets["map-view"] = {
         me._createTiles(model);
 
         me.updateTiles(model);
+
+        me._zoomLabel = me._createText(
+            x       : 20,
+            y       : 25,
+            label   : "Zoom " ~ model._zoom,
+            fontSize: 14,
+            font    : "LiberationFonts/LiberationSans-Regular.ttf",
+            color   : [0.0, 0.0, 0.0],
+        );
     },
 
     #
@@ -254,16 +270,20 @@ DefaultStyle.widgets["map-view"] = {
     # @param  int  x, y
     # @param  string  label
     # @param  string  alignment
+    # @param  int  fontSize
+    # @param  string  font  Font file name
+    # @param  vector|nil  color  Text color
     # @return ghost  Text element
     #
-    _createText: func(x, y, label, alignment = "left-baseline") {
+    _createText: func(x, y, label, alignment = "left-baseline", fontSize = 12, font = "LiberationFonts/LiberationMono-Regular.ttf", color = nil) {
         return me._content.createChild("text")
-            .setFont("LiberationFonts/LiberationMono-Regular.ttf")
-            .setFontSize(12)
-            .setAlignment(alignment)
             .setTranslation(x, y)
-            .setColor(me._textColor)
-            .setText(label);
+            .setText(label)
+            .setAlignment(alignment)
+            .setFontSize(fontSize)
+            .setFont(font)
+            .setColor(color == nil ? me._textColor : color)
+            .setColorFill(me._bgColor);
     },
 
     #
@@ -276,6 +296,16 @@ DefaultStyle.widgets["map-view"] = {
     updateTiles: func(model, forceSetTile = 0) {
         if (model._trackItems == nil or model._trackItemsSize == 0) {
             return;
+        }
+
+        if (!me._isReDrew) {
+            # First must be call reDrawContent for create objects to draw
+            me.reDrawContent(model);
+            return;
+        }
+
+        if (me._zoomLabel != nil) {
+            me._zoomLabel.setText("Zoom " ~ model._zoom);
         }
 
         var track = model._trackItems[model._position];
