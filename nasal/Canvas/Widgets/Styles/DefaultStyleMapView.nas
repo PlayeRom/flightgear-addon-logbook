@@ -685,7 +685,7 @@ var WindBarbs = {
         var me = { parents: [WindBarbs] };
 
         me._LENGTH          = 50;
-        me._MARGIN          = 20;
+        me._MARGIN          = 10;
         me._WIND_LINE_WIDTH = 2;
 
         me._windPath = nil;
@@ -775,16 +775,18 @@ var WindBarbs = {
             # Set fill color for flag barb
             me._windPath.setColorFill(0.0, 0.0, 0.0, 1.0);
 
+            var halfLength = me._LENGTH / 2;
+
             # We draw a vertical line in the local coordinate system (directly relative to the center)
-            me._windPath.moveTo(0, 0);
-            me._windPath.lineTo(0, -me._LENGTH); # draw vertical line to up
+            me._windPath.moveTo(0,  halfLength);
+            me._windPath.lineTo(0, -halfLength); # draw vertical line to up
 
             var barbRule = me._findWindBarbRule(windSpeed);
             if (barbRule != nil) {
-                var y = -me._LENGTH; # Set y to end of wind vector
+                var y = -(me._LENGTH / 2); # Set y to end of wind vector
                 foreach (var barb; barbRule) {
                     if (barb == 5) {
-                        if (y == -me._LENGTH) {
+                        if (y == -halfLength) {
                             # This is first short which need offset
                             y += 5;
                         }
