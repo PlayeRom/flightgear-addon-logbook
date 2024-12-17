@@ -180,7 +180,7 @@ At the bottom we have a number of elements to control the flight analysis:
 
 You can change the vertical profile zoom using the `-`/`+` buttons. You can also do this using the mouse wheel when the cursor is over the graph. The zoom range is: 1x (the entire graph is visible), 2x (the graph is divided into 2 parts), 4x (division into 4 parts), 8x (division into 8 parts) and a maximum of 16x (division into 16 parts). The current zoom level is indicated by the text between the buttons. However, please note that the maximum zoom may be reduced if the number of recorded track points is too small.
 
-The map view can also be zoomed using the mouse wheel. There are no buttons or level indications for zoom here. The zoom range for map is from 3 to 14. The default zoom level is set to 10. If the flight path does not fit on the map, you must zoom out of the map view or move the airplane along the path by click on the path or by using the `<` and `>` buttons to see the rest of the path.
+The map view can also be zoomed using the mouse wheel. There are no buttons here but there are zoom level indicators in the upper left corner of the map. The zoom range for map is from 3 to 14. The default zoom level is set to 10. If the flight path does not fit on the map, you must zoom out of the map view or move the airplane along the path by click on the path or by using the `<` and `>` buttons to see the rest of the path.
 
 #### Frame
 
@@ -217,14 +217,33 @@ To the left of the map, there is recorded information about the given path point
 * altitude MSL and AGL at which the aircraft was located,
 * true and magnetic heading that the aircraft was flying at the given point,
 * airspeed and groundspeed in knots that the aircraft was flying at the given point,
+* direction from which the wind is blowing and its speed in knots,
 * flight time at the given point,
 * distance traveled at the given point.
 
-#### Vertical profile graph
+#### Map view
+
+The map shows the aircraft's position and heading.
+
+The path the aircraft flew is drawn with a blue line.
+
+In the upper left corner you have information about the map zoom level.
+
+In the upper right corner you have information about wind direction and speed (wind barbs).
+
+Click near the path on the map to move the airplane icon there.
+
+Scroll on the map to change map zoom level.
+
+#### Vertical profile graph view
 
 The vertical profile shows a side view of our flight, where the vertical axis shows altitude in feet, the horizontal axis contains two values. The first is time in hours, the second below is distance in NM.
 
 The blue line is the flight path, the brown line is the elevation of the terrain.
+
+Click on the graph to move airplane icon position.
+
+Scroll on the graph to change zoom level.
 
 ### Settings
 
