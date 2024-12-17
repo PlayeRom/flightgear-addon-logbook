@@ -741,7 +741,6 @@ var WindBarbs = {
     _createWindBarbs: func(context) {
         me._windPath = context.createChild("path", "wind")
             .setColor(0.0, 0.0, 0.0)
-            .setColorFill(0.0, 0.0, 0.0)
             .setStrokeLineWidth(me._WIND_LINE_WIDTH);
     },
 
@@ -761,42 +760,49 @@ var WindBarbs = {
             y:          me._LENGTH + me._MARGIN,
         };
 
-        if (windSpeed < 1) { # calm
-            me._windPath.circle( 7, center.x, center.y);
-            me._windPath.circle(10, center.x, center.y);
-            return;
+        if (windSpeed < 1) { # calm (draw circles)
+            # TODO: We don't want a fill color here and it would be best to turn it off,
+            # but alpha 0.0 works like 1.0, so I set it to the lowest possible
+            me._windPath.setColorFill(1.0, 1.0, 1.0, 0.0022);
+
+            me._windPath.circle( 7);
+            me._windPath.circle(10);
         }
+        else { # draw vector of wind
+            # Set fill color for flag barb
+            me._windPath.setColorFill(0.0, 0.0, 0.0, 1.0);
 
-        # We draw a vertical line in the local coordinate system (directly relative to the center)
-        me._windPath.moveTo(0, 0);
-        me._windPath.lineTo(0, -me._LENGTH); # draw vertical line to up
+            # We draw a vertical line in the local coordinate system (directly relative to the center)
+            me._windPath.moveTo(0, 0);
+            me._windPath.lineTo(0, -me._LENGTH); # draw vertical line to up
 
-        var barbRule = me._findWindBarbRule(windSpeed);
-        if (barbRule != nil) {
-            var y = -me._LENGTH; # Set y to end of wind vector
-            foreach (var barb; barbRule) {
-                if (barb == 5) {
-                    if (y == -me._LENGTH) {
-                        # This is first short which need offset
+            var barbRule = me._findWindBarbRule(windSpeed);
+            if (barbRule != nil) {
+                var y = -me._LENGTH; # Set y to end of wind vector
+                foreach (var barb; barbRule) {
+                    if (barb == 5) {
+                        if (y == -me._LENGTH) {
+                            # This is first short which need offset
+                            y += 5;
+                        }
+
+                        me._shortBarb(y);
                         y += 5;
                     }
+                    else if (barb == 10) {
+                        me._longBarb(y);
+                        y += 5;
+                    }
+                    else if (barb == 50) {
+                        me._flagBarb(y);
+                        y += 10;
+                    }
+                };
+            }
 
-                    me._shortBarb(y);
-                    y += 5;
-                }
-                else if (barb == 10) {
-                    me._longBarb(y);
-                    y += 5;
-                }
-                else if (barb == 50) {
-                    me._flagBarb(y);
-                    y += 10;
-                }
-            };
+            # We set the path rotation relative to the center (0,0) - local coordinates
+            me._windPath.setRotation(windHeading * globals.D2R);
         }
-
-        # We set the path rotation relative to the center (0,0) - local coordinates
-        me._windPath.setRotation(windHeading * globals.D2R);
 
         # We move the path to the global center
         me._windPath.setTranslation(center.x, center.y);
