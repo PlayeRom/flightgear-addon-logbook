@@ -118,7 +118,7 @@ gui.widgets.ProfileView = {
             }
         }
 
-        me._trackItems     = trackItems;
+        me._trackItems     = trackItems[:]; # copy vector instead of reference
         me._trackItemsSize = size(me._trackItems);
 
         me._maxAlt = maxAlt;

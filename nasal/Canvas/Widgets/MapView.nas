@@ -114,7 +114,7 @@ gui.widgets.MapView = {
             me._position = 0;
         }
 
-        me._trackItems     = trackItems;
+        me._trackItems     = trackItems[:]; # copy vector instead of reference
         me._trackItemsSize = size(me._trackItems);
 
         return me;
