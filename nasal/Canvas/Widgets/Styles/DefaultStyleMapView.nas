@@ -783,7 +783,7 @@ var WindBarbs = {
 
             var barbRule = me._findWindBarbRule(windSpeed);
             if (barbRule != nil) {
-                var y = -(me._LENGTH / 2); # Set y to end of wind vector
+                var y = -halfLength; # Set y to end of wind vector
                 foreach (var barb; barbRule) {
                     if (barb == 5) {
                         if (y == -halfLength) {
