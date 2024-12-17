@@ -49,10 +49,6 @@ DefaultStyle.widgets["map-view"] = {
         me._pointsToDraw = std.Vector.new();
         me._isClickEventSet = 0;
 
-        me._svgPlane = nil;
-        me._planeIconWidth  = 0;
-        me._planeIconHeight = 0;
-
         me._refPosition = 0;
         me._refZoom = gui.widgets.MapView.ZOOM_DEFAULT;
 
@@ -62,6 +58,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._isReDrew = 0;
 
+        me._planeIcon = PlaneIcon.new();
         me._windBarbs = WindBarbs.new();
     },
 
@@ -113,7 +110,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._addEvents(model);
 
-        me._createPlaneIcon();
+        me._planeIcon._createPlaneIcon(me._content);
 
         me._flightPath = me._content.createChild("path", "flight")
             .setColor(0.5, 0.5, 1)
@@ -229,48 +226,6 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Create SVG plane image
-    #
-    _createPlaneIcon: func() {
-        me._svgPlane = me._content.createChild("group").set("z-index", 2);
-        canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
-
-        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
-    },
-
-    #
-    # Draw plane from SVG file at center of the map
-    #
-    # @param  double  heading
-    # @return void
-    #
-    _drawPlaneIcon: func(heading) {
-        var headingInRad = heading * globals.D2R;
-        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, headingInRad);
-
-        me._svgPlane.setRotation(headingInRad);
-        me._svgPlane.setTranslation(
-            me._TILE_SIZE * me._centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
-            me._TILE_SIZE * me._centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
-        );
-    },
-
-    #
-    # Calculate offset for rotation because the image rotation point is in the upper left corner
-    #
-    # @param  int  width  Image width
-    # @param  int  height  Image height
-    # @param  double  angleInRadians
-    # @return hash  Hash with delta X and delta Y
-    #
-    _getRotationOffset: func(width, height, angleInRadians) {
-        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
-        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
-
-        return { dx: deltaX, dy: deltaY };
-    },
-
-    #
     # @param  int  x, y
     # @param  string  label
     # @param  string  alignment
@@ -312,7 +267,7 @@ DefaultStyle.widgets["map-view"] = {
 
         var track = model._trackItems[model._position];
 
-        me._drawPlaneIcon(track.heading_true);
+        me._planeIcon._drawPlaneIcon(track.heading_true, me._TILE_SIZE, me._centerTileOffset);
         me._windBarbs._drawWindBarbs(model, track.wind_heading, track.wind_speed);
 
         me._minTile.x = 0;
@@ -652,6 +607,72 @@ DefaultStyle.widgets["map-view"] = {
 };
 
 #
+# Class for drawing a plane icon
+#
+var PlaneIcon = {
+    #
+    # Constructor
+    #
+    # @return me
+    #
+    new: func() {
+        return {
+            parents         : [PlaneIcon],
+            _svgPlane       : nil,
+            _planeIconWidth : 0,
+            _planeIconHeight: 0,
+        };
+    },
+
+    #
+    # Create SVG plane image
+    #
+    # @param  ghost  context
+    # @return void
+    #
+    _createPlaneIcon: func(context) {
+        me._svgPlane = context.createChild("group").set("z-index", 2);
+        canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
+
+        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
+    },
+
+    #
+    # Draw plane from SVG file at center of the map
+    #
+    # @param  double  heading
+    # @param  int  tileSize
+    # @param  hash  centerTileOffset
+    # @return void
+    #
+    _drawPlaneIcon: func(heading, tileSize, centerTileOffset) {
+        var headingInRad = heading * globals.D2R;
+        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, headingInRad);
+
+        me._svgPlane.setRotation(headingInRad);
+        me._svgPlane.setTranslation(
+            tileSize * centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
+            tileSize * centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
+        );
+    },
+
+    #
+    # Calculate offset for rotation because the image rotation point is in the upper left corner
+    #
+    # @param  int  width  Image width
+    # @param  int  height  Image height
+    # @param  double  angleInRadians
+    # @return hash  Hash with delta X and delta Y
+    #
+    _getRotationOffset: func(width, height, angleInRadians) {
+        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
+        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
+
+        return { dx: deltaX, dy: deltaY };
+    },
+};
+
+#
 # Class for drawing a wind indicator
 #
 var WindBarbs = {
@@ -663,8 +684,8 @@ var WindBarbs = {
     new: func() {
         var me = { parents: [WindBarbs] };
 
-        me._LENGTH = 50;
-        me._MARGIN = 20;
+        me._LENGTH          = 50;
+        me._MARGIN          = 20;
         me._WIND_LINE_WIDTH = 2;
 
         me._windPath = nil;
