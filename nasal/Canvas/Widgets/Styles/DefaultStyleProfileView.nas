@@ -34,10 +34,6 @@ DefaultStyle.widgets["profile-view"] = {
         me._pointsX = std.Vector.new();
         me._isClickEventSet = 0;
 
-        me._svgPlane = nil;
-        me._planeIconWidth  = 0;
-        me._planeIconHeight = 0;
-
         me._trackItemsSize = 0;
         me._trackItems     = nil;
 
@@ -53,6 +49,8 @@ DefaultStyle.widgets["profile-view"] = {
         };
         me._isZoomFractionsBuilt = 0;
         me._firstFractionPosition = nil;
+
+        me._planeIcon = PlaneIconProfile.new();
     },
 
     #
@@ -97,7 +95,7 @@ DefaultStyle.widgets["profile-view"] = {
 
         me._addEvents(model);
 
-        me._createPlaneIcon();
+        me._planeIcon.create(me._root);
 
         me._setRangeOfPointsToDraw(model);
         me._drawProfile(model);
@@ -432,7 +430,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
         me._positiveYAxisLength = me._yXAxis - paddingTop;
 
-        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (me._planeIconWidth / 2);
+        me._graphWidth = model._size[0] - me._xXAxis - paddingRight - (me._planeIcon.getWidth() / 2);
 
         me._drawText(
             x: model._size[0] / 2,
@@ -622,7 +620,7 @@ DefaultStyle.widgets["profile-view"] = {
         var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : item.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
-        return me._drawPlaneIcon(x, y, item.pitch);
+        return me._planeIcon.draw(x, y, item.pitch);
     },
 
     #
@@ -684,52 +682,6 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
-    # Create SVG plane image
-    #
-    # @return void
-    #
-    _createPlaneIcon: func() {
-        me._svgPlane = me._root.createChild("group").set("z-index", 1);
-        canvas.parsesvg(me._svgPlane, "Textures/plane-side.svg");
-
-        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
-    },
-
-    #
-    # Draw plane from SVG file
-    #
-    # @param  double  x
-    # @param  double  y
-    # @param  double  rotate
-    # @return void
-    #
-    _drawPlaneIcon: func(x, y, rotate = 0) {
-        var angleInRadians = -rotate * globals.D2R;
-        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, angleInRadians);
-
-        me._svgPlane.setTranslation(
-            x - (me._planeIconWidth  * 0.5) + offset.dx,
-            y - (me._planeIconHeight * 0.8) + offset.dy
-        );
-        me._svgPlane.setRotation(angleInRadians);
-    },
-
-    #
-    # Calculate offset for rotation because the image rotation point is in the upper left corner
-    #
-    # @param  int  width  Image width
-    # @param  int  height  Image height
-    # @param  double  angleInRadians
-    # @return hash  Hash with delta X and delta Y
-    #
-    _getRotationOffset: func(width, height, angleInRadians) {
-        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
-        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
-
-        return { dx: deltaX, dy: deltaY };
-    },
-
-    #
     # Round the given number to hundreds, e.g. 185 => 100, 6486 => 6400, etc.
     #
     # @param  double  number  Max alt in feet divided by 4
@@ -757,5 +709,81 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         return 1000;
+    },
+};
+
+#
+# Class for drawing a plane icon
+#
+var PlaneIconProfile = {
+    #
+    # Constructor
+    #
+    # @return me
+    #
+    new: func() {
+        return {
+            parents: [PlaneIconProfile],
+            _svgImg: nil,
+            _width : 0,
+            _height: 0,
+        };
+    },
+
+    #
+    # Create SVG plane image
+    #
+    # @param  ghost  context
+    # @return void
+    #
+    create: func(context) {
+        me._svgImg = context.createChild("group").set("z-index", 1);
+        canvas.parsesvg(me._svgImg, "Textures/plane-side.svg");
+
+        (me._width, me._height) = me._svgImg.getSize();
+    },
+
+    #
+    # Draw plane from SVG file
+    #
+    # @param  double  x
+    # @param  double  y
+    # @param  double  rotate
+    # @return void
+    #
+    draw: func(x, y, rotate = 0) {
+        var angleInRadians = -rotate * globals.D2R;
+        var offset = me._getRotationOffset(me._width, me._height, angleInRadians);
+
+        me._svgImg.setTranslation(
+            x - (me._width  * 0.5) + offset.dx,
+            y - (me._height * 0.8) + offset.dy
+        );
+        me._svgImg.setRotation(angleInRadians);
+    },
+
+    #
+    # Calculate offset for rotation because the image rotation point is in the upper left corner
+    #
+    # @param  double  width  Image width
+    # @param  double  height  Image height
+    # @param  double  angleInRadians
+    # @return hash  Hash with delta X and delta Y
+    #
+    _getRotationOffset: func(width, height, angleInRadians) {
+        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
+        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
+
+        return {
+            dx: deltaX,
+            dy: deltaY,
+        };
+    },
+
+    #
+    # @return double
+    #
+    getWidth: func() {
+        return me._width;
     },
 };
