@@ -58,7 +58,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._isReDrew = 0;
 
-        me._planeIcon = PlaneIcon.new();
+        me._planeIcon = PlaneIconMap.new();
         me._windBarbs = WindBarbs.new();
     },
 
@@ -110,7 +110,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._addEvents(model);
 
-        me._planeIcon._createPlaneIcon(me._content);
+        me._planeIcon.create(me._content);
 
         me._flightPath = me._content.createChild("path", "flight")
             .setColor(0.5, 0.5, 1)
@@ -130,7 +130,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._createTiles(model);
 
-        me._windBarbs._createWindBarbs(me._content);
+        me._windBarbs.create(me._content);
 
         me._zoomLabel = me._createText(
             x       : 20,
@@ -267,8 +267,8 @@ DefaultStyle.widgets["map-view"] = {
 
         var track = model._trackItems[model._position];
 
-        me._planeIcon._drawPlaneIcon(track.heading_true, me._TILE_SIZE, me._centerTileOffset);
-        me._windBarbs._drawWindBarbs(model, track.wind_heading, track.wind_speed);
+        me._planeIcon.draw(track.heading_true, me._TILE_SIZE, me._centerTileOffset);
+        me._windBarbs.draw(model, track.wind_heading, track.wind_speed);
 
         me._minTile.x = 0;
         me._minTile.y = 0;
@@ -609,7 +609,7 @@ DefaultStyle.widgets["map-view"] = {
 #
 # Class for drawing a plane icon
 #
-var PlaneIcon = {
+var PlaneIconMap = {
     #
     # Constructor
     #
@@ -617,10 +617,10 @@ var PlaneIcon = {
     #
     new: func() {
         return {
-            parents         : [PlaneIcon],
-            _svgPlane       : nil,
-            _planeIconWidth : 0,
-            _planeIconHeight: 0,
+            parents: [PlaneIconMap],
+            _svgImg: nil,
+            _width : 0,
+            _height: 0,
         };
     },
 
@@ -630,11 +630,11 @@ var PlaneIcon = {
     # @param  ghost  context
     # @return void
     #
-    _createPlaneIcon: func(context) {
-        me._svgPlane = context.createChild("group").set("z-index", 2);
-        canvas.parsesvg(me._svgPlane, "Textures/plane-top.svg");
+    create: func(context) {
+        me._svgImg = context.createChild("group").set("z-index", 2);
+        canvas.parsesvg(me._svgImg, "Textures/plane-top.svg");
 
-        (me._planeIconWidth, me._planeIconHeight) = me._svgPlane.getSize();
+        (me._width, me._height) = me._svgImg.getSize();
     },
 
     #
@@ -645,22 +645,22 @@ var PlaneIcon = {
     # @param  hash  centerTileOffset
     # @return void
     #
-    _drawPlaneIcon: func(heading, tileSize, centerTileOffset) {
+    draw: func(heading, tileSize, centerTileOffset) {
         var headingInRad = heading * globals.D2R;
-        var offset = me._getRotationOffset(me._planeIconWidth, me._planeIconHeight, headingInRad);
+        var offset = me._getRotationOffset(me._width, me._height, headingInRad);
 
-        me._svgPlane.setRotation(headingInRad);
-        me._svgPlane.setTranslation(
-            tileSize * centerTileOffset.x - (me._planeIconWidth  / 2) + offset.dx,
-            tileSize * centerTileOffset.y - (me._planeIconHeight / 2) + offset.dy
+        me._svgImg.setRotation(headingInRad);
+        me._svgImg.setTranslation(
+            tileSize * centerTileOffset.x - (me._width  / 2) + offset.dx,
+            tileSize * centerTileOffset.y - (me._height / 2) + offset.dy
         );
     },
 
     #
     # Calculate offset for rotation because the image rotation point is in the upper left corner
     #
-    # @param  int  width  Image width
-    # @param  int  height  Image height
+    # @param  double  width  Image width
+    # @param  double  height  Image height
     # @param  double  angleInRadians
     # @return hash  Hash with delta X and delta Y
     #
@@ -695,6 +695,9 @@ var WindBarbs = {
         return me;
     },
 
+    #
+    # Return barbs at a given speed
+    # Barbs are marked by three numbers 5 (short barb), 10 (long barb), 50 (flag).
     #
     # @return vector
     #
@@ -738,7 +741,7 @@ var WindBarbs = {
     # @param  ghost  context
     # @return void
     #
-    _createWindBarbs: func(context) {
+    create: func(context) {
         me._windPath = context.createChild("path", "wind")
             .setColor(0.0, 0.0, 0.0)
             .setStrokeLineWidth(me._WIND_LINE_WIDTH);
@@ -750,7 +753,7 @@ var WindBarbs = {
     # @param  double  windSpeed
     # @return void
     #
-    _drawWindBarbs: func(model, windHeading, windSpeed) {
+    draw: func(model, windHeading, windSpeed) {
         me._windPath.reset();
 
         var (width, height) = model._size;
