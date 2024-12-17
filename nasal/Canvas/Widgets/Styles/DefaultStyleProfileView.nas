@@ -30,6 +30,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._maxValueX = 0;
         me._graphWidth = 0;
         me._positiveYAxisLength = 0;
+        me._firstValueX = 0;
 
         me._pointsX = std.Vector.new();
         me._isClickEventSet = 0;
@@ -37,20 +38,8 @@ DefaultStyle.widgets["profile-view"] = {
         me._trackItemsSize = 0;
         me._trackItems     = nil;
 
-        # If zoom is used, in which fraction of the graph is the plane located
-        me._fractionIndex = 0;
-        me._firstValueX = 0;
-
-        me.maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
-
-        me._zoomFractions = {
-            distance : std.Vector.new(),
-            timestamp: std.Vector.new(),
-        };
-        me._isZoomFractionsBuilt = 0;
-        me._firstFractionPosition = nil;
-
-        me._planeIcon = PlaneIconProfile.new();
+        me._zoomFractions = ZoomFractions.new();
+        me._planeIcon = PlaneIcon.new();
     },
 
     #
@@ -91,27 +80,16 @@ DefaultStyle.widgets["profile-view"] = {
             return;
         }
 
-        me._buildZoomFractions(model);
+        me._zoomFractions.create(model);
 
         me._addEvents(model);
 
-        me._planeIcon.create(me._root);
+        me._planeIcon.create(me._root, "Textures/plane-side.svg");
 
-        me._setRangeOfPointsToDraw(model);
+        me._zoomFractions.setRangeOfPointsToDraw(model, me);
         me._drawProfile(model);
 
         me.updateAircraftPosition(model);
-    },
-
-    #
-    # @return int
-    #
-    _getFirstFractionPosition: func() {
-        if (me._firstFractionPosition == nil) {
-            return 0;
-        }
-
-        return me._firstFractionPosition;
     },
 
     #
@@ -131,7 +109,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._root.addEventListener("click", func(e) {
             var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
 
-            model.setTrackPosition(position + me._getFirstFractionPosition());
+            model.setTrackPosition(position + me._zoomFractions.getFirstFractionPosition());
             model._updatePosition();
         });
 
@@ -186,227 +164,6 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         return points[closestIndex].position;
-    },
-
-    #
-    # Build zoom fractions, once for model._trackItems data
-    #
-    # @param  ghost  model  ProfileView model
-    # @return void
-    #
-    _buildZoomFractions: func(model) {
-        if (me._isZoomFractionsBuilt or model._isLiveUpdateMode) {
-            return;
-        }
-
-        me._isZoomFractionsBuilt = 1;
-
-        me.maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
-
-        while (me.maxZoomLevel >= gui.widgets.ProfileView.ZOOM_MIN) {
-            if (me._tryCatch(me._buildZoomFractionsInternal, [model])) {
-                break; # No errors, break the loop
-            }
-
-            # Reduce the number of fractions by half
-            me.maxZoomLevel = int(me.maxZoomLevel / 2);
-        }
-    },
-
-    #
-    # @param  func  function
-    # @param  vector  params
-    # @return bool  Return true if given function was called without errors (die)
-    #
-    _tryCatch: func(function, params) {
-        var errors = [];
-        call(function, params, me, nil, errors);
-
-        return !size(errors);
-    },
-
-    #
-    # @param  ghost  model
-    # @return void
-    #
-    _buildZoomFractionsInternal: func(model) {
-        me._zoomFractions.distance.clear();
-        me._zoomFractions.timestamp.clear();
-
-        var lastIndex = model._trackItemsSize - 1;
-        var lastItem  = model._trackItems[lastIndex];
-
-        var distFraction = lastItem.distance  / me.maxZoomLevel;
-        var timeFraction = lastItem.timestamp / me.maxZoomLevel;
-
-        var nextDistValue = distFraction;
-        var nextTimeValue = timeFraction;
-
-        var distObj = {
-            firstPosition: nil,
-            lastPosition : nil,
-            items        : [],
-            itemsSize    : 0,
-        };
-
-        var timeObj = {
-            firstPosition: nil,
-            lastPosition : nil,
-            items        : [],
-            itemsSize    : 0,
-        };
-
-        var distCounter = 0;
-        var timeCounter = 0;
-
-        forindex (var index; model._trackItems) {
-            var item = model._trackItems[index];
-
-            var isLast = index == lastIndex;
-
-            (nextDistValue, distObj, distCounter) = me._buildZoomFraction(index, item, "distance",  nextDistValue, distFraction, distObj, isLast, distCounter);
-            (nextTimeValue, timeObj, timeCounter) = me._buildZoomFraction(index, item, "timestamp", nextTimeValue, timeFraction, timeObj, isLast, timeCounter);
-        }
-    },
-
-    #
-    # Build zoom fraction for distance or timestamp
-    #
-    # @param  int  index  Current index of model._trackItems
-    # @param  hash  item  Current item of model._trackItems
-    # @param  string  key  "distance" or "timestamp"
-    # @param  double  nextValue  Limit value for current faction
-    # @param  double  fractionValue  A fractional part of a time or distance value
-    # @param  hash  fractionObj  Fraction object with min and max positions, vector of points and size of vector
-    # @param  bool  isLast  True if it's last index of model._trackItems vector
-    # @param  int  counter
-    # @return vector  New value of nextValue and fractionObj
-    #
-    _buildZoomFraction: func(index, item, key, nextValue, fractionValue, fractionObj, isLast, counter) {
-        if (item[key] <= nextValue or isLast) {
-            if (fractionObj.firstPosition == nil) {
-                fractionObj.firstPosition = index;
-            }
-
-            fractionObj.lastPosition = index;
-            fractionObj.itemsSize += 1;
-
-            append(fractionObj.items, item);
-            counter += 1;
-        }
-
-        if (item[key] > nextValue or isLast) {
-            if (counter < 2 and me.maxZoomLevel > gui.widgets.ProfileView.ZOOM_MIN) {
-                # With the current maxZoomLevel value, the number of points per fraction is less than 2,
-                # this is unacceptable, so throw an exception to decrease the maxZoomLevel,
-                # unless the maxZoomLevel has reached its minimum
-                die("Max zoom level to height");
-            }
-
-            counter = 0;
-
-            me._zoomFractions[key].append(fractionObj);
-
-            if (!isLast) {
-                fractionObj = {
-                    firstPosition: index,
-                    lastPosition : index,
-                    items        : [],
-                    itemsSize    : 1,
-                };
-
-                append(fractionObj.items, item);
-
-                nextValue += fractionValue;
-            }
-        }
-
-        return [nextValue, fractionObj, counter];
-    },
-
-    #
-    # Set range of points to draw according to zoom level
-    #
-    # @param  ghost  model  ProfileView model
-    # @return void
-    #
-    _setRangeOfPointsToDraw: func(model) {
-        if (model._isLiveUpdateMode) {
-            # For live mode the zoom is disabled
-            me._trackItems     = model._trackItems;
-            me._trackItemsSize = model._trackItemsSize;
-            return;
-        }
-
-        var fractions = me._getZoomFractions(model);
-
-        var indexAllFractions = me._getCurrentFractionIndex(model);
-        var invert = math.min(fractions.size(), me.maxZoomLevel) / model._zoom;
-        var firstIndex = (math.floor(indexAllFractions / invert)) * invert;
-
-        me._trackItems = [];
-        me._trackItemsSize = 0;
-        me._firstFractionPosition = nil;
-
-        foreach (var item; fractions.vector[firstIndex:(firstIndex + invert - 1)]) {
-            me._trackItems ~= item.items; # merge vectors
-            me._trackItemsSize += item.itemsSize;
-            if (me._firstFractionPosition == nil) {
-                me._firstFractionPosition = item.firstPosition;
-            }
-        }
-
-        me._fractionIndex = me._getIndexMergedFractions(model, indexAllFractions);
-    },
-
-    #
-    # Return the index of the part of the graph where the aircraft is currently located.
-    # For example, if zoom level is 8, it can be index from 0 do 7.
-    #
-    # @param  ghost  model  ProfileView model
-    # @return int
-    #
-    _getCurrentFractionIndex: func(model) {
-        var vector = me._getZoomFractions(model).vector;
-        forindex (var index; vector) {
-            var item = vector[index];
-
-            if (item.firstPosition == nil) {
-                return 0;
-            }
-
-            if (    model._position >= item.firstPosition
-                and model._position <= item.lastPosition
-            ) {
-                return index;
-            }
-        }
-
-        return 0;
-    },
-
-    #
-    # Get vector of zoom fractions depend of draw mode
-    #
-    # @param  ghost  model  ProfileView model
-    # @return std.Vector
-    #
-    _getZoomFractions: func(model) {
-        return model.isDrawModeTime()
-            ? me._zoomFractions.timestamp
-            : me._zoomFractions.distance;
-    },
-
-    #
-    # Returned index value depend of zoom level. The fractions vectors have been merged according to zoom level
-    # e.g. when zoom = 2, then me.maxZoomLevel vectors will be merged to 2 vectors, then this function will return 0 or 1.
-    #
-    # @param  ghost model  ProfileView mode
-    # @param  int  indexAllFractions
-    # @return int
-    #
-    _getIndexMergedFractions: func(model, indexAllFractions) {
-        return math.floor(indexAllFractions / (me.maxZoomLevel / model._zoom));
     },
 
     #
@@ -600,15 +357,16 @@ DefaultStyle.widgets["profile-view"] = {
         }
 
         if (!model._isLiveUpdateMode) {
-            var fractionIndex = me._getIndexMergedFractions(model, me._getCurrentFractionIndex(model));
-            if (fractionIndex != me._fractionIndex) {
+            var currentFractionIndex = me._zoomFractions.getCurrentFractionIndex(model);
+            var fractionIndex        = me._zoomFractions.getIndexMergedFractions(model, currentFractionIndex);
+            if (fractionIndex != me._zoomFractions.getFractionIndex()) {
                 # The aircraft is in a different fraction of the graph, so redraw the whole graph
                 me.reDrawContent(model);
                 return;
             }
         }
 
-        var index = model._position - me._getFirstFractionPosition();
+        var index = model._position - me._zoomFractions.getFirstFractionPosition();
         var item = me._trackItems[index];
 
         var valueX = model.isDrawModeTime()
@@ -620,7 +378,7 @@ DefaultStyle.widgets["profile-view"] = {
         var x = me._xXAxis + ((me._maxValueX == 0 ? 0 : valueX / me._maxValueX) * me._graphWidth);
         var y = me._yXAxis - ((model._maxAlt == 0 ? 0 : item.alt_m / model._maxAlt) * me._positiveYAxisLength);
 
-        return me._planeIcon.draw(x, y, item.pitch);
+        return me._planeIcon.draw(x, y, -item.pitch, 0.8);
     },
 
     #
@@ -710,80 +468,11 @@ DefaultStyle.widgets["profile-view"] = {
 
         return 1000;
     },
-};
-
-#
-# Class for drawing a plane icon
-#
-var PlaneIconProfile = {
-    #
-    # Constructor
-    #
-    # @return me
-    #
-    new: func() {
-        return {
-            parents: [PlaneIconProfile],
-            _svgImg: nil,
-            _width : 0,
-            _height: 0,
-        };
-    },
 
     #
-    # Create SVG plane image
+    # @return int
     #
-    # @param  ghost  context
-    # @return void
-    #
-    create: func(context) {
-        me._svgImg = context.createChild("group").set("z-index", 1);
-        canvas.parsesvg(me._svgImg, "Textures/plane-side.svg");
-
-        (me._width, me._height) = me._svgImg.getSize();
-    },
-
-    #
-    # Draw plane from SVG file
-    #
-    # @param  double  x
-    # @param  double  y
-    # @param  double  rotate
-    # @return void
-    #
-    draw: func(x, y, rotate = 0) {
-        var angleInRadians = -rotate * globals.D2R;
-        var offset = me._getRotationOffset(me._width, me._height, angleInRadians);
-
-        me._svgImg.setTranslation(
-            x - (me._width  * 0.5) + offset.dx,
-            y - (me._height * 0.8) + offset.dy
-        );
-        me._svgImg.setRotation(angleInRadians);
-    },
-
-    #
-    # Calculate offset for rotation because the image rotation point is in the upper left corner
-    #
-    # @param  double  width  Image width
-    # @param  double  height  Image height
-    # @param  double  angleInRadians
-    # @return hash  Hash with delta X and delta Y
-    #
-    _getRotationOffset: func(width, height, angleInRadians) {
-        var deltaX = -(width / 2) * (math.cos(angleInRadians) - 1) + (height / 2) *  math.sin(angleInRadians);
-        var deltaY = -(width / 2) *  math.sin(angleInRadians)      - (height / 2) * (math.cos(angleInRadians) - 1);
-
-        return {
-            dx: deltaX,
-            dy: deltaY,
-        };
-    },
-
-    #
-    # @return double
-    #
-    getWidth: func() {
-        return me._width;
+    getMaxZoomLevel: func() {
+        return me._zoomFractions.getMaxZoomLevel();
     },
 };

@@ -407,7 +407,7 @@ gui.widgets.ProfileView = {
     # @return bool  Return true if zoom has been changed
     #
     _changeZoom: func(direction) {
-        if (direction == 1 and me._zoom < me._view.maxZoomLevel) {
+        if (direction == 1 and me._zoom < me.getMaxZoomLevel()) {
             me._zoom *= 2;
             return true;
         }
@@ -434,7 +434,7 @@ gui.widgets.ProfileView = {
     # @return int  Max zoom level
     #
     getMaxZoomLevel: func() {
-        return me._view.maxZoomLevel;
+        return me._view.getMaxZoomLevel();
     },
 
      #

@@ -106,6 +106,9 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/Widgets/Styles/DefaultStyleMapView",
         "nasal/Canvas/Widgets/Styles/DefaultStyleProfileView",
         "nasal/Canvas/Widgets/Styles/DefaultStyleInfoView",
+        "nasal/Canvas/Widgets/Styles/Components/WindBarbs",
+        "nasal/Canvas/Widgets/Styles/Components/ZoomFractions",
+        "nasal/Canvas/Widgets/Styles/Components/PlaneIcon",
     ];
 
     loadVectorOfModules(addon, widgets, "canvas");
