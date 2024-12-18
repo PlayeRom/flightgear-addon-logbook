@@ -35,8 +35,8 @@ DefaultStyle.widgets["profile-view"] = {
         me._pointsX = std.Vector.new();
         me._isClickEventSet = 0;
 
-        me._trackItemsSize = 0;
         me._trackItems     = nil;
+        me._trackItemsSize = 0;
 
         me._zoomFractions = ZoomFractions.new();
         me._planeIcon = PlaneIcon.new();
@@ -474,5 +474,14 @@ DefaultStyle.widgets["profile-view"] = {
     #
     getMaxZoomLevel: func() {
         return me._zoomFractions.getMaxZoomLevel();
+    },
+
+    #
+    # Set fractions of zoom to recreate
+    #
+    # @return void
+    #
+    setZoomFractionToRecreate: func() {
+        me._zoomFractions.setToRecreate();
     },
 };

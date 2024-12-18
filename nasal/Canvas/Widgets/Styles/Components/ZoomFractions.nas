@@ -289,4 +289,13 @@ var ZoomFractions = {
     getMaxZoomLevel: func() {
         return me._maxZoomLevel;
     },
+
+    #
+    # Set _isCreated flag to false, to recreate fractions
+    #
+    # @return void
+    #
+    setToRecreate: func() {
+        me._isCreated = 0;
+    },
 };

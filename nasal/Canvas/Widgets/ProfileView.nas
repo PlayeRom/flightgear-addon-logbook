@@ -124,7 +124,7 @@ gui.widgets.ProfileView = {
         me._maxAlt = maxAlt;
 
         # Rebuild structure of zoom fractions
-        me._view._isZoomFractionsBuilt = 0;
+        me._view.setZoomFractionToRecreate();
 
         return me;
     },
@@ -161,7 +161,7 @@ gui.widgets.ProfileView = {
         }
 
         # Rebuild structure of zoom fractions
-        me._view._isZoomFractionsBuilt = 0;
+        me._view.setZoomFractionToRecreate();
 
         return me;
     },
