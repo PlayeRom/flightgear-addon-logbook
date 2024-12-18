@@ -19,6 +19,7 @@ gui.widgets.MapView = {
     ZOOM_MIN    : 3,
     ZOOM_MAX    : 14,
     ZOOM_DEFAULT: 10,
+    TILE_SIZE   : 256,
 
     #
     # Constructor

@@ -1,11 +1,11 @@
 #
-# WindBarbs - Add-on for FlightGear
+# MapView - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# WindBarbs is an Open Source project and it is licensed
+# MapView is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 

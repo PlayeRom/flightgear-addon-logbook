@@ -29,25 +29,20 @@ DefaultStyle.widgets["map-view"] = {
         me._textColor = me._style.getColor("fg_color");
         me._bgColor   = me._style.getColor("bg_color");
 
-        # Variables for map
-        me._TILE_SIZE = 256;
-
         me._numTiles         = { x:  6, y:  4 };
         me._centerTileOffset = { x:  0, y:  0 };
         me._lastTile         = { x: -1, y: -1 };
 
-        me._FLIGHT_LINE_WIDTH = 2;
-        me._isFlightPathRendered = 0;
-        me._flightPath = nil;
         me._tiles = [];
 
         # A variable to remember the extreme positions of the map tiles,
         # which we will use to not draw the flight path outside the map
-        me._minTile = { x: 0, y: 0 };
-        me._maxTile = { x: 0, y: 0 };
+        me._tileBoundaries = {
+            min: { x: 0, y: 0 },
+            max: { x: 0, y: 0 },
+        };
 
-        me._pointsToDraw = std.Vector.new();
-        me._isClickEventSet = 0;
+        me._isEventsSet = 0;
 
         me._refPosition = 0;
         me._refZoom = gui.widgets.MapView.ZOOM_DEFAULT;
@@ -58,8 +53,9 @@ DefaultStyle.widgets["map-view"] = {
 
         me._isReDrew = 0;
 
-        me._planeIcon = PlaneIcon.new();
-        me._windBarbs = WindBarbs.new();
+        me._planeIcon  = PlaneIcon.new();
+        me._windBarbs  = WindBarbs.new();
+        me._flightPath = FlightPathMap.new();
     },
 
     #
@@ -112,12 +108,7 @@ DefaultStyle.widgets["map-view"] = {
 
         me._planeIcon.create(me._content, "Textures/plane-top.svg");
 
-        me._flightPath = me._content.createChild("path", "flight")
-            .setColor(0.5, 0.5, 1)
-            .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH)
-            .set("z-index", 1);
-
-        me._isFlightPathRendered = 0;
+        me._flightPath.create(me._content);
 
         me._calculateNumTiles(model);
 
@@ -151,19 +142,20 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     _addEvents: func(model) {
-        if (me._isClickEventSet) {
+        if (me._isEventsSet) {
             # Events should be added only once, otherwise they will be called multiple times
             return;
         }
 
-        me._isClickEventSet = 1;
+        me._isEventsSet = 1;
 
         me._content.addEventListener("click", func(e) {
             # Find the path point closest to the click
             var minDistance = nil;
             var position = nil;
             var distance = 0;
-            foreach (var point; me._pointsToDraw.vector) {
+
+            foreach (var point; me._flightPath.getPointsToDraw()) {
                 distance = me._getDistance({ x: e.localX, y: e.localY }, { x: point.x, y: point.y });
 
                 if (distance < 50 # <- ignore points further than 50 px
@@ -205,8 +197,8 @@ DefaultStyle.widgets["map-view"] = {
     # Calculate how many tiles you need in width and height depending on the widget size
     #
     _calculateNumTiles: func(model) {
-        me._numTiles.x = math.ceil(model._size[0] / me._TILE_SIZE) + 1;
-        me._numTiles.y = math.ceil(model._size[1] / me._TILE_SIZE) + 1;
+        me._numTiles.x = math.ceil(model._size[0] / gui.widgets.MapView.TILE_SIZE) + 1;
+        me._numTiles.y = math.ceil(model._size[1] / gui.widgets.MapView.TILE_SIZE) + 1;
     },
 
     #
@@ -268,16 +260,16 @@ DefaultStyle.widgets["map-view"] = {
         var track = model._trackItems[model._position];
 
         me._planeIcon.draw(
-            x     : me._TILE_SIZE * me._centerTileOffset.x,
-            y     : me._TILE_SIZE * me._centerTileOffset.y,
+            x     : gui.widgets.MapView.TILE_SIZE * me._centerTileOffset.x,
+            y     : gui.widgets.MapView.TILE_SIZE * me._centerTileOffset.y,
             rotate: track.heading_true
         );
         me._windBarbs.draw(model, track.wind_heading, track.wind_speed);
 
-        me._minTile.x = 0;
-        me._minTile.y = 0;
-        me._maxTile.x = 0;
-        me._maxTile.y = 0;
+        me._tileBoundaries.min.x = 0;
+        me._tileBoundaries.min.y = 0;
+        me._tileBoundaries.max.x = 0;
+        me._tileBoundaries.max.y = 0;
 
         # Get current position
         var lat = track.lat;
@@ -300,27 +292,27 @@ DefaultStyle.widgets["map-view"] = {
         for (var x = 0; x < me._numTiles.x; x += 1) {
             for (var y = 0; y < me._numTiles.y; y += 1) {
                 var trans = {
-                    x: int((ox + x) * me._TILE_SIZE + 0.5),
-                    y: int((oy + y) * me._TILE_SIZE + 0.5),
+                    x: int((ox + x) * gui.widgets.MapView.TILE_SIZE + 0.5),
+                    y: int((oy + y) * gui.widgets.MapView.TILE_SIZE + 0.5),
                 };
 
                 me._tiles[x][y].setTranslation(trans.x, trans.y);
 
                 # Remember the extreme positions of map tiles
-                if (trans.x > me._maxTile.x) {
-                    me._maxTile.x = trans.x;
+                if (trans.x > me._tileBoundaries.max.x) {
+                    me._tileBoundaries.max.x = trans.x;
                 }
 
-                if (trans.x < me._minTile.x) {
-                    me._minTile.x = trans.x;
+                if (trans.x < me._tileBoundaries.min.x) {
+                    me._tileBoundaries.min.x = trans.x;
                 }
 
-                if (trans.y > me._maxTile.y) {
-                    me._maxTile.y = trans.y;
+                if (trans.y > me._tileBoundaries.max.y) {
+                    me._tileBoundaries.max.y = trans.y;
                 }
 
-                if (trans.y < me._minTile.y) {
-                    me._minTile.y = trans.y;
+                if (trans.y < me._tileBoundaries.min.y) {
+                    me._tileBoundaries.min.y = trans.y;
                 }
 
                 # Update tiles if needed
@@ -365,234 +357,7 @@ DefaultStyle.widgets["map-view"] = {
         me._lastTile.x = tileIndex.x;
         me._lastTile.y = tileIndex.y;
 
-        if (model._isLiveUpdateMode) {
-            me._drawFlightPathInLiveMode(model);
-        }
-        else {
-            # Render 7x faster with once-drawn and next path transformation
-            me._isFlightPathRendered
-                ? me._transformFlightPath(model)
-                : me._drawFullFlightPath(model);
-        }
-    },
-
-    #
-    # Redraw flight path in live mode, for current flight analysis.
-    #
-    # @param  ghost  model  MapView model
-    # @return ghost  Path element
-    #
-    _drawFlightPathInLiveMode: func(model) {
-        me._pointsToDraw.clear();
-        me._flightPath.reset();
-
-        var edgeTiles = me._getTileThresholds(model);
-
-        # = true because the first point must start with moveTo method
-        var discontinuity = 1;
-
-        # The first loop is to build an array of points that are within the map
-        forindex (var index; model._trackItems) {
-            var pos = me._convertLatLonToPixel(model, index);
-
-            if (    pos.x < edgeTiles.maxX
-                and pos.y < edgeTiles.maxY
-                and pos.x > edgeTiles.minX
-                and pos.y > edgeTiles.minY
-            ) {
-                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
-                me._pointsToDraw.append(pos);
-
-                # Draw points only those within the map
-                discontinuity
-                    ? me._flightPath.moveTo(pos.x, pos.y)
-                    : me._flightPath.lineTo(pos.x, pos.y);
-
-                # We have just drawn a point, so there is no discontinuity
-                discontinuity = 0;
-            }
-            else {
-                # The path point is out of map tiles, so ship it and mark discontinuity
-                discontinuity = 1;
-            }
-        }
-    },
-
-    #
-    # Redraw whole flight path and create vector of points visible on the map for click action.
-    #
-    # @param  ghost  model  MapView model
-    # @return ghost  Path element
-    #
-    _drawFullFlightPath: func(model) {
-        # me._flightPath.reset();
-
-        # Set the reference position and zoom to the values ​​we have during full drawing.
-        # These values ​​will be needed to perform the flight path transformation.
-        me._refPosition = model._position;
-        me._refZoom     = model._zoom;
-
-        var edgeTiles = me._getTileThresholds(model);
-
-        # The loop to build an array of points that are within the map view and draw flight path
-        me._pointsToDraw.clear();
-        forindex (var index; model._trackItems) {
-            var pos = me._convertLatLonToPixel(model, index);
-
-            if (    pos.x < edgeTiles.maxX
-                and pos.y < edgeTiles.maxY
-                and pos.x > edgeTiles.minX
-                and pos.y > edgeTiles.minY
-            ) {
-                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
-                me._pointsToDraw.append(pos);
-            }
-
-            # Draw all path point
-            index == 0
-                ? me._flightPath.moveTo(pos.x, pos.y)
-                : me._flightPath.lineTo(pos.x, pos.y);
-        }
-
-        me._isFlightPathRendered = 1;
-    },
-
-    #
-    # Path transformations by airplane icon offset and map zoom
-    # and recreate vector of points visible on the map for click action.
-    #
-    # @param  ghost  model
-    # @return void
-    #
-    _transformFlightPath: func(model) {
-        me._pointsToDraw.clear();
-
-        var edgeTiles = me._getTileThresholds(model);
-
-        var refPos = nil;
-        var currentPos = nil;
-
-        # Generate a new vector with points visible on the map
-        forindex (var index; model._trackItems) {
-            var pos = me._convertLatLonToPixel(model, index);
-
-            if (    pos.x < edgeTiles.maxX
-                and pos.y < edgeTiles.maxY
-                and pos.x > edgeTiles.minX
-                and pos.y > edgeTiles.minY
-            ) {
-                # The path point is on the map, add it to me._pointsToDraw vector to use for click action
-                me._pointsToDraw.append(pos);
-            }
-
-            if (index == me._refPosition) {
-                # Take a reference point when drawing the full flight path
-                refPos = pos;
-            }
-
-            if (index == model._position) {
-                # Take current aircraft position point to calculate translation
-                currentPos = pos;
-            }
-        }
-
-        if (refPos != nil and currentPos != nil) {
-            var scale = math.pow(2, model._zoom - me._refZoom);
-
-            me._flightPath
-                .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH / scale)
-                .setScale(scale)
-                .setTranslation(
-                    (refPos.x - currentPos.x) - (me._TILE_SIZE * me._centerTileOffset.x * (scale - 1)),
-                    (refPos.y - currentPos.y) - (me._TILE_SIZE * me._centerTileOffset.y * (scale - 1)),
-                );
-        }
-    },
-
-    #
-    # Get the maximum and minimum X and Y values ​​in pixels of the outermost tiles,
-    # taking into account the buffer based on zoom
-    #
-    # @param  ghost  model
-    # @return hash
-    #
-    _getTileThresholds: func(model) {
-        var tileSizeBuffer = me._getTileSizeBuffer(model);
-
-        return {
-            maxX: me._maxTile.x + tileSizeBuffer + me._TILE_SIZE,
-            maxY: me._maxTile.y + tileSizeBuffer + me._TILE_SIZE,
-            minX: me._minTile.x - tileSizeBuffer,
-            minY: me._minTile.y - tileSizeBuffer,
-        };
-    },
-
-    #
-    # Return an additional buffer to determine if the path point is in the field of view.
-    # The buffer will cause the points that are not in the field of view to be added as well,
-    # but it is good to drag the line to the edge of the view. And the larger the zoom,
-    # the more buffer we need, because the points are more distant from each other.
-    # TODO: for better adjustment it would be necessary to know the frequency with which waypoints were generated.
-    #
-    # @param  model  ghost  MapView model object
-    # @return int
-    #
-    _getTileSizeBuffer: func(model) {
-        return model._zoom >= 8
-            ? 3 * math.pow(2, model._zoom - 8)
-            : 0;
-    },
-
-    #
-    # Convert given lan, lot to pixel position on the window
-    #
-    # @param  ghost  model  MapView model
-    # @param  int  index  Index of track item which lat, lon will be converted to pixel
-    # @return hash  Hash as pixel position with x and y
-    #
-    _convertLatLonToPixel: func(model, index) {
-        # Get lat, lon to convert to pixel
-        var targetPoint = model._trackItems[index];
-
-        # Get lat, lon of current aircraft position
-        var centerPoint = model._trackItems[model._position];
-
-        var x = me._lonToX(targetPoint.lon, model._zoom);
-        var y = me._latToY(targetPoint.lat, model._zoom);
-
-        var centerX = me._lonToX(centerPoint.lon, model._zoom);
-        var centerY = me._latToY(centerPoint.lat, model._zoom);
-
-        # Offset from the center of the map
-        var pixelX = x - centerX + me._TILE_SIZE * me._centerTileOffset.x;
-        var pixelY = y - centerY + me._TILE_SIZE * me._centerTileOffset.y;
-
-        return { x: pixelX, y: pixelY, position: index };
-    },
-
-    #
-    # Convert given longitude to X position
-    #
-    # @param  double  lon  Longitude to convert to X position
-    # @param  int  zoom  Current zoom level of map
-    # @return double  The X position
-    #
-    _lonToX: func(lon, zoom) {
-        var scale = me._TILE_SIZE * math.pow(2, zoom);
-        return (lon + 180) / 360 * scale;
-    },
-
-    #
-    # Convert given latitude to Y position
-    #
-    # @param  double  lat  Latitude to convert to Y position
-    # @param  int  zoom  Current zoom level of map
-    # @return double  The Y position
-    #
-    _latToY: func(lat, zoom) {
-        var scale = me._TILE_SIZE * math.pow(2, zoom);
-        var sinLat = math.sin(lat * math.pi / 180);
-        return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
+        me._flightPath.draw(model, me._centerTileOffset, me._tileBoundaries);
     },
 
     #

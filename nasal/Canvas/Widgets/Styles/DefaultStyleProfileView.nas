@@ -33,7 +33,7 @@ DefaultStyle.widgets["profile-view"] = {
         me._firstValueX = 0;
 
         me._pointsX = std.Vector.new();
-        me._isClickEventSet = 0;
+        me._isEventsSet = 0;
 
         me._trackItems     = nil;
         me._trackItemsSize = 0;
@@ -99,12 +99,12 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     _addEvents: func(model) {
-        if (me._isClickEventSet) {
+        if (me._isEventsSet) {
             # Events should be added only once, otherwise they will be called multiple times
             return;
         }
 
-        me._isClickEventSet = 1;
+        me._isEventsSet = 1;
 
         me._root.addEventListener("click", func(e) {
             var position = me._findClosestXBinary(e.localX, me._pointsX.vector);
