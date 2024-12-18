@@ -180,8 +180,6 @@ DefaultStyle.widgets["profile-view"] = {
 
         var graphHeight = model._size[1] - paddingBottom;
 
-        # me._drawPaddingKeeper(model);
-
         var seaMeanLevel = (graphHeight / 6);
         me._xXAxis = 60 + paddingLeft;
         me._yXAxis = graphHeight - seaMeanLevel; # horizontal position of the X axis in pixels
@@ -335,7 +333,7 @@ DefaultStyle.widgets["profile-view"] = {
     # Draw an invisible line to get the padding. This was needed when ProfileView was drawn inside ScrollArea.
     #
     # @param  ghost  model  ProfileView model
-    # @return ghost  Path element
+    # @return void
     #
     _drawPaddingKeeper: func(model) {
         me._root.createChild("path", "padding-keeper")
