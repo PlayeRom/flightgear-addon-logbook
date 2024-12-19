@@ -56,6 +56,7 @@ DefaultStyle.widgets["map-view"] = {
         me._planeIcon  = PlaneIcon.new();
         me._windBarbs  = WindBarbs.new();
         me._flightPath = FlightPathMap.new();
+        me._mapButtons = MapButtons.new();
     },
 
     #
@@ -122,6 +123,7 @@ DefaultStyle.widgets["map-view"] = {
         me._createTiles(model);
 
         me._windBarbs.create(me._content);
+        me._mapButtons.create(model, me._content);
 
         me._zoomLabel = me._createText(
             x       : 20,

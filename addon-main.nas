@@ -110,6 +110,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/Widgets/Styles/Components/FlightPathMap",
         "nasal/Canvas/Widgets/Styles/Components/ZoomFractions",
         "nasal/Canvas/Widgets/Styles/Components/PlaneIcon",
+        "nasal/Canvas/Widgets/Styles/Components/MapButtons",
     ];
 
     loadVectorOfModules(addon, widgets, "canvas");
