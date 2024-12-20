@@ -291,6 +291,10 @@ and settings available from GUI:
 
 7. `columns-visible` – which column should be visible in main Logbook view.
 
+8. `map-provider` – the default map tile provider used when the Flight Analysis window is opened. Possible values:
+    * `OpenStreetMap` – default,
+    * `OpenTopoMap`.
+
 NOTE. Before editing the `autosave.xml` file, close the simulator.
 
 ## Backup (for FG 2020.3 and older)
