@@ -227,7 +227,10 @@ The map shows the aircraft's position and heading.
 
 The path the aircraft flew is drawn with a blue line.
 
-In the upper left corner you have information about the map zoom level.
+In the upper left corner you have information about the map zoom level. Below are the following buttons:
+
+* OpenStreetMap - change map provider to OpenStreetMap
+* OpenTopoMap - change map provider to OpenTopoMap
 
 In the upper right corner you have information about wind direction and speed (wind barbs).
 
@@ -257,7 +260,7 @@ Here you can configure the following options:
 
 2. `Columns to display in the Logbook view` – here you can specify which columns are to be displayed in the Logbook window. The fewer columns are displayed, the faster the Logbook window will be drawn. Columns such as `Date`, `Time` and `Aircraft` are always displayed, the `Note` column will never be displayed and this cannot be changed. These options are only available for FG >= 2024.1.
 
-3. `Map provider` – here you can specify the map tile provider in the Flight Analysis view. Available providers are `OpenStreetMap` and `OpenTopoMap`,
+3. `Map provider` – here you can specify default map tile provider in the Flight Analysis view. Available providers are `OpenStreetMap` and `OpenTopoMap`,
 
 4. `Click sound` – by default, a sound is played when you click on various buttons, you can turn this sound off here.
 
