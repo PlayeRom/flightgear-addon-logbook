@@ -37,8 +37,6 @@ var Environment = {
         me._nightCounter       = 0;
         me._instrumentCounter  = 0;
 
-        me._propAltFt          = props.globals.getNode("/position/altitude-ft");
-
         me._propSunAngleRad    = props.globals.getNode("/sim/time/sun-angle-rad");
 
         me._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
