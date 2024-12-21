@@ -166,7 +166,7 @@ var Dialog = {
     # @param  string|nil  font  Font file name
     # @param  int|nil  fontSize  Font size
     # @param  string|nil  alignment  Content alignment value
-    # @return ghost  content group of ScrollArea
+    # @return ghost  Content group of ScrollArea
     #
     getScrollAreaContent: func(context, font = nil, fontSize = nil, alignment = nil) {
         var scrollContent = context.getContent();

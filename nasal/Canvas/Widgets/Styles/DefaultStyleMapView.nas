@@ -228,7 +228,15 @@ DefaultStyle.widgets["map-view"] = {
     # @param  vector|nil  color  Text color
     # @return ghost  Text element
     #
-    _createText: func(x, y, label, alignment = "left-baseline", fontSize = 12, font = "LiberationFonts/LiberationMono-Regular.ttf", color = nil) {
+    _createText: func(
+        x,
+        y,
+        label,
+        alignment = "left-baseline",
+        fontSize = 12,
+        font = "LiberationFonts/LiberationMono-Regular.ttf",
+        color = nil,
+    ) {
         return me._content.createChild("text")
             .setTranslation(x, y)
             .setText(label)
@@ -268,10 +276,7 @@ DefaultStyle.widgets["map-view"] = {
         );
         me._windBarbs.draw(model, track.wind_heading, track.wind_speed);
 
-        me._tileBoundaries.min.x = 0;
-        me._tileBoundaries.min.y = 0;
-        me._tileBoundaries.max.x = 0;
-        me._tileBoundaries.max.y = 0;
+        me._resetTileBoundaries();
 
         # Get current position
         var lat = track.lat;
@@ -300,58 +305,14 @@ DefaultStyle.widgets["map-view"] = {
 
                 me._tiles[x][y].setTranslation(trans.x, trans.y);
 
-                # Remember the extreme positions of map tiles
-                if (trans.x > me._tileBoundaries.max.x) {
-                    me._tileBoundaries.max.x = trans.x;
-                }
-
-                if (trans.x < me._tileBoundaries.min.x) {
-                    me._tileBoundaries.min.x = trans.x;
-                }
-
-                if (trans.y > me._tileBoundaries.max.y) {
-                    me._tileBoundaries.max.y = trans.y;
-                }
-
-                if (trans.y < me._tileBoundaries.min.y) {
-                    me._tileBoundaries.min.y = trans.y;
-                }
+                me._setTileBoundaries(trans);
 
                 # Update tiles if needed
                 if (   tileIndex.x != me._lastTile.x
                     or tileIndex.y != me._lastTile.y
                     or forceSetTile
                 ) {
-                    var pos = {
-                        z: model._zoom,
-                        x: int(offset.x + x),
-                        y: int(offset.y + y),
-                    };
-
-                    (func {
-                        var imgPath = model._makePath(pos);
-                        var tile = me._tiles[x][y];
-
-                        if (io.stat(imgPath) == nil) {
-                            # image not found in cache, save in $FG_HOME
-                            var imgUrl = model._makeUrl(pos);
-
-                            # logprint(LOG_INFO, 'MapView Widget - requesting ', imgUrl);
-
-                            http.save(imgUrl, imgPath)
-                                .done(func {
-                                    # logprint(LOG_INFO, 'MapView Widget - received image ', imgPath);
-                                    tile.set("src", imgPath);
-                                })
-                                .fail(func(response) {
-                                    logprint(LOG_ALERT, 'MapView Widget - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
-                                });
-                        }
-                        else { # cached image found, reusing
-                            # logprint(LOG_INFO, 'MapView Widget - loading ', imgPath);
-                            tile.set("src", imgPath);
-                        }
-                    })();
+                    me._updateSingleTile(model, x, y, offset);
                 }
             }
         }
@@ -360,6 +321,79 @@ DefaultStyle.widgets["map-view"] = {
         me._lastTile.y = tileIndex.y;
 
         me._flightPath.draw(model, me._centerTileOffset, me._tileBoundaries);
+    },
+
+    #
+    # Reset values of tile boundaries
+    #
+    # @return void
+    #
+    _resetTileBoundaries: func() {
+        me._tileBoundaries.min.x = 0;
+        me._tileBoundaries.min.y = 0;
+        me._tileBoundaries.max.x = 0;
+        me._tileBoundaries.max.y = 0;
+    },
+
+    #
+    # Remember the extreme positions of map tiles
+    #
+    # @param  hash  trans  Translation vector of tile
+    # @return void
+    #
+    _setTileBoundaries: func(trans) {
+        if (trans.x > me._tileBoundaries.max.x) {
+            me._tileBoundaries.max.x = trans.x;
+        }
+
+        if (trans.x < me._tileBoundaries.min.x) {
+            me._tileBoundaries.min.x = trans.x;
+        }
+
+        if (trans.y > me._tileBoundaries.max.y) {
+            me._tileBoundaries.max.y = trans.y;
+        }
+
+        if (trans.y < me._tileBoundaries.min.y) {
+            me._tileBoundaries.min.y = trans.y;
+        }
+    },
+
+    #
+    # Update single map tile
+    #
+    # @param  ghost  model  MapView model object
+    # @param  int  x, y
+    # @param  hash  offset
+    # @return void
+    #
+    _updateSingleTile: func(model, x, y, offset) {
+        var pos = {
+            z: model._zoom,
+            x: int(offset.x + x),
+            y: int(offset.y + y),
+        };
+
+        (func {
+            var imgPath = model._makePath(pos);
+            var tile = me._tiles[x][y];
+
+            if (io.stat(imgPath) == nil) {
+                # image not found in cache, save in $FG_HOME
+                var imgUrl = model._makeUrl(pos);
+
+                http.save(imgUrl, imgPath)
+                    .done(func {
+                        tile.set("src", imgPath);
+                    })
+                    .fail(func(response) {
+                        logprint(LOG_ALERT, 'MapView Widget - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
+                    });
+            }
+            else { # cached image found, reusing
+                tile.set("src", imgPath);
+            }
+        })();
     },
 
     #
