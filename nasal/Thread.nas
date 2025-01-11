@@ -21,7 +21,7 @@ var Thread = {
     #
     new: func() {
         var me = {
-            parents     : [Thread],
+            parents      : [Thread],
             _isPending   : false,
             _objCallback : nil,
             _callback    : func,

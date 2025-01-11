@@ -76,7 +76,7 @@ var Utils = {
     #
     # Convert decimal hours to hours:minutes:seconds, e.g. 1.5 -> 1:30
     #
-    # @param  double|string  hoursDecimal
+    # @param  double|string  decimalHours
     # @return string
     #
     decimalHoursToHuman: func(decimalHours) {
