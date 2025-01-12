@@ -175,94 +175,39 @@ var SettingsDialog = {
         vBoxLayout.addItem(me._getLabel("Date and time displayed\nin the Logbook view", { wordWrap: true }));
         vBoxLayout.addSpacing(10);
 
-        # TODO: for 2024.1+ replace CheckBoxes to RadioButtons, but they don't work properly yet, maybe on "next"
-        # var radio1 = me._getRadioButton("Real date & time (from your OS)")
-        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_REAL);
+        var radio1 = me._getRadioButton("Real date & time (from your OS)")
+            .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_REAL);
 
-        # var radio2 = me._getRadioButton("UTC time in simulator",   { "parent-radio": radio1 })
-        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
+        var radio2 = me._getRadioButton("UTC time in simulator",   { "parent-radio": radio1 })
+            .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
 
-        # var radio3 = me._getRadioButton("Local time in simulator", { "parent-radio": radio1 })
-        #     .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
+        var radio3 = me._getRadioButton("Local time in simulator", { "parent-radio": radio1 })
+            .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
 
-        # radio1.listen("group-checked-radio-changed", func(e) {
-        #     var checkedRadio = radio1.getRadioButtonsGroup().getCheckedRadio();
+        radio1.listen("group-checked-radio-changed", func(e) {
+            var checkedRadio = radio1.getRadioButtonsGroup().getCheckedRadio();
 
-        #     if (checkedRadio != nil) {
-        #         if (checkedRadio._text == "UTC time in simulator") {
-        #             me._dateTimeDisplay = Settings.DATE_TIME_SIM_UTC;
-        #         }
-        #         else if (checkedRadio._text == "Local time in simulator") {
-        #             me._dateTimeDisplay = Settings.DATE_TIME_SIM_LOC;
-        #         }
-        #         else {
-        #             me._dateTimeDisplay = Settings.DATE_TIME_REAL;
-        #         }
-        #     }
-        #     else {
-        #         me._dateTimeDisplay = Settings.DATE_TIME_REAL;
-        #     }
-        # });
-
-        # vBoxLayout.addItem(radio1);
-        # vBoxLayout.addItem(radio2);
-        # vBoxLayout.addItem(radio3);
-
-        me._checkboxReal     = me._getCheckbox(text: "Real date & time (from your OS)", isChecked: me._dateTimeDisplay == Settings.DATE_TIME_REAL);
-        me._checkboxSimUtc   = me._getCheckbox(text: "UTC time in simulator",           isChecked: me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
-        me._checkboxSimLocal = me._getCheckbox(text: "Local time in simulator",         isChecked: me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
-
-        me._checkboxReal.listen("toggled", func(e) {
-            if (e.detail.checked) {
+            if (checkedRadio != nil) {
+                if (checkedRadio._text == "UTC time in simulator") {
+                    me._dateTimeDisplay = Settings.DATE_TIME_SIM_UTC;
+                }
+                else if (checkedRadio._text == "Local time in simulator") {
+                    me._dateTimeDisplay = Settings.DATE_TIME_SIM_LOC;
+                }
+                else {
+                    me._dateTimeDisplay = Settings.DATE_TIME_REAL;
+                }
+            }
+            else {
                 me._dateTimeDisplay = Settings.DATE_TIME_REAL;
-                me._checkboxSimUtc.setChecked(false);
-                me._checkboxSimLocal.setChecked(false);
-            }
-            else if (me._dateTimeDisplay == Settings.DATE_TIME_REAL) {
-                me._turnYourselfOn(me._checkboxReal);
             }
         });
 
-        me._checkboxSimUtc.listen("toggled", func(e) {
-            if (e.detail.checked) {
-                me._dateTimeDisplay = Settings.DATE_TIME_SIM_UTC;
-                me._checkboxReal.setChecked(false);
-                me._checkboxSimLocal.setChecked(false);
-            }
-            else if (me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC) {
-                me._turnYourselfOn(me._checkboxSimUtc);
-            }
-        });
-
-        me._checkboxSimLocal.listen("toggled", func(e) {
-            if (e.detail.checked) {
-                me._dateTimeDisplay = Settings.DATE_TIME_SIM_LOC;
-                me._checkboxReal.setChecked(false);
-                me._checkboxSimUtc.setChecked(false);
-            }
-            else if (me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC) {
-                me._turnYourselfOn(me._checkboxSimLocal);
-            }
-        });
-
-        vBoxLayout.addItem(me._checkboxReal);
-        vBoxLayout.addItem(me._checkboxSimUtc);
-        vBoxLayout.addItem(me._checkboxSimLocal);
+        vBoxLayout.addItem(radio1);
+        vBoxLayout.addItem(radio2);
+        vBoxLayout.addItem(radio3);
 
         return vBoxLayout;
-    },
-
-    #
-    # For checkboxes imitating radio buttons, you can't uncheck a button that is
-    # already checked. If that happens, we have to check the checkbox again.
-    #
-    # @param  canvas  checkBox
-    # @return void
-    #
-    _turnYourselfOn: func(checkBox) {
-        var timer = maketimer(0.2, func { checkBox.setChecked(true); });
-        timer.singleShot = true;
-        timer.start();
     },
 
     #
