@@ -236,7 +236,7 @@ var Environment = {
     },
 
     #
-    # Return true when we have a night. It is a trick to check the color of the sky.
+    # Return true when we have a night. This is a trick to check the angle of the sun in the sky.
     #
     # @return bool
     #
