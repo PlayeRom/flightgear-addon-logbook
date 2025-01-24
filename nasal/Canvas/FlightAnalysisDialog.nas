@@ -107,7 +107,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Show this canvas dialog
+    # Hide this canvas dialog
     #
     # @return void
     #
@@ -233,7 +233,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Zoom in the map
+    # Zoom in the profile view
     #
     # @return void
     #
@@ -247,7 +247,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Zoom out the map
+    # Zoom out the profile view
     #
     # @return void
     #
