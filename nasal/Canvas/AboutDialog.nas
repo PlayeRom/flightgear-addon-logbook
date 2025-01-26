@@ -38,7 +38,7 @@ var AboutDialog = {
         var margins = {
             left   : AboutDialog.PADDING,
             top    : AboutDialog.PADDING,
-            right  : 0,
+            right  : AboutDialog.PADDING,
             bottom : 0,
         };
         me._scrollData = me.createScrollArea(margins: margins);
@@ -85,7 +85,7 @@ var AboutDialog = {
         }
 
         vBoxLayout.addStretch(1);
-        vBoxLayout.addItem(me._getLabel("This add-on uses © OpenStreetMap to draw the map."));
+        vBoxLayout.addItem(me._getLabel("This add-on uses © OpenStreetMap and OpenTopoMap to draw the map."));
 
         var btnWiki = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
             .setText("FlightGear wiki...")
