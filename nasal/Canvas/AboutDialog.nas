@@ -121,7 +121,7 @@ var AboutDialog = {
     # @return ghost  Label widget
     #
     _getLabel: func(text) {
-        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {wordWrap: 1})
+        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {wordWrap: true})
             .setText(text);
 
         if (Utils.isFG2024Version()) {

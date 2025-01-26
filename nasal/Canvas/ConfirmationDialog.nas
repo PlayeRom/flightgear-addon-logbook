@@ -44,7 +44,7 @@ var ConfirmationDialog = {
         var MARGIN = 12;
         me.vbox.setContentsMargin(MARGIN);
 
-        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: 1});
+        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: true});
         me.vbox.addItem(me._label);
 
         var buttonBox = canvas.HBoxLayout.new();
