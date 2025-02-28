@@ -76,7 +76,7 @@ var AboutDialog = {
 
         vBoxLayout.addItem(me._getLabel(g_Addon.name));
         vBoxLayout.addItem(me._getLabel(sprintf("version %s", g_Addon.version.str())));
-        vBoxLayout.addItem(me._getLabel("September 30, 2024"));
+        vBoxLayout.addItem(me._getLabel("February 28, 2025"));
         vBoxLayout.addStretch(1);
         vBoxLayout.addItem(me._getLabel("Written by:"));
 
