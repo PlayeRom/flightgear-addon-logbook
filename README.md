@@ -229,8 +229,8 @@ The path the aircraft flew is drawn with a blue line.
 
 In the upper left corner you have information about the map zoom level. Below are the following buttons:
 
-* OpenStreetMap - change map provider to OpenStreetMap
-* OpenTopoMap - change map provider to OpenTopoMap
+* OpenStreetMap – change map provider to OpenStreetMap
+* OpenTopoMap – change map provider to OpenTopoMap
 
 In the upper right corner you have information about wind direction and speed (wind barbs).
 
