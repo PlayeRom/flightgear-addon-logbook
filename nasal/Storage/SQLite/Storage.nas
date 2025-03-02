@@ -160,8 +160,8 @@ var Storage = {
     # @return void
     #
     updateItem: func(logData, logbookId) {
-        var query = sprintf("UPDATE %s
-            SET `date` = ?,
+        var query = "UPDATE " ~ Storage.TABLE_LOGBOOKS
+            ~ " SET `date` = ?,
                 `time` = ?,
                 `sim_utc_date` = ?,
                 `sim_utc_time` = ?,
@@ -187,7 +187,7 @@ var Storage = {
                 `note` = ?,
                 `max_groundspeed_kt` = ?,
                 `max_mach` = ?
-            WHERE id = ?", Storage.TABLE_LOGBOOKS);
+            WHERE id = ?";
 
         DB.exec(
             query,
@@ -381,6 +381,7 @@ var Storage = {
         var query = "SELECT " ~ me._getSelectLoadDataRange()
             ~ " FROM " ~ Storage.TABLE_LOGBOOKS
             ~ " " ~ where
+            ~ " ORDER BY `id` DESC"
             ~ " LIMIT ? OFFSET ?;";
 
         foreach (var row; DB.exec(query, count, start)) {
