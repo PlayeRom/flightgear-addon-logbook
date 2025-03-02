@@ -180,7 +180,7 @@ var Exporter = {
     #
     # Change the technical name of a table column to something more human
     #
-    # @param  string  columnName  Column nam ein DB
+    # @param  string  columnName  Column name in DB
     # @return string  Human column name
     #
     _columnNameToHuman: func(columnName) {
