@@ -26,6 +26,14 @@ var Dialog = {
     new: func(width, height, title, resize = 0, onResize = nil) {
         var me = { parents: [Dialog] };
 
+        # Recognize the path to the canvas property.
+        # For FG versions up to and including 2024 this is ‘/sim/gui/canvas’, but for the dev version it is ‘/canvas/desktop’
+        # TODO: fix it in future when 2024 will be obsolete and "/canvas/desktop" will be a standard.
+        me._isCanvas2024 = props.globals.getNode("/sim/gui/canvas") != nil;
+        me._canvasNode = me._isCanvas2024
+            ? props.globals.getNode("/sim/gui/canvas")
+            : props.globals.getNode("/canvas/desktop");
+
         me._width  = width;
         me._height = height;
 
@@ -60,20 +68,20 @@ var Dialog = {
                 var resizeTimer = maketimer(0.1, func() {
                     resizeTimer.stop();
 
-                    me._width  = int(getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]"));
-                    me._height = int(getprop("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]"));
+                    me._width  = int(getprop(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[0]"));
+                    me._height = int(getprop(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[1]"));
 
                     onResize(me._width, me._height);
                 });
 
                 # Set listener for resize width of window
-                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[0]", func(node) {
+                setlistener(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[0]", func(node) {
                     resizeTimer.isRunning
                         ? resizeTimer.restart(0.1)
                         : resizeTimer.start();
                 });
 
-                setlistener("/sim/gui/canvas/window[" ~ me._windowPropIndex ~ "]/content-size[1]", func(node) {
+                setlistener(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[1]", func(node) {
                     resizeTimer.isRunning
                         ? resizeTimer.restart(0.1)
                         : resizeTimer.start();
@@ -246,7 +254,7 @@ var Dialog = {
     #
     _getWindowPropertyIndex: func(title) {
         var highest = -1; # We are looking for the highest index for support dev reload the add-on
-        foreach (var window; props.globals.getNode("/sim/gui/canvas").getChildren("window")) {
+        foreach (var window; me._canvasNode.getChildren("window")) {
             var propTitle = window.getChild("title");
             if (propTitle != nil and title == propTitle.getValue()) {
                 if (window.getIndex() > highest) {
@@ -291,13 +299,26 @@ var Dialog = {
     # @return int
     #
     getScreenWidth: func() {
-        return getprop("/sim/gui/canvas/size[0]");
+        return getprop(me.getPathToCanvas() ~ "/size[0]");
     },
 
     #
     # @return int
     #
     getScreenHeight: func() {
-        return getprop("/sim/gui/canvas/size[1]");
+        return getprop(me.getPathToCanvas() ~ "/size[1]");
+    },
+
+    #
+    # Get path to canvas properties which depend of FG version
+    #
+    # @return string
+    #
+    getPathToCanvas: func() {
+        if (me._isCanvas2024) {
+            return "/sim/gui/canvas";
+        }
+
+        return "/canvas/desktop";
     },
 };
