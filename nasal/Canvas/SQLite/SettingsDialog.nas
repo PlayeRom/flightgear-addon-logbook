@@ -185,7 +185,13 @@ var SettingsDialog = {
             .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
 
         radio1.listen("group-checked-radio-changed", func(e) {
-            var checkedRadio = radio1.getRadioButtonsGroup().getCheckedRadio();
+            var radioGroup = radio1.getRadioButtonsGroup();
+
+            # In the dev version of the FG, the getCheckedRadio() method has been changed to getCheckedRadioButton().
+            # TODO: Remove the check and only use getCheckedRadioButton when version 2024 becomes obsolete.
+            var checkedRadio = view.hasmember(radioGroup, "getCheckedRadioButton")
+                ? radioGroup.getCheckedRadioButton()
+                : radioGroup.getCheckedRadio();
 
             if (checkedRadio != nil) {
                 if (checkedRadio._text == "UTC time in simulator") {
