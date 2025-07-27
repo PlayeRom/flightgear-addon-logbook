@@ -68,6 +68,7 @@ var CrashDetector = {
             or me._isSimCrashedFlag()
             or me._isC172PBrokenGear()
             or me._isC172PBrokenWing()
+            or me._isB707Crashed()
             or me._spaceShuttle.isCrashed();
     },
 
@@ -104,7 +105,11 @@ var CrashDetector = {
             return false;
         }
 
-        if (me._isSimCrashedFlag() or me._isC172PBrokenGear() or me._isC172PBrokenWing()) {
+        if (me._isSimCrashedFlag() 
+            or me._isC172PBrokenGear() 
+            or me._isC172PBrokenWing() 
+            or me._isB707Crashed()
+        ) {
             return true;
         }
 
@@ -173,17 +178,21 @@ var CrashDetector = {
     },
 
     #
-    # Check "sim/crashed" property
+    # Check "/sim/crashed" property
     #
     # @return bool
     #
     _isSimCrashedFlag: func() {
-        var crashed = getprop("/sim/crashed");
-        if (crashed == nil) {
-            return false;
-        }
+        return getprop("/sim/crashed") or false;
+    },
 
-        return crashed;
+    #
+    # Check "/b707/crashed" property
+    #
+    # @return bool
+    #
+    _isB707Crashed: func() {
+        return getprop("/b707/crashed") or false;
     },
 
     #
