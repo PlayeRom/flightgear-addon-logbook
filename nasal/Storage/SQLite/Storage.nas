@@ -457,7 +457,8 @@ var Storage = {
     },
 
     #
-    # @param  string  where  SQL query condition
+    # @param  string  where  SQL query condition.
+    # @param  bool  withCheckVisible  If true then invisible columns will be skipped, otherwise all columns will be updated.
     # @return void
     #
     _updateTotalsValues: func(where, withCheckVisible = 1) {
@@ -700,7 +701,7 @@ var Storage = {
     #
     # Get tracker data for given logbook ID
     #
-    # @param  int|nil  logbookId
+    # @param  int|nil  logbookId  Logbook ID which tracker data should be returned.
     # @return vector|nil
     #
     getLogbookTracker: func(logbookId) {
@@ -717,7 +718,7 @@ var Storage = {
     #
     # Get max altitude value in tracker data for given logbook ID
     #
-    # @param  int|nil  logbookId
+    # @param  int|nil  logbookId  Logbook ID which max altitude should be returned.
     # @return double|nil
     #
     getLogbookTrackerMaxAlt: func(logbookId) {
