@@ -135,8 +135,8 @@ var HelpDialog = {
         var btnAddonDir = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Local storage directory...")
             .setFixedSize(200, 26)
-            .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({ "path": g_Addon.storagePath }));
+            .listen("clicked", func { 
+                Utils.openBrowser({ "path": g_Addon.storagePath }); 
             });
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})

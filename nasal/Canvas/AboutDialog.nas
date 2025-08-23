@@ -91,21 +91,21 @@ var AboutDialog = {
             .setText("FlightGear wiki...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({ "url": g_Addon.homePage }));
+                Utils.openBrowser({ "url": g_Addon.homePage });
             });
 
         var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
             .setText("GitHub website...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({ "url": g_Addon.codeRepositoryUrl }));
+                Utils.openBrowser({ "url": g_Addon.codeRepositoryUrl });
             });
 
         var btnAddonDir = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
             .setText("Local storage directory...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
-                fgcommand("open-browser", props.Node.new({ "path": g_Addon.storagePath }));
+                Utils.openBrowser({ "path": g_Addon.storagePath });
             });
 
         vBoxLayout.addStretch(1);
