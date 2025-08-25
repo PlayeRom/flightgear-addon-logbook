@@ -231,7 +231,7 @@ gui.widgets.MapView = {
     },
 
     #
-    # Sev value of zoom level within certain limits
+    # Set value of zoom level within certain limits
     #
     # @param  int  direction  If 0 then without changing, -1 for zoom out or +1 for zoom in
     # @return int  Current zoom level

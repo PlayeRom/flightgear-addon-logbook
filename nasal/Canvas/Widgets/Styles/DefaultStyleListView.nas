@@ -349,7 +349,7 @@ DefaultStyle.widgets["list-view"] = {
     # Create row
     #
     # @param  ghost  model  ListView model
-    # @param  string|hash  item
+    # @param  hash  item
     # @param  int  x, y
     # @return void
     #
@@ -363,7 +363,7 @@ DefaultStyle.widgets["list-view"] = {
     # Create complex row
     #
     # @param  ghost  model  ListView model
-    # @param  string|hash  item
+    # @param  hash  item
     # @param  int  x, y
     # @return void
     #
@@ -464,7 +464,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  hash  item
     # @return bool
     #
     _isImageInRow: func(item) {

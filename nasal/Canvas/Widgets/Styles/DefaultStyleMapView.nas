@@ -196,7 +196,10 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Calculate how many tiles you need in width and height depending on the widget size
+    # Calculate how many tiles you need in width and height depending on the widget size.
+    #
+    # @param  ghost  model  MapView model
+    # @return  void
     #
     _calculateNumTiles: func(model) {
         me._numTiles.x = math.ceil(model._size[0] / gui.widgets.MapView.TILE_SIZE) + 1;
@@ -204,7 +207,10 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Initialize the map by setting up a grid of raster images
+    # Initialize the map by setting up a grid of raster images.
+    #
+    # @param  ghost  model  MapView model
+    # @return void
     #
     _createTiles: func(model) {
         me._tiles = setsize([], me._numTiles.x);
