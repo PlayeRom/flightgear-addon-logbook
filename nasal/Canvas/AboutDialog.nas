@@ -17,7 +17,7 @@ var AboutDialog = {
     # Constants
     #
     WINDOW_WIDTH  : 280,
-    WINDOW_HEIGHT : 350,
+    WINDOW_HEIGHT : 400,
     PADDING       : 10,
 
     #
@@ -35,24 +35,13 @@ var AboutDialog = {
 
         me.setPositionOnCenter();
 
-        var margins = {
-            left   : AboutDialog.PADDING,
-            top    : AboutDialog.PADDING,
-            right  : AboutDialog.PADDING,
-            bottom : 0,
-        };
-        me._scrollData = me.createScrollArea(margins: margins);
+        me.vbox.addSpacing(AboutDialog.PADDING);
+        me._drawContent();
 
-        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
-
-        me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
-
-        me._drawScrollable();
-
-        var buttonBoxClose = me._drawBottomBar("Close", func() { me.window.hide(); });
-        me.vbox.addSpacing(10);
+        var buttonBoxClose = me._drawBottomBar("Close", func { me.window.hide(); });
+        me.vbox.addSpacing(AboutDialog.PADDING);
         me.vbox.addItem(buttonBoxClose);
-        me.vbox.addSpacing(10);
+        me.vbox.addSpacing(AboutDialog.PADDING);
 
         return me;
     },
@@ -67,61 +56,52 @@ var AboutDialog = {
     },
 
     #
-    # Draw content for scrollable area
+    # Draw content.
     #
     # @return void
     #
-    _drawScrollable: func() {
-        var vBoxLayout = canvas.VBoxLayout.new();
+    _drawContent: func() {
+        me.vbox.addItem(me._getLabel(g_Addon.name));
+        me.vbox.addItem(me._getLabel(sprintf("version %s", g_Addon.version.str())));
+        me.vbox.addItem(me._getLabel("July 27, 2025"));
 
-        vBoxLayout.addItem(me._getLabel(g_Addon.name));
-        vBoxLayout.addItem(me._getLabel(sprintf("version %s", g_Addon.version.str())));
-        vBoxLayout.addItem(me._getLabel("July 27, 2025"));
-        vBoxLayout.addStretch(1);
-        vBoxLayout.addItem(me._getLabel("Written by:"));
+        me.vbox.addStretch(1);
+        me.vbox.addItem(me._getLabel("Written by:"));
 
         foreach (var author; g_Addon.authors) {
-            vBoxLayout.addItem(me._getLabel(Utils.toString(author.name)));
+            me.vbox.addItem(me._getLabel(Utils.toString(author.name)));
         }
 
-        vBoxLayout.addStretch(1);
-        vBoxLayout.addItem(me._getLabel("This add-on uses © OpenStreetMap and OpenTopoMap to draw the map."));
+        me.vbox.addStretch(1);
+        # TODO: Unfortunately, it seems that FG incorrectly handles wordWrap for widgets.Label, artificially narrowing
+        # the Label's width so it doesn't adhere to the available window width. Therefore, I don't use wordWrap and
+        # manually break the text using the \n character.
+        me.vbox.addItem(me._getLabel("This add-on uses © OpenStreetMap and\nOpenTopoMap to draw the map."));
 
-        var btnWiki = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
-            .setText("FlightGear wiki...")
-            .setFixedSize(200, 26)
-            .listen("clicked", func {
-                Utils.openBrowser({ "url": g_Addon.homePage });
-            });
+        me.vbox.addStretch(1);
 
-        var btnRepo = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
-            .setText("GitHub website...")
-            .setFixedSize(200, 26)
-            .listen("clicked", func {
-                Utils.openBrowser({ "url": g_Addon.codeRepositoryUrl });
-            });
+        me.vbox.addItem(me._getButton("FlightGear wiki...", func {
+            Utils.openBrowser({ "url": g_Addon.homePage });
+        }));
 
-        var btnAddonDir = canvas.gui.widgets.Button.new(me._scrollDataContent, canvas.style, {})
-            .setText("Local storage directory...")
-            .setFixedSize(200, 26)
-            .listen("clicked", func {
-                Utils.openBrowser({ "path": g_Addon.storagePath });
-            });
+        me.vbox.addItem(me._getButton("GitHub website...", func {
+            Utils.openBrowser({ "url": g_Addon.codeRepositoryUrl });
+        }));
 
-        vBoxLayout.addStretch(1);
-        vBoxLayout.addItem(btnWiki);
-        vBoxLayout.addItem(btnRepo);
-        vBoxLayout.addItem(btnAddonDir);
+        me.vbox.addItem(me._getButton("Local storage directory...", func {
+            Utils.openBrowser({ "path": g_Addon.storagePath });
+        }));
 
-        me._scrollData.setLayout(vBoxLayout);
+        me.vbox.addStretch(1);
     },
 
     #
-    # @param  string  text  Label text
-    # @return ghost  Label widget
+    # @param  string  text  Label text.
+    # @param  bool  wordWrap  If true then text will be wrapped.
+    # @return ghost  Label widget.
     #
-    _getLabel: func(text) {
-        var label = canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {wordWrap: true})
+    _getLabel: func(text, wordWrap = 0) {
+        var label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: wordWrap})
             .setText(text);
 
         if (Utils.isFG2024Version()) {
@@ -129,6 +109,18 @@ var AboutDialog = {
         }
 
         return label;
+    },
+
+    #
+    # @param  string  text  Label of button.
+    # @param  func  callback  Function which will be executed after click the button.
+    # @return ghost  Button widget.
+    #
+    _getButton: func(text, callback) {
+        return canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+            .setText(text)
+            .setFixedSize(200, 26)
+            .listen("clicked", callback);
     },
 
     #
