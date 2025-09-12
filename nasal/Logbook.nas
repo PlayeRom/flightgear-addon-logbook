@@ -65,55 +65,8 @@ var Logbook = {
 
         me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
-        var runListenerOnInit = true;
-
-        setlistener("/sim/signals/fdm-initialized", func(node) {
-            # This listener will be called after first run the sim and every time after reposition the aircraft
-            # (by changing the airport or start in the air in the sim) and after restart the sim
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
-
-            if (node.getBoolValue()) {
-                # Run _initLogbook with delay to stabilize the aircraft
-                # (e.g. Twin Otter on Wheels and seaplanes needs it)
-                me._delayInit.singleShot = true;
-                me._delayInit.start();
-            }
-        }, runListenerOnInit);
-
-        setlistener("/sim/presets/onground", func(node) {
-            var oldOnGround = me._onGround;
-            me._onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
-
-            # User probably used the "Location" -> "in air" or change airport even during a flight
-            if (!oldOnGround and me._onGround) {
-                # I was in the air, now I'm on the ground, try to stop logging
-                me._stopLogging(landed: false);
-            }
-
-            # me._initLogbook(); # _initLogbook will be run in "/sim/signals/fdm-initialized"
-        });
-
-        setlistener("/sim/freeze/master", func(node) {
-            me._isSimPaused = node.getBoolValue();
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me._isSimPaused);
-        }, runListenerOnInit);
-
-        setlistener("/sim/replay/replay-state", func(node) {
-            me._isReplayMode = node.getBoolValue();
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me._isReplayMode);
-        }, runListenerOnInit);
-
-        setlistener("/sim/signals/exit", func(node) {
-            if (node.getBoolValue()) {
-                # sim is going to exit, save the logData
-                me._stopLogging(landed: false);
-
-                if (me._isUsingSQLite) {
-                    DB.close();
-                }
-            }
-        });
+        me._listeners = Listeners.new();
+        me._setListeners();
 
         return me;
     },
@@ -124,13 +77,88 @@ var Logbook = {
     # @return void
     #
     del: func() {
+        me._listeners.del();
         me._mainTimer.stop();
         me._crashDetector.del();
         me._recovery.del();
         me._logbookDialog.del();
         me._storage.del();
+        me._spaceShuttle.del();
         me._settingsDialog.del();
         me._flightAnalysis.del();
+    },
+
+    #
+    # Set listeners.
+    #
+    # @return void
+    #
+    _setListeners: func() {
+        me._listeners.add(
+            node: "/sim/signals/fdm-initialized",
+            code: func(node) {
+                # This listener will be called after first run the sim and every time after reposition the aircraft
+                # (by changing the airport or start in the air in the sim) and after restart the sim
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
+
+                if (node.getBoolValue()) {
+                    # Run _initLogbook with delay to stabilize the aircraft
+                    # (e.g. Twin Otter on Wheels and seaplanes needs it)
+                    me._delayInit.singleShot = true;
+                    me._delayInit.start();
+                }
+            },
+            init: true,
+        );
+
+        me._listeners.add(
+            node: "/sim/presets/onground",
+            code: func(node) {
+                var oldOnGround = me._onGround;
+                me._onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
+                logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
+
+                # User probably used the "Location" -> "in air" or change airport even during a flight
+                if (!oldOnGround and me._onGround) {
+                    # I was in the air, now I'm on the ground, try to stop logging
+                    me._stopLogging(landed: false);
+                }
+
+                # me._initLogbook(); # _initLogbook will be run in "/sim/signals/fdm-initialized"
+            },
+        );
+
+        me._listeners.add(
+            node: "/sim/freeze/master",
+            code: func(node) {
+                me._isSimPaused = node.getBoolValue();
+                # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me._isSimPaused);
+            },
+            init: true,
+        );
+
+        me._listeners.add(
+            node: "/sim/replay/replay-state",
+            code: func(node) {
+                me._isReplayMode = node.getBoolValue();
+                # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me._isReplayMode);
+            },
+            init: true,
+        );
+
+        me._listeners.add(
+            node: "/sim/signals/exit",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # sim is going to exit, save the logData
+                    me._stopLogging(landed: false);
+
+                    if (me._isUsingSQLite) {
+                        DB.close();
+                    }
+                }
+            },
+        );
     },
 
     #

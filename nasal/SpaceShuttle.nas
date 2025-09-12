@@ -27,19 +27,41 @@ var SpaceShuttle = {
         me._ignition = false;
         me._launched = false;
 
-        if (me._preLaunch) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle preLaunch = ", me._preLaunch);
-            setlistener("/sim/config/shuttle/prelaunch-flag", func(node) {
-                me._preLaunch = node.getValue();
-                if (!me._preLaunch) {
-                    # ignition
-                    me._ignition = true;
-                    logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle ignition = ", me._ignition);
-                }
-            });
-        }
+        me._listeners = Listeners.new();
+        me._setListeners();
 
         return me;
+    },
+
+    #
+    # Destructor
+    #
+    # @return void
+    #
+    del: func() {
+        me._listeners.del();
+    },
+
+    #
+    # Set listeners.
+    #
+    # @return void
+    #
+    _setListeners: func() {
+        if (me._preLaunch) {
+            logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle preLaunch = ", me._preLaunch);
+            me._listeners.add(
+                node: "/sim/config/shuttle/prelaunch-flag",
+                code: func(node) {
+                    me._preLaunch = node.getValue();
+                    if (!me._preLaunch) {
+                        # ignition
+                        me._ignition = true;
+                        logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle ignition = ", me._ignition);
+                    }
+                },
+            );
+        }
     },
 
     #

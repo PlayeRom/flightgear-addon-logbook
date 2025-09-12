@@ -116,76 +116,87 @@ var LogbookDialog = {
         me._btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
         me._drawBottomBar();
 
-        me._listeners = std.Vector.new();
-
+        me._listeners = Listeners.new();
         me._setListeners();
 
         return me;
     },
 
     #
-    # Set listeners
+    # Set listeners.
     #
     # @return void
     #
     _setListeners: func() {
         # User clicked delete entry
-        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/action-delete-entry", func(node) {
-            if (node.getBoolValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
+        me._listeners.add(
+            node: me._addonNodePath ~ "/addon-devel/action-delete-entry",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # Back to false
+                    setprop(node.getPath(), false);
 
-                var index = getprop(me._addonNodePath ~ "/addon-devel/action-delete-entry-index");
-                if (me._logbook.deleteLog(index)) {
-                    me._listView.enableLoading();
+                    var index = getprop(me._addonNodePath ~ "/addon-devel/action-delete-entry-index");
+                    if (me._logbook.deleteLog(index)) {
+                        me._listView.enableLoading();
 
-                    if (me._isUsingSQLite) {
-                        # Get signal to reload data
-                        setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
-                        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        if (me._isUsingSQLite) {
+                            # Get signal to reload data
+                            setprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted", true);
+                            setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        }
                     }
                 }
-            }
-        }));
+            },
+        );
 
         # User clicked edit
-        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/action-edit-entry", func(node) {
-            if (node.getBoolValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
+        me._listeners.add(
+            node: me._addonNodePath ~ "/addon-devel/action-edit-entry",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # Back to false
+                    setprop(node.getPath(), false);
 
-                var index      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index");
-                var columnName = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-column-name");
-                var value      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value");
+                    var index      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-index");
+                    var columnName = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-column-name");
+                    var value      = getprop(me._addonNodePath ~ "/addon-devel/action-edit-entry-value");
 
-                if (me._storage.editData(index, columnName, value)) {
-                    me._listView.enableLoading();
+                    if (me._storage.editData(index, columnName, value)) {
+                        me._listView.enableLoading();
 
-                    if (me._isUsingSQLite) {
-                        # Get signal to reload data
-                        setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        if (me._isUsingSQLite) {
+                            # Get signal to reload data
+                            setprop(me._addonNodePath ~ "/addon-devel/reload-logbook", true);
+                        }
                     }
                 }
-            }
-        }));
+            },
+        );
 
         # Reload data dialog after edit or delete file operation
-        me._listeners.append(setlistener(me._addonNodePath ~ "/addon-devel/reload-logbook", func(node) {
-            if (node.getBoolValue()) {
-                # Back to false
-                setprop(node.getPath(), false);
+        me._listeners.add(
+            node: me._addonNodePath ~ "/addon-devel/reload-logbook",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # Back to false
+                    setprop(node.getPath(), false);
 
-                me._reloadLogbookListenerCallback();
-            }
-        }));
+                    me._reloadLogbookListenerCallback();
+                }
+            },
+        );
 
-        me._listeners.append(setlistener("/devices/status/mice/mouse/button", func(node) {
-            if (node.getBoolValue()) {
-                # Mouse was clicked somewhere in the sim, close my popups dialogs
-                me._filterSelector.hide();
-                me._detailsDialog.getInputDialog().getFilterSelector().hide();
-            }
-        }));
+        me._listeners.add(
+            node: "/devices/status/mice/mouse/button",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # Mouse was clicked somewhere in the sim, close my popups dialogs
+                    me._filterSelector.hide();
+                    me._detailsDialog.getInputDialog().getFilterSelector().hide();
+                }
+            },
+        );
     },
 
     #
@@ -217,25 +228,12 @@ var LogbookDialog = {
     },
 
     #
-    # Remove all listeners created by _setListeners
-    #
-    # @return void
-    #
-    _removeListeners: func() {
-        foreach (var listener; me._listeners.vector) {
-            removelistener(listener);
-        }
-
-        me._listeners.clear();
-    },
-
-    #
     # Destructor
     #
     # @return void
     #
     del: func() {
-        me._removeListeners();
+        me._listeners.del();
         me._detailsDialog.del();
         me._filterSelector.del();
         me.helpDialog.del();

@@ -35,6 +35,7 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils",
+        "nasal/Listeners",
         "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
