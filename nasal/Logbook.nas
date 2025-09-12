@@ -511,6 +511,10 @@ var Logbook = {
     _buildAnalysisData: func(logData = nil) {
         var pos = geo.aircraft_position();
         var elevationMeters = geo.elevation(pos.lat(), pos.lon());
+        if (elevationMeters == nil) {
+            # The geo.elevation can return nil if no scenery loaded.
+            elevationMeters = 0;
+        }
 
         var timestamp = 0.0;
         var distance = 0.0;
