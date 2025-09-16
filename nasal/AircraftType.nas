@@ -90,8 +90,7 @@ var AircraftType = {
                 ) {
                     return AircraftType.TURBOPROP;
                 }
-            }
-            else if (aircraftId == "dhc2W") {
+            } elsif (aircraftId == "dhc2W") {
                 var desc = getprop("/sim/description");
                 if (string.match(desc, "*Wheels")) {
                     return AircraftType.GA_SINGLE;

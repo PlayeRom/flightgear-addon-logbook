@@ -622,17 +622,17 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByColumnName: func(columnName) {
-             if (columnName == Columns.DATE)         return me._getRealYear();
-        else if (columnName == Columns.SIM_UTC_DATE) return me._getSimUtcYear();
-        else if (columnName == Columns.SIM_LOC_DATE) return me._getSimLocalYear();
-        else if (columnName == Columns.AIRCRAFT)     return me.aircraft;
-        else if (columnName == Columns.VARIANT)      return me.variant;
-        else if (columnName == Columns.AC_TYPE)      return me.aircraft_type;
-        else if (columnName == Columns.CALLSIGN)     return me.callsign;
-        else if (columnName == Columns.FROM)         return me.from;
-        else if (columnName == Columns.TO)           return me.to;
-        else if (columnName == Columns.LANDING)      return me.printLanding();
-        else if (columnName == Columns.CRASH)        return me.printCrash();
+           if (columnName == Columns.DATE)         return me._getRealYear();
+        elsif (columnName == Columns.SIM_UTC_DATE) return me._getSimUtcYear();
+        elsif (columnName == Columns.SIM_LOC_DATE) return me._getSimLocalYear();
+        elsif (columnName == Columns.AIRCRAFT)     return me.aircraft;
+        elsif (columnName == Columns.VARIANT)      return me.variant;
+        elsif (columnName == Columns.AC_TYPE)      return me.aircraft_type;
+        elsif (columnName == Columns.CALLSIGN)     return me.callsign;
+        elsif (columnName == Columns.FROM)         return me.from;
+        elsif (columnName == Columns.TO)           return me.to;
+        elsif (columnName == Columns.LANDING)      return me.printLanding();
+        elsif (columnName == Columns.CRASH)        return me.printCrash();
 
         return nil;
     },

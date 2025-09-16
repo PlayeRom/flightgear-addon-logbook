@@ -227,12 +227,9 @@ var Columns = {
     #
     getColumnDate: func() {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
-        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) {
-            return Columns.SIM_UTC_DATE;
-        }
-        else if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) {
-            return Columns.SIM_LOC_DATE;
-        }
+
+           if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_DATE;
+        elsif (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_DATE;
 
         return Columns.DATE;
     },
@@ -244,12 +241,9 @@ var Columns = {
     #
     getColumnTime: func() {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
-        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) {
-            return Columns.SIM_UTC_TIME;
-        }
-        else if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) {
-            return Columns.SIM_LOC_TIME;
-        }
+
+           if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_TIME;
+        elsif (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_TIME;
 
         return Columns.TIME;
     },
@@ -268,18 +262,35 @@ var Columns = {
         var columnsVisible  = g_Settings.getColumnsVisible();
 
         foreach (var columnItem; me._allColumns) {
-            if (columnItem.name == Columns.DATE or columnItem.name == Columns.TIME) {
-                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_REAL;
-            }
-            else if (columnItem.name == Columns.SIM_UTC_DATE or columnItem.name == Columns.SIM_UTC_TIME) {
-                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
-            }
-            else if (columnItem.name == Columns.SIM_LOC_DATE or columnItem.name == Columns.SIM_LOC_TIME) {
-                columnItem.visible = dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
-            }
-            else if (contains(columnsVisible, columnItem.name)) {
-                columnItem.visible = columnsVisible[columnItem.name];
+            var isVisible = me._isColumnVisible(columnItem.name, dataTimeDisplay, columnsVisible);
+            if (isVisible != nil) {
+                columnItem.visible = isVisible;
             }
         }
+    },
+
+    #
+    # @param  string  colName
+    # @param  string  dataTimeDisplay
+    # @param  hash  columnsVisible
+    # @return bool|nil
+    #
+    _isColumnVisible: func(colName, dataTimeDisplay, columnsVisible) {
+           if (me._isColNameEq(colName, Columns.DATE,         Columns.TIME))         return dataTimeDisplay == Settings.DATE_TIME_REAL;
+        elsif (me._isColNameEq(colName, Columns.SIM_UTC_DATE, Columns.SIM_UTC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
+        elsif (me._isColNameEq(colName, Columns.SIM_LOC_DATE, Columns.SIM_LOC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
+        elsif (contains(columnsVisible, colName))                                    return columnsVisible[colName];
+
+        return nil;
+    },
+
+    #
+    # @param  string  colName
+    # @param  string  date
+    # @param  string  time
+    # @return bool  Return true if column name is equal date or time.
+    #
+    _isColNameEq: func(colName, date, time) {
+        return colName == date or colName == time;
     },
 };

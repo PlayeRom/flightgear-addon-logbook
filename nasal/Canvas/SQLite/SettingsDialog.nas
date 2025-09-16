@@ -189,24 +189,20 @@ var SettingsDialog = {
 
             # In the dev version of the FG, the getCheckedRadio() method has been changed to getCheckedRadioButton().
             # TODO: Remove the check and only use getCheckedRadioButton when version 2024 becomes obsolete.
-            var checkedRadio = view.hasmember(radioGroup, "getCheckedRadioButton")
+            var checkedRadio = Utils.tryCatch(func { typeof(radioGroup.getCheckedRadioButton) == "func"; }, [])
                 ? radioGroup.getCheckedRadioButton()
                 : radioGroup.getCheckedRadio();
 
-            if (checkedRadio != nil) {
-                if (checkedRadio._text == "UTC time in simulator") {
-                    me._dateTimeDisplay = Settings.DATE_TIME_SIM_UTC;
+            var getDateTimeDisplay = func(item) {
+                if (item != nil) {
+                       if (item._text == "UTC time in simulator")   return Settings.DATE_TIME_SIM_UTC;
+                    elsif (item._text == "Local time in simulator") return Settings.DATE_TIME_SIM_LOC;
                 }
-                else if (checkedRadio._text == "Local time in simulator") {
-                    me._dateTimeDisplay = Settings.DATE_TIME_SIM_LOC;
-                }
-                else {
-                    me._dateTimeDisplay = Settings.DATE_TIME_REAL;
-                }
-            }
-            else {
-                me._dateTimeDisplay = Settings.DATE_TIME_REAL;
-            }
+
+                return Settings.DATE_TIME_REAL;
+            };
+
+            me._dateTimeDisplay = getDateTimeDisplay(checkedRadio);
         });
 
         vBoxLayout.addItem(radio1);
@@ -316,7 +312,7 @@ var SettingsDialog = {
         hBoxLayout.addItem(me._getLabel("Items per page"));
 
         var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
-        if (view.hasmember(comboBox, "createItem")) {
+        if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
             # For next addMenuItem is deprecated
             comboBox.createItem( "5",  5);
             comboBox.createItem("10", 10);

@@ -131,11 +131,11 @@ var WindBarbs = {
                         me._shortBarb(y);
                         y += 5;
                     }
-                    else if (barb == 10) {
+                    elsif (barb == 10) {
                         me._longBarb(y);
                         y += 5;
                     }
-                    else if (barb == 50) {
+                    elsif (barb == 50) {
                         me._flagBarb(y);
                         y += 10;
                     }

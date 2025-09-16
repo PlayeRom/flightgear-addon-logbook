@@ -268,22 +268,22 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.TIME
-              or me._columnItem.name == Columns.SIM_UTC_TIME
-              or me._columnItem.name == Columns.SIM_LOC_TIME
+        elsif (me._columnItem.name == Columns.TIME
+            or me._columnItem.name == Columns.SIM_UTC_TIME
+            or me._columnItem.name == Columns.SIM_LOC_TIME
         ) {
             if (!me._validateTime(value)) {
                 gui.popupTip("Incorrect time");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.VARIANT) {
+        elsif (me._columnItem.name == Columns.VARIANT) {
             if (!me._validateVariant(value)) {
                 gui.popupTip("Please don't use space or dot characters");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.AC_TYPE) {
+        elsif (me._columnItem.name == Columns.AC_TYPE) {
             if (!me._validateAircraftType(value)) {
                 var msg = "Incorrect Aircraft Type. Allowed values are: ";
                 var types = "";
@@ -297,31 +297,31 @@ var InputDialog = {
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.LANDING
-              or me._columnItem.name == Columns.CRASH
+        elsif (me._columnItem.name == Columns.LANDING
+            or me._columnItem.name == Columns.CRASH
         ) {
             if (!me._validateBoolean(value)) {
                 gui.popupTip("The allowed value are 1 or 0 (or empty).");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.DAY
-              or me._columnItem.name == Columns.NIGHT
-              or me._columnItem.name == Columns.INSTRUMENT
-              or me._columnItem.name == Columns.MULTIPLAYER
-              or me._columnItem.name == Columns.SWIFT
-              or me._columnItem.name == Columns.DURATION
-              or me._columnItem.name == Columns.DISTANCE
-              or me._columnItem.name == Columns.FUEL
-              or me._columnItem.name == Columns.MAX_MACH
+        elsif (me._columnItem.name == Columns.DAY
+            or me._columnItem.name == Columns.NIGHT
+            or me._columnItem.name == Columns.INSTRUMENT
+            or me._columnItem.name == Columns.MULTIPLAYER
+            or me._columnItem.name == Columns.SWIFT
+            or me._columnItem.name == Columns.DURATION
+            or me._columnItem.name == Columns.DISTANCE
+            or me._columnItem.name == Columns.FUEL
+            or me._columnItem.name == Columns.MAX_MACH
         ) {
             if (!me._validateDecimal(value)) {
                 gui.popupTip("The allowed value is decimal number.");
                 return false;
             }
         }
-        else if (me._columnItem.name == Columns.MAX_ALT
-              or me._columnItem.name == Columns.MAX_GS_KT
+        elsif (me._columnItem.name == Columns.MAX_ALT
+            or me._columnItem.name == Columns.MAX_GS_KT
         ) {
             if (!me._validateNumber(value)) {
                 gui.popupTip("The allowed value is a number.");

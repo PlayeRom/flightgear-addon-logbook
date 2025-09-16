@@ -124,8 +124,7 @@ var LandingGear = {
         if (counters.expectedCount > 0) {
             # We know we have some landing gears
             counters = me._checkWowWithGearRecognized(counters, onGround);
-        }
-        else if (!onGround) {
+        } elsif (!onGround) {
             # We know nothing about landing gears, try check all of them, it make sense for landing only
             counters = me._checkWowWithNoGearRecognized(counters);
         }

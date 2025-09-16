@@ -353,8 +353,8 @@ var Storage = {
         if (columnName == me._columns.getColumnDate()) {
             return substr(value, 0, 4) # get year only
         }
-        else if (columnName == Columns.LANDING
-              or columnName == Columns.CRASH
+        elsif (columnName == Columns.LANDING
+            or columnName == Columns.CRASH
         ) {
             # we can't provide int for filters because we Filters.sort by strings
             return value ? "1" : "";

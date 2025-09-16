@@ -410,8 +410,7 @@ gui.widgets.ProfileView = {
         if (direction == 1 and me._zoom < me.getMaxZoomLevel()) {
             me._zoom *= 2;
             return true;
-        }
-        else if (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
+        } elsif (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
             me._zoom /= 2;
             return true;
         }

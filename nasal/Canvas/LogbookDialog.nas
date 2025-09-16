@@ -36,7 +36,7 @@ var LogbookDialog = {
         if (windowWidth < LogbookDialog.MIN_WINDOW_WIDTH) {
             windowWidth = LogbookDialog.MIN_WINDOW_WIDTH;
         }
-        else if (windowWidth > LogbookDialog.MAX_WINDOW_WIDTH) {
+        elsif (windowWidth > LogbookDialog.MAX_WINDOW_WIDTH) {
             windowWidth = LogbookDialog.MAX_WINDOW_WIDTH;
         }
 
@@ -44,7 +44,7 @@ var LogbookDialog = {
         if (windowHeight < LogbookDialog.MIN_WINDOW_HEIGHT) {
             windowHeight = LogbookDialog.MIN_WINDOW_HEIGHT;
         }
-        else if (windowHeight > LogbookDialog.MAX_WINDOW_HEIGHT) {
+        elsif (windowHeight > LogbookDialog.MAX_WINDOW_HEIGHT) {
             windowHeight = LogbookDialog.MAX_WINDOW_HEIGHT;
         }
 
@@ -397,13 +397,13 @@ var LogbookDialog = {
         ) {
             text = "Date";
         }
-        else if (columnName == Columns.TIME
-              or columnName == Columns.SIM_UTC_TIME
-              or columnName == Columns.SIM_LOC_TIME
+        elsif (columnName == Columns.TIME
+            or columnName == Columns.SIM_UTC_TIME
+            or columnName == Columns.SIM_LOC_TIME
         ) {
             text = "Time";
         }
-        else if (columnName == Columns.LANDING) {
+        elsif (columnName == Columns.LANDING) {
             text = "Land.";
         }
 
