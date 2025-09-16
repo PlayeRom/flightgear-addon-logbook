@@ -98,4 +98,17 @@ var Utils = {
     openBrowser: func(params) {
         fgcommand("open-browser", props.Node.new(params));
     },
+
+    #
+    # @param  func  function
+    # @param  vector  params  Vector of function params.
+    # @param  hash  obj  Function context.
+    # @return bool  Return true if given function was called without errors (die).
+    #
+    tryCatch: func(function, params, obj = nil) {
+        var errors = [];
+        call(function, params, obj, nil, errors);
+
+        return !size(errors);
+    },
 };

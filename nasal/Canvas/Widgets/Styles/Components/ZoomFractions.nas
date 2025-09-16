@@ -54,25 +54,13 @@ var ZoomFractions = {
         me._maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
 
         while (me._maxZoomLevel >= gui.widgets.ProfileView.ZOOM_MIN) {
-            if (me._tryCatch(me._createInternal, [model])) {
+            if (logbook.Utils.tryCatch(me._createInternal, [model], me)) {
                 break; # No errors, break the loop
             }
 
             # Reduce the number of fractions by half
             me._maxZoomLevel = int(me._maxZoomLevel / 2);
         }
-    },
-
-    #
-    # @param  func  function
-    # @param  vector  params
-    # @return bool  Return true if given function was called without errors (die)
-    #
-    _tryCatch: func(function, params) {
-        var errors = [];
-        call(function, params, me, nil, errors);
-
-        return !size(errors);
     },
 
     #
