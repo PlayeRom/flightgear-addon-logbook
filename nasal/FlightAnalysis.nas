@@ -26,7 +26,6 @@ var FlightAnalysis = {
     new: func() {
         var me = {
             parents           : [FlightAnalysis],
-            _objCallback      : nil,
             _callback         : nil,
             _flightAnalysisDlg: nil,
         };
@@ -121,16 +120,14 @@ var FlightAnalysis = {
     },
 
     #
-    # @param  hash  objCallback  Class as owner of callback
-    # @param  func  callback
+    # @param  hash  callback  Callback object to get logbook data.
     # @return void
     #
-    start: func(objCallback, callback) {
+    start: func(callback) {
         me.stop();
 
         me.clear();
 
-        me._objCallback = objCallback;
         me._callback = callback;
 
         me._update();
@@ -163,7 +160,7 @@ var FlightAnalysis = {
     # @return void
     #
     _update: func() {
-        var data = call(me._callback, [], me._objCallback);
+        var data = me._callback.invoke();
         if (data == nil) {
             return;
         }

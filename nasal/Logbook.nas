@@ -188,7 +188,7 @@ var Logbook = {
 
         me._initAltAglThreshold();
 
-        me._flightAnalysis.start(me, me._updateFlightAnalysisData);
+        me._flightAnalysis.start(Callback.new(me._updateFlightAnalysisData, me));
 
         if (!me._onGround and !me._spaceShuttle.isPreLaunch()) {
             # We start in air, start logging immediately
@@ -373,7 +373,7 @@ var Logbook = {
 
         logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
 
-        me._recovery.start(me, me._recoveryCallback);
+        me._recovery.start(Callback.new(me._recoveryCallback, me));
 
         if (me._logData == nil) {
             me._createLogData();

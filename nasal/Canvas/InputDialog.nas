@@ -183,7 +183,7 @@ var InputDialog = {
                 getprop("/devices/status/mice/mouse/y") or 0
             )
             .setTitle("Select aircraft type")
-            .setCallback(me, me._filterSelectorCallback)
+            .setCallback(Callback.new(me._filterSelectorCallback, me))
             .show();
     },
 

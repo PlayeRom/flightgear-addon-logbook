@@ -366,14 +366,13 @@ var Storage = {
     #
     # Load logbook data with given range, called when user open the Logbook dialog or change its page
     #
-    # @param  hash  objCallback  Owner object of callback function
-    # @param  func  callback  Callback function called on finish
+    # @param  hash  callback  Callback object called on finish.
     # @param  int  start  Start index counting from 0 as a first row of data
     # @param  int  count  How many rows should be returned
     # @param  bool  withHeaders  Set true when headers/filters must be change too in LogbookDialog canvas.
     # @return void
     #
-    loadDataRange: func(objCallback, callback, start, count, withHeaders) {
+    loadDataRange: func(callback, start, count, withHeaders) {
         me._loadedData.clear();
 
         var where = me._getWhereQueryFilters();
@@ -411,7 +410,7 @@ var Storage = {
         }
 
         # Pass result to callback function
-        call(callback, [me._loadedData.vector, withHeaders], objCallback);
+        callback.invoke(me._loadedData.vector, withHeaders);
     },
 
     #

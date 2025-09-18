@@ -59,7 +59,6 @@ var FilterSelector = {
         me._scrollDataContent = nil;
         me._listView = nil;
         me._callback = nil;
-        me._objCallback = nil;
         me._columnName = nil;
 
         me._drawContent();
@@ -189,14 +188,12 @@ var FilterSelector = {
     },
 
     #
-    # Set callback function (with object) which will be call to apply filter
+    # Set callback which will be call to apply filter.
     #
-    # @param  hash  objCallback - The class object which contains the callback function
-    # @param  func  callback
+    # @param  hash  callback  Callback object.
     # @return me
     #
-    setCallback: func(objCallback, callback) {
-        me._objCallback = objCallback;
+    setCallback: func(callback) {
         me._callback = callback;
         return me;
     },
@@ -278,7 +275,7 @@ var FilterSelector = {
 
         var text = me._items.vector[index].columns[0].data;
 
-        call(me._callback, [me._columnName, text], me._objCallback);
+        me._callback.invoke(me._columnName, text);
         me.hide();
     },
 };

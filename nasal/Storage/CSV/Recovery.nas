@@ -30,7 +30,6 @@ var Recovery = {
         var me = {
             parents     : [Recovery],
             _storage    : storage,
-            _objCallback: nil,
             _callback   : nil,
         };
 
@@ -52,14 +51,12 @@ var Recovery = {
     },
 
     #
-    # @param  hash  objCallback  Class as owner of callback
-    # @param  func  callback
+    # @param  hash  callback
     # @return void
     #
-    start: func(objCallback, callback) {
+    start: func(callback) {
         me.stop();
 
-        me._objCallback = objCallback;
         me._callback = callback;
         me._timer.start();
     },
@@ -77,7 +74,7 @@ var Recovery = {
     # @return void
     #
     _update: func() {
-        call(me._callback, [], me._objCallback);
+        me._callback.invoke();
     },
 
     #

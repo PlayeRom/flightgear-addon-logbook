@@ -75,8 +75,7 @@ var Storage = {
         me._saveHeaders();
 
         # Callback for return results of loadDataRange
-        me._objCallback = nil;
-        me._callback    = func;
+        me._callback = nil;
 
         return me;
     },
@@ -339,15 +338,13 @@ var Storage = {
     },
 
     #
-    # @param  hash  objCallback  Owner object of callback function
-    # @param  func  callback  Callback function called on finish
-    # @param  int  start  Start index counting from 0 as a first row of data
-    # @param  int  count  How many rows should be returned
+    # @param  hash  callback  Callback object called on finish.
+    # @param  int  start  Start index counting from 0 as a first row of data.
+    # @param  int  count  How many rows should be returned.
     # @param  bool  withHeaders  Set true when headers/filters must be change too in LogbookDialog canvas.
     # @return void
     #
-    loadDataRange: func(objCallback, callback, start, count, withHeaders) {
-        me._objCallback = objCallback;
+    loadDataRange: func(callback, start, count, withHeaders) {
         me._callback    = callback;
         me._withHeaders = withHeaders;
 
@@ -383,9 +380,8 @@ var Storage = {
             # Run more complex loop with filters in a separate thread
             Thread.new().run(
                 func { me._loadDataRange(start, count); },
-                me,
-                me._loadDataRangeThreadFinish,
-                false
+                Callback.new(me._loadDataRangeThreadFinish, me),
+                false,
             );
         }
     },
@@ -445,7 +441,7 @@ var Storage = {
     #
     _loadDataRangeThreadFinish: func() {
         # Pass result to callback function
-        call(me._callback, [me._loadedData.vector, me._withHeaders], me._objCallback);
+        me._callback.invoke(me._loadedData.vector, me._withHeaders);
     },
 
     #
@@ -527,8 +523,7 @@ var Storage = {
 
         return Thread.new().run(
             func { me._editData(rowIndex, columnName, value, columnIndex); },
-            me,
-            me._editThreadFinish
+            Callback.new(me._editThreadFinish, me),
         );
     },
 
@@ -717,8 +712,7 @@ var Storage = {
 
         return Thread.new().run(
             func { me._deleteLog(index); },
-            me,
-            me._deleteThreadFinish
+            Callback.new(me._deleteThreadFinish, me),
         );
     },
 

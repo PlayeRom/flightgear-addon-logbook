@@ -367,7 +367,7 @@ var LogbookDialog = {
                     .setColumnName(columnName)
                     .setPosition(event.screenX, event.screenY)
                     .setTitle(title)
-                    .setCallback(me, me._filterSelectorCallback)
+                    .setCallback(Callback.new(me._filterSelectorCallback, me))
                     .show();
             }
         });
@@ -661,7 +661,12 @@ var LogbookDialog = {
 
         me._listView.enableLoading();
 
-        me._storage.loadDataRange(me, me._reloadDataCallback, me._startIndex, me._itemsPerPage, withHeaders);
+        me._storage.loadDataRange(
+            Callback.new(me._reloadDataCallback, me),
+            me._startIndex,
+            me._itemsPerPage,
+            withHeaders,
+        );
     },
 
     #
