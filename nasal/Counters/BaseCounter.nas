@@ -18,15 +18,16 @@ var BaseCounter = {
     #
     # @param  func  onResetCounters
     # @param  func  onUpdate
-    # @return me
+    # @return hash
     #
     new: func(onResetCounters, onUpdate) {
-        var me = { parents: [BaseCounter] };
+        var me = {
+            parents                 : [BaseCounter],
+            _onResetCountersCallback: onResetCounters,
+            _onUpdateCallback       : onUpdate,
+        };
 
         me._propElapsedSec = props.globals.getNode("/sim/time/elapsed-sec");
-
-        me._onResetCountersCallback = onResetCounters;
-        me._onUpdateCallback        = onUpdate;
 
         me._isRealTimeDuration = g_Settings.isRealTimeDuration();
         me._lastElapsedSec     = me._isRealTimeDuration ? 0 : me._getElapsedSec();

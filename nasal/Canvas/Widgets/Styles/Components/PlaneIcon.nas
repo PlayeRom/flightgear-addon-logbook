@@ -16,7 +16,7 @@ var PlaneIcon = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

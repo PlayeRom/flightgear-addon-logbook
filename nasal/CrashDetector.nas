@@ -22,12 +22,13 @@ var CrashDetector = {
     # Constructor
     #
     # @param  hash  spaceShuttle  SpaceShuttle object
-    # @return me
+    # @return hash
     #
     new: func(spaceShuttle) {
-        var me = { parents: [CrashDetector] };
-
-        me._spaceShuttle = spaceShuttle;
+        var me = {
+            parents: [CrashDetector],
+            _spaceShuttle: spaceShuttle,
+        };
 
         me._lastAircraftCoord = nil;
         me._lastAircraftAltAgl = nil;
@@ -105,9 +106,9 @@ var CrashDetector = {
             return false;
         }
 
-        if (me._isSimCrashedFlag() 
-            or me._isC172PBrokenGear() 
-            or me._isC172PBrokenWing() 
+        if (me._isSimCrashedFlag()
+            or me._isC172PBrokenGear()
+            or me._isC172PBrokenWing()
             or me._isB707Crashed()
         ) {
             return true;

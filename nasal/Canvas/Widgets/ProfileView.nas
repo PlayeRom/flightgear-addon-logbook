@@ -31,7 +31,7 @@ gui.widgets.ProfileView = {
     # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
-    # @return me
+    # @return ghost
     #
     new: func(parent, style, cfg) {
         var me = gui.Widget.new(gui.widgets.ProfileView);
@@ -93,7 +93,7 @@ gui.widgets.ProfileView = {
     # @param  double|nil  maxAlt  Maximum flight altitude or elevation.
     #     If not given then it will be obtained from rows (slow performance).
     # @param  bool  withResetPosition
-    # @return me
+    # @return ghost
     #
     setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = 1) {
         if (withResetPosition) {
@@ -141,7 +141,7 @@ gui.widgets.ProfileView = {
     #          pitch       : double,
     #     },
     # @param  double|nil  maxAlt  Optional maximum flight altitude or altitude from all data provided.
-    # @return me
+    # @return ghost
     #
     appendTrackItem: func(trackItem, maxAlt = nil) {
         append(me._trackItems, trackItem);
@@ -222,7 +222,7 @@ gui.widgets.ProfileView = {
     #
     # Move aircraft position to the first point and redraw aircraft position
     #
-    # @return me
+    # @return ghost
     #
     goStartTrack: func() {
         me._position = 0;
@@ -235,7 +235,7 @@ gui.widgets.ProfileView = {
     #
     # Move aircraft position to the last point and redraw aircraft position
     #
-    # @return me
+    # @return ghost
     #
     goEndTrack: func() {
         me._position = me.getTrackLastIndex();
@@ -249,7 +249,7 @@ gui.widgets.ProfileView = {
     # Move the aircraft position forward by the specified interval and redraw aircraft position
     #
     # @param  int  interval
-    # @return me
+    # @return ghost
     #
     goNextTrack: func(interval = 1) {
         me._position += interval;
@@ -265,7 +265,7 @@ gui.widgets.ProfileView = {
     # Move the aircraft position backward by the specified interval and redraw aircraft position
     #
     # @param  int  interval
-    # @return me
+    # @return ghost
     #
     goPrevTrack: func(interval = 1) {
         me._position -= interval;
@@ -281,7 +281,7 @@ gui.widgets.ProfileView = {
     # Set new position of track
     #
     # @param  int  position
-    # @return me
+    # @return ghost
     #
     setTrackPosition: func(position) {
         me._position = position;
@@ -330,7 +330,7 @@ gui.widgets.ProfileView = {
     # @param  func|nil  callback  Callback function, if nil then callback will be disabled
     # @param  hash|nil  objCallback  Class as owner of callback function,
     #     if nil then reference for callback will not be used
-    # @return me
+    # @return ghost
     #
     setUpdatePositionCallback: func(callback, objCallback) {
         me._callbackPos = callback;
@@ -377,7 +377,7 @@ gui.widgets.ProfileView = {
     #
     # Zoom in the profile view and redrew it
     #
-    # @return me
+    # @return ghost
     #
     zoomIn: func() {
         if (me._changeZoom(direction: 1)) {
@@ -390,7 +390,7 @@ gui.widgets.ProfileView = {
     #
     # Zoom out the profile view and redrew it
     #
-    # @return me
+    # @return ghost
     #
     zoomOut: func() {
         if (me._changeZoom(direction: -1)) {
@@ -441,7 +441,7 @@ gui.widgets.ProfileView = {
     #
     # @param  func|nil  callback  Callback function, if nil then callback will be disabled
     # @param  hash|nil  objCallback  Class as owner of callback function, if nil then reference for callback will not be used
-    # @return me
+    # @return ghost
     #
     setUpdateZoomCallback: func(callback, objCallback = nil) {
         me._callbackZoom = callback;

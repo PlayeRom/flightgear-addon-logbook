@@ -62,7 +62,7 @@ DefaultStyle.widgets["info-view"] = {
     #
     # @param  ghost  model  InfoView model
     # @param  int  w, h  Width and height of widget
-    # @return me
+    # @return ghost
     #
     setSize: func(model, w, h) {
         me.reDrawContent(model);

@@ -16,7 +16,7 @@ var WindBarbs = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         var me = { parents: [WindBarbs] };

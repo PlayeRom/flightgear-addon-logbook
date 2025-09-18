@@ -16,7 +16,7 @@ var MigrationCsv = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return { parents: [MigrationCsv] };

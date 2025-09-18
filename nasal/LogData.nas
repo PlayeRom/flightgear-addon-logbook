@@ -16,7 +16,7 @@ var LogData = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func(
         date         = "",  # Take-off date (real)
@@ -46,44 +46,44 @@ var LogData = {
         maxMach      = 0.0, # The maximum speed in Mach number
         note         = "",  # Full aircraft name as default
     ) {
-        var me = { parents: [LogData] };
+        return {
+            parents           : [LogData],
 
-        # Member names the same as in the database!
-        me.date               = date;
-        me.time               = time;
-        me.sim_utc_date       = simUtcDate;
-        me.sim_utc_time       = simUtcTime;
-        me.sim_local_date     = simLocalDate;
-        me.sim_local_time     = simLocalTime;
-        me.aircraft           = aircraft;
-        me.variant            = variant;
-        me.aircraft_type      = aircraftType;
-        me.callsign           = callsign;
-        me.from               = from;
-        me.to                 = to;
-        me.landing            = landing;
-        me.crash              = crash;
-        me.day                = day;
-        me.night              = night;
-        me.instrument         = instrument;
-        me.multiplayer        = multiplayer;
-        me.swift              = swift;
-        me.duration           = duration;
-        me.distance           = distance;
-        me.fuel               = fuel;
-        me.max_alt            = maxAlt;
-        me.max_groundspeed_kt = maxGsKt;
-        me.max_mach           = maxMach;
-        me.note               = note;
-
-        return me;
+            # Member names the same as in the database!
+            date              : date,
+            time              : time,
+            sim_utc_date      : simUtcDate,
+            sim_utc_time      : simUtcTime,
+            sim_local_date    : simLocalDate,
+            sim_local_time    : simLocalTime,
+            aircraft          : aircraft,
+            variant           : variant,
+            aircraft_type     : aircraftType,
+            callsign          : callsign,
+            from              : from,
+            to                : to,
+            landing           : landing,
+            crash             : crash,
+            day               : day,
+            night             : night,
+            instrument        : instrument,
+            multiplayer       : multiplayer,
+            swift             : swift,
+            duration          : duration,
+            distance          : distance,
+            fuel              : fuel,
+            max_alt           : maxAlt,
+            max_groundspeed_kt: maxGsKt,
+            max_mach          : maxMach,
+            note              : note,
+        };
     },
 
     #
     # Set the take-off real date
     #
     # @param  string  date  Take-off date
-    # @return me
+    # @return hash
     #
     setRealDate: func(date) {
         me.date = date;
@@ -123,7 +123,7 @@ var LogData = {
     # Set the take-off real time
     #
     # @param  string  time  Take-off time
-    # @return me
+    # @return hash
     #
     setRealTime: func(time) {
         me.time = time;
@@ -136,7 +136,7 @@ var LogData = {
     # Set the take-off sim UTC date
     #
     # @param  string  date  Take-off date
-    # @return me
+    # @return hash
     #
     setSimUtcDate: func(date) {
         me.sim_utc_date = date;
@@ -149,7 +149,7 @@ var LogData = {
     # Set the take-off sim UTC time
     #
     # @param  string  time  Take-off time
-    # @return me
+    # @return hash
     #
     setSimUtcTime: func(time) {
         me.sim_utc_time = time;
@@ -162,7 +162,7 @@ var LogData = {
     # Set the take-off sim local date
     #
     # @param  string  date  Take-off date
-    # @return me
+    # @return hash
     #
     setSimLocalDate: func(date) {
         me.sim_local_date = date;
@@ -175,7 +175,7 @@ var LogData = {
     # Set the take-off sim local time
     #
     # @param  string  time  Take-off time
-    # @return me
+    # @return hash
     #
     setSimLocalTime: func(time) {
         me.sim_local_time = time;
@@ -188,7 +188,7 @@ var LogData = {
     # Set the primary aircraft from /sim/aircraft-dir
     #
     # @param  string  aircraft
-    # @return me
+    # @return hash
     #
     setAircraft: func(aircraft) {
         me.aircraft = aircraft;
@@ -201,7 +201,7 @@ var LogData = {
     # Set the aircraft variant as /sim/aircraft. If not exist then use /sim/aircraft-id.
     #
     # @param  string  aircraftId
-    # @return me
+    # @return hash
     #
     setVariant: func(aircraftId) {
         me.variant = aircraftId;
@@ -214,7 +214,7 @@ var LogData = {
     # Set the aircraft type
     #
     # @param  string  type
-    # @return me
+    # @return hash
     #
     setAircraftType: func(type) {
         me.aircraft_type = type;
@@ -227,7 +227,7 @@ var LogData = {
     # Set the callsign
     #
     # @param  string  callsign
-    # @return me
+    # @return hash
     #
     setCallsign: func(callsign) {
         me.callsign = me._getCsvSafeText(callsign);
@@ -240,7 +240,7 @@ var LogData = {
     # Set the ICAO departure airport
     #
     # @param  string  from  ICAO departure airport
-    # @return me
+    # @return hash
     #
     setFrom: func(from) {
         me.from = from;
@@ -253,7 +253,7 @@ var LogData = {
     # Set the ICAO destination airport
     #
     # @param  string  to  ICAO destination airport
-    # @return me
+    # @return hash
     #
     setTo: func(to) {
         me.to = to;
@@ -265,7 +265,7 @@ var LogData = {
     #
     # Set flag that aircraft landed
     #
-    # @return me
+    # @return hash
     #
     setLanding: func() {
         me.landing = true;
@@ -286,7 +286,7 @@ var LogData = {
     #
     # Set flag that aircraft crashed
     #
-    # @return me
+    # @return hash
     #
     setCrash: func() {
         me.crash = true;
@@ -308,7 +308,7 @@ var LogData = {
     # Set the total flight time during the day (in h)
     #
     # @param  double  day  Total flight time during the day (in h)
-    # @return me
+    # @return hash
     #
     setDay: func(day) {
         me.day = day;
@@ -322,7 +322,7 @@ var LogData = {
     # Set the total flight time during the night (in h)
     #
     # @param  double  night  Total flight time during the night (in h)
-    # @return me
+    # @return hash
     #
     setNight: func(night) {
         me.night = night;
@@ -336,7 +336,7 @@ var LogData = {
     # Set the total flight time during the IMC (in h)
     #
     # @param  double  instrument  Total flight time during the IMC (in h)
-    # @return me
+    # @return hash
     #
     setInstrument: func(instrument) {
         me.instrument = instrument;
@@ -349,7 +349,7 @@ var LogData = {
     # Set the total flight time in multiplayer mode (hours)
     #
     # @param  double  multiplayer  Total flight time in multiplayer mode (hours)
-    # @return me
+    # @return hash
     #
     setMultiplayer: func(multiplayer) {
         me.multiplayer = multiplayer;
@@ -362,7 +362,7 @@ var LogData = {
     # Set the total flight time with connection to swift (hours)
     #
     # @param  double  multiplayer  Total flight time with connection to swift (hours)
-    # @return me
+    # @return hash
     #
     setSwift: func(swift) {
         me.swift = swift;
@@ -374,7 +374,7 @@ var LogData = {
     #
     # Set the total flight time as sum of day and night
     #
-    # @return me
+    # @return hash
     #
     setDuration: func() {
         me.duration = me.day + me.night;
@@ -387,7 +387,7 @@ var LogData = {
     # Set the distance traveled during the flight in nautical miles
     #
     # @param  double  distance  Distance traveled during the flight in nautical miles
-    # @return me
+    # @return hash
     #
     setDistance: func(distance) {
         me.distance = distance;
@@ -400,7 +400,7 @@ var LogData = {
     # Set the amount of fuel used
     #
     # @param  double  fuel  Amount of fuel used
-    # @return me
+    # @return hash
     #
     setFuel: func(fuel) {
         me.fuel = fuel;
@@ -413,7 +413,7 @@ var LogData = {
     # Set the max altitude
     #
     # @param  double  maxAlt  Max altitude in feet
-    # @return me
+    # @return hash
     #
     setMaxAlt: func(maxAlt) {
         me.max_alt = maxAlt;
@@ -426,7 +426,7 @@ var LogData = {
     # Set the max groundspeed in knots
     #
     # @param  double  maxGsKt  Max groundspeed in knots
-    # @return me
+    # @return hash
     #
     setMaxGroundspeedKt: func(maxGsKt) {
         me.max_groundspeed_kt = maxGsKt;
@@ -439,7 +439,7 @@ var LogData = {
     # Set the max speed in Mach number
     #
     # @param  double  maxMach  Max speed in Mach number
-    # @return me
+    # @return hash
     #
     setMaxMach: func(maxMach) {
         me.max_mach = maxMach;
@@ -452,7 +452,7 @@ var LogData = {
     # Set the note
     #
     # @param  string  note
-    # @return me
+    # @return hash
     #
     setNote: func(note) {
         me.note = me._getCsvSafeText(note);

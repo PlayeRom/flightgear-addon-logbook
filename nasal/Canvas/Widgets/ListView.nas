@@ -195,7 +195,7 @@ gui.widgets.ListView = {
     # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
-    # @return me
+    # @return ghost
     #
     new: func(parent, style, cfg) {
         var me = gui.Widget.new(gui.widgets.ListView);
@@ -243,7 +243,7 @@ gui.widgets.ListView = {
 
     #
     # @param  int  x, y
-    # @return me
+    # @return ghost
     #
     setTranslation: func(x, y) {
         me._view.setTranslation(me, x, y);
@@ -254,7 +254,7 @@ gui.widgets.ListView = {
     # Set title as non clickable description text on the top
     #
     # @param  string  text
-    # @return me
+    # @return ghost
     #
     setTitle: func(text) {
         me._title = text;
@@ -265,7 +265,7 @@ gui.widgets.ListView = {
     #
     # @param  func  callback  The click callback with int parameter as clicked item index
     # @param  hash  callbackContext  The click callback context
-    # @return me
+    # @return ghost
     #
     setClickCallback: func(callback, callbackContext = nil) {
         me._callbackContext = callbackContext;
@@ -275,7 +275,7 @@ gui.widgets.ListView = {
 
     #
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorText: func(color) {
         me._view.setColorText(me, color);
@@ -284,7 +284,7 @@ gui.widgets.ListView = {
 
     #
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorBackground: func(color) {
         me._view.setColorBackground(me, color);
@@ -293,7 +293,7 @@ gui.widgets.ListView = {
 
     #
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorHoverBackground: func(color) {
         me._view.setColorHoverBackground(me, color);
@@ -301,7 +301,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @return me
+    # @return ghost
     #
     setFontSizeSmall: func() {
         me._view.setFontSize(model: me, fontSize: 12);
@@ -309,7 +309,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @return me
+    # @return ghost
     #
     setFontSizeMedium: func() {
         me._view.setFontSize(model: me, fontSize: 14);
@@ -317,7 +317,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # @return me
+    # @return ghost
     #
     setFontSizeLarge: func() {
         me._view.setFontSize(model: me, fontSize: 16);
@@ -326,7 +326,7 @@ gui.widgets.ListView = {
 
     #
     # @param  string  font
-    # @return me
+    # @return ghost
     #
     setFontName: func(font) {
         me._view.setFontName(me, font);
@@ -372,7 +372,7 @@ gui.widgets.ListView = {
     #     ... next rows
     # ]
     # @param  bool  disableLoading
-    # @return me
+    # @return ghost
     #
     setItems: func(items, disableLoading = 1) {
         if (disableLoading) {
@@ -392,7 +392,7 @@ gui.widgets.ListView = {
     #
     # @param  int  index
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setHighlightingRow: func(index, color) {
         me._highlightingRowIndex = index;
@@ -410,7 +410,7 @@ gui.widgets.ListView = {
     #
     # Remove row highlighting which was set by setHighlightingRow.
     #
-    # @return me
+    # @return ghost
     #
     removeHighlightingRow: func() {
         if (me._highlightingRowIndex != nil) {
@@ -425,7 +425,7 @@ gui.widgets.ListView = {
     # Enable displaying "Loading..." text instead of list. For set the "Loading..." text on the center of list view
     # please call setMaxRows first.
     #
-    # @return me
+    # @return ghost
     #
     enableLoading: func() {
         me._isLoading = 1;
@@ -436,7 +436,7 @@ gui.widgets.ListView = {
     #
     # Disable displaying "Loading..." text and redraw content for displaying list
     #
-    # @return me
+    # @return ghost
     #
     disableLoading: func() {
         me._isLoading = 0;
@@ -455,7 +455,7 @@ gui.widgets.ListView = {
     # Use it for wrap text to next line. The max text width will be column
     # width so setColumnsWidth must be call too.
     #
-    # @return me
+    # @return ghost
     #
     useTextMaxWidth: func() {
         me._isUseTextMaxWidth = 1;
@@ -466,7 +466,7 @@ gui.widgets.ListView = {
     # Use it for crate one text element per row instead of one text element per cell
     # NOTE: here the font has to be mono!
     #
-    # @return me
+    # @return ghost
     #
     useOptimizeRow: func() {
         me._isOptimizeRow = 1;
@@ -475,7 +475,7 @@ gui.widgets.ListView = {
 
     #
     # @param  vector  boundingBox  [xmin, ymin, xmax, ymax]
-    # @return me
+    # @return ghost
     #
     setClipByBoundingBox: func(boundingBox) {
         me._view.setClipByBoundingBox(me, boundingBox);
@@ -486,7 +486,7 @@ gui.widgets.ListView = {
     # Set the placeholder text to use when a cell has an empty string value
     #
     # @param  string|nil  placeholder
-    # @return me
+    # @return ghost
     #
     setEmptyPlaceholder: func(placeholder) {
         me._placeholder = placeholder;
@@ -497,7 +497,7 @@ gui.widgets.ListView = {
     # Set height of images in pixels
     #
     # @param  int  height
-    # @return me
+    # @return ghost
     #
     setImageHeight: func(height) {
         me._imgHeight = height;
@@ -508,7 +508,7 @@ gui.widgets.ListView = {
     # Set aspect ratio of images. The width of the image will be = _imgHeight * _imgAspectRatio.
     #
     # @param  double  aspectRatio
-    # @return me
+    # @return ghost
     #
     setImageAspectRatio: func(aspectRatio) {
         me._imgAspectRatio = aspectRatio;

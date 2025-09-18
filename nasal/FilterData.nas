@@ -18,7 +18,7 @@ var FilterData = {
     #
     # @param  string  columnName
     # @param  string  value
-    # @return me
+    # @return hash
     #
     new: func(columnName, value) {
         var me = {

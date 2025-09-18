@@ -23,7 +23,7 @@ var ConfirmationDialog = {
     # Constructor
     #
     # @param  string  title
-    # @return me
+    # @return hash
     #
     new: func(title) {
         var me = { parents: [

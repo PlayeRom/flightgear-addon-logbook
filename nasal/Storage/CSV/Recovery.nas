@@ -24,14 +24,15 @@ var Recovery = {
     # Constructor
     #
     # @param  hash  storage  CSV Storage object
-    # @return me
+    # @return hash
     #
     new: func(storage) {
         var me = {
-            parents     : [Recovery],
-            _storage    : storage,
-            _callback   : nil,
+            parents : [Recovery],
+            _storage: storage,
         };
+
+        me._callback = nil;
 
         me._filePath = g_Addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, Storage.CSV_FILE_VERSION);
         me._timer    = maketimer(Recovery.INTERVAL_SEC, me, me._update);

@@ -21,10 +21,14 @@ var Dialog = {
     # @param  string  title  Title of window in the top bar
     # @param  bool  resize  If true then user will be possible to resize the window
     # @param  func|nil  onResize  Callback call when width or height of window was changed
-    # @return me
+    # @return hash
     #
     new: func(width, height, title, resize = 0, onResize = nil) {
-        var me = { parents: [Dialog] };
+        var me = {
+            parents: [Dialog],
+            _width : width,
+            _height: height,
+        };
 
         # Recognize the path to the canvas property.
         # For FG versions up to and including 2024 this is ‘/sim/gui/canvas’, but for the dev version it is ‘/canvas/desktop’
@@ -34,14 +38,11 @@ var Dialog = {
             ? props.globals.getNode("/sim/gui/canvas")
             : props.globals.getNode("/canvas/desktop");
 
-        me._width  = width;
-        me._height = height;
-
         me.style = g_Settings.isDarkStyle()
             ? me.getStyle().dark
             : me.getStyle().light;
 
-        me.window = me._createCanvasWindow(width, height, title, resize);
+        me.window = me._createCanvasWindow(me._width, me._height, title, resize);
         me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
         me.group  = me.canvas.createGroup();
         me.vbox   = canvas.VBoxLayout.new();

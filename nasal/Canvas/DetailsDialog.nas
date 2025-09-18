@@ -24,13 +24,17 @@ var DetailsDialog = {
     #
     # @param  hash  storage  Storage object
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(storage, columns) {
-        var me = { parents: [
-            DetailsDialog,
-            Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
-        ] };
+        var me = {
+            parents: [
+                DetailsDialog,
+                Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
+            ],
+            _storage: storage,
+            _columns: columns,
+        };
 
         # Override window del method for hide InputDialog and ConfirmationDialog
         var self = me;
@@ -43,11 +47,9 @@ var DetailsDialog = {
         me._dataRow              = nil;
         me._isTotals             = false;
         me._logbookId            = nil;
-        me._storage              = storage;
-        me._columns              = columns;
         me._btnDelete            = nil;
         me._btnFlightAnalysis    = nil;
-        me._inputDialog          = InputDialog.new(columns);
+        me._inputDialog          = InputDialog.new(me._columns);
         me._flightAnalysisDialog = nil;
         me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");

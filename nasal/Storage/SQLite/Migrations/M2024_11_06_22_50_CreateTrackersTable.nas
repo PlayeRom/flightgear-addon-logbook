@@ -13,7 +13,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

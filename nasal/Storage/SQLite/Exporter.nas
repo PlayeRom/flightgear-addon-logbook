@@ -17,7 +17,7 @@ var Exporter = {
     # Constructor
     #
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(columns) {
         return {

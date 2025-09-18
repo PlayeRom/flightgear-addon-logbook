@@ -16,7 +16,7 @@ var Sound = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         var me = { parents: [Sound] };

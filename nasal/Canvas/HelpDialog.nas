@@ -24,7 +24,7 @@ var HelpDialog = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         var me = { parents: [
@@ -135,8 +135,8 @@ var HelpDialog = {
         var btnAddonDir = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
             .setText("Local storage directory...")
             .setFixedSize(200, 26)
-            .listen("clicked", func { 
-                Utils.openBrowser({ "path": g_Addon.storagePath }); 
+            .listen("clicked", func {
+                Utils.openBrowser({ "path": g_Addon.storagePath });
             });
 
         var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})

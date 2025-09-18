@@ -23,7 +23,7 @@ var AboutDialog = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         var me = { parents: [

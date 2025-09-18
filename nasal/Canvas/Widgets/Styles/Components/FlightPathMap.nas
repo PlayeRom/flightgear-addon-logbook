@@ -16,7 +16,7 @@ var FlightPathMap = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

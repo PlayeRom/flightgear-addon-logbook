@@ -16,7 +16,7 @@ var MapButtons = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

@@ -64,7 +64,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # @param  ghost  model  MapView model
     # @param  int w, h  Width and height of widget
-    # @return me
+    # @return ghost
     #
     setSize: func(model, w, h) {
         if (me._lastSize.w != w or me._lastSize.h != h) {

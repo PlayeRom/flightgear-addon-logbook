@@ -30,7 +30,7 @@ var FlightAnalysisDialog = {
     #
     # @param  string  title
     # @param  bool  liveUpdateMode
-    # @return me
+    # @return hash
     #
     new: func(title, liveUpdateMode = false) {
         var me = {
@@ -43,8 +43,8 @@ var FlightAnalysisDialog = {
                     resize: true,
                 ),
             ],
-            _isFG2024Version : Utils.isFG2024Version(),
-            _liveUpdateMode  : liveUpdateMode,
+            _liveUpdateMode : liveUpdateMode,
+            _isFG2024Version: Utils.isFG2024Version(),
         };
 
         me.bgImage.hide();

@@ -16,13 +16,13 @@ var Environment = {
     #
     # Constants
     #
-    SUN_ANG_NIGHT_THRESHOLD  : 1.57,
-    MINIMUM_VFR_VISIBILITY   : 5000, # in meters
+    SUN_ANG_NIGHT_THRESHOLD: 1.57,
+    MINIMUM_VFR_VISIBILITY : 5000, # in meters
 
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         var me = { parents: [

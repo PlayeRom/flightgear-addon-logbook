@@ -17,14 +17,13 @@ var Thread = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
-        var me = {
-            parents      : [Thread],
-            _isPending   : false,
-            _callback    : nil,
-        };
+        var me = { parents: [Thread] };
+
+        me._isPending = false;
+        me._callback = nil;
 
         me._timer = maketimer(0.1, me, me._checkEnd);
 

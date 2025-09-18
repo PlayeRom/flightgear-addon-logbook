@@ -50,7 +50,7 @@ var Storage = {
     #
     # @param  hash  filters  Filters object
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(filters, columns) {
         var me = {

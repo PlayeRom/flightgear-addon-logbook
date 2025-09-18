@@ -17,7 +17,7 @@ var ZoomFractions = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

@@ -32,15 +32,16 @@ var Storage = {
     #
     # @param  hash  filters  Filters object
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(filters, columns) {
         var me = {
             parents  : [Storage],
             _filters : filters,
             _columns : columns,
-            _exporter: Exporter.new(columns),
         };
+
+        me._exporter = Exporter.new(columns);
 
         me._filePath    = me._getPathToFile();
         me._loadedData  = std.Vector.new();

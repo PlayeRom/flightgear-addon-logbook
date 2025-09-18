@@ -13,7 +13,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

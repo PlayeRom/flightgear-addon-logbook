@@ -29,7 +29,7 @@ var LogbookDialog = {
     # @param  hash  filters  Filters object
     # @param  hash  columns  Columns object
     # @param  hash  logbook  Logbook object
-    # @return me
+    # @return hash
     #
     new: func(storage, filters, columns, logbook) {
         var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["list-view"].PADDING * 2);

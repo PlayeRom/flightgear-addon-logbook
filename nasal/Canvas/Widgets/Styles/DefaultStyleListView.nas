@@ -47,7 +47,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  int  w, h  Width and height of widget
-    # @return me
+    # @return ghost
     #
     setSize: func(model, w, h) {
         me.reDrawContent(model);
@@ -68,7 +68,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  string  text
-    # @return me
+    # @return ghost
     #
     setTitle: func(model, text) {
         if (me._titleElement != nil) {
@@ -82,7 +82,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorText: func(model, color) {
         me._textColor = color;
@@ -115,7 +115,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorBackground: func(model, color) {
         me._backgroundColor = color;
@@ -133,7 +133,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setColorHoverBackground: func(model, color) {
         me._hoverBackgroundColor = color;
@@ -145,7 +145,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  int  fontSize
-    # @return me
+    # @return ghost
     #
     setFontSize: func(model, fontSize) {
         me._fontSize = fontSize;
@@ -177,7 +177,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  string  font
-    # @return me
+    # @return ghost
     #
     setFontName: func(model, font) {
         me._fontName = font;
@@ -209,7 +209,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  int  x, y
-    # @return me
+    # @return ghost
     #
     setTranslation: func(model, x, y) {
         me._xTranslation = x;
@@ -220,7 +220,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  vector  color
-    # @return me
+    # @return ghost
     #
     setHighlightingRow: func(model, color) {
         if (model._highlightingRowIndex != nil) {
@@ -232,7 +232,7 @@ DefaultStyle.widgets["list-view"] = {
 
     #
     # @param  ghost  model  ListView model
-    # @return me
+    # @return ghost
     #
     removeHighlightingRow: func(model) {
         me._itemElements[model._highlightingRowIndex].rect.setColorFill(me._backgroundColor);
@@ -242,7 +242,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # @param  ghost  model  ListView model
     # @param  vector  boundingBox  [xmin, ymin, xmax, ymax]
-    # @return me
+    # @return ghost
     #
     setClipByBoundingBox: func(model, boundingBox) {
         me._root.setClipByBoundingBox(boundingBox);
@@ -677,7 +677,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @return me
+    # @return ghost
     #
     _deleteElements: func() {
         if (me._loadingText != nil) {

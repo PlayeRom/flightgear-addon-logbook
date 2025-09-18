@@ -23,7 +23,7 @@ var InputDialog = {
     # Constructor
     #
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(columns) {
         var me = { parents: [
@@ -155,7 +155,7 @@ var InputDialog = {
 
     #
     # @param  hash  style
-    # @return me
+    # @return hash
     #
     setStyle: func(style) {
         me._filterSelector.setStyle(style);

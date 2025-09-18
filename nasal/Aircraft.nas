@@ -16,7 +16,7 @@ var Aircraft = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return { parents: [Aircraft] };

@@ -19,7 +19,7 @@ gui.widgets.InfoView = {
     # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
-    # @return me
+    # @return ghost
     #
     new: func(parent, style, cfg) {
         var me = gui.Widget.new(gui.widgets.InfoView);
@@ -33,7 +33,7 @@ gui.widgets.InfoView = {
     #
     # @param  double  lat
     # @param  double  lon
-    # @return me
+    # @return ghost
     #
     setLatLon: func(lat, lon) {
         me._view.setLatLon(lat, lon);
@@ -43,7 +43,7 @@ gui.widgets.InfoView = {
     #
     # @param  double  msl  In feet
     # @param  double  agl  In feet
-    # @return me
+    # @return ghost
     #
     setAltitudes: func(msl, agl) {
         me._view.setAltitudes(msl, agl);
@@ -53,7 +53,7 @@ gui.widgets.InfoView = {
     #
     # @param  double  hdgTrue
     # @param  double  hdgMag
-    # @return me
+    # @return ghost
     #
     setHeadings: func(hdgTrue, hdgMag) {
         me._view.setHeadings(hdgTrue, hdgMag);
@@ -63,7 +63,7 @@ gui.widgets.InfoView = {
     #
     # @param  double  airspeed  In knots
     # @param  double  groundspeed  In knots
-    # @return me
+    # @return ghost
     #
     setSpeeds: func(airspeed, groundspeed) {
         me._view.setSpeeds(airspeed, groundspeed);
@@ -73,7 +73,7 @@ gui.widgets.InfoView = {
     #
     # @param  double  heading
     # @param  double  speed  In knots
-    # @return me
+    # @return ghost
     #
     setWind: func(heading, speed) {
         me._view.setWind(heading, speed);
@@ -82,7 +82,7 @@ gui.widgets.InfoView = {
 
     #
     # @param  string  timestamp
-    # @return me
+    # @return ghost
     #
     setTimestamp: func(timestamp) {
         me._view.setTimestamp(timestamp);
@@ -91,7 +91,7 @@ gui.widgets.InfoView = {
 
     #
     # @param  double  distance  In nautical miles
-    # @return me
+    # @return ghost
     #
     setDistance: func(distance) {
         me._view.setDistance(distance);

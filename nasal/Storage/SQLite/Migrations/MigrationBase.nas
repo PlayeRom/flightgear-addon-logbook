@@ -16,12 +16,10 @@ var MigrationBase = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
-        return {
-            parents: [MigrationBase],
-        };
+        return { parents: [MigrationBase] };
     },
 
     #

@@ -28,7 +28,7 @@ var FilterSelector = {
     # Constructor
     #
     # @param  hash  columns  Columns object
-    # @return me
+    # @return hash
     #
     new: func(columns) {
         var me = {
@@ -97,7 +97,7 @@ var FilterSelector = {
 
     #
     # @param  int  x, y
-    # @return me
+    # @return hash
     #
     setPosition: func(x, y) {
         me.window.setPosition(x, y);
@@ -106,7 +106,7 @@ var FilterSelector = {
 
     #
     # @param  string  title
-    # @return me
+    # @return hash
     #
     setTitle: func(title) {
         me._title = title;
@@ -122,7 +122,7 @@ var FilterSelector = {
     #
     # @param  vector  items  Vector of strings
     # @param  bool  withDefaultAll
-    # @return me
+    # @return hash
     #
     setItems: func(items, withDefaultAll = 1) {
         me._items.clear();
@@ -180,7 +180,7 @@ var FilterSelector = {
     # Set column name
     #
     # @param  string  name  Column name
-    # @return me
+    # @return hash
     #
     setColumnName: func(name) {
         me._columnName = name;
@@ -191,7 +191,7 @@ var FilterSelector = {
     # Set callback which will be call to apply filter.
     #
     # @param  hash  callback  Callback object.
-    # @return me
+    # @return hash
     #
     setCallback: func(callback) {
         me._callback = callback;
@@ -200,7 +200,7 @@ var FilterSelector = {
 
     #
     # @param  hash  style
-    # @return me
+    # @return hash
     #
     setStyle: func(style) {
         me.style = style;

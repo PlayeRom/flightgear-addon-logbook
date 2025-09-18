@@ -24,16 +24,17 @@ var Recovery = {
     # Constructor
     #
     # @param  storage  Storage object
-    # @return me
+    # @return hash
     #
     new: func(storage) {
         var me = {
-            parents     : [Recovery],
-            _storage    : storage,
-            _callback   : nil,
-            _logbookId  : nil,
-            _inserted   : false,
+            parents : [Recovery],
+            _storage: storage,
         };
+
+        me._callback  = nil;
+        me._logbookId = nil;
+        me._inserted  = false;
 
         me._timer = maketimer(Recovery.INTERVAL_SEC, me, me._update);
 

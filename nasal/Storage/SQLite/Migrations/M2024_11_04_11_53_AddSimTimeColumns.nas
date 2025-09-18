@@ -13,7 +13,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

@@ -13,7 +13,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

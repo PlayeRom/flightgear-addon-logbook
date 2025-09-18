@@ -25,7 +25,7 @@ var SettingsDialog = {
     #
     # @param  hash  columns  Columns object
     # @param  hash  logbook  Logbook object
-    # @return me
+    # @return hash
     #
     new: func(columns, logbook) {
         var me = {

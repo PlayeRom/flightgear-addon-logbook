@@ -13,7 +13,7 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
         return {

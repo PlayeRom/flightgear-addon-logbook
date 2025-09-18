@@ -48,13 +48,12 @@ var Columns = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
-        var me = {
-            parents       : [Columns],
-            _isUsingSQLite: Utils.isUsingSQLite(),
-        };
+        var me = { parents: [Columns] };
+
+        me._isUsingSQLite = Utils.isUsingSQLite();
 
         # Default columns state
         # * name     - column name in SQLite DB

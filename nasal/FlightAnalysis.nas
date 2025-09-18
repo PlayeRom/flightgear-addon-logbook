@@ -21,14 +21,13 @@ var FlightAnalysis = {
     #
     # Constructor
     #
-    # @return me
+    # @return hash
     #
     new: func() {
-        var me = {
-            parents           : [FlightAnalysis],
-            _callback         : nil,
-            _flightAnalysisDlg: nil,
-        };
+        var me = { parents: [FlightAnalysis] };
+
+        me._callback = nil;
+        me._flightAnalysisDlg = nil;
 
         # me._mpClockSecNode = props.globals.getNode("/sim/time/mp-clock-sec"); # elapse of real time
         me._mpClockSecNode = props.globals.getNode("/sim/time/elapsed-sec");

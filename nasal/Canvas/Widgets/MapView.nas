@@ -27,7 +27,7 @@ gui.widgets.MapView = {
     # @param  ghost  parent
     # @param  hash  style
     # @param  hash  cfg
-    # @return me
+    # @return ghost
     #
     new: func(parent, style, cfg) {
         var me = gui.Widget.new(gui.widgets.MapView);
@@ -107,7 +107,7 @@ gui.widgets.MapView = {
     #          ... etc.
     #     ]
     # @param  bool  withResetPosition
-    # @return me
+    # @return ghost
     #
     setTrackItems: func(trackItems, withResetPosition = 1) {
         if (withResetPosition) {
@@ -132,7 +132,7 @@ gui.widgets.MapView = {
     #          wind_heading: double,
     #          wind_speed  : double,
     #     },
-    # @return me
+    # @return ghost
     #
     appendTrackItem: func(trackItem) {
         append(me._trackItems, trackItem);
@@ -207,7 +207,7 @@ gui.widgets.MapView = {
     #
     # Zoom in the map and redrew it
     #
-    # @return me
+    # @return ghost
     #
     zoomIn: func() {
         me._changeZoom(direction: 1);
@@ -220,7 +220,7 @@ gui.widgets.MapView = {
     #
     # Zoom out the map and redrew it
     #
-    # @return me
+    # @return ghost
     #
     zoomOut: func() {
         me._changeZoom(direction: -1);
@@ -246,7 +246,7 @@ gui.widgets.MapView = {
     #
     # Move aircraft position to the first point and redraw the map
     #
-    # @return me
+    # @return ghost
     #
     goStartTrack: func() {
         me._position = 0;
@@ -259,7 +259,7 @@ gui.widgets.MapView = {
     #
     # Move aircraft position to the last point and redraw the map
     #
-    # @return me
+    # @return ghost
     #
     goEndTrack: func() {
         me._position = me.getTrackLastIndex();
@@ -273,7 +273,7 @@ gui.widgets.MapView = {
     # Move the aircraft position forward by the specified interval and redraw the map
     #
     # @param  int  interval
-    # @return me
+    # @return ghost
     #
     goNextTrack: func(interval = 1) {
         me._position += interval;
@@ -289,7 +289,7 @@ gui.widgets.MapView = {
     # Move the aircraft position backward by the specified interval and redraw the map
     #
     # @param  int  interval
-    # @return me
+    # @return ghost
     #
     goPrevTrack: func(interval = 1) {
         me._position -= interval;
@@ -305,7 +305,7 @@ gui.widgets.MapView = {
     # Set new position of track
     #
     # @param  int  position
-    # @return me
+    # @return ghost
     #
     setTrackPosition: func(position) {
         me._position = position;
@@ -364,7 +364,7 @@ gui.widgets.MapView = {
     #
     # @param  func|nil  callback  Callback function, if nil then callback will be disabled
     # @param  hash|nil  objCallback  Class as owner of callback function if nil then reference for callback will not be used
-    # @return me
+    # @return ghost
     #
     setUpdatePositionCallback: func(callback, objCallback = nil) {
         me._callbackPos = callback;
@@ -389,7 +389,7 @@ gui.widgets.MapView = {
     #
     # @param  func|nil  callback  Callback function, if nil then callback will be disabled
     # @param  hash|nil  objCallback  Class as owner of callback function, if nil then reference for callback will not be used
-    # @return me
+    # @return ghost
     #
     setUpdateZoomCallback: func(callback, objCallback = nil) {
         me._callbackZoom = callback;
