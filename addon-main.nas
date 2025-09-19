@@ -34,10 +34,14 @@ var main = func(addon) {
 #
 var loadExtraNasalFiles = func(addon) {
     var modules = [
-        "nasal/Utils",
-        "nasal/Callback",
-        "nasal/Listeners",
+        "nasal/Utils/Callback",
+        "nasal/Utils/Listeners",
+        "nasal/Utils/Log",
+        "nasal/Utils/Thread",
+        "nasal/Utils/Utils",
+
         "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version
+
         "nasal/Canvas/InputDialog",
         "nasal/Canvas/ConfirmationDialog",
         "nasal/Canvas/Dialog",
@@ -47,10 +51,12 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/FlightAnalysisDialog",
         "nasal/Canvas/LogbookDialog",
         "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
+
         "nasal/Counters/BaseCounter",
         "nasal/Counters/Environment",
         "nasal/Counters/Multiplayer",
         "nasal/Counters/Flight",
+
         "nasal/Columns",
         "nasal/FlightAnalysis",
         "nasal/Aircraft",
@@ -64,7 +70,6 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Logbook",
         "nasal/Settings", # Must be after FlightAnalysis
         "nasal/SpaceShuttle",
-        "nasal/Thread",
         "nasal/Sound",
         "Logbook",
     ];
@@ -104,6 +109,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/Widgets/MapView",
         "nasal/Canvas/Widgets/ProfileView",
         "nasal/Canvas/Widgets/InfoView",
+
         "nasal/Canvas/Widgets/Styles/DefaultStyleListView",
         "nasal/Canvas/Widgets/Styles/DefaultStyleMapView",
         "nasal/Canvas/Widgets/Styles/DefaultStyleProfileView",

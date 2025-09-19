@@ -71,7 +71,7 @@ var Migration = {
     migrate: func() {
         foreach (var migration; me._migrations) {
             if (!me._isMigrationExists(migration.name)) {
-                logprint(LOG_ALERT, "Logbook Add-on - call migration: ", migration.name);
+                Log.alert("call migration: ", migration.name);
 
                 migration.function();
 

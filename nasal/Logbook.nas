@@ -30,7 +30,7 @@ var Logbook = {
         # Auxiliary variables
         me._isUsingSQLite  = Utils.isUsingSQLite();
         me._onGround       = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
+        Log.print("init onGround = ", me._onGround);
         me._initAltAglFt   = Logbook.ALT_AGL_FT_THRESHOLD;
         me._isSimPaused    = false;
         me._isReplayMode   = false;
@@ -99,7 +99,7 @@ var Logbook = {
             code: func(node) {
                 # This listener will be called after first run the sim and every time after reposition the aircraft
                 # (by changing the airport or start in the air in the sim) and after restart the sim
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - /sim/signals/fdm-initialized = ", node.getBoolValue());
+                Log.print("/sim/signals/fdm-initialized = ", node.getBoolValue());
 
                 if (node.getBoolValue()) {
                     # Run _initLogbook with delay to stabilize the aircraft
@@ -116,7 +116,7 @@ var Logbook = {
             code: func(node) {
                 var oldOnGround = me._onGround;
                 me._onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - init onGround = ", me._onGround);
+                Log.print("init onGround = ", me._onGround);
 
                 # User probably used the "Location" -> "in air" or change airport even during a flight
                 if (!oldOnGround and me._onGround) {
@@ -132,7 +132,7 @@ var Logbook = {
             node: "/sim/freeze/master",
             code: func(node) {
                 me._isSimPaused = node.getBoolValue();
-                # logprint(MY_LOG_LEVEL, "Logbook Add-on - isSimPaused = ", me._isSimPaused);
+                # Log.print("isSimPaused = ", me._isSimPaused);
             },
             init: true,
         );
@@ -141,7 +141,7 @@ var Logbook = {
             node: "/sim/replay/replay-state",
             code: func(node) {
                 me._isReplayMode = node.getBoolValue();
-                # logprint(MY_LOG_LEVEL, "Logbook Add-on - isReplayMode = ", me._isReplayMode);
+                # Log.print("isReplayMode = ", me._isReplayMode);
             },
             init: true,
         );
@@ -182,7 +182,7 @@ var Logbook = {
         me._aircraftPrimary = me._aircraft.getAircraftPrimary();
         me._aircraftId      = me._aircraft.getAircraftId();
         me._aircraftType    = AircraftType.new().getType();
-        logprint(LOG_ALERT, "Logbook Add-on - Aircraft: primary = ", me._aircraftPrimary, ", id = ", me._aircraftId, ", type = ", me._aircraftType);
+        Log.alert("Aircraft: primary = ", me._aircraftPrimary, ", id = ", me._aircraftId, ", type = ", me._aircraftType);
 
         me._landingGear.recognizeGears(me._onGround);
 
@@ -230,14 +230,14 @@ var Logbook = {
         me._flightAnalysis.updateIntervalSec();
 
         if (me._spaceShuttle.isLiftOff()) {
-            logprint(LOG_ALERT, "Logbook Add-on - SpaceShuttle liftoff detected");
+            Log.print("SpaceShuttle liftoff detected");
             me._preStartLogging();
             me._startLogging();
             return;
         }
 
         if (!me._onGround and me._propAltAglFt.getValue() > me._initAltAglFt) {
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - update do nothing");
+            # Log.print("update do nothing");
             # There's nothing to check for landing, we're too high
             me._crashDetector.stopGForce();
             return;
@@ -250,7 +250,7 @@ var Logbook = {
             if (me._onGround) {
                 # Our state is on the ground and all wheels are in the air - we have take-off
                 me._wowSec += 1;
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - takeoff detected, wowSec = ", me._wowSec);
+                Log.print("takeoff detected, wowSec = ", me._wowSec);
 
                 # We probably took off
                 # Create a log data and reset the counters now before we count down 3 seconds
@@ -267,7 +267,7 @@ var Logbook = {
             else {
                 # Our state is in the air and all wheels are on the ground
                 me._wowSec += 1;
-                logprint(MY_LOG_LEVEL, "Logbook Add-on - landing detected, wowSec = ", me._wowSec);
+                Log.print("landing detected, wowSec = ", me._wowSec);
                 if (me._wowSec > 2) {
                     # We recognize that we landed after maintaining WoW for 3 seconds.
                     # This is to not recognize the landing when we bounce off the ground.
@@ -323,7 +323,7 @@ var Logbook = {
     #
     _createLogData: func() {
         if (me._logData != nil) {
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - _startLogging: invalid state, it's trying to run start again without stop.");
+            # Log.print("_startLogging: invalid state, it's trying to run start again without stop.");
             return;
         }
 
@@ -371,7 +371,7 @@ var Logbook = {
 
         me._isLoggingStarted = true;
 
-        logprint(LOG_ALERT, "Logbook Add-on - takeoff confirmed");
+        Log.alert("takeoff confirmed");
 
         me._recovery.start(Callback.new(me._recoveryCallback, me));
 
@@ -403,7 +403,7 @@ var Logbook = {
     #
     _stopLogging: func(landed, crashed = 0) {
         if (me._logData == nil) {
-            # logprint(MY_LOG_LEVEL, "Logbook Add-on - _stopLogging: invalid state, it's trying to run stop without running start.");
+            # Log.print("_stopLogging: invalid state, it's trying to run stop without running start.");
             return;
         }
 
@@ -422,7 +422,7 @@ var Logbook = {
 
         if (landed) {
             if (me._crashDetector.isOrientationOK()) {
-                logprint(LOG_ALERT, "Logbook Add-on - landing confirmed");
+                Log.alert("landing confirmed");
 
                 me._logData.setLanding();
 
@@ -449,7 +449,7 @@ var Logbook = {
         me._logData.setMaxMach(me._flight.getMaxMach());
 
         if (crashed) {
-            logprint(LOG_ALERT, "Logbook Add-on - crash detected");
+            Log.alert("crash detected");
             me._logData.setCrash();
 
             me._onGround = true;

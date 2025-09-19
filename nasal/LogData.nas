@@ -87,7 +87,7 @@ var LogData = {
     #
     setRealDate: func(date) {
         me.date = date;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setDate = ", date);
+        Log.print("setDate = ", date);
 
         return me;
     },
@@ -127,7 +127,7 @@ var LogData = {
     #
     setRealTime: func(time) {
         me.time = time;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setTime = ", time);
+        Log.print("setTime = ", time);
 
         return me;
     },
@@ -140,7 +140,7 @@ var LogData = {
     #
     setSimUtcDate: func(date) {
         me.sim_utc_date = date;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimUtcDate = ", date);
+        Log.print("setSimUtcDate = ", date);
 
         return me;
     },
@@ -153,7 +153,7 @@ var LogData = {
     #
     setSimUtcTime: func(time) {
         me.sim_utc_time = time;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimUtcTime = ", time);
+        Log.print("setSimUtcTime = ", time);
 
         return me;
     },
@@ -166,7 +166,7 @@ var LogData = {
     #
     setSimLocalDate: func(date) {
         me.sim_local_date = date;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimLocalDate = ", date);
+        Log.print("setSimLocalDate = ", date);
 
         return me;
     },
@@ -179,7 +179,7 @@ var LogData = {
     #
     setSimLocalTime: func(time) {
         me.sim_local_time = time;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSimLocalTime = ", time);
+        Log.print("setSimLocalTime = ", time);
 
         return me;
     },
@@ -192,7 +192,7 @@ var LogData = {
     #
     setAircraft: func(aircraft) {
         me.aircraft = aircraft;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraft = ", me.aircraft);
+        Log.print("setAircraft = ", me.aircraft);
 
         return me;
     },
@@ -205,7 +205,7 @@ var LogData = {
     #
     setVariant: func(aircraftId) {
         me.variant = aircraftId;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setVariant = ", me.variant);
+        Log.print("setVariant = ", me.variant);
 
         return me;
     },
@@ -218,7 +218,7 @@ var LogData = {
     #
     setAircraftType: func(type) {
         me.aircraft_type = type;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setAircraftType = ", me.aircraft_type);
+        Log.print("setAircraftType = ", me.aircraft_type);
 
         return me;
     },
@@ -231,7 +231,7 @@ var LogData = {
     #
     setCallsign: func(callsign) {
         me.callsign = me._getCsvSafeText(callsign);
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setCallsign = ", me.callsign);
+        Log.print("setCallsign = ", me.callsign);
 
         return me;
     },
@@ -244,7 +244,7 @@ var LogData = {
     #
     setFrom: func(from) {
         me.from = from;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setFrom = ", from);
+        Log.print("setFrom = ", from);
 
         return me;
     },
@@ -257,7 +257,7 @@ var LogData = {
     #
     setTo: func(to) {
         me.to = to;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setTo = ", to);
+        Log.print("setTo = ", to);
 
         return me;
     },
@@ -269,7 +269,7 @@ var LogData = {
     #
     setLanding: func() {
         me.landing = true;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setLanding = 1");
+        Log.print("setLanding = 1");
 
         return me;
     },
@@ -290,7 +290,7 @@ var LogData = {
     #
     setCrash: func() {
         me.crash = true;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setCrash = 1");
+        Log.print("setCrash = 1");
 
         return me;
     },
@@ -312,7 +312,7 @@ var LogData = {
     #
     setDay: func(day) {
         me.day = day;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setDay = ", day);
+        Log.print("setDay = ", day);
         me.setDuration();
 
         return me;
@@ -326,7 +326,7 @@ var LogData = {
     #
     setNight: func(night) {
         me.night = night;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setNight = ", night);
+        Log.print("setNight = ", night);
         me.setDuration();
 
         return me;
@@ -340,7 +340,7 @@ var LogData = {
     #
     setInstrument: func(instrument) {
         me.instrument = instrument;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setInstrument = ", instrument);
+        Log.print("setInstrument = ", instrument);
 
         return me;
     },
@@ -353,7 +353,7 @@ var LogData = {
     #
     setMultiplayer: func(multiplayer) {
         me.multiplayer = multiplayer;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMultiplayer = ", multiplayer);
+        Log.print("setMultiplayer = ", multiplayer);
 
         return me;
     },
@@ -366,7 +366,7 @@ var LogData = {
     #
     setSwift: func(swift) {
         me.swift = swift;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setSwift = ", swift);
+        Log.print("setSwift = ", swift);
 
         return me;
     },
@@ -378,7 +378,7 @@ var LogData = {
     #
     setDuration: func() {
         me.duration = me.day + me.night;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setDuration = ", me.duration);
+        Log.print("setDuration = ", me.duration);
 
         return me;
     },
@@ -391,7 +391,7 @@ var LogData = {
     #
     setDistance: func(distance) {
         me.distance = distance;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setDistance = ", distance);
+        Log.print("setDistance = ", distance);
 
         return me;
     },
@@ -404,7 +404,7 @@ var LogData = {
     #
     setFuel: func(fuel) {
         me.fuel = fuel;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setFuel = ", fuel);
+        Log.print("setFuel = ", fuel);
 
         return me;
     },
@@ -417,7 +417,7 @@ var LogData = {
     #
     setMaxAlt: func(maxAlt) {
         me.max_alt = maxAlt;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxAlt = ", maxAlt);
+        Log.print("setMaxAlt = ", maxAlt);
 
         return me;
     },
@@ -430,7 +430,7 @@ var LogData = {
     #
     setMaxGroundspeedKt: func(maxGsKt) {
         me.max_groundspeed_kt = maxGsKt;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxGroundspeedKt = ", maxGsKt);
+        Log.print("setMaxGroundspeedKt = ", maxGsKt);
 
         return me;
     },
@@ -443,7 +443,7 @@ var LogData = {
     #
     setMaxMach: func(maxMach) {
         me.max_mach = maxMach;
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setMaxMach = ", maxMach);
+        Log.print("setMaxMach = ", maxMach);
 
         return me;
     },
@@ -456,7 +456,7 @@ var LogData = {
     #
     setNote: func(note) {
         me.note = me._getCsvSafeText(note);
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - setNote = ", me.note);
+        Log.print("setNote = ", me.note);
 
         return me;
     },

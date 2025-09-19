@@ -334,7 +334,7 @@ var Storage = {
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon", true);
 
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - loadAllDataThread finished");
+        Log.print("loadAllDataThread finished");
     },
 
     #
@@ -502,7 +502,7 @@ var Storage = {
     #
     editData: func(rowIndex, columnName, value) {
         if (rowIndex == nil or columnName == nil or value == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
+            Log.print("cannot save edited row");
             return false;
         }
 
@@ -511,13 +511,13 @@ var Storage = {
         }
 
         if (rowIndex < 0 or rowIndex >= me._allData.size()) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, index out of range");
+            Log.print("cannot save edited row, index out of range");
             return false;
         }
 
         var columnIndex = me._columns.getColumnIndexByName(columnName);
         if (columnIndex == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row, columnName ", columnName, " not found");
+            Log.print("cannot save edited row, columnName ", columnName, " not found");
             return false;
         }
 
@@ -681,7 +681,7 @@ var Storage = {
     #
     getLogData: func(index) {
         if (g_isThreadPending) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
+            Log.alert("getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
@@ -690,7 +690,7 @@ var Storage = {
         }
 
         if (index == nil or index < 0 or index >= me._allData.size()) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
+            Log.alert("getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
 
@@ -706,7 +706,7 @@ var Storage = {
     #
     deleteLog: func(index) {
         if (index < 0 or index >= me._allData.size()) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - index out of range in deleteLog");
+            Log.print("index out of range in deleteLog");
             return false;
         }
 
@@ -760,7 +760,7 @@ var Storage = {
     # @return bool
     #
     addTrackerItem: func(logbookId, data) {
-        logprint(LOG_INFO, "Logbook Add-on - CSV version doesn't support tracker");
+        Log.print("CSV version doesn't support tracker");
 
         return false;
     },

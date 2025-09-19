@@ -82,7 +82,7 @@ var CrashDetector = {
     isCrashByTesting: func(onGround) {
         if (me._testCrash(onGround)) {
             me._crashCounter += 1;
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - crash counter  = ", me._crashCounter);
+            Log.print("crash counter  = ", me._crashCounter);
 
             # _testCrash detected per 3 sec, assume that it's true
             return me._crashCounter > 3;

@@ -140,7 +140,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     _importCsvToDb: func() {
         var csvFile = me._getPathToCsvFile(Storage.CSV_FILE_VERSION);
         if (!Utils.fileExists(csvFile)) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on, importCsvToDb failed, file \"", csvFile, "\" doesn't exist");
+            Log.print("importCsvToDb failed, file \"", csvFile, "\" doesn't exist");
             return;
         }
 

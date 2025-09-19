@@ -280,7 +280,7 @@ var Storage = {
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon", true);
 
-        logprint(MY_LOG_LEVEL, "Logbook Add-on - loadAllDataThread finished");
+        Log.print("loadAllDataThread finished");
     },
 
     #
@@ -574,7 +574,7 @@ var Storage = {
     #
     editData: func(logbookId, columnName, value) {
         if (logbookId == nil or columnName == nil or value == nil) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - cannot save edited row");
+            Log.print("cannot save edited row");
             return false;
         }
 
@@ -648,7 +648,7 @@ var Storage = {
     #
     getLogData: func(logbookId) {
         if (g_isThreadPending) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData in g_isThreadPending = true, return nil");
+            Log.alert("getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
@@ -657,14 +657,14 @@ var Storage = {
         }
 
         if (logbookId == nil) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData, index(", index, ") out of range, return nil");
+            Log.alert("getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
 
         var query = sprintf("SELECT * FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
         var rows = DB.exec(query, logbookId);
         if (size(rows) == 0) {
-            logprint(LOG_ALERT, "Logbook Add-on - getLogData, logbookId(", logbookId, ") out of range, return nil");
+            Log.alert("getLogData, logbookId(", logbookId, ") out of range, return nil");
             return nil;
         }
 
@@ -682,7 +682,7 @@ var Storage = {
     #
     deleteLog: func(logbookId) {
         if (logbookId == nil or logbookId < 0) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - ID out of range in deleteLog");
+            Log.print("ID out of range in deleteLog");
             return false;
         }
 

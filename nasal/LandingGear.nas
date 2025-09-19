@@ -54,14 +54,14 @@ var LandingGear = {
             if (onGround) {
                 # We are on the ground, so we can count the gears from "/gear/gear[n]/wow" property
                 me._loopThroughGears(func(index) {
-                    logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: landing gear found at index = ", index);
+                    Log.alert("recognizeGears: landing gear found at index = ", index);
                     me._gearIndexes.append(index);
                 });
 
                 if (me._gearIndexes.size() == 0) {
                     # No landing gear found, check floats
                     if (me._isFloatsDragOnWater()) {
-                        logprint(LOG_ALERT, "Logbook Add-on - recognizeGears: floats detected");
+                        Log.alert("recognizeGears: floats detected");
                         me._gearIndexes.append(LandingGear.GEAR_FLOATS);
                     }
                 }
@@ -92,7 +92,7 @@ var LandingGear = {
             foreach (var landingGearIdx; me._addonHintsNode.getChildren("landing-gear-idx")) {
                 var value = landingGearIdx.getValue();
                 if (value != nil) {
-                    logprint(LOG_ALERT, "Logbook Add-on - recognize landing gear by hints at index = ", value);
+                    Log.alert("recognize landing gear by hints at index = ", value);
                     me._gearIndexes.append(value);
                 }
             }
@@ -102,7 +102,7 @@ var LandingGear = {
                 return true;
             }
 
-            logprint(LOG_ALERT, "Logbook Add-on: hints node present, but no landing gear hints detected");
+            Log.alert("hints node present, but no landing gear hints detected");
         }
 
         return false;
@@ -162,7 +162,7 @@ var LandingGear = {
                 }
             }
             else {
-                # logprint(MY_LOG_LEVEL, "Logbook Add-on - checkWow index = ", index);
+                # Log.print("checkWow index = ", index);
                 getprop("/gear/gear[" ~ index ~ "]/wow")
                     ? (counters.onGroundGearCounter += 1)
                     : (counters.inAirGearCounter += 1);

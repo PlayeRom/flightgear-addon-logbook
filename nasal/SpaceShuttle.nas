@@ -49,7 +49,7 @@ var SpaceShuttle = {
     #
     _setListeners: func() {
         if (me._preLaunch) {
-            logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle preLaunch = ", me._preLaunch);
+            Log.print("SpaceShuttle preLaunch = ", me._preLaunch);
             me._listeners.add(
                 node: "/sim/config/shuttle/prelaunch-flag",
                 code: func(node) {
@@ -57,7 +57,7 @@ var SpaceShuttle = {
                     if (!me._preLaunch) {
                         # ignition
                         me._ignition = true;
-                        logprint(MY_LOG_LEVEL, "Logbook Add-on - SpaceShuttle ignition = ", me._ignition);
+                        Log.print("SpaceShuttle ignition = ", me._ignition);
                     }
                 },
             );

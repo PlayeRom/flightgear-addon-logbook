@@ -79,16 +79,6 @@
             2) Ensure the label is unique
             3) replace addon ID  to match your addon
             -->
-            <!-- for compatibility with FG Versions pre 2020.1
-            <item>
-                <label>Reload Skeleton</label>
-                <binding>
-                    <command>property-toggle</command>
-                    <property>/addons/by-id/org.flightgear.addons.logbook/reload</property>
-                </binding>
-            </item>
-            -->
-            <!-- for FG Version >= 2020.1 use the fgcommand -->
             <!-- <item>
                 <label>Dev Reload</label>
                 <binding>
