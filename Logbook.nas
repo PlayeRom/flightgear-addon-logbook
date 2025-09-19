@@ -11,7 +11,7 @@
 
 #
 # MY_LOG_LEVEL is using in logprint() to quickly change all logs visibility used in "logbook" namespace.
-# The flags like LOG_ALERT, LOG_INFO etc. are available from FG 2020.1.
+# Possible flags: LOG_ALERT, LOG_WARN, LOG_INFO, LOG_DEBUG, LOG_BULK.
 #
 var MY_LOG_LEVEL = LOG_INFO;
 
