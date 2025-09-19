@@ -57,7 +57,7 @@ var FlightAnalysisDialog = {
             call(FlightAnalysisDialog.hide, [], self);
         };
 
-        me._playTimer = maketimer(0.2, me, me._onPlayUpdate);
+        me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;
 
         me._infoView = canvas.gui.widgets.InfoView.new(me.group, canvas.style, {});

@@ -41,7 +41,7 @@ var FlightAnalysis = {
         me._timestamp = 0;
 
         me._lastIntervalSec = me._getInitialIntervalSec();
-        me._timer = maketimer(me._lastIntervalSec, me, me._update);
+        me._timer = Timer.make(me._lastIntervalSec, me, me._update);
 
         return me;
     },

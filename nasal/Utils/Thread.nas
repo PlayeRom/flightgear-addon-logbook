@@ -25,7 +25,7 @@ var Thread = {
         me._isPending = false;
         me._callback = nil;
 
-        me._timer = maketimer(0.1, me, me._checkEnd);
+        me._timer = Timer.make(0.1, me, me._checkEnd);
 
         return me;
     },

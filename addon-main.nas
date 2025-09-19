@@ -38,6 +38,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Utils/Listeners",
         "nasal/Utils/Log",
         "nasal/Utils/Thread",
+        "nasal/Utils/Timer",
         "nasal/Utils/Utils",
 
         "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version

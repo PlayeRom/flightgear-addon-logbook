@@ -36,7 +36,7 @@ var Recovery = {
         me._logbookId = nil;
         me._inserted  = false;
 
-        me._timer = maketimer(Recovery.INTERVAL_SEC, me, me._update);
+        me._timer = Timer.make(Recovery.INTERVAL_SEC, me, me._update);
 
         return me;
     },

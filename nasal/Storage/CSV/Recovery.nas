@@ -35,7 +35,7 @@ var Recovery = {
         me._callback = nil;
 
         me._filePath = g_Addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, Storage.CSV_FILE_VERSION);
-        me._timer    = maketimer(Recovery.INTERVAL_SEC, me, me._update);
+        me._timer    = Timer.make(Recovery.INTERVAL_SEC, me, me._update);
 
         me._restore();
 

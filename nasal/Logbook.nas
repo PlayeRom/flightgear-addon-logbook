@@ -35,8 +35,8 @@ var Logbook = {
         me._isSimPaused    = false;
         me._isReplayMode   = false;
 
-        me._mainTimer      = maketimer(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
-        me._delayInit      = maketimer(2, me, me._initLogbook);
+        me._mainTimer      = Timer.make(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
+        me._delayInit      = Timer.make(2, me, me._initLogbook);
 
         me._wowSec         = 0;
         me._logData        = nil;

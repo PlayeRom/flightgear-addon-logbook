@@ -67,15 +67,13 @@ var init = func(addon) {
     # canvas textures earlier than the airplane, which will cause that at index 15 there will be no MCDU texture but
     # the texture from the add-on. So thanks to this delay, the textures of the plane will be created first, and then
     # the textures of this add-on.
-    var delayTimer = maketimer(3, func() {
+    Timer.singleShot(3, func() {
         g_Logbook = Logbook.new();
 
         gui.menuEnable("logbook-addon-flight-analysis", true);
         gui.menuEnable("logbook-addon-help", true);
         gui.menuEnable("logbook-addon-about", true);
     });
-    delayTimer.singleShot = true;
-    delayTimer.start();
 };
 
 #

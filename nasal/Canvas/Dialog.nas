@@ -68,7 +68,7 @@ var Dialog = {
                 # the sizes has changed. Therefore, we handle both listeners with a timer, where each triggered of the
                 # listener extends the life of the timer, until finally the listeners stop triggered and the timer
                 # function finally executes and executes only once.
-                var resizeTimer = maketimer(0.1, func() {
+                var resizeTimer = Timer.makeSelf(0.1, func() {
                     resizeTimer.stop();
 
                     me._width  = int(getprop(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[0]"));
