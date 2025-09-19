@@ -16,7 +16,7 @@
 # @return void
 #
 var main = func(addon) {
-    logprint(LOG_INFO, "Logbook addon initialized from path ", addon.basePath);
+    logprint(LOG_INFO, addon.name, " Add-on initialized from path ", addon.basePath);
 
     loadExtraNasalFiles(addon);
 
@@ -145,7 +145,7 @@ var loadVectorOfModules = func(addon, modules, namespace) {
         var fileName = addon.basePath ~ "/" ~ scriptName ~ ".nas";
 
         if (!io.load_nasal(fileName, namespace)) {
-            logprint(LOG_ALERT, "Logbook Add-on module \"", scriptName, "\" loading failed");
+            logprint(LOG_ALERT, addon.name, " Add-on module \"", scriptName, "\" loading failed");
         }
     }
 };
@@ -167,6 +167,6 @@ var loadVectorOfModules = func(addon, modules, namespace) {
 # @return void
 #
 var unload = func(addon) {
-    logprint(LOG_INFO, "Logbook addon unload");
+    logbook.Log.print("unload");
     logbook.uninit();
 };
