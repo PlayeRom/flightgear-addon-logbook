@@ -47,11 +47,11 @@ var FilterSelector = {
         me._fontSize = 14;
         me._title    = "Filter";
 
-        me.window.set("decoration-border", "0 0 0");
+        me._window.set("decoration-border", "0 0 0");
 
         me.bgImage.hide();
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
 
         me._items = std.Vector.new();
 
@@ -100,7 +100,7 @@ var FilterSelector = {
     # @return hash
     #
     setPosition: func(x, y) {
-        me.window.setPosition(x, y);
+        me._window.setPosition(x, y);
         return me;
     },
 
@@ -110,7 +110,7 @@ var FilterSelector = {
     #
     setTitle: func(title) {
         me._title = title;
-        me.window.setTitle(title);
+        me._window.setTitle(title);
 
         if (me._listView != nil) {
             me._listView.setTitle(me._title);
@@ -165,14 +165,14 @@ var FilterSelector = {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
 
-        me.window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
+        me._window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
 
         # Check whether the selector window does not go outside the screen at the bottom, if so, move it up
         var posY = me.getPosY();
         var screenH = me.getScreenHeight();
         if (screenH - posY < windowHeight) {
             posY = screenH - windowHeight;
-            me.window.setPosition(me.getPosX(), posY);
+            me._window.setPosition(me.getPosX(), posY);
         }
     },
 
@@ -205,7 +205,7 @@ var FilterSelector = {
     setStyle: func(style) {
         me.style = style;
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
         if (me._scrollData != nil) {
             me._scrollData.setColorBackground(me.style.CANVAS_BG);
         }
@@ -224,7 +224,7 @@ var FilterSelector = {
     # @return void
     #
     _drawContent: func() {
-        me.vbox.clear();
+        me._vbox.clear();
 
         var margins = {
             left   : 0,
@@ -234,7 +234,7 @@ var FilterSelector = {
         };
         me._scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
-        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData, me._font, me._fontSize);
 

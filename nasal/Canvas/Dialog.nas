@@ -42,13 +42,13 @@ var Dialog = {
             ? me.getStyle().dark
             : me.getStyle().light;
 
-        me.window = me._createCanvasWindow(me._width, me._height, title, resize);
-        me.canvas = me.window.createCanvas().set("background", canvas.style.getColor("bg_color"));
-        me.group  = me.canvas.createGroup();
-        me.vbox   = canvas.VBoxLayout.new();
-        me.canvas.setLayout(me.vbox);
+        me._window = me._createCanvasWindow(me._width, me._height, title, resize);
+        me._canvas = me._window.createCanvas().set("background", canvas.style.getColor("bg_color"));
+        me._group  = me._canvas.createGroup();
+        me._vbox   = canvas.VBoxLayout.new();
+        me._canvas.setLayout(me._vbox);
 
-        me.bgImage = me.group.createChild("image", "bgImage")
+        me.bgImage = me._group.createChild("image", "bgImage")
             .setFile("Textures/paper.png")
             .setTranslation(0, 0)
             # paper.png has 1360x1024 px
@@ -141,7 +141,7 @@ var Dialog = {
     #
     del: func() {
         me._listeners.del();
-        me.window.destroy();
+        me._window.destroy();
     },
 
     #
@@ -157,7 +157,7 @@ var Dialog = {
         var w = width  == nil ? me._width  : width;
         var h = height == nil ? me._height : height;
 
-        me.window.setPosition(
+        me._window.setPosition(
             int(screenW / 2 - w / 2),
             int(screenH / 2 - h / 2)
         );
@@ -169,7 +169,7 @@ var Dialog = {
     # @return ghost  gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
-        var scrollArea = canvas.gui.widgets.ScrollArea.new(me.group, canvas.style, {});
+        var scrollArea = canvas.gui.widgets.ScrollArea.new(me._group, canvas.style, {});
         scrollArea.setColorBackground(bgColor == nil ? canvas.style.getColor("bg_color") : bgColor);
 
         if (margins != nil) {
@@ -210,8 +210,8 @@ var Dialog = {
     # @return void
     #
     show: func() {
-        me.window.raise();
-        me.window.show();
+        me._window.raise();
+        me._window.show();
     },
 
     #
@@ -220,7 +220,7 @@ var Dialog = {
     # @return void
     #
     hide: func() {
-        me.window.hide();
+        me._window.hide();
     },
 
     #
@@ -229,7 +229,7 @@ var Dialog = {
     # @return bool
     #
     isWindowVisible: func() {
-        return me.window.isVisible();
+        return me._window.isVisible();
     },
 
     #
@@ -293,7 +293,7 @@ var Dialog = {
     # @return int
     #
     getPosX: func() {
-        return me.window.get("tf/t[0]");
+        return me._window.get("tf/t[0]");
     },
 
     #
@@ -302,7 +302,7 @@ var Dialog = {
     # @return int
     #
     getPosY: func() {
-        return me.window.get("tf/t[1]");
+        return me._window.get("tf/t[1]");
     },
 
     #

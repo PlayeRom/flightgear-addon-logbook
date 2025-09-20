@@ -33,7 +33,7 @@ var InputDialog = {
 
         # Override window del method for close FilterSelector
         var self = me;
-        me.window.del = func() {
+        me._window.del = func() {
             call(InputDialog.hide, [], self);
         };
 
@@ -49,30 +49,30 @@ var InputDialog = {
         me._filterSelector = FilterSelector.new(columns);
 
         var MARGIN = 12;
-        me.vbox.setContentsMargin(MARGIN);
+        me._vbox.setContentsMargin(MARGIN);
 
-        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: true});
-        me.vbox.addItem(me._label);
+        me._label = canvas.gui.widgets.Label.new(me._group, canvas.style, {wordWrap: true});
+        me._vbox.addItem(me._label);
 
-        me._lineEdit = canvas.gui.widgets.LineEdit.new(me.group, canvas.style, {});
-        me.vbox.addItem(me._lineEdit);
+        me._lineEdit = canvas.gui.widgets.LineEdit.new(me._group, canvas.style, {});
+        me._vbox.addItem(me._lineEdit);
         me._lineEdit.setFocus();
 
         var buttonBox = canvas.HBoxLayout.new();
-        me.vbox.addItem(buttonBox);
+        me._vbox.addItem(buttonBox);
 
-        me._btnTypeSelector = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnTypeSelector = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Select")
             .listen("clicked", func { me._actionTypeSelect(); }
         );
         me._btnTypeSelector.setVisible(false);
 
-        var btnOK = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnOK = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Save")
             .listen("clicked", func { me._actionSave(); }
         );
 
-        var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Cancel")
             .listen("clicked", func { me._actionCancel(); }
         );
@@ -83,7 +83,7 @@ var InputDialog = {
         buttonBox.addItem(btnCancel);
 
         me.setPositionOnCenter();
-        me.window.hide();
+        me._window.hide();
 
         return me;
     },

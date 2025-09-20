@@ -42,21 +42,21 @@ var ConfirmationDialog = {
         me._addonNodePath = g_Addon.node.getPath();
 
         var MARGIN = 12;
-        me.vbox.setContentsMargin(MARGIN);
+        me._vbox.setContentsMargin(MARGIN);
 
-        me._label = canvas.gui.widgets.Label.new(me.group, canvas.style, {wordWrap: true});
-        me.vbox.addItem(me._label);
+        me._label = canvas.gui.widgets.Label.new(me._group, canvas.style, {wordWrap: true});
+        me._vbox.addItem(me._label);
 
         var buttonBox = canvas.HBoxLayout.new();
-        me.vbox.addItem(buttonBox);
+        me._vbox.addItem(buttonBox);
 
         buttonBox.addStretch(1);
-        var btnOK = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnOK = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Delete")
             .listen("clicked", func { me._actionPositive(); }
         );
 
-        var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Cancel")
             .listen("clicked", func { me._actionNegative(); }
         );
@@ -65,7 +65,7 @@ var ConfirmationDialog = {
         buttonBox.addItem(btnCancel);
 
         me.setPositionOnCenter();
-        me.window.hide();
+        me._window.hide();
 
         return me;
     },

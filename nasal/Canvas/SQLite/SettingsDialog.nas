@@ -125,7 +125,7 @@ var SettingsDialog = {
     # @return void
     #
     _drawContent: func() {
-        me.vbox.clear();
+        me._vbox.clear();
 
         var margins = {
             left   : SettingsDialog.PADDING,
@@ -135,7 +135,7 @@ var SettingsDialog = {
         };
         me._scrollData = me.createScrollArea(margins: margins);
 
-        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
@@ -437,12 +437,12 @@ var SettingsDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnSave = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnSave = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("OK")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._save(); });
 
-        var btnCancel = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Cancel")
             .setFixedSize(65, 26)
             .listen("clicked", func { me.hide(); });
@@ -452,9 +452,9 @@ var SettingsDialog = {
         buttonBox.addItem(btnCancel);
         buttonBox.addStretch(1);
 
-        me.vbox.addSpacing(10);
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(10);
+        me._vbox.addSpacing(10);
+        me._vbox.addItem(buttonBox);
+        me._vbox.addSpacing(10);
 
         return buttonBox;
     },

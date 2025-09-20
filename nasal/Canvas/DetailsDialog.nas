@@ -38,7 +38,7 @@ var DetailsDialog = {
 
         # Override window del method for hide InputDialog and ConfirmationDialog
         var self = me;
-        me.window.del = func() {
+        me._window.del = func() {
             call(DetailsDialog.hide, [], self);
         };
 
@@ -54,7 +54,7 @@ var DetailsDialog = {
         me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
 
         var margins = {
             left   : 0,
@@ -63,7 +63,7 @@ var DetailsDialog = {
             bottom : 0,
         };
         me._scrollData = me.createScrollArea(me.style.LIST_BG, margins);
-        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
         me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
@@ -121,7 +121,7 @@ var DetailsDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnClose = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Close")
             .setFixedSize(75, 26)
             .listen("clicked", func {
@@ -129,7 +129,7 @@ var DetailsDialog = {
             }
         );
 
-        me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Analysis")
             .setFixedSize(75, 26);
 
@@ -158,7 +158,7 @@ var DetailsDialog = {
             me._btnFlightAnalysis.setVisible(false);
         }
 
-        me._btnDelete = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        me._btnDelete = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Delete")
             .setFixedSize(75, 26)
             .listen("clicked", func {
@@ -176,9 +176,9 @@ var DetailsDialog = {
         buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
 
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addItem(buttonBox);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
     },
 
     #
@@ -188,7 +188,7 @@ var DetailsDialog = {
     setStyle: func(style) {
         me.style = style;
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
         me._scrollData.setColorBackground(me.style.LIST_BG);
         me._setListViewStyle();
         me.toggleBgImage();
@@ -217,7 +217,7 @@ var DetailsDialog = {
         me._parent = parent;
         me._isTotals = logbookId == Columns.TOTALS_ROW_ID;
 
-        me.window.set("title", me._isTotals ? "Logbook Totals" : "Logbook Details");
+        me._window.set("title", me._isTotals ? "Logbook Totals" : "Logbook Details");
 
         me._btnDelete.setEnabled(!me._isTotals);
         me._btnDelete.setVisible(!me._isTotals);

@@ -72,7 +72,7 @@ var LogbookDialog = {
 
         # Override window del method for close FilterSelector
         var self = me;
-        me.window.del = func() {
+        me._window.del = func() {
             call(LogbookDialog.hide, [], self);
         };
 
@@ -81,7 +81,7 @@ var LogbookDialog = {
         me._headersContent  = nil;
         me.selectedRecordId = nil;
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
 
         me._detailsDialog  = DetailsDialog.new(storage, columns);
         me._filterSelector = FilterSelector.new(columns);
@@ -90,7 +90,7 @@ var LogbookDialog = {
 
         me._drawHeaders();
 
-        me._listView = canvas.gui.widgets.ListView.new(me.group, canvas.style, {})
+        me._listView = canvas.gui.widgets.ListView.new(me._group, canvas.style, {})
             .setFontSizeSmall()
             .setTranslation( # Set translation for align ListView with headers row
                 canvas.DefaultStyle.widgets["list-view"].PADDING,
@@ -101,19 +101,19 @@ var LogbookDialog = {
 
         me._setListViewStyle();
 
-        me.vbox.addItem(me._listView, 1); # 2nd param = stretch
+        me._vbox.addItem(me._listView, 1); # 2nd param = stretch
 
-        me._labelPaging = canvas.gui.widgets.Label.new(me.group, canvas.style, {});
+        me._labelPaging = canvas.gui.widgets.Label.new(me._group, canvas.style, {});
         if (Utils.isFG2024Version()) {
             me._labelPaging.setColor(me.style.TEXT_COLOR);
         }
 
-        me._btnFirst = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
-        me._btnPrev  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
-        me._btnNext  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
-        me._btnLast  = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._btnFirst = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
+        me._btnPrev  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
+        me._btnNext  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
+        me._btnLast  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
 
-        me._btnStyle    = canvas.gui.widgets.Button.new(me.group, canvas.style, {});
+        me._btnStyle    = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
         me._drawBottomBar();
 
         me._listeners = Listeners.new();
@@ -284,7 +284,7 @@ var LogbookDialog = {
     # @return void
     #
     _drawHeaders: func() {
-        me._headersContent = me.group.createChild("group");
+        me._headersContent = me._group.createChild("group");
         me._headersContent.setTranslation(0, 0);
         me._headersContent
             .set("font", "LiberationFonts/LiberationMono-Bold.ttf")
@@ -476,12 +476,12 @@ var LogbookDialog = {
             .setFixedSize(65, 26)
             .listen("clicked", func { me._toggleStyle(); });
 
-        var btnSettings = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnSettings = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("≡")
             .setFixedSize(26, 26)
             .listen("clicked", func { me._logbook.showSettingDialog(); });
 
-        var btnHelp = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnHelp = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("?")
             .setFixedSize(26, 26)
             .listen("clicked", func { me.helpDialog.show(); });
@@ -500,8 +500,8 @@ var LogbookDialog = {
         buttonBox.addItem(btnHelp);
         buttonBox.addStretch(1);
 
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addItem(buttonBox);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
     },
 
     #
@@ -524,7 +524,7 @@ var LogbookDialog = {
 
         me.toggleBgImage();
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
         me._btnStyle.setText(me._getOppositeStyleName());
         me._setListViewStyle();
         me._filterSelector.setStyle(me.style);

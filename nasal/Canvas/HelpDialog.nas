@@ -42,7 +42,7 @@ var HelpDialog = {
 
         me.setPositionOnCenter();
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
 
         var margins = {
             left   : HelpDialog.PADDING,
@@ -52,7 +52,7 @@ var HelpDialog = {
         };
         me._scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
 
-        me.vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
         me._scrollDataContent = me.getScrollAreaContent(
             context  : me._scrollData,
@@ -132,26 +132,26 @@ var HelpDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnAddonDir = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnAddonDir = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Local storage directory...")
             .setFixedSize(200, 26)
             .listen("clicked", func {
                 Utils.openBrowser({ "path": g_Addon.storagePath });
             });
 
-        var btnClose = canvas.gui.widgets.Button.new(me.group, canvas.style, {})
+        var btnClose = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Close")
             .setFixedSize(75, 26)
             .listen("clicked", func {
-                me.window.hide();
+                me._window.hide();
             });
 
         buttonBox.addItem(btnAddonDir);
         buttonBox.addItem(btnClose);
 
-        me.vbox.addSpacing(10);
-        me.vbox.addItem(buttonBox);
-        me.vbox.addSpacing(10);
+        me._vbox.addSpacing(10);
+        me._vbox.addItem(buttonBox);
+        me._vbox.addSpacing(10);
 
         return buttonBox;
     },
@@ -163,7 +163,7 @@ var HelpDialog = {
     setStyle: func(style) {
         me.style = style;
 
-        me.canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me.style.CANVAS_BG);
         me._scrollData.setColorBackground(me.style.CANVAS_BG);
 
         foreach (var text; me._helpTexts.vector) {
