@@ -18,7 +18,7 @@ var DevReload = {
     # Constants:
     #
     MENU_LABEL: "Dev Reload",
-    MAIN_MENU_NAME: "logbook-addon",
+    MAIN_MENU_LABEL: "Logbook",
 
     #
     # Constructor.
@@ -28,7 +28,7 @@ var DevReload = {
     new: func() {
         var me = { parents: [DevReload] };
 
-        me._menuName = g_Addon.id ~ "-dev-reload";
+        me._reloadMenuName = g_Addon.id ~ "-dev-reload";
 
         return me;
     },
@@ -52,7 +52,7 @@ var DevReload = {
 
         var data = {
             label  : DevReload.MENU_LABEL,
-            name   : me._menuName,
+            name   : me._reloadMenuName,
             binding: {
                 "command": "addon-reload",
                 "id"     : g_Addon.id,
@@ -96,8 +96,8 @@ var DevReload = {
     #
     _getMenuNode: func() {
         foreach (var menu; props.globals.getNode("/sim/menubar/default").getChildren("menu")) {
-            var name = menu.getChild("name");
-            if (name != nil and name.getValue() == DevReload.MAIN_MENU_NAME) {
+            var name = menu.getChild("label");
+            if (name != nil and name.getValue() == DevReload.MAIN_MENU_LABEL) {
                 return menu;
             }
         }
@@ -124,7 +124,7 @@ var DevReload = {
     _getMenuItem: func(menuNode) {
         foreach (var item; menuNode.getChildren("item")) {
             var name = item.getChild("name");
-            if (name != nil and name.getValue() == me._menuName) {
+            if (name != nil and name.getValue() == me._reloadMenuName) {
                 return item;
             }
         }

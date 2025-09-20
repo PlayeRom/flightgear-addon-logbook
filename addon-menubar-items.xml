@@ -21,7 +21,6 @@
     <menubar-items>
         <menu>
             <label>Logbook</label>
-            <name>logbook-addon</name>
             <enabled type="bool">true</enabled>
 
             <item>
