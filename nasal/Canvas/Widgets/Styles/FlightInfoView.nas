@@ -1,18 +1,18 @@
 #
-# InfoView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# InfoView widget is an Open Source project and it is licensed
+# FlightInfo widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# InfoView widget View
+# FlightInfo widget View
 #
-DefaultStyle.widgets["info-view"] = {
+DefaultStyle.widgets["flight-info-view"] = {
     #
     # Constructor
     #
@@ -21,7 +21,7 @@ DefaultStyle.widgets["info-view"] = {
     # @return void
     #
     new: func(parent, cfg) {
-        me._root = parent.createChild("group", "info-view");
+        me._root = parent.createChild("group", "flight-info-view");
 
         me._content = me._root.createChild("group", "clip-content")
             .set("clip-frame", Element.PARENT);
@@ -60,7 +60,7 @@ DefaultStyle.widgets["info-view"] = {
     #
     # Callback called when user resized the window
     #
-    # @param  ghost  model  InfoView model
+    # @param  ghost  model  FlightInfo model
     # @param  int  w, h  Width and height of widget
     # @return ghost
     #
@@ -71,7 +71,7 @@ DefaultStyle.widgets["info-view"] = {
     },
 
     #
-    # @param  ghost  model  InfoView model
+    # @param  ghost  model  FlightInfo model
     # @return void
     #
     update: func(model) {
@@ -113,7 +113,7 @@ DefaultStyle.widgets["info-view"] = {
     },
 
     #
-    # @param  ghost  model  InfoView model
+    # @param  ghost  model  FlightInfo model
     # @return void
     #
     reDrawContent: func(model) {

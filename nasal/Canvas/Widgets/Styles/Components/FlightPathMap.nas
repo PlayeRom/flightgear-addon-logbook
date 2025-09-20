@@ -1,16 +1,16 @@
 #
-# MapView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# MapView widget is an Open Source project and it is licensed
+# FlightPathMap component is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# Class for draw flight path on the MapView widget
+# Class for draw flight path on the FlightMap widget
 #
 var FlightPathMap = {
     #
@@ -46,7 +46,7 @@ var FlightPathMap = {
     #
     # Draw flight path
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  centerTileOffset
     # @param  hash  tileBoundaries
     # @return void
@@ -66,7 +66,7 @@ var FlightPathMap = {
     #
     # Redraw flight path in live mode, for current flight analysis.
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  centerTileOffset
     # @param  hash  tileBoundaries
     # @return ghost  Path element
@@ -110,7 +110,7 @@ var FlightPathMap = {
     #
     # Redraw whole flight path and create vector of points visible on the map for click action.
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  centerTileOffset
     # @param  hash  tileBoundaries
     # @return ghost  Path element
@@ -152,7 +152,7 @@ var FlightPathMap = {
     # Path transformations by airplane icon offset and map zoom
     # and recreate vector of points visible on the map for click action.
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  centerTileOffset
     # @param  hash  tileBoundaries
     # @return void
@@ -196,8 +196,8 @@ var FlightPathMap = {
                 .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH / scale)
                 .setScale(scale)
                 .setTranslation(
-                    (refPos.x - currentPos.x) - (gui.widgets.MapView.TILE_SIZE * centerTileOffset.x * (scale - 1)),
-                    (refPos.y - currentPos.y) - (gui.widgets.MapView.TILE_SIZE * centerTileOffset.y * (scale - 1)),
+                    (refPos.x - currentPos.x) - (gui.widgets.FlightMap.TILE_SIZE * centerTileOffset.x * (scale - 1)),
+                    (refPos.y - currentPos.y) - (gui.widgets.FlightMap.TILE_SIZE * centerTileOffset.y * (scale - 1)),
                 );
         }
     },
@@ -206,7 +206,7 @@ var FlightPathMap = {
     # Get the maximum and minimum X and Y values ​​in pixels of the outermost tiles,
     # taking into account the buffer based on zoom
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  tileBoundaries
     # @return hash
     #
@@ -214,8 +214,8 @@ var FlightPathMap = {
         var tileSizeBuffer = me._getTileSizeBuffer(model);
 
         return {
-            maxX: tileBoundaries.max.x + tileSizeBuffer + gui.widgets.MapView.TILE_SIZE,
-            maxY: tileBoundaries.max.y + tileSizeBuffer + gui.widgets.MapView.TILE_SIZE,
+            maxX: tileBoundaries.max.x + tileSizeBuffer + gui.widgets.FlightMap.TILE_SIZE,
+            maxY: tileBoundaries.max.y + tileSizeBuffer + gui.widgets.FlightMap.TILE_SIZE,
             minX: tileBoundaries.min.x - tileSizeBuffer,
             minY: tileBoundaries.min.y - tileSizeBuffer,
         };
@@ -228,7 +228,7 @@ var FlightPathMap = {
     # the more buffer we need, because the points are more distant from each other.
     # TODO: for better adjustment it would be necessary to know the frequency with which waypoints were generated.
     #
-    # @param  model  ghost  MapView model object
+    # @param  model  ghost  FlightMap model object
     # @return int
     #
     _getTileSizeBuffer: func(model) {
@@ -240,7 +240,7 @@ var FlightPathMap = {
     #
     # Convert given lan, lot to pixel position on the window
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  int  index  Index of track item which lat, lon will be converted to pixel
     # @param  hash  centerTileOffset
     # @return hash  Hash as pixel position with x and y
@@ -259,8 +259,8 @@ var FlightPathMap = {
         var centerY = me._latToY(centerPoint.lat, model._zoom);
 
         # Offset from the center of the map
-        var pixelX = x - centerX + gui.widgets.MapView.TILE_SIZE * centerTileOffset.x;
-        var pixelY = y - centerY + gui.widgets.MapView.TILE_SIZE * centerTileOffset.y;
+        var pixelX = x - centerX + gui.widgets.FlightMap.TILE_SIZE * centerTileOffset.x;
+        var pixelY = y - centerY + gui.widgets.FlightMap.TILE_SIZE * centerTileOffset.y;
 
         return {
             x: pixelX,
@@ -277,7 +277,7 @@ var FlightPathMap = {
     # @return double  The X position
     #
     _lonToX: func(lon, zoom) {
-        var scale = gui.widgets.MapView.TILE_SIZE * math.pow(2, zoom);
+        var scale = gui.widgets.FlightMap.TILE_SIZE * math.pow(2, zoom);
         return (lon + 180) / 360 * scale;
     },
 
@@ -289,7 +289,7 @@ var FlightPathMap = {
     # @return double  The Y position
     #
     _latToY: func(lat, zoom) {
-        var scale = gui.widgets.MapView.TILE_SIZE * math.pow(2, zoom);
+        var scale = gui.widgets.FlightMap.TILE_SIZE * math.pow(2, zoom);
         var sinLat = math.sin(lat * math.pi / 180);
         return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
     },

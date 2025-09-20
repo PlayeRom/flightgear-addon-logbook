@@ -491,7 +491,7 @@ var LogData = {
     },
 
     #
-    # Convert LogData to vector for using in ListView widget (only for CSV)
+    # Convert LogData to vector for using in LogbookList widget (only for CSV)
     #
     # @param  hash  columns  Columns object
     # @return vector
@@ -555,7 +555,7 @@ var LogData = {
     },
 
     #
-    # Apply given row hash from DB to this object and return vector of columns for ListView widget
+    # Apply given row hash from DB to this object and return vector of columns for LogbookList widget
     #
     # @param  hash  row  Hash from DB, not all columns can be included here, depending on SELECT in SQL query
     # @param  hash  columns  Columns object

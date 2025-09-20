@@ -60,14 +60,14 @@ var FlightAnalysisDialog = {
         me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;
 
-        me._infoView = canvas.gui.widgets.InfoView.new(me._group, canvas.style, {});
+        me._infoView = canvas.gui.widgets.FlightInfo.new(me._group, canvas.style, {});
 
-        me._mapView = canvas.gui.widgets.MapView.new(me._group, canvas.style, {});
+        me._mapView = canvas.gui.widgets.FlightMap.new(me._group, canvas.style, {});
         me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
         me._mapView.setUpdateZoomCallback(me._mapViewUpdateZoom, me);
         me._mapView.setLiveUpdateMode(liveUpdateMode);
 
-        me._profileView = canvas.gui.widgets.ProfileView.new(me._group, canvas.style, {});
+        me._profileView = canvas.gui.widgets.FlightProfile.new(me._group, canvas.style, {});
         me._profileView.setUpdatePositionCallback(me._profileViewUpdatePosition, me);
         me._profileView.setUpdateZoomCallback(me._profileViewUpdateZoom, me);
         me._profileView.setLiveUpdateMode(liveUpdateMode);
@@ -276,7 +276,7 @@ var FlightAnalysisDialog = {
             return;
         }
 
-        me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.ProfileView.ZOOM_MIN);
+        me._btnZoomMinus.setEnabled(zoom > canvas.gui.widgets.FlightProfile.ZOOM_MIN);
         me._btnZoomPlus.setEnabled(zoom < me._profileView.getMaxZoomLevel());
     },
 
@@ -353,7 +353,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from MapView when user click on the map
+    # Callback function called from FlightMap when user click on the map
     #
     # @param  int  position  New aircraft position
     # @return void
@@ -365,7 +365,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from MapView when user change zoom by scroll
+    # Callback function called from FlightMap when user change zoom by scroll
     #
     # @return void
     #
@@ -374,7 +374,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from ProfileView when user change zoom by scroll
+    # Callback function called from FlightProfile when user change zoom by scroll
     #
     # @return void
     #
@@ -383,7 +383,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from ProfileView when user click on diagram
+    # Callback function called from FlightProfile when user click on diagram
     #
     # @param  int  position  New aircraft position
     # @return void
@@ -512,14 +512,14 @@ var FlightAnalysisDialog = {
                 .setFixedSize(100, 26);
             if (view.hasmember(comboBox, "createItem")) {
                 # For next addMenuItem is deprecated
-                comboBox.createItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
-                comboBox.createItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+                comboBox.createItem("distance", canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
+                comboBox.createItem("time",     canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP);
             }
             else { # for 2024.1
-                comboBox.addMenuItem("distance", canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
-                comboBox.addMenuItem("time",     canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP);
+                comboBox.addMenuItem("distance", canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
+                comboBox.addMenuItem("time",     canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP);
             }
-            comboBox.setSelectedByValue(canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE);
+            comboBox.setSelectedByValue(canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
             comboBox.listen("selected-item-changed", func(e) {
                 me._profileView.setDrawMode(e.detail.value);
             });
@@ -537,8 +537,8 @@ var FlightAnalysisDialog = {
 
         checkbox.listen("toggled", func(e) {
             var mode = e.detail.checked
-                ? canvas.gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP
-                : canvas.gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+                ? canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP
+                : canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
             me._profileView.setDrawMode(mode);
         });
 

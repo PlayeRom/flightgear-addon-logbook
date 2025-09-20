@@ -1,18 +1,18 @@
 #
-# ListView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2022 Roman Ludwicki
 #
-# ListView widget is an Open Source project and it is licensed
+# LogbookList widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# ListView widget View
+# LogbookList widget View
 #
-DefaultStyle.widgets["list-view"] = {
+DefaultStyle.widgets["logbook-list-view"] = {
     PADDING     : 10,
     ITEM_HEIGHT : 28,
 
@@ -24,7 +24,7 @@ DefaultStyle.widgets["list-view"] = {
     # @return void
     #
     new: func(parent, cfg) {
-        me._root = parent.createChild("group", "list-view");
+        me._root = parent.createChild("group", "logbook-list-view");
 
         me._titleElement = nil;
         me._itemElements = [];
@@ -45,7 +45,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Callback called when user resized the window
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  int  w, h  Width and height of widget
     # @return ghost
     #
@@ -56,7 +56,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @return void
     #
     update: func(model) {
@@ -66,7 +66,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Set title as non clickable description text on the top
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  string  text
     # @return ghost
     #
@@ -80,7 +80,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  vector  color
     # @return ghost
     #
@@ -113,7 +113,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  vector  color
     # @return ghost
     #
@@ -131,7 +131,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  vector  color
     # @return ghost
     #
@@ -143,7 +143,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  int  fontSize
     # @return ghost
     #
@@ -175,7 +175,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  string  font
     # @return ghost
     #
@@ -207,7 +207,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  int  x, y
     # @return ghost
     #
@@ -218,7 +218,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  vector  color
     # @return ghost
     #
@@ -231,7 +231,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @return ghost
     #
     removeHighlightingRow: func(model) {
@@ -240,7 +240,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  vector  boundingBox  [xmin, ymin, xmax, ymax]
     # @return ghost
     #
@@ -250,7 +250,7 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @return void
     #
     reDrawContent: func(model) {
@@ -261,12 +261,12 @@ DefaultStyle.widgets["list-view"] = {
             ? me._drawContentLoading(model)
             : me._drawContentItems(model);
 
-        model.setLayoutMinimumSize([50, DefaultStyle.widgets["list-view"].ITEM_HEIGHT]);
+        model.setLayoutMinimumSize([50, DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT]);
         model.setLayoutSizeHint([model._size[0], y]);
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @return int  Height of content
     #
     _drawContentLoading: func(model) {
@@ -283,11 +283,11 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @return int  Height of content
     #
     _drawContentItems: func(model) {
-        var x = me._xTranslation + DefaultStyle.widgets["list-view"].PADDING;
+        var x = me._xTranslation + DefaultStyle.widgets["logbook-list-view"].PADDING;
         var y = me._yTranslation;
 
         me._itemElements = [];
@@ -302,7 +302,7 @@ DefaultStyle.widgets["list-view"] = {
                 label  : model._title
             );
 
-            y += int(DefaultStyle.widgets["list-view"].ITEM_HEIGHT + DefaultStyle.widgets["list-view"].ITEM_HEIGHT / 4);
+            y += int(DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT + DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT / 4);
         }
 
         var index = 0;
@@ -332,9 +332,9 @@ DefaultStyle.widgets["list-view"] = {
             # Since the text can wrap, you need to take the height of the last text and add it to the height of the content.
             height = me._itemElements[index].maxHeight;
 
-            y += height > DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+            y += height > DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT
                 ? (height + me._getHeightItemPadding(height))
-                : DefaultStyle.widgets["list-view"].ITEM_HEIGHT;
+                : DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT;
 
             index += 1;
         }
@@ -348,7 +348,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Create row
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  hash  item
     # @param  int  x, y
     # @return void
@@ -362,7 +362,7 @@ DefaultStyle.widgets["list-view"] = {
     #
     # Create complex row
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  hash  item
     # @param  int  x, y
     # @return void
@@ -407,7 +407,7 @@ DefaultStyle.widgets["list-view"] = {
         }
 
         var rectHeight = hash.maxHeight == 0
-            ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+            ? DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT
             : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
 
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
@@ -509,7 +509,7 @@ DefaultStyle.widgets["list-view"] = {
     # Create complex row but in an optimized way that there is only one text object per row,
     # ant images are not supported, only text.
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  hash  item
     # @param  int  x, y
     # @return void
@@ -519,7 +519,7 @@ DefaultStyle.widgets["list-view"] = {
         hash.elem = [];
 
         var rectHeight = hash.maxHeight == 0
-            ? DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+            ? DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT
             : hash.maxHeight + me._getHeightItemPadding(hash.maxHeight);
 
         hash.rect = me._createRectangle(model, hash.group, rectHeight);
@@ -618,19 +618,19 @@ DefaultStyle.widgets["list-view"] = {
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  hash  context
     # @param  int  textHeight
     # @return ghost  Path element
     #
     _createRectangle: func(model, context, textHeight) {
-        var height = int(math.max(textHeight, DefaultStyle.widgets["list-view"].ITEM_HEIGHT));
+        var height = int(math.max(textHeight, DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT));
         return context.rect(0, 0, model._size[0], height)
             .setColorFill(me._backgroundColor);
     },
 
     #
-    # @param  ghost  model  ListView model
+    # @param  ghost  model  LogbookList model
     # @param  hash  context  Parent element
     # @param  int  x, y
     # @param  string  label

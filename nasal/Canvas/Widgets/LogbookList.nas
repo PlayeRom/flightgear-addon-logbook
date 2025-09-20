@@ -1,11 +1,11 @@
 #
-# ListView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2022 Roman Ludwicki
 #
-# ListView widget is an Open Source project and it is licensed
+# LogbookList widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 #############################################################################################
@@ -14,17 +14,17 @@
 # Notes for images:
 # 1. All images will have the same height, default 64 px. To change this value, use setImageHeight().
 # 2. All images must have the same aspect ratio, default 1.3333. To change this value, use setImageAspectRatio().
-# 3. ListView doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
+# 3. LogbookList doesn't care if the image goes beyond the column width or not. If the image goes beyond the column width,
 #    just pass a larger value for the column by `width` field.
 #
-# var window = canvas.Window.new([600, 480], "dialog").set("title", "ListView demo");
+# var window = canvas.Window.new([600, 480], "dialog").set("title", "LogbookList demo");
 # var myCanvas = window.createCanvas().set("background", canvas.style.getColor("bg_color"));
 # var root = myCanvas.createGroup();
 #
 # var vbox = canvas.VBoxLayout.new();
 # myCanvas.setLayout(vbox);
 #
-# var listView = canvas.gui.widgets.ListView.new(root, canvas.style, {});
+# var listView = canvas.gui.widgets.LogbookList.new(root, canvas.style, {});
 # vbox.addItem(listView, 1);
 #
 # listView
@@ -186,9 +186,9 @@
 #
 
 #
-# ListView widget Model
+# LogbookList widget Model
 #
-gui.widgets.ListView = {
+gui.widgets.LogbookList = {
     #
     # Constructor
     #
@@ -198,10 +198,10 @@ gui.widgets.ListView = {
     # @return ghost
     #
     new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.ListView);
+        var me = gui.Widget.new(gui.widgets.LogbookList);
         me._cfg = Config.new(cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "list-view", me._cfg));
+        me._setView(style.createWidget(parent, "logbook-list-view", me._cfg));
 
         # The items of the list
         me._items = [];
@@ -334,7 +334,7 @@ gui.widgets.ListView = {
     },
 
     #
-    # Set vector of hashes as ListView data to display. Each hash in vector is a one row. Each row has `columns` key and
+    # Set vector of hashes as LogbookList data to display. Each hash in vector is a one row. Each row has `columns` key and
     # optional `font` (string as file font to apply to whole row).
     # Each `column` is another vector of hashes. Each hash represent a one column. Each column has following keys:
     # `width`   - width of column in pixels, it's required for all columns.

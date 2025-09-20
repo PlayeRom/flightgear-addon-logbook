@@ -32,7 +32,7 @@ var LogbookDialog = {
     # @return hash
     #
     new: func(storage, filters, columns, logbook) {
-        var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["list-view"].PADDING * 2);
+        var windowWidth = columns.getSumWidth() + (canvas.DefaultStyle.widgets["logbook-list-view"].PADDING * 2);
         if (windowWidth < LogbookDialog.MIN_WINDOW_WIDTH) {
             windowWidth = LogbookDialog.MIN_WINDOW_WIDTH;
         }
@@ -40,7 +40,7 @@ var LogbookDialog = {
             windowWidth = LogbookDialog.MAX_WINDOW_WIDTH;
         }
 
-        var windowHeight = (g_Settings.getLogItemsPerPage() + 2) * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT + 64; # +2 (headers row and Totals row), +64 (space bottom buttons)
+        var windowHeight = (g_Settings.getLogItemsPerPage() + 2) * canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT + 64; # +2 (headers row and Totals row), +64 (space bottom buttons)
         if (windowHeight < LogbookDialog.MIN_WINDOW_HEIGHT) {
             windowHeight = LogbookDialog.MIN_WINDOW_HEIGHT;
         }
@@ -90,11 +90,11 @@ var LogbookDialog = {
 
         me._drawHeaders();
 
-        me._listView = canvas.gui.widgets.ListView.new(me._group, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._group, canvas.style, {})
             .setFontSizeSmall()
-            .setTranslation( # Set translation for align ListView with headers row
-                canvas.DefaultStyle.widgets["list-view"].PADDING,
-                canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT
+            .setTranslation( # Set translation for align LogbookList with headers row
+                canvas.DefaultStyle.widgets["logbook-list-view"].PADDING,
+                canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT
             )
             .useOptimizeRow()
             .setClickCallback(me._listViewCallback, me);
@@ -272,7 +272,7 @@ var LogbookDialog = {
     },
 
     #
-    # @return ghost  ListView widget
+    # @return ghost  LogbookList widget
     #
     getListView: func() {
         return me._listView;
@@ -303,7 +303,7 @@ var LogbookDialog = {
     _reDrawHeadersContent: func() {
         me._headersContent.removeAllChildren();
 
-        var x = canvas.DefaultStyle.widgets["list-view"].PADDING * 2;
+        var x = canvas.DefaultStyle.widgets["logbook-list-view"].PADDING * 2;
         foreach (var columnItem; me._columns.getAll()) {
             if (!columnItem.visible) {
                 continue;
@@ -311,7 +311,7 @@ var LogbookDialog = {
 
             var rowGroup = me._headersContent.createChild("group");
             rowGroup.setTranslation(x, 0);
-            var rect = rowGroup.rect(0, 0, columnItem.width, canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
+            var rect = rowGroup.rect(0, 0, columnItem.width, canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT);
             rect.setColorFill([0.0, 0.0, 0.0, 0.0]);
 
             me._drawText(
@@ -501,7 +501,7 @@ var LogbookDialog = {
         buttonBox.addStretch(1);
 
         me._vbox.addItem(buttonBox);
-        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["logbook-list-view"].PADDING);
     },
 
     #
@@ -735,7 +735,7 @@ var LogbookDialog = {
     },
 
     #
-    # The click callback on the ListView widget. Open the details window.
+    # The click callback on the LogbookList widget. Open the details window.
     #
     # @param  int  index
     # @return void

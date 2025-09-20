@@ -1,18 +1,18 @@
 #
-# ProfileView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# ProfileView widget is an Open Source project and it is licensed
+# FlightProfile widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# ProfileView widget Model
+# FlightProfile widget Model
 #
-gui.widgets.ProfileView = {
+gui.widgets.FlightProfile = {
     #
     # Constants
     #
@@ -34,10 +34,10 @@ gui.widgets.ProfileView = {
     # @return ghost
     #
     new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.ProfileView);
+        var me = gui.Widget.new(gui.widgets.FlightProfile);
         me._cfg = Config.new(cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "profile-view", me._cfg));
+        me._setView(style.createWidget(parent, "flight-profile-view", me._cfg));
 
         # Vector of hashes with flight data
         me._trackItems = [];
@@ -64,10 +64,10 @@ gui.widgets.ProfileView = {
         # When based on distance, the points will be drawn close to each other or overlapping when the aircraft is
         # stationary or flying slowly, but they will be more spread out when flying fast, making it possible to
         # recognize places where the flight was performed at higher speeds and where at lower ones.
-        me._drawMode = gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+        me._drawMode = gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
 
         # Graph zoom level
-        me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
+        me._zoom = gui.widgets.FlightProfile.ZOOM_DEFAULT;
 
         # A mode where new track points are added live.
         # In this mode, the ability to change the zoom level is disabled.
@@ -97,7 +97,7 @@ gui.widgets.ProfileView = {
     #
     setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = 1) {
         if (withResetPosition) {
-            me._zoom = gui.widgets.ProfileView.ZOOM_DEFAULT;
+            me._zoom = gui.widgets.FlightProfile.ZOOM_DEFAULT;
             me._position = 0;
         }
 
@@ -364,14 +364,14 @@ gui.widgets.ProfileView = {
     # @return bool  Return true if draw mode is "time"
     #
     isDrawModeTime: func() {
-        return me._drawMode == gui.widgets.ProfileView.DRAW_MODE_TIMESTAMP;
+        return me._drawMode == gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP;
     },
 
     #
     # @return bool  Return true if draw mode is "distance"
     #
     isDrawModeDistance: func() {
-        return me._drawMode == gui.widgets.ProfileView.DRAW_MODE_DISTANCE;
+        return me._drawMode == gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
     },
 
     #
@@ -410,7 +410,7 @@ gui.widgets.ProfileView = {
         if (direction == 1 and me._zoom < me.getMaxZoomLevel()) {
             me._zoom *= 2;
             return true;
-        } elsif (direction == -1 and me._zoom > gui.widgets.ProfileView.ZOOM_MIN) {
+        } elsif (direction == -1 and me._zoom > gui.widgets.FlightProfile.ZOOM_MIN) {
             me._zoom /= 2;
             return true;
         }

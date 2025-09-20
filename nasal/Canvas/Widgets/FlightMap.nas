@@ -1,18 +1,18 @@
 #
-# MapView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# MapView widget is an Open Source project and it is licensed
+# FlightMap widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# MapView widget Model
+# FlightMap widget Model
 #
-gui.widgets.MapView = {
+gui.widgets.FlightMap = {
     #
     # Constants
     #
@@ -30,10 +30,10 @@ gui.widgets.MapView = {
     # @return ghost
     #
     new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.MapView);
+        var me = gui.Widget.new(gui.widgets.FlightMap);
         me._cfg = Config.new(cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "map-view", me._cfg));
+        me._setView(style.createWidget(parent, "flight-map-view", me._cfg));
 
         # Variables for map
         me._mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
@@ -49,7 +49,7 @@ gui.widgets.MapView = {
         me._trackItems = [];
         me._trackItemsSize = 0;
 
-        me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
+        me._zoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
 
         # Current index of me._trackItems
         me._position = 0;
@@ -111,7 +111,7 @@ gui.widgets.MapView = {
     #
     setTrackItems: func(trackItems, withResetPosition = 1) {
         if (withResetPosition) {
-            me._zoom = gui.widgets.MapView.ZOOM_DEFAULT;
+            me._zoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
             me._position = 0;
         }
 
@@ -237,8 +237,8 @@ gui.widgets.MapView = {
     # @return int  Current zoom level
     #
     _changeZoom: func(direction) {
-        var min = math.min(gui.widgets.MapView.ZOOM_MAX, me._zoom + direction);
-        me._zoom = math.max(gui.widgets.MapView.ZOOM_MIN, min);
+        var min = math.min(gui.widgets.FlightMap.ZOOM_MAX, me._zoom + direction);
+        me._zoom = math.max(gui.widgets.FlightMap.ZOOM_MIN, min);
 
         return me._zoom;
     },

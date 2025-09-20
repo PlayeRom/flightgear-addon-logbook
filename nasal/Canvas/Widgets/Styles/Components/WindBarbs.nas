@@ -1,16 +1,16 @@
 #
-# MapView - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# MapView is an Open Source project and it is licensed
+# WindBarbs component is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# Class for drawing a wind indicator in MapView widget
+# Class for drawing a wind indicator in FlightMap widget
 #
 var WindBarbs = {
     #
@@ -85,7 +85,7 @@ var WindBarbs = {
     },
 
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @param  double  windHeading
     # @param  double  windSpeed
     # @return void

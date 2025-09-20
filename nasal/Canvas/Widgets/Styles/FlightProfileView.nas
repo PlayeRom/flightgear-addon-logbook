@@ -1,18 +1,18 @@
 #
-# ProfileView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# ProfileView is an Open Source project and it is licensed
+# FlightProfile is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# ProfileView widget View
+# FlightProfile widget View
 #
-DefaultStyle.widgets["profile-view"] = {
+DefaultStyle.widgets["flight-profile-view"] = {
     #
     # Constructor
     #
@@ -21,7 +21,7 @@ DefaultStyle.widgets["profile-view"] = {
     # @return void
     #
     new: func(parent, cfg) {
-        me._root = parent.createChild("group", "profile-view");
+        me._root = parent.createChild("group", "flight-profile-view");
 
         me._textColor = me._style.getColor("fg_color");
 
@@ -45,7 +45,7 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Callback called when user resized the window
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @param  int  w, h  Width and height of widget
     # @return ghost
     #
@@ -56,7 +56,7 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     update: func(model) {
@@ -64,7 +64,7 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     reDrawContent: func(model) {
@@ -95,7 +95,7 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Add mouse events to profile view
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     _addEvents: func(model) {
@@ -169,7 +169,7 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Draw flight vertical profile
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     _drawProfile: func(model) {
@@ -330,9 +330,9 @@ DefaultStyle.widgets["profile-view"] = {
     },
 
     #
-    # Draw an invisible line to get the padding. This was needed when ProfileView was drawn inside ScrollArea.
+    # Draw an invisible line to get the padding. This was needed when FlightProfile was drawn inside ScrollArea.
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     _drawPaddingKeeper: func(model) {
@@ -346,7 +346,7 @@ DefaultStyle.widgets["profile-view"] = {
     #
     # Redraw aircraft position
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return ghost  Path element
     #
     updateAircraftPosition: func(model) {

@@ -1,18 +1,18 @@
 #
-# InfoView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# InfoView widget is an Open Source project and it is licensed
+# FlightInfo widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# InfoView widget Model
+# FlightInfo widget Model
 #
-gui.widgets.InfoView = {
+gui.widgets.FlightInfo = {
     #
     # Constructor
     #
@@ -22,10 +22,10 @@ gui.widgets.InfoView = {
     # @return ghost
     #
     new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.InfoView);
+        var me = gui.Widget.new(gui.widgets.FlightInfo);
         me._cfg = Config.new(cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "info-view", me._cfg));
+        me._setView(style.createWidget(parent, "flight-info-view", me._cfg));
 
         return me;
     },

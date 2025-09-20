@@ -166,7 +166,7 @@ var Dialog = {
     #
     # @param  vector|nil  bgColor
     # @param  hash|nil  margins  Margins hash or nil
-    # @return ghost  gui.widgets.ScrollArea object
+    # @return ghost  canvas.gui.widgets.ScrollArea object
     #
     createScrollArea: func(bgColor = nil, margins = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(me._group, canvas.style, {});

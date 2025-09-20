@@ -58,7 +58,7 @@ var DetailsDialog = {
 
         var margins = {
             left   : 0,
-            top    : canvas.DefaultStyle.widgets["list-view"].PADDING,
+            top    : canvas.DefaultStyle.widgets["logbook-list-view"].PADDING,
             right  : 0,
             bottom : 0,
         };
@@ -66,7 +66,7 @@ var DetailsDialog = {
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
-        me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()
             .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()
@@ -102,7 +102,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return ghost  ListView widget
+    # @return ghost  LogbookList widget
     #
     getListView: func() {
         return me._listView;
@@ -176,9 +176,9 @@ var DetailsDialog = {
         buttonBox.addItem(me._btnDelete);
         buttonBox.addStretch(1);
 
-        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["logbook-list-view"].PADDING);
         me._vbox.addItem(buttonBox);
-        me._vbox.addSpacing(canvas.DefaultStyle.widgets["list-view"].PADDING);
+        me._vbox.addSpacing(canvas.DefaultStyle.widgets["logbook-list-view"].PADDING);
     },
 
     #
@@ -197,7 +197,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return ghost  ListView widget
+    # @return ghost  LogbookList widget
     #
     _setListViewStyle: func() {
         return me._listView
@@ -263,9 +263,9 @@ var DetailsDialog = {
     },
 
     #
-    # Prepare columns data for ListView
+    # Prepare columns data for LogbookList
     #
-    # @param  vector  columns  Vector of hashes with columns for ListView widget
+    # @param  vector  columns  Vector of hashes with columns for LogbookList widget
     # @return vector
     #
     _getListViewRows: func(columns) {
@@ -322,7 +322,7 @@ var DetailsDialog = {
     },
 
     #
-    # The click callback on the ListView widget. Open the inputDialog.
+    # The click callback on the LogbookList widget. Open the inputDialog.
     #
     # @param  int  index
     # @return void

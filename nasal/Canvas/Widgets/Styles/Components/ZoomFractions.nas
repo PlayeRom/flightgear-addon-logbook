@@ -1,17 +1,17 @@
 
 #
-# ZoomFractions - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# ZoomFractions is an Open Source project and it is licensed
+# ZoomFractions component is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# Class to handle zoom fractions in ProfileView widget
+# Class to handle zoom fractions in FlightProfile widget
 #
 var ZoomFractions = {
     #
@@ -26,14 +26,14 @@ var ZoomFractions = {
             # If zoom is used, in which fraction of the graph is the plane located
             _fractionIndex: 0,
 
-            _maxZoomLevel  : gui.widgets.ProfileView.ZOOM_MAX,
+            _maxZoomLevel: gui.widgets.FlightProfile.ZOOM_MAX,
 
             _zoomFractions: {
                 distance : std.Vector.new(),
                 timestamp: std.Vector.new(),
             },
 
-            _isCreated : 0,
+            _isCreated: 0,
             _firstFractionPosition: nil,
         };
     },
@@ -41,7 +41,7 @@ var ZoomFractions = {
     #
     # Build zoom fractions, once for model._trackItems data
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return void
     #
     create: func(model) {
@@ -51,9 +51,9 @@ var ZoomFractions = {
 
         me._isCreated = 1;
 
-        me._maxZoomLevel = gui.widgets.ProfileView.ZOOM_MAX;
+        me._maxZoomLevel = gui.widgets.FlightProfile.ZOOM_MAX;
 
-        while (me._maxZoomLevel >= gui.widgets.ProfileView.ZOOM_MIN) {
+        while (me._maxZoomLevel >= gui.widgets.FlightProfile.ZOOM_MIN) {
             if (logbook.Utils.tryCatch(me._createInternal, [model], me)) {
                 break; # No errors, break the loop
             }
@@ -134,7 +134,7 @@ var ZoomFractions = {
         }
 
         if (item[key] > nextValue or isLast) {
-            if (counter < 2 and me._maxZoomLevel > gui.widgets.ProfileView.ZOOM_MIN) {
+            if (counter < 2 and me._maxZoomLevel > gui.widgets.FlightProfile.ZOOM_MIN) {
                 # With the current _maxZoomLevel value, the number of points per fraction is less than 2,
                 # this is unacceptable, so throw an exception to decrease the _maxZoomLevel,
                 # unless the _maxZoomLevel has reached its minimum
@@ -176,8 +176,8 @@ var ZoomFractions = {
     #
     # Set range of points to draw according to zoom level
     #
-    # @param  ghost  model  ProfileView model
-    # @param  ghost  view  ProfileView view
+    # @param  ghost  model  FlightProfile model
+    # @param  ghost  view  FlightProfile view
     # @return void
     #
     setRangeOfPointsToDraw: func(model, view) {
@@ -213,7 +213,7 @@ var ZoomFractions = {
     # Return the index of the part of the graph where the aircraft is currently located.
     # For example, if zoom level is 8, it can be index from 0 do 7.
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return int
     #
     getCurrentFractionIndex: func(model) {
@@ -238,7 +238,7 @@ var ZoomFractions = {
     #
     # Get vector of zoom fractions depend of draw mode
     #
-    # @param  ghost  model  ProfileView model
+    # @param  ghost  model  FlightProfile model
     # @return std.Vector
     #
     _getZoomFractions: func(model) {
@@ -251,7 +251,7 @@ var ZoomFractions = {
     # Returned index value depend of zoom level. The fractions vectors have been merged according to zoom level
     # e.g. when zoom = 2, then me._maxZoomLevel vectors will be merged to 2 vectors, then this function will return 0 or 1.
     #
-    # @param  ghost model  ProfileView mode
+    # @param  ghost model  FlightProfile mode
     # @param  int  indexAllFractions
     # @return int
     #
@@ -261,7 +261,7 @@ var ZoomFractions = {
 
     #
     # Index of the faction in which the plane is located. It's the same as getIndexMergedFractions,
-    # but remembered during redraw the ProfileView graph.
+    # but remembered during redraw the FlightProfile graph.
     #
     # @return int
     #

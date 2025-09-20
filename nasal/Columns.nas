@@ -58,7 +58,7 @@ var Columns = {
         # Default columns state
         # * name     - column name in SQLite DB
         # * header   - header name in LogbookDialog (and CSV file)
-        # * width    - width of column in LogbookDialog, basic width is a multiple of the number 7 (CHAR_WIDTH in ListView), extra pixels are to compensate for imperfections
+        # * width    - width of column in LogbookDialog, basic width is a multiple of the number 7 (CHAR_WIDTH in LogbookList), extra pixels are to compensate for imperfections
         # * visible  - if true then column is visible in LogbookDialog
         # * totals   - SQL function for totals row or nil if column should not be displayed in totals
         # * totalVal - value for total row (if totals != nil)

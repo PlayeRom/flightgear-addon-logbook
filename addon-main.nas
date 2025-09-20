@@ -109,15 +109,16 @@ var loadExtraNasalFiles = func(addon) {
 
     # Add widgets to canvas namespace
     var widgets = [
-        "nasal/Canvas/Widgets/ListView",
-        "nasal/Canvas/Widgets/MapView",
-        "nasal/Canvas/Widgets/ProfileView",
-        "nasal/Canvas/Widgets/InfoView",
+        "nasal/Canvas/Widgets/FlightInfo",
+        "nasal/Canvas/Widgets/FlightMap",
+        "nasal/Canvas/Widgets/FlightProfile",
+        "nasal/Canvas/Widgets/LogbookList",
 
-        "nasal/Canvas/Widgets/Styles/DefaultStyleListView",
-        "nasal/Canvas/Widgets/Styles/DefaultStyleMapView",
-        "nasal/Canvas/Widgets/Styles/DefaultStyleProfileView",
-        "nasal/Canvas/Widgets/Styles/DefaultStyleInfoView",
+        "nasal/Canvas/Widgets/Styles/FlightInfoView",
+        "nasal/Canvas/Widgets/Styles/FlightMapView",
+        "nasal/Canvas/Widgets/Styles/FlightProfileView",
+        "nasal/Canvas/Widgets/Styles/LogbookListView",
+
         "nasal/Canvas/Widgets/Styles/Components/WindBarbs",
         "nasal/Canvas/Widgets/Styles/Components/FlightPathMap",
         "nasal/Canvas/Widgets/Styles/Components/ZoomFractions",

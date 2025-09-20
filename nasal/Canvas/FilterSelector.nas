@@ -160,7 +160,7 @@ var FilterSelector = {
     _recalculateWindowHeight: func() {
         var count = me._items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
-        var windowHeight = int(count * canvas.DefaultStyle.widgets["list-view"].ITEM_HEIGHT);
+        var windowHeight = int(count * canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT);
         if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
             windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
         }
@@ -249,7 +249,7 @@ var FilterSelector = {
     _drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        me._listView = canvas.gui.widgets.ListView.new(me._scrollDataContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollDataContent, canvas.style, {})
             .setTitle(me._title)
             .useTextMaxWidth()
             .setFontSizeMedium()
@@ -264,7 +264,7 @@ var FilterSelector = {
     },
 
     #
-    # The click callback on the ListView widget.
+    # The click callback on the LogbookList widget.
     # Call other callback passed by parent object by setCallback and hide this dialog.
     #
     # @param  int  index  Index of row

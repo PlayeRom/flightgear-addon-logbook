@@ -1,18 +1,18 @@
 #
-# MapView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# MapView widget is an Open Source project and it is licensed
+# FlightMap widget is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# MapView widget View
+# FlightMap widget View
 #
-DefaultStyle.widgets["map-view"] = {
+DefaultStyle.widgets["flight-map-view"] = {
     #
     # Constructor
     #
@@ -21,7 +21,7 @@ DefaultStyle.widgets["map-view"] = {
     # @return void
     #
     new: func(parent, cfg) {
-        me._root = parent.createChild("group", "map-view");
+        me._root = parent.createChild("group", "flight-map-view");
 
         me._content = me._root.createChild("group", "clip-content")
             .set("clip-frame", Element.PARENT);
@@ -45,7 +45,7 @@ DefaultStyle.widgets["map-view"] = {
         me._isEventsSet = 0;
 
         me._refPosition = 0;
-        me._refZoom = gui.widgets.MapView.ZOOM_DEFAULT;
+        me._refZoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
 
         me._lastSize = { w: nil, h: nil };
 
@@ -62,7 +62,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Callback called when user resized the window
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @param  int w, h  Width and height of widget
     # @return ghost
     #
@@ -78,7 +78,7 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return void
     #
     update: func(model) {
@@ -86,7 +86,7 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return void
     #
     reDrawContent: func(model) {
@@ -140,7 +140,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Add mouse events to map view
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return void
     #
     _addEvents: func(model) {
@@ -198,18 +198,18 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Calculate how many tiles you need in width and height depending on the widget size.
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return  void
     #
     _calculateNumTiles: func(model) {
-        me._numTiles.x = math.ceil(model._size[0] / gui.widgets.MapView.TILE_SIZE) + 1;
-        me._numTiles.y = math.ceil(model._size[1] / gui.widgets.MapView.TILE_SIZE) + 1;
+        me._numTiles.x = math.ceil(model._size[0] / gui.widgets.FlightMap.TILE_SIZE) + 1;
+        me._numTiles.y = math.ceil(model._size[1] / gui.widgets.FlightMap.TILE_SIZE) + 1;
     },
 
     #
     # Initialize the map by setting up a grid of raster images.
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return void
     #
     _createTiles: func(model) {
@@ -256,7 +256,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # This is the callback that will be regularly called by the timer to update the map
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @param  bool  forceSetTile
     # @return void
     #
@@ -276,8 +276,8 @@ DefaultStyle.widgets["map-view"] = {
         var track = model._trackItems[model._position];
 
         me._planeIcon.draw(
-            x     : gui.widgets.MapView.TILE_SIZE * me._centerTileOffset.x,
-            y     : gui.widgets.MapView.TILE_SIZE * me._centerTileOffset.y,
+            x     : gui.widgets.FlightMap.TILE_SIZE * me._centerTileOffset.x,
+            y     : gui.widgets.FlightMap.TILE_SIZE * me._centerTileOffset.y,
             rotate: track.heading_true
         );
         me._windBarbs.draw(model, track.wind_heading, track.wind_speed);
@@ -305,8 +305,8 @@ DefaultStyle.widgets["map-view"] = {
         for (var x = 0; x < me._numTiles.x; x += 1) {
             for (var y = 0; y < me._numTiles.y; y += 1) {
                 var trans = {
-                    x: int((ox + x) * gui.widgets.MapView.TILE_SIZE + 0.5),
-                    y: int((oy + y) * gui.widgets.MapView.TILE_SIZE + 0.5),
+                    x: int((ox + x) * gui.widgets.FlightMap.TILE_SIZE + 0.5),
+                    y: int((oy + y) * gui.widgets.FlightMap.TILE_SIZE + 0.5),
                 };
 
                 me._tiles[x][y].setTranslation(trans.x, trans.y);
@@ -368,7 +368,7 @@ DefaultStyle.widgets["map-view"] = {
     #
     # Update single map tile
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  int  x, y
     # @param  hash  offset
     # @return void
@@ -393,7 +393,7 @@ DefaultStyle.widgets["map-view"] = {
                         tile.set("src", imgPath);
                     })
                     .fail(func(response) {
-                        logprint(LOG_ALERT, 'MapView Widget - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
+                        logprint(LOG_ALERT, 'FlightMap Widget - failed to get image ', imgPath, ' ', response.status, ': ', response.reason);
                     });
             }
             else { # cached image found, reusing
@@ -403,9 +403,9 @@ DefaultStyle.widgets["map-view"] = {
     },
 
     #
-    # Draw an invisible line to get the padding. It is needed when MapView is drawn inside ScrollArea.
+    # Draw an invisible line to get the padding. It is needed when FlightMap is drawn inside ScrollArea.
     #
-    # @param  ghost  model  MapView model
+    # @param  ghost  model  FlightMap model
     # @return void
     #
     _drawPaddingKeeper: func(model) {

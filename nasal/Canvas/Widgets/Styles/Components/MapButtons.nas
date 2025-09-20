@@ -1,16 +1,16 @@
 #
-# MapView widget - Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2024 Roman Ludwicki
 #
-# MapView widget is an Open Source project and it is licensed
+# MapButtons component is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# Class for drawing and handling buttons drawn on a MapView widget
+# Class for drawing and handling buttons drawn on a FlightMap widget
 #
 var MapButtons = {
     #
@@ -44,7 +44,7 @@ var MapButtons = {
     #
     # Create buttons on the map
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  ghost  context  Canvas context on which button will be drawn
     # @return void
     #
@@ -80,7 +80,7 @@ var MapButtons = {
     #
     # Set button events
     #
-    # @param  ghost  model  MapView model object
+    # @param  ghost  model  FlightMap model object
     # @param  hash  button
     # @param  int  index
     # @return void
