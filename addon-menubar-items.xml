@@ -21,11 +21,12 @@
     <menubar-items>
         <menu>
             <label>Logbook</label>
+            <name>logbook-addon</name>
             <enabled type="bool">true</enabled>
 
             <item>
                 <label>Logbook</label>
-                <name>logbook-addon</name>
+                <name>logbook-addon-main-dialog</name>
                 <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
@@ -71,22 +72,6 @@
                     <script>logbook.g_Logbook.showAboutDialog();</script>
                 </binding>
             </item>
-
-            <!--
-            FOR DEVELOPMENT ONLY!
-            trigger reload of addon-main.nas
-            1) This item should be REMOVED for release versions.
-            2) Ensure the label is unique
-            3) replace addon ID  to match your addon
-            -->
-            <!-- <item>
-                <label>Dev Reload</label>
-                <binding>
-                    <command>addon-reload</command>
-                    <id>org.flightgear.addons.logbook</id>
-                </binding>
-            </item> -->
-
         </menu>
     </menubar-items>
 </PropertyList>

@@ -23,7 +23,7 @@ var main = func(addon) {
     # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
     addon.createStorageDir();
 
-    logbook.init(addon);
+    logbook.Bootstrap.init(addon);
 };
 
 #
@@ -35,6 +35,8 @@ var main = func(addon) {
 var loadExtraNasalFiles = func(addon) {
     var modules = [
         "nasal/Utils/Callback",
+        "nasal/Utils/DevEnv",
+        "nasal/Utils/DevReload",
         "nasal/Utils/Listeners",
         "nasal/Utils/Log",
         "nasal/Utils/Thread",
@@ -72,7 +74,8 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Settings", # Must be after FlightAnalysis
         "nasal/SpaceShuttle",
         "nasal/Sound",
-        "Logbook",
+
+        "Bootstrap",
     ];
 
     if (isFG2024Version()) {
@@ -168,5 +171,5 @@ var loadVectorOfModules = func(addon, modules, namespace) {
 #
 var unload = func(addon) {
     logbook.Log.print("unload");
-    logbook.uninit();
+    logbook.Bootstrap.uninit();
 };

@@ -278,7 +278,7 @@ var Storage = {
         me._loadAllFilters();
 
         # Enable Logbook menu because we have a data
-        gui.menuEnable("logbook-addon", true);
+        gui.menuEnable("logbook-addon-main-dialog", true);
 
         Log.print("loadAllDataThread finished");
     },
