@@ -18,7 +18,7 @@
 var main = func(addon) {
     logprint(LOG_INFO, addon.name, " Add-on initialized from path ", addon.basePath);
 
-    loadNasalFiles(addon, "logbook");
+    loadNasalFiles(addon.basePath, "logbook");
 
     logbook.Bootstrap.init(addon);
 };
@@ -26,11 +26,11 @@ var main = func(addon) {
 #
 # Load extra Nasal files in main add-on directory.
 #
-# @param  ghost  addon  addons.Addon object.
+# @param  string  path  Base path of add-on.
 # @param  string  namespace  Namespace of add-on.
 # @return void
 #
-var loadNasalFiles = func(addon, namespace) {
+var loadNasalFiles = func(path, namespace) {
     var modules = [
         "nasal/Utils/Callback",
         "nasal/Utils/DevEnv",
@@ -121,8 +121,8 @@ var loadNasalFiles = func(addon, namespace) {
         "nasal/Canvas/Widgets/Styles/Components/MapButtons",
     ];
 
-    loadVectorOfModules(addon, modules, namespace);
-    loadVectorOfModules(addon, widgets, "canvas");
+    loadVectorOfModules(path, modules, namespace);
+    loadVectorOfModules(path, widgets, "canvas");
 };
 
 #
@@ -135,16 +135,18 @@ var isFG2024Version = func() {
 }
 
 #
-# @param  ghost  addon  addons.Addon object
-# @param  vector  modules
+# Load given array of Nasal files to given namespace.
+#
+# @param  string  path  Base path of add-on.
+# @param  vector  files
 # @param  string  namespace
 # @return void
 #
-var loadVectorOfModules = func(addon, modules, namespace) {
-    foreach (var scriptName; modules) {
-        var fileName = addon.basePath ~ "/" ~ scriptName ~ ".nas";
+var loadVectorOfModules = func(path, files, namespace) {
+    foreach (var file; files) {
+        var fullFileName = path ~ "/" ~ file ~ ".nas";
 
-        io.load_nasal(fileName, namespace);
+        io.load_nasal(fullFileName, namespace);
     }
 };
 
