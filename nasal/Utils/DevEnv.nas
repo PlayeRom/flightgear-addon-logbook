@@ -107,15 +107,17 @@ var DevEnv = {
     # @return mixed
     #
     _convertValue: func(value) {
-           if (value == string.uc("TRUE")) return true;
-        elsif (value == string.uc("FALSE")) return false;
-        elsif (value == string.uc("1")) return 1;
-        elsif (value == string.uc("0")) return 0;
-        elsif (value == string.uc("LOG_ALERT")) return LOG_ALERT;
-        elsif (value == string.uc("LOG_WARN")) return LOG_WARN;
-        elsif (value == string.uc("LOG_INFO")) return LOG_INFO;
-        elsif (value == string.uc("LOG_DEBUG")) return LOG_DEBUG;
-        elsif (value == string.uc("LOG_BULK")) return LOG_BULK;
+        var valueUc = string.uc(value);
+
+           if (valueUc == "TRUE") return true;
+        elsif (valueUc == "FALSE") return false;
+        elsif (valueUc == "1") return 1;
+        elsif (valueUc == "0") return 0;
+        elsif (valueUc == "LOG_ALERT") return LOG_ALERT;
+        elsif (valueUc == "LOG_WARN") return LOG_WARN;
+        elsif (valueUc == "LOG_INFO") return LOG_INFO;
+        elsif (valueUc == "LOG_DEBUG") return LOG_DEBUG;
+        elsif (valueUc == "LOG_BULK") return LOG_BULK;
         # TODO: add more here if needed
 
         return value;
