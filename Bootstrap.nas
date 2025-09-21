@@ -57,7 +57,7 @@ var Bootstrap = {
         # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
         g_Addon.createStorageDir();
 
-        Bootstrap.initDevMode();
+        Bootstrap._initDevMode();
 
         # Disable Logbook menu because we have to load data first in thread
         gui.menuEnable("logbook-addon-main-dialog", false);
@@ -86,25 +86,6 @@ var Bootstrap = {
     },
 
     #
-    # Handle development mode (.env file).
-    #
-    # @return void
-    #
-    initDevMode: func() {
-        var reloadMenu = DevReload.new();
-        var env = DevEnv.new();
-
-        env.getValue("DEV_MODE")
-            ? reloadMenu.addMenu()
-            : reloadMenu.removeMenu();
-
-        var logLevel = env.getValue("MY_LOG_LEVEL");
-        if (logLevel != nil) {
-            MY_LOG_LEVEL = logLevel;
-        }
-    },
-
-    #
     # Uninitialize object from add-on namespace.
     #
     # @return void
@@ -120,6 +101,25 @@ var Bootstrap = {
 
         if (g_Settings != nil) {
             g_Settings.del();
+        }
+    },
+
+    #
+    # Handle development mode (.env file).
+    #
+    # @return void
+    #
+    _initDevMode: func() {
+        var reloadMenu = DevReload.new();
+        var env = DevEnv.new();
+
+        env.getValue("DEV_MODE")
+            ? reloadMenu.addMenu()
+            : reloadMenu.removeMenu();
+
+        var logLevel = env.getValue("MY_LOG_LEVEL");
+        if (logLevel != nil) {
+            MY_LOG_LEVEL = logLevel;
         }
     },
 };
