@@ -133,7 +133,7 @@ var HelpDialog = {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnAddonDir = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Local storage directory...")
+            .setText("Open Storage Folder")
             .setFixedSize(200, 26)
             .listen("clicked", func {
                 Utils.openBrowser({ "path": g_Addon.storagePath });

@@ -80,15 +80,15 @@ var AboutDialog = {
 
         me._vbox.addStretch(1);
 
-        me._vbox.addItem(me._getButton("FlightGear wiki...", func {
+        me._vbox.addItem(me._getButton("FlightGear Wiki", func {
             Utils.openBrowser({ "url": g_Addon.homePage });
         }));
 
-        me._vbox.addItem(me._getButton("GitHub website...", func {
+        me._vbox.addItem(me._getButton("GitHub Website", func {
             Utils.openBrowser({ "url": g_Addon.codeRepositoryUrl });
         }));
 
-        me._vbox.addItem(me._getButton("Local storage directory...", func {
+        me._vbox.addItem(me._getButton("Open Storage Folder", func {
             Utils.openBrowser({ "path": g_Addon.storagePath });
         }));
 
