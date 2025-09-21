@@ -18,21 +18,19 @@
 var main = func(addon) {
     logprint(LOG_INFO, addon.name, " Add-on initialized from path ", addon.basePath);
 
-    loadExtraNasalFiles(addon);
-
-    # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
-    addon.createStorageDir();
+    loadNasalFiles(addon, "logbook");
 
     logbook.Bootstrap.init(addon);
 };
 
 #
-# Load extra Nasal files in main add-on directory
+# Load extra Nasal files in main add-on directory.
 #
-# @param  ghost  addon  addons.Addon object
+# @param  ghost  addon  addons.Addon object.
+# @param  string  namespace  Namespace of add-on.
 # @return void
 #
-var loadExtraNasalFiles = func(addon) {
+var loadNasalFiles = func(addon, namespace) {
     var modules = [
         "nasal/Utils/Callback",
         "nasal/Utils/DevEnv",
@@ -105,8 +103,6 @@ var loadExtraNasalFiles = func(addon) {
         ] ~ modules;
     }
 
-    loadVectorOfModules(addon, modules, "logbook");
-
     # Add widgets to canvas namespace
     var widgets = [
         "nasal/Canvas/Widgets/FlightInfo",
@@ -126,6 +122,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/Widgets/Styles/Components/MapButtons",
     ];
 
+    loadVectorOfModules(addon, modules, namespace);
     loadVectorOfModules(addon, widgets, "canvas");
 };
 
@@ -148,9 +145,7 @@ var loadVectorOfModules = func(addon, modules, namespace) {
     foreach (var scriptName; modules) {
         var fileName = addon.basePath ~ "/" ~ scriptName ~ ".nas";
 
-        if (!io.load_nasal(fileName, namespace)) {
-            logprint(LOG_ALERT, addon.name, " Add-on module \"", scriptName, "\" loading failed");
-        }
+        io.load_nasal(fileName, namespace);
     }
 };
 

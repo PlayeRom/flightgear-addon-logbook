@@ -54,6 +54,9 @@ var Bootstrap = {
     init: func(addon) {
         g_Addon = addon;
 
+        # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
+        g_Addon.createStorageDir();
+
         Bootstrap.initDevMode();
 
         # Disable Logbook menu because we have to load data first in thread

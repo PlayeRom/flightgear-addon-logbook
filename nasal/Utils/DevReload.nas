@@ -17,8 +17,8 @@ var DevReload = {
     #
     # Constants:
     #
-    MENU_LABEL: "Dev Reload",
     MAIN_MENU_LABEL: "Logbook",
+    RELOAD_MENU_LABEL: "Dev Reload",
 
     #
     # Constructor.
@@ -51,7 +51,7 @@ var DevReload = {
         }
 
         var data = {
-            label  : DevReload.MENU_LABEL,
+            label  : DevReload.RELOAD_MENU_LABEL,
             name   : me._reloadMenuName,
             binding: {
                 "command": "addon-reload",
@@ -62,7 +62,7 @@ var DevReload = {
         menuNode.addChild("item").setValues(data);
         fgcommand("gui-redraw");
 
-        Log.print("the menu item \"", DevReload.MENU_LABEL, "\" has been added.");
+        Log.print("the menu item \"", DevReload.RELOAD_MENU_LABEL, "\" has been added.");
     },
 
     #
@@ -86,7 +86,7 @@ var DevReload = {
         item.remove();
         fgcommand("gui-redraw");
 
-        Log.print("the menu item \"", DevReload.MENU_LABEL, "\" has been removed.");
+        Log.print("the menu item \"", DevReload.RELOAD_MENU_LABEL, "\" has been removed.");
     },
 
     #
