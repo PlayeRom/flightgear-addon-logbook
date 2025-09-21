@@ -387,6 +387,10 @@ These properties can be add in a number of ways, such as by placing them in the 
 
 Thanks to MariuszXC for this feature.
 
+### Class Diagram
+
+![alt Class Diagram](docs/diagram.png "Class Diagram")
+
 ## Authors
 
 - Roman "PlayeRom" Ludwicki (SP-ROM)
