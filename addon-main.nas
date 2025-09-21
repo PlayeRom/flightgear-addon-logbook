@@ -72,8 +72,7 @@ var loadNasalFiles = func(addon, namespace) {
         "nasal/Settings",
         "nasal/SpaceShuttle",
         "nasal/Sound",
-
-        "Bootstrap",
+        "nasal/Bootstrap",
     ];
 
     if (isFG2024Version()) {
