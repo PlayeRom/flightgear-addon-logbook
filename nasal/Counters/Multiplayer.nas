@@ -14,7 +14,7 @@
 #
 var Multiplayer = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -37,7 +37,7 @@ var Multiplayer = {
     },
 
     #
-    # Reset all counters
+    # Reset all counters.
     #
     # @return void
     #
@@ -47,7 +47,7 @@ var Multiplayer = {
     },
 
     #
-    # Update all counters
+    # Update all counters.
     #
     # @param  double  diffElapsedSec
     # @return void
@@ -63,7 +63,7 @@ var Multiplayer = {
     },
 
     #
-    # Return true when we have connection to multiplayer serwer
+    # Return true when we have connection to multiplayer serwer.
     #
     # @return bool
     #
@@ -76,7 +76,7 @@ var Multiplayer = {
     },
 
     #
-    # Return true when we have connection to swift serwer
+    # Return true when we have connection to swift serwer.
     #
     # @return bool
     #
@@ -89,7 +89,7 @@ var Multiplayer = {
     },
 
     #
-    # Get flight duration with multiplayer mode in hours
+    # Get flight duration with multiplayer mode in hours.
     #
     # @return double
     #
@@ -98,7 +98,7 @@ var Multiplayer = {
     },
 
     #
-    # Get flight duration with swift connection in hours
+    # Get flight duration with swift connection in hours.
     #
     # @return double
     #

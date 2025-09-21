@@ -10,11 +10,11 @@
 #
 
 #
-# Migration class for CSV file. This file is using also for SQLite version
+# Migration class for CSV file. This file is using also for SQLite version.
 #
 var MigrationCsv = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -61,7 +61,7 @@ var MigrationCsv = {
     # @return void
     #
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
-        # Add extra column "Type" (as aircraft type) after "Aircraft" column
+        # Add extra column "Type" (as aircraft type) after "Aircraft" column.
 
         me._migrate(oldFilePath, newFilePath, func() {
             return 'Date,' ~
@@ -111,7 +111,7 @@ var MigrationCsv = {
     # @return void
     #
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
-        # Add extra column "Variant" (as aircraft variant) after "Aircraft" column
+        # Add extra column "Variant" (as aircraft variant) after "Aircraft" column.
 
         me._migrate(oldFilePath, newFilePath, func() {
             return 'Date,' ~
@@ -163,7 +163,7 @@ var MigrationCsv = {
     # @return void
     #
     migrateToFileVersion_4: func(oldFilePath, newFilePath) {
-        # Rename "Landings" to "Landing", add quotes for "Aircraft" column
+        # Rename "Landings" to "Landing", add quotes for "Aircraft" column.
 
         me._migrate(oldFilePath, newFilePath, func() {
             return 'Date,' ~
@@ -215,7 +215,7 @@ var MigrationCsv = {
     # @return void
     #
     migrateToFileVersion_5: func(oldFilePath, newFilePath) {
-        # Add new columns for multiplayer durations
+        # Add new columns for multiplayer durations.
 
         me._migrate(oldFilePath, newFilePath, func() {
             return 'Date,' ~

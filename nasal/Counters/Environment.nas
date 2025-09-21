@@ -14,13 +14,13 @@
 #
 var Environment = {
     #
-    # Constants
+    # Constants:
     #
     SUN_ANG_NIGHT_THRESHOLD: 1.57,
     MINIMUM_VFR_VISIBILITY : 5000, # in meters
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -49,7 +49,7 @@ var Environment = {
     },
 
     #
-    # Get real date as string in ISO format
+    # Get real date as string in ISO format.
     #
     # @return string
     #
@@ -63,7 +63,7 @@ var Environment = {
     },
 
     #
-    # Get real time as string
+    # Get real time as string.
     #
     # @return string
     #
@@ -76,7 +76,7 @@ var Environment = {
     },
 
     #
-    # Get sim UTC date as string in ISO format
+    # Get sim UTC date as string in ISO format.
     #
     # @return string
     #
@@ -89,7 +89,7 @@ var Environment = {
     },
 
     #
-    # Get sim UTC time as string
+    # Get sim UTC time as string.
     #
     # @return string
     #
@@ -102,7 +102,7 @@ var Environment = {
     },
 
     #
-    # Get sim local date as string in ISO format
+    # Get sim local date as string in ISO format.
     #
     # @return string
     #
@@ -111,7 +111,7 @@ var Environment = {
     },
 
     #
-    # Get sim local time as string
+    # Get sim local time as string.
     #
     # @return string
     #
@@ -193,7 +193,7 @@ var Environment = {
     },
 
     #
-    # A function that returns the number of days in a given month, taking into account leap year for February
+    # A function that returns the number of days in a given month, taking into account leap year for February.
     #
     # @param  int  year
     # @param  int  month
@@ -209,7 +209,7 @@ var Environment = {
     },
 
     #
-    # Reset all environment counters
+    # Reset all environment counters.
     #
     # @return void
     #
@@ -220,7 +220,7 @@ var Environment = {
     },
 
     #
-    # Update all environment counters
+    # Update all environment counters.
     #
     # @param  double  diffElapsedSec
     # @return void
@@ -255,7 +255,7 @@ var Environment = {
     },
 
     #
-    # Get flight duration in day in hours
+    # Get flight duration in day in hours.
     #
     # @return double
     #
@@ -264,7 +264,7 @@ var Environment = {
     },
 
     #
-    # Get flight duration in night in hours
+    # Get flight duration in night in hours.
     #
     # @return double
     #
@@ -273,7 +273,7 @@ var Environment = {
     },
 
     #
-    # Get flight duration in IMC in hours
+    # Get flight duration in IMC in hours.
     #
     # @return double
     #
@@ -282,7 +282,7 @@ var Environment = {
     },
 
     #
-    # Get current wind heading in deg
+    # Get current wind heading in deg.
     #
     # @return double
     #
@@ -291,7 +291,7 @@ var Environment = {
     },
 
     #
-    # Get current wind speed in knots
+    # Get current wind speed in knots.
     #
     # @return double
     #

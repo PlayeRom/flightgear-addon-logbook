@@ -10,11 +10,11 @@
 #
 
 #
-# Migration class for SQLite
+# Migration class for SQLite.
 #
 var Migration = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -64,7 +64,7 @@ var Migration = {
 
     #
     # Follow me._migrations step by step, check if the migration name is already
-    # in the database, if not then execute the migration function
+    # in the database, if not then execute the migration function.
     #
     # @return void
     #
@@ -85,7 +85,7 @@ var Migration = {
     },
 
     #
-    # Check if the specified migration has already been invoked
+    # Check if the specified migration has already been invoked.
     #
     # @param  string  migrationName
     # @return bool
@@ -102,9 +102,9 @@ var Migration = {
     },
 
     #
-    # Check if the `migration` table in the database exists
+    # Check if the `migration` table in the database exists.
     #
-    # @return bool  True if the `migrations` table already exists
+    # @return bool  True if the `migrations` table already exists.
     #
     _isMigrationsTableExists: func() {
         if (me._isMigrationsTable) {
@@ -117,7 +117,7 @@ var Migration = {
     },
 
     #
-    # Save the migration name to the migrations table to confirm that the migration was invoked
+    # Save the migration name to the migrations table to confirm that the migration was invoked.
     #
     # @param  string  migrationName
     # @return void

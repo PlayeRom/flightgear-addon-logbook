@@ -10,13 +10,13 @@
 #
 
 #
-# Exporter class handle export SQLite to CSV file
+# Exporter class handle export SQLite to CSV file.
 #
 var Exporter = {
     #
     # Constructor
     #
-    # @param  hash  columns  Columns object
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(columns) {
@@ -34,7 +34,7 @@ var Exporter = {
     },
 
     #
-    # Export logbook and trackers from SQLite to CSV file as a separate thread job
+    # Export logbook and trackers from SQLite to CSV file as a separate thread job.
     #
     # @return void
     #
@@ -50,9 +50,9 @@ var Exporter = {
     },
 
     #
-    # Get CSV file name for export
+    # Get CSV file name for export.
     #
-    # @return vector  First file name for logbook table, second for tracker
+    # @return vector  First file name for logbook table, second for tracker.
     #
     _getCsvFileNames: func() {
         var year   = getprop("/sim/time/real/year");
@@ -71,9 +71,9 @@ var Exporter = {
     },
 
     #
-    # Export logbooks table from SQLite to CSV file
+    # Export logbooks table from SQLite to CSV file.
     #
-    # @param  string  fileName  Full path with file name
+    # @param  string  fileName  Full path with file name.
     # @return void
     #
     _exportLogbookToCsv: func(fileName) {
@@ -134,9 +134,9 @@ var Exporter = {
     },
 
     #
-    # Export trackers table from SQLite to CSV file
+    # Export trackers table from SQLite to CSV file.
     #
-    # @param  string  fileName  Full path with file name
+    # @param  string  fileName  Full path with file name.
     # @return void
     #
     _exportTrackerToCsv: func(fileName) {
@@ -178,10 +178,10 @@ var Exporter = {
     },
 
     #
-    # Change the technical name of a table column to something more human
+    # Change the technical name of a table column to something more human.
     #
-    # @param  string  columnName  Column name in DB
-    # @return string  Human column name
+    # @param  string  columnName  Column name in DB.
+    # @return string  Human column name.
     #
     _columnNameToHuman: func(columnName) {
            if (columnName == "id")           return 'ID';

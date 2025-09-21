@@ -11,7 +11,7 @@
 
 var M2024_10_30_13_01_CreateLogbooksTable = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -25,7 +25,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     },
 
     #
-    # Run the migrations
+    # Run the migrations.
     #
     # @return void
     #
@@ -36,7 +36,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     },
 
     #
-    # Migrate CSV file to the latest version
+    # Migrate CSV file to the latest version.
     #
     # @return void
     #
@@ -93,14 +93,14 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
 
     #
     # @param  string  version
-    # @return string  Full path to file
+    # @return string  Full path to file.
     #
     _getPathToCsvFile: func(version) {
         return g_Addon.storagePath ~ "/" ~ sprintf(Storage.CSV_LOGBOOK_FILE, version);
     },
 
      #
-    # Create a `logbooks` table in the database
+    # Create a `logbooks` table in the database.
     #
     # @return void
     #
@@ -133,7 +133,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     },
 
     #
-    # Import data from CSV file to DB
+    # Import data from CSV file to DB.
     #
     # @return void
     #

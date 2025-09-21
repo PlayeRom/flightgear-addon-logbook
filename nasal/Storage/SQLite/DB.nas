@@ -10,20 +10,20 @@
 #
 
 #
-# Facade for sqlite to have DB handler in one place
+# Facade for sqlite to have DB handler in one place.
 #
 var DB = {
-    # Static members
+    # Static members:
 
     _handler: nil,
 
-    # Static methods
+    # Static methods:
 
     #
     # Open DB connection
     #
-    # @param  string  file  SQLite file with path
-    # @return ghost  SQLite handler
+    # @param  string  file  SQLite file with path.
+    # @return ghost  SQLite handler.
     #
     open: func(file) {
         DB.close();
@@ -34,7 +34,7 @@ var DB = {
     },
 
     #
-    # Close DB connection
+    # Close DB connection.
     #
     # @return void
     #
@@ -46,7 +46,7 @@ var DB = {
     },
 
     #
-    # Prepare a query
+    # Prepare a query.
     #
     # @param  string  query
     # @return ghost  Statement
@@ -58,7 +58,7 @@ var DB = {
     #
     # Execute a query
     #
-    # @param  args  First argument must be a query, next optional values
+    # @param  args  First argument must be a query, next optional values.
     # @return vector
     #
     exec: func() {
@@ -66,9 +66,9 @@ var DB = {
     },
 
     #
-    # Finalize statement
+    # Finalize statement.
     #
-    # @param  ghost  stmt  Statement to finalize
+    # @param  ghost  stmt  Statement to finalize.
     # @return void
     #
     finalize: func(stmt) {

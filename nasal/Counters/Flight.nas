@@ -14,7 +14,7 @@
 #
 var Flight = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -48,7 +48,7 @@ var Flight = {
     },
 
     #
-    # Reset all counters called on start logging flight data (after take-off)
+    # Reset all counters called on start logging flight data (after take-off).
     #
     # @return void
     #
@@ -63,7 +63,7 @@ var Flight = {
     },
 
     #
-    # Update all counters
+    # Update all counters.
     #
     # @param  double  diffElapsedSec
     # @return void
@@ -87,7 +87,7 @@ var Flight = {
 
 
     #
-    # Get max altitude in ft
+    # Get max altitude in ft.
     #
     # @return double
     #
@@ -96,7 +96,7 @@ var Flight = {
     },
 
     #
-    # Get max groundspeed in knots
+    # Get max groundspeed in knots.
     #
     # @return double
     #
@@ -105,7 +105,7 @@ var Flight = {
     },
 
     #
-    # Get current groundspeed in knots
+    # Get current groundspeed in knots.
     #
     # @return double
     #
@@ -114,7 +114,7 @@ var Flight = {
     },
 
     #
-    # Get current airspeed in knots
+    # Get current airspeed in knots.
     #
     # @return double
     #
@@ -123,7 +123,7 @@ var Flight = {
     },
 
     #
-    # Get max speed in Mach number
+    # Get max speed in Mach number.
     #
     # @return double
     #
@@ -132,7 +132,7 @@ var Flight = {
     },
 
     #
-    # Get true heading
+    # Get true heading.
     #
     # @return double
     #
@@ -141,7 +141,7 @@ var Flight = {
     },
 
     #
-    # Get magnetic heading
+    # Get magnetic heading.
     #
     # @return double
     #
@@ -150,7 +150,7 @@ var Flight = {
     },
 
     #
-    # Get aircraft pitch in degrees
+    # Get aircraft pitch in degrees.
     #
     # @return double
     #
@@ -159,7 +159,7 @@ var Flight = {
     },
 
     #
-    # Record the fuel spent on a taxi
+    # Record the fuel spent on a taxi.
     #
     # @return void
     #
@@ -168,7 +168,7 @@ var Flight = {
     },
 
     #
-    # Get amount of fuel burned during a flight only
+    # Get amount of fuel burned during a flight only.
     #
     # @return double
     #
@@ -178,7 +178,7 @@ var Flight = {
     },
 
     #
-    # Record the distance traveled spent in a taxi
+    # Record the distance traveled spent in a taxi.
     #
     # @return void
     #
@@ -187,7 +187,7 @@ var Flight = {
     },
 
     #
-    # Take the total distance traveled, including taxi
+    # Take the total distance traveled, including taxi.
     #
     # @return double
     #
@@ -196,7 +196,7 @@ var Flight = {
     },
 
     #
-    # Take the distance traveled but only the flight itself
+    # Take the distance traveled but only the flight itself.
     #
     # @return double
     #

@@ -10,11 +10,11 @@
 #
 
 #
-# Storage class to save logbook data to data base
+# Storage class to save logbook data to data base.
 #
 var Storage = {
     #
-    # Constants
+    # Constants:
     #
     LOGBOOK_FILE    : "logbook.sqlite",
     TABLE_LOGBOOKS  : "logbooks",
@@ -22,16 +22,16 @@ var Storage = {
     TABLE_TRACKERS  : "trackers",
 
     #
-    # For old CSV storage maintenance
+    # For old CSV storage maintenance:
     #
     CSV_LOGBOOK_FILE : "logbook-v%s.csv",
     CSV_FILE_VERSION : "5",
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  filters  Filters object
-    # @param  hash  columns  Columns object
+    # @param  hash  filters  Filters object.
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(filters, columns) {
@@ -56,7 +56,7 @@ var Storage = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -66,14 +66,14 @@ var Storage = {
     },
 
     #
-    # @return string  Full path to sqlite file
+    # @return string  Full path to sqlite file.
     #
     _getPathToFile: func() {
         return g_Addon.storagePath ~ "/" ~ Storage.LOGBOOK_FILE;
     },
 
     #
-    # Export logbook from SQLite to CSV file as a separate thread job
+    # Export logbook from SQLite to CSV file as a separate thread job.
     #
     # @return void
     #
@@ -82,12 +82,12 @@ var Storage = {
     },
 
     #
-    # Store log data to DB
+    # Store log data to DB.
     #
-    # @param  hash  logData  LogData object
-    # @param  int|nil  logbookId  Record ID of `logbooks` table
+    # @param  hash  logData  LogData object.
+    # @param  int|nil  logbookId  Record ID of `logbooks` table.
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
-    #     without rest of stuff (used only for CSV recovery)
+    #     without rest of stuff (used only for CSV recovery).
     # @return void
     #
     saveLogData: func(logData, logbookId = nil, onlyIO = 0) {
@@ -106,10 +106,10 @@ var Storage = {
     },
 
     #
-    # Insert LogData into database
+    # Insert LogData into database.
     #
-    # @param  hash  logData  LogData object
-    # @return int|nil  ID of new record, or nil
+    # @param  hash  logData  LogData object.
+    # @return int|nil  ID of new record, or nil.
     #
     addItem: func(logData) {
         var query = "INSERT INTO " ~ Storage.TABLE_LOGBOOKS
@@ -154,10 +154,10 @@ var Storage = {
     },
 
     #
-    # Update record with given ID
+    # Update record with given ID.
     #
-    # @param  hash  logData  LogData object
-    # @param  int  logbookId  Record ID of `logbooks` table
+    # @param  hash  logData  LogData object.
+    # @param  int  logbookId  Record ID of `logbooks` table.
     # @return void
     #
     updateItem: func(logData, logbookId) {
@@ -223,10 +223,10 @@ var Storage = {
     },
 
     #
-    # Insert current data to trackers table
+    # Insert current data to trackers table.
     #
-    # @param  int|nil  logbookId  Record ID of `logbooks` table
-    # @param  hash  data  Hash with data
+    # @param  int|nil  logbookId  Record ID of `logbooks` table.
+    # @param  hash  data  Hash with data.
     # @return bool
     #
     addTrackerItem: func(logbookId, data) {
@@ -259,9 +259,9 @@ var Storage = {
     },
 
     #
-    # Convert row from DB to vector
+    # Convert row from DB to vector.
     #
-    # @param  hash  row  Row from table
+    # @param  hash  row  Row from table.
     # @return vector
     #
     _dbRowToVector: func(row) {
@@ -270,7 +270,7 @@ var Storage = {
     },
 
     #
-    # Load all data for filters, called once on startup
+    # Load all data for filters, called once on startup.
     #
     # @return void
     #
@@ -284,7 +284,7 @@ var Storage = {
     },
 
     #
-    # Load all filters from database
+    # Load all filters from database.
     #
     # @return void
     #
@@ -303,12 +303,12 @@ var Storage = {
     },
 
     #
-    # Update given filter with data from DB
+    # Update given filter with data from DB.
     #
     # @param  string  columnName
-    # @param  hash|nil  where  As hash {column: 'text': value: 'text'}
-    # @param  int  start  Start index counting from 0 as a first row of data, if -1 then don't use it
-    # @param  int  count  How many rows should be returned, if -1 then don't use it
+    # @param  hash|nil  where  As hash {column: 'text': value: 'text'}.
+    # @param  int  start  Start index counting from 0 as a first row of data, if -1 then don't use it.
+    # @param  int  count  How many rows should be returned, if -1 then don't use it.
     # @return void
     #
     _updateFilterData: func(columnName, where = nil, start = -1, count = -1) {
@@ -326,7 +326,7 @@ var Storage = {
             query ~= sprintf(" WHERE `%s` = '%s'", where.column, where.value);
         }
 
-        # COLLATE NOCASE - ignore case sensitivity during sorting
+        # COLLATE NOCASE - ignore case sensitivity during sorting.
         query ~= " ORDER BY value COLLATE NOCASE ASC";
 
         if (start > -1 and count > -1) {
@@ -357,7 +357,7 @@ var Storage = {
         elsif (columnName == Columns.LANDING
             or columnName == Columns.CRASH
         ) {
-            # we can't provide int for filters because we Filters.sort by strings
+            # We can't provide int for filters because we Filters.sort by strings.
             return value ? "1" : "";
         }
 
@@ -365,11 +365,11 @@ var Storage = {
     },
 
     #
-    # Load logbook data with given range, called when user open the Logbook dialog or change its page
+    # Load logbook data with given range, called when user open the Logbook dialog or change its page.
     #
     # @param  hash  callback  Callback object called on finish.
-    # @param  int  start  Start index counting from 0 as a first row of data
-    # @param  int  count  How many rows should be returned
+    # @param  int  start  Start index counting from 0 as a first row of data.
+    # @param  int  count  How many rows should be returned.
     # @param  bool  withHeaders  Set true when headers/filters must be change too in LogbookDialog canvas.
     # @return void
     #
@@ -415,7 +415,7 @@ var Storage = {
     },
 
     #
-    # Build where from filters
+    # Build where from filters.
     #
     # @return string
     #
@@ -440,7 +440,7 @@ var Storage = {
     },
 
     #
-    # Build select columns according to visibility flag
+    # Build select columns according to visibility flag.
     #
     # @return string
     #
@@ -458,7 +458,8 @@ var Storage = {
 
     #
     # @param  string  where  SQL query condition.
-    # @param  bool  withCheckVisible  If true then invisible columns will be skipped, otherwise all columns will be updated.
+    # @param  bool  withCheckVisible  If true then invisible columns will be skipped,
+    #                                 otherwise all columns will be updated.
     # @return void
     #
     _updateTotalsValues: func(where, withCheckVisible = 1) {
@@ -499,9 +500,9 @@ var Storage = {
     },
 
     #
-    # Append totals row to loadedData
+    # Append totals row to loadedData.
     #
-    # @param  bool  withCheckVisible  If false then return even those columns which have visible set to false
+    # @param  bool  withCheckVisible  If false then return even those columns which have visible set to false.
     # @return void
     #
     getTotalsRow: func(withCheckVisible = 1) {
@@ -548,7 +549,8 @@ var Storage = {
         }
 
         if (!setTotalsLabel) {
-            # The Totals label is still not set, because each column with totals is not displayed, so set it to the last column
+            # The Totals label is still not set, because each column with totals
+            # is not displayed, so set it to the last column.
             var count = size(totalsData);
             if (count > 1) {
                 totalsData[count - 2].colspan = 2;
@@ -567,10 +569,10 @@ var Storage = {
     },
 
     #
-    # @param  int  logbookId  Logbook ID in `logbooks` table
+    # @param  int  logbookId  Logbook ID in `logbooks` table.
     # @param  string  columnName
     # @param  string  value
-    # @return bool  Return true if successful
+    # @return bool  Return true if successful.
     #
     editData: func(logbookId, columnName, value) {
         if (logbookId == nil or columnName == nil or value == nil) {
@@ -622,7 +624,7 @@ var Storage = {
     },
 
     #
-    # Get total number of rows in CSV file (excluded headers row)
+    # Get total number of rows in CSV file (excluded headers row).
     #
     # @return int
     #
@@ -641,9 +643,9 @@ var Storage = {
     },
 
     #
-    # Get vector of data row by given id of row
+    # Get vector of data row by given id of row.
     #
-    # @param  int  logbookId  If -1 then return data with totals row
+    # @param  int  logbookId  If -1 then return data with totals row.
     # @return hash|nil
     #
     getLogData: func(logbookId) {
@@ -677,7 +679,7 @@ var Storage = {
     },
 
     #
-    # @param  int|nil  logbookId  Logbook ID to delete
+    # @param  int|nil  logbookId  Logbook ID to delete.
     # @return bool
     #
     deleteLog: func(logbookId) {
@@ -699,7 +701,7 @@ var Storage = {
     },
 
     #
-    # Get tracker data for given logbook ID
+    # Get tracker data for given logbook ID.
     #
     # @param  int|nil  logbookId  Logbook ID which tracker data should be returned.
     # @return vector|nil
@@ -716,7 +718,7 @@ var Storage = {
     },
 
     #
-    # Get max altitude value in tracker data for given logbook ID
+    # Get max altitude value in tracker data for given logbook ID.
     #
     # @param  int|nil  logbookId  Logbook ID which max altitude should be returned.
     # @return double|nil
@@ -739,7 +741,7 @@ var Storage = {
     },
 
     #
-    # Vacuum SQLite file
+    # Vacuum SQLite file.
     #
     # @return bool
     #

@@ -18,7 +18,6 @@ var FilterSelector = {
     #
     WINDOW_WIDTH           : 250,
     WINDOW_HEIGHT          : 300,
-    MAX_WINDOW_HEIGHT      : LogbookDialog.MAX_WINDOW_HEIGHT - 50,
     PADDING                : 10,
     BUTTON_HEIGHT          : 26,
     CLEAR_FILTER_VALUE     : "All",
@@ -42,6 +41,8 @@ var FilterSelector = {
             ],
             _columns: columns,
         };
+
+        me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 
         me._font     = "LiberationFonts/LiberationSans-Bold.ttf";
         me._fontSize = 14;
@@ -161,8 +162,8 @@ var FilterSelector = {
         var count = me._items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
         var windowHeight = int(count * canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT);
-        if (windowHeight > FilterSelector.MAX_WINDOW_HEIGHT) {
-            windowHeight = FilterSelector.MAX_WINDOW_HEIGHT;
+        if (windowHeight > me._MAX_WINDOW_HEIGHT) {
+            windowHeight = me._MAX_WINDOW_HEIGHT;
         }
 
         me._window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);

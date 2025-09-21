@@ -53,7 +53,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/Canvas/HelpDialog",
         "nasal/Canvas/FlightAnalysisDialog",
         "nasal/Canvas/LogbookDialog",
-        "nasal/Canvas/FilterSelector", # Must be after LogbookDialog
+        "nasal/Canvas/FilterSelector",
 
         "nasal/Counters/BaseCounter",
         "nasal/Counters/Environment",
@@ -71,7 +71,7 @@ var loadExtraNasalFiles = func(addon) {
         "nasal/LandingGear",
         "nasal/LogData",
         "nasal/Logbook",
-        "nasal/Settings", # Must be after FlightAnalysis
+        "nasal/Settings",
         "nasal/SpaceShuttle",
         "nasal/Sound",
 

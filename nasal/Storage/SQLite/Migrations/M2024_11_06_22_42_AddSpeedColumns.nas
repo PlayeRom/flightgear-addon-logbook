@@ -11,7 +11,7 @@
 
 var M2024_11_06_22_42_AddSpeedColumns = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -25,7 +25,7 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     },
 
     #
-    # Run the migrations
+    # Run the migrations.
     #
     # @return void
     #

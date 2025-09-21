@@ -10,7 +10,7 @@
 #
 
 #
-# BaseCounter class for update counters durations
+# BaseCounter class for update counters durations.
 #
 var BaseCounter = {
     #
@@ -39,7 +39,7 @@ var BaseCounter = {
     },
 
     #
-    # Reset all environment counters
+    # Reset all environment counters.
     #
     # @return void
     #
@@ -53,7 +53,7 @@ var BaseCounter = {
     },
 
     #
-    # Update all environment counters
+    # Update all environment counters.
     #
     # @return void
     #

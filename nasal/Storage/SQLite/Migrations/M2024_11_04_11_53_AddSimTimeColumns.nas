@@ -11,7 +11,7 @@
 
 var M2024_11_04_11_53_AddSimTimeColumns = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -25,7 +25,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     },
 
     #
-    # Run the migrations
+    # Run the migrations.
     #
     # @return void
     #
@@ -40,7 +40,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     },
 
     #
-    # Copy real date and time to sim date and time
+    # Copy real date and time to sim date and time.
     #
     # @return void
     #

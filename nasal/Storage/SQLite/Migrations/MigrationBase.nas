@@ -10,11 +10,11 @@
 #
 
 #
-# Base class for single DB migration
+# Base class for single DB migration.
 #
 var MigrationBase = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -23,10 +23,10 @@ var MigrationBase = {
     },
 
     #
-    # Create table in the database
+    # Create table in the database.
     #
     # @param  string  tableName
-    # @param  hash  columns  Vector of hashes with column `name` and `type`
+    # @param  hash  columns  Vector of hashes with column `name` and `type`.
     # @return void
     #
     createTable: func(tableName, columns) {
@@ -48,8 +48,8 @@ var MigrationBase = {
     #
     # @param  string  tableName
     # @param  string  columnName
-    # @param  string  type  Column type, default TEXT
-    # @param  string  default  Default value of column, default NULL
+    # @param  string  type  Column type, default TEXT.
+    # @param  string  default  Default value of column, default NULL.
     # @return void
     #
     addColumnToTable: func(tableName, columnName, type = "TEXT", default = "NULL") {

@@ -118,5 +118,5 @@ var Bootstrap = {
         if (g_Settings != nil) {
             g_Settings.del();
         }
-    }
+    },
 };

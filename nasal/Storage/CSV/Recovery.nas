@@ -15,15 +15,15 @@
 #
 var Recovery = {
     #
-    # Constants
+    # Constants:
     #
     RECOVERY_FILE: "recovery-v%s.csv",
     INTERVAL_SEC : 20,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  storage  CSV Storage object
+    # @param  hash  storage  CSV Storage object.
     # @return hash
     #
     new: func(storage) {
@@ -43,7 +43,7 @@ var Recovery = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -70,7 +70,7 @@ var Recovery = {
     },
 
     #
-    # Timer update function
+    # Timer update function.
     #
     # @return void
     #
@@ -79,9 +79,9 @@ var Recovery = {
     },
 
     #
-    # Save log data to recovery file
+    # Save log data to recovery file.
     #
-    # @param  hash  logData  LogData object
+    # @param  hash  logData  LogData object.
     # @return void
     #
     save: func(logData) {
@@ -91,7 +91,7 @@ var Recovery = {
     },
 
     #
-    # Clear recovery file
+    # Clear recovery file.
     #
     # @return void
     #
@@ -101,7 +101,7 @@ var Recovery = {
     },
 
     #
-    # Not used for CSV, but needed to unify calls with SQLite
+    # Not used for CSV, but needed to unify calls with SQLite.
     #
     # @return nil
     #

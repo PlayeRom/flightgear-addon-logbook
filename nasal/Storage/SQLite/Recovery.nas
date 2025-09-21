@@ -16,14 +16,14 @@
 #
 var Recovery = {
     #
-    # Constants
+    # Constants:
     #
     INTERVAL_SEC: 20,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  storage  Storage object
+    # @param  storage  Storage object.
     # @return hash
     #
     new: func(storage) {
@@ -42,7 +42,7 @@ var Recovery = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -71,7 +71,7 @@ var Recovery = {
     },
 
     #
-    # Timer update function
+    # Timer update function.
     #
     # @return void
     #
@@ -80,9 +80,9 @@ var Recovery = {
     },
 
     #
-    # Save log data to recovery file
+    # Save log data to recovery file.
     #
-    # @param  hash  logData  LogData object
+    # @param  hash  logData  LogData object.
     # @return void
     #
     save: func(logData) {
@@ -90,7 +90,7 @@ var Recovery = {
             # insert
             if (!me._inserted) {
                 # The inserted protects us from making more than one insert,
-                # if there is no ID after the first insert then something is broken
+                # if there is no ID after the first insert then something is broken.
                 me._logbookId = me._storage.addItem(logData);
                 me._inserted = true;
             }
@@ -102,7 +102,7 @@ var Recovery = {
     },
 
     #
-    # Clear recovery variable
+    # Clear recovery variable.
     #
     # @return void
     #

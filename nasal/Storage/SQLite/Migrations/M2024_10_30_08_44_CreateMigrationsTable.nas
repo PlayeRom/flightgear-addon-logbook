@@ -11,7 +11,7 @@
 
 var M2024_10_30_08_44_CreateMigrationsTable = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -25,7 +25,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     },
 
     #
-    # Run the migrations
+    # Run the migrations.
     #
     # @return void
     #
@@ -34,7 +34,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     },
 
     #
-    # Create a `migrations` table in the database
+    # Create a `migrations` table in the database.
     #
     # @return void
     #

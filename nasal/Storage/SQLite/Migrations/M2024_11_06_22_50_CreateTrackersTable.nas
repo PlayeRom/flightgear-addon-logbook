@@ -11,7 +11,7 @@
 
 var M2024_11_06_22_50_CreateTrackersTable = {
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -25,7 +25,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     },
 
     #
-    # Run the migrations
+    # Run the migrations.
     #
     # @return void
     #
@@ -34,7 +34,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     },
 
     #
-    # Create a `migrations` table in the database
+    # Create a `migrations` table in the database.
     #
     # @return void
     #

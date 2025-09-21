@@ -10,9 +10,9 @@
 #
 
 #
-# Storage class to save logbook data to CSV file
+# Storage class to save logbook data to CSV file.
 #
-# @deprecated This will be phased out in favor of SQLite
+# @deprecated This will be phased out in favor of SQLite.
 #
 var Storage = {
     #
@@ -46,10 +46,10 @@ var Storage = {
     INDEX_NOTE       : 19,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  filters  Filters object
-    # @param  hash  columns  Columns object
+    # @param  hash  filters  Filters object.
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(filters, columns) {
@@ -81,7 +81,7 @@ var Storage = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -91,14 +91,14 @@ var Storage = {
 
     #
     # @param  string  version
-    # @return string  Full path to file
+    # @return string  Full path to file.
     #
     _getPathToFile: func(version) {
         return g_Addon.storagePath ~ "/" ~ sprintf(Storage.CSV_LOGBOOK_FILE, version);
     },
 
     #
-    # Reset total amount to 0
+    # Reset total amount to 0.
     #
     # @return void
     #
@@ -111,7 +111,7 @@ var Storage = {
     },
 
     #
-    # @return bool - Return true if migration was done
+    # @return  bool  Return true if migration was done.
     #
     _migrateVersion: func() {
         var migrationCsv = MigrationCsv.new();
@@ -166,7 +166,7 @@ var Storage = {
     },
 
     #
-    # Copy file from older version to the newest
+    # Copy file from older version to the newest.
     #
     # @param  string  oldFile
     # @param  string  newFile
@@ -181,7 +181,7 @@ var Storage = {
     },
 
     #
-    # If logbook file doesn't exist then create it with headers
+    # If logbook file doesn't exist then create it with headers.
     #
     # @return void
     #
@@ -222,12 +222,12 @@ var Storage = {
     },
 
     #
-    # Store log data to logbook file
+    # Store log data to logbook file.
     #
-    # @param  hash  logData  LogData object
-    # @param  int  id|nil  Logbook ID for SQLite storage
+    # @param  hash  logData  LogData object.
+    # @param  int  id|nil  Logbook ID for SQLite storage.
     # @param  bool  onlyIO  Set true for execute only I/O operation on the file,
-    #     without rest of stuff (used only for CSV recovery)
+    #     without rest of stuff (used only for CSV recovery).
     # @return void
     #
     saveLogData: func(logData, id = nil, onlyIO = 0) {
@@ -246,8 +246,8 @@ var Storage = {
     },
 
     #
-    # @param  hash  logData  LogData object
-    # @param  hash  file  file handler
+    # @param  hash  logData  LogData object.
+    # @param  hash  file  file handler.
     # @return void
     #
     addItem: func(logData, file) {
@@ -387,8 +387,8 @@ var Storage = {
     },
 
     #
-    # @param  int  start  Start index counting from 0 as a first row of data
-    # @param  int  count  How many rows should be returned
+    # @param  int  start  Start index counting from 0 as a first row of data.
+    # @param  int  count  How many rows should be returned.
     # @return void
     #
     _loadDataRange: func(start, count) {
@@ -435,7 +435,7 @@ var Storage = {
     },
 
     #
-    # Callback function when the _loadDataRange finishes work
+    # Callback function when the _loadDataRange finishes work.
     #
     # @return void
     #
@@ -445,7 +445,7 @@ var Storage = {
     },
 
     #
-    # Append totals row to loadedData
+    # Append totals row to loadedData.
     #
     # @return void
     #
@@ -495,10 +495,10 @@ var Storage = {
     },
 
     #
-    # @param  int  rowIndex  Where 0 = first data row, not header row
+    # @param  int  rowIndex  Where 0 = first data row, not header row.
     # @param  string  columnName
     # @param  string  value
-    # @return bool  Return true if successful
+    # @return bool  Return true if successful.
     #
     editData: func(rowIndex, columnName, value) {
         if (rowIndex == nil or columnName == nil or value == nil) {
@@ -528,7 +528,7 @@ var Storage = {
     },
 
     #
-    # @param  int  rowIndex  Where 0 = first data row, not header row
+    # @param  int  rowIndex  Where 0 = first data row, not header row.
     # @param  string  columnName
     # @param  string  value
     # @param  int  columnIndex
@@ -561,7 +561,7 @@ var Storage = {
     },
 
     #
-    # Callback function when the editDataThread thread finishes work
+    # Callback function when the editDataThread thread finishes work.
     #
     # @return void
     #
@@ -573,8 +573,8 @@ var Storage = {
     },
 
     #
-    # @param  bool  reCalcTotals  Set true for recalculate totals, because data can changed
-    # @param  bool  resetFilters  Set true for reload filters, because data can changed
+    # @param  bool  reCalcTotals  Set true for recalculate totals, because data can changed.
+    # @param  bool  resetFilters  Set true for reload filters, because data can changed.
     # @return void
     #
     _saveAllData: func(reCalcTotals, resetFilters) {
@@ -615,7 +615,7 @@ var Storage = {
     },
 
     #
-    # Search header by text in given vector and return index of it
+    # Search header by text in given vector and return index of it.
     #
     # @param  string  headerText
     # @return int|nil
@@ -638,9 +638,9 @@ var Storage = {
     },
 
     #
-    # Increase values in totals with given items data
+    # Increase values in totals with given items data.
     #
-    # @param  vector  columns  Vector of hashes, prepared to list view
+    # @param  vector  columns  Vector of hashes, prepared to list view.
     # @return void
     #
     _countTotals: func(columns) {
@@ -665,7 +665,7 @@ var Storage = {
     },
 
     #
-    # Get total number of rows in CSV file (excluded headers row)
+    # Get total number of rows in CSV file (excluded headers row).
     #
     # @return int
     #
@@ -674,9 +674,9 @@ var Storage = {
     },
 
     #
-    # Get vector of data row by given index of row
+    # Get vector of data row by given index of row.
     #
-    # @param  int  index  If -1 then return data with totals row
+    # @param  int  index  If -1 then return data with totals row.
     # @return hash|nil
     #
     getLogData: func(index) {
@@ -701,7 +701,7 @@ var Storage = {
     },
 
     #
-    # @param  int  index  Index to delete
+    # @param  int  index  Index to delete.
     # @return bool
     #
     deleteLog: func(index) {
@@ -717,7 +717,7 @@ var Storage = {
     },
 
     #
-    # @param  int  index  Index to delete
+    # @param  int  index  Index to delete.
     # @return void
     #
     _deleteLog: func(index) {
@@ -731,7 +731,7 @@ var Storage = {
     },
 
     #
-    # Callback function when the deleteLogThread finishes work
+    # Callback function when the deleteLogThread finishes work.
     #
     # @return void
     #
@@ -744,7 +744,7 @@ var Storage = {
     },
 
     #
-    # Export logbook from SQLite to CSV file as a separate thread job
+    # Export logbook from SQLite to CSV file as a separate thread job.
     #
     # @return void
     #
@@ -755,8 +755,8 @@ var Storage = {
     #
     # Insert current data to trackers table. This is using only for SQLite version.
     #
-    # @param  int|nil  logbookId  Record ID of `logbooks` table
-    # @param  hash  data  Hash with data
+    # @param  int|nil  logbookId  Record ID of `logbooks` table.
+    # @param  hash  data  Hash with data.
     # @return bool
     #
     addTrackerItem: func(logbookId, data) {
