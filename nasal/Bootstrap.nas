@@ -110,8 +110,8 @@ var Bootstrap = {
     # @return void
     #
     _initDevMode: func() {
-        var reloadMenu = DevReload.new();
-        var env = DevEnv.new();
+        var reloadMenu = dev.ReloadMenu.new(g_Addon);
+        var env = dev.Env.new(g_Addon);
 
         env.getValue("DEV_MODE")
             ? reloadMenu.addMenu()

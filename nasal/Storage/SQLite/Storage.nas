@@ -280,7 +280,7 @@ var Storage = {
         # Enable Logbook menu because we have a data
         gui.menuEnable("logbook-addon-main-dialog", true);
 
-        Log.print("loadAllDataThread finished");
+        Log.print("loadAllData finished");
     },
 
     #
