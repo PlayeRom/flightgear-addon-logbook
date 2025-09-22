@@ -37,6 +37,8 @@ var Loader = {
     #
     load: func(path, namespace) {
         var modules = [
+            "nasal/Utils/Dev/DevEnv",
+            "nasal/Utils/Dev/DevReloadMenu",
             "nasal/Utils/Callback",
             "nasal/Utils/Listeners",
             "nasal/Utils/Log",
@@ -124,16 +126,8 @@ var Loader = {
             "nasal/Canvas/Widgets/Styles/Components/MapButtons",
         ];
 
-        # Add files to "dev" namespace
-        var devs = [
-            "nasal/Utils/Dev/DevBase",
-            "nasal/Utils/Dev/Env",
-            "nasal/Utils/Dev/ReloadMenu",
-        ];
-
         me._loadVectorOfModules(path, modules, namespace);
         me._loadVectorOfModules(path, widgets, "canvas");
-        me._loadVectorOfModules(path, devs, "dev");
     },
 
     #

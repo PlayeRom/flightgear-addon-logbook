@@ -13,7 +13,7 @@
 # A class that adds a "Dev Reload" item to the add-on menu to reload the add-on's Nasal code.
 # This is for development purposes only.
 #
-var ReloadMenu = {
+var DevReloadMenu = {
     #
     # Constants:
     #
@@ -23,16 +23,12 @@ var ReloadMenu = {
     #
     # Constructor.
     #
-    # @param  ghost  addon  The addons.Addon object.
     # @return hash
     #
-    new: func(addon) {
-        var me = {parents: [
-            ReloadMenu,
-            DevBase.new(addon),
-        ]};
+    new: func() {
+        var me = { parents: [DevReloadMenu]};
 
-        me._reloadMenuName = me._addon.id ~ "-dev-reload";
+        me._reloadMenuName = g_Addon.id ~ "-dev-reload";
 
         return me;
     },
@@ -45,28 +41,28 @@ var ReloadMenu = {
     addMenu: func() {
         var menuNode = me._getMenuNode();
         if (menuNode == nil) {
-            me._printLog("menu node not found");
+            Log.alert("menu node not found");
             return;
         }
 
         if (me._isMenuItemExists(menuNode)) {
-            me._printLog("menu item already exist");
+            Log.alert("menu item already exist");
             return;
         }
 
         var data = {
-            label  : ReloadMenu.RELOAD_MENU_LABEL,
+            label  : DevReloadMenu.RELOAD_MENU_LABEL,
             name   : me._reloadMenuName,
             binding: {
                 "command": "addon-reload",
-                "id"     : me._addon.id,
+                "id"     : g_Addon.id,
             }
         };
 
         menuNode.addChild("item").setValues(data);
         fgcommand("gui-redraw");
 
-        me._printLog("the menu item \"", ReloadMenu.RELOAD_MENU_LABEL, "\" has been added.");
+        Log.alert("the menu item \"", DevReloadMenu.RELOAD_MENU_LABEL, "\" has been added.");
     },
 
     #
@@ -77,20 +73,20 @@ var ReloadMenu = {
     removeMenu: func() {
         var menuNode = me._getMenuNode();
         if (menuNode == nil) {
-            me._printLog("menu node not found");
+            Log.alert("menu node not found");
             return;
         }
 
         var item = me._getMenuItem(menuNode);
         if (item == nil) {
-            me._printLog("menu item already doesn't exist");
+            Log.alert("menu item already doesn't exist");
             return;
         }
 
         item.remove();
         fgcommand("gui-redraw");
 
-        me._printLog("the menu item \"", ReloadMenu.RELOAD_MENU_LABEL, "\" has been removed.");
+        Log.alert("the menu item \"", DevReloadMenu.RELOAD_MENU_LABEL, "\" has been removed.");
     },
 
     #
@@ -101,7 +97,7 @@ var ReloadMenu = {
     _getMenuNode: func() {
         foreach (var menu; props.globals.getNode("/sim/menubar/default").getChildren("menu")) {
             var name = menu.getChild("label");
-            if (name != nil and name.getValue() == ReloadMenu.MAIN_MENU_LABEL) {
+            if (name != nil and name.getValue() == DevReloadMenu.MAIN_MENU_LABEL) {
                 return menu;
             }
         }
