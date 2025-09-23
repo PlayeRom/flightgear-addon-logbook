@@ -461,7 +461,7 @@ var FlightAnalysisDialog = {
             var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
                 .setText("Speed");
 
-            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, {})
+            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, canvas.style, {})
                 .setFixedSize(70, 26);
             if (view.hasmember(comboBox, "createItem")) {
                 # For next addMenuItem is deprecated

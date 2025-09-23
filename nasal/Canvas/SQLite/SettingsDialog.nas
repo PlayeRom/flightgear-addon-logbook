@@ -236,7 +236,7 @@ var SettingsDialog = {
 
         hBoxLayout.addItem(me._getLabel("Map provider"));
 
-        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, {});
+        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollDataContent, canvas.style, {});
         if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
             # For next addMenuItem is deprecated
             comboBox.createItem("OpenStreetMap", "OpenStreetMap");
