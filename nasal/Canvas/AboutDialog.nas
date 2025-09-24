@@ -31,6 +31,9 @@ var AboutDialog = {
             Dialog.new(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
+        # Let the parent know who their child is.
+        me.setChild(me, AboutDialog);
+
         me.bgImage.hide();
 
         me.setPositionOnCenter();
@@ -38,7 +41,7 @@ var AboutDialog = {
         me._vbox.addSpacing(AboutDialog.PADDING);
         me._drawContent();
 
-        var buttonBoxClose = me._drawBottomBar("Close", func { me._window.hide(); });
+        var buttonBoxClose = me._drawBottomBar("Close", func { me.hide(); });
         me._vbox.addSpacing(AboutDialog.PADDING);
         me._vbox.addItem(buttonBoxClose);
         me._vbox.addSpacing(AboutDialog.PADDING);

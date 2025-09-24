@@ -37,6 +37,9 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
+        # Let the parent know who their child is.
+        me.setChild(me, SettingsDialog);
+
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();
         me._logItemsPerPage = g_Settings.getLogItemsPerPage();

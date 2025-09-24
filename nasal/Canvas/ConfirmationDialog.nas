@@ -35,6 +35,9 @@ var ConfirmationDialog = {
             )
         ] };
 
+        # Let the parent know who their child is.
+        me.setChild(me, ConfirmationDialog);
+
         me.bgImage.hide();
 
         me._logIndex      = nil;
@@ -65,7 +68,6 @@ var ConfirmationDialog = {
         buttonBox.addItem(btnCancel);
 
         me.setPositionOnCenter();
-        me._window.hide();
 
         return me;
     },

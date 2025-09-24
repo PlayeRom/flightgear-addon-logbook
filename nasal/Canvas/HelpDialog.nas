@@ -38,6 +38,9 @@ var HelpDialog = {
             ),
         ] };
 
+        # Let the parent know who their child is.
+        me.setChild(me, HelpDialog);
+
         me.bgImage.hide();
 
         me.setPositionOnCenter();
@@ -143,7 +146,7 @@ var HelpDialog = {
             .setText("Close")
             .setFixedSize(75, 26)
             .listen("clicked", func {
-                me._window.hide();
+                me.hide();
             });
 
         buttonBox.addItem(btnAddonDir);

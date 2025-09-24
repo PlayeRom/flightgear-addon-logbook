@@ -36,11 +36,8 @@ var DetailsDialog = {
             _columns: columns,
         };
 
-        # Override window del method for hide InputDialog and ConfirmationDialog
-        var self = me;
-        me._window.del = func() {
-            call(DetailsDialog.hide, [], self);
-        };
+        # Let the parent know who their child is.
+        me.setChild(me, DetailsDialog);
 
         me._isUsingSQLite        = Utils.isUsingSQLite();
         me._parent               = nil; # LogbookDialog object

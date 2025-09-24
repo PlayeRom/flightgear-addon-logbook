@@ -30,6 +30,9 @@ var Dialog = {
             _height: height,
         };
 
+        me._childMe = nil;
+        me._childCls = nil;
+
         # Recognize the path to the canvas property.
         # For FG versions up to and including 2024 this is ‘/sim/gui/canvas’, but for the dev version it is ‘/canvas/desktop’
         # TODO: fix it in future when 2024 will be obsolete and "/canvas/desktop" will be a standard.
@@ -54,6 +57,8 @@ var Dialog = {
             # paper.png has 1360x1024 px
             .setSize(LogbookDialog.MAX_WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.MAX_WINDOW_WIDTH));
         me.toggleBgImage();
+
+        me._handleKeys();
 
         me._windowPropIndex = nil;
 
@@ -120,15 +125,11 @@ var Dialog = {
         window.del = func() {
             # This method will be call after click on (X) button in canvas top
             # bar and here we want hide the window only.
-            # FG 2024.x version provide destroy_on_close, but for 2020.3.x it's
-            # unavailable, so we are handling it manually by this trick.
-            call(Dialog.hide, [], self);
-        };
+            # FG version 2024.x supports the destroy_on_close flag, which could
+            # be set to false, then FG would call hide() on the window itself,
+            # but this will not give us the ability to call the child function.
 
-        # Because window.del only hide the window, we have to add extra method
-        # to really delete the window.
-        window.destroy = func() {
-            call(canvas.Window.del, [], me);
+            self._callMethodByChild("hide");
         };
 
         return window;
@@ -141,7 +142,9 @@ var Dialog = {
     #
     del: func() {
         me._listeners.del();
-        me._window.destroy();
+
+        # Since we override window.del() to only hide the window, we need to actually destroy the window here by:
+        call(canvas.Window.del, [], me._window);
     },
 
     #
@@ -330,5 +333,56 @@ var Dialog = {
         }
 
         return "/canvas/desktop";
+    },
+
+    #
+    # Let the Dialog (parent) know who their child is.
+    # Call this method in the child constructor if your child class needs
+    # to call its stuff in methods like hide() or del().
+    #
+    # @param  hash  childMe  Child instance of object.
+    # @param  hash  childCls  Child class hash.
+    # @return void
+    #
+    setChild: func(childMe, childCls) {
+        me._childMe = childMe;
+        me._childCls = childCls;
+    },
+
+    #
+    # Call child given method if exists.
+    #
+    # @param  string  funcName  Method name to call.
+    # @return bool  Return true if function has been called, otherwise return false.
+    #
+    _callMethodByChild: func(funcName) {
+        if (me._childMe != nil and me._childCls != nil and typeof(me._childCls[funcName]) == "func") {
+            return call(me._childCls[funcName], [], me._childMe);
+        }
+
+        # Child doesn't have give function name, so run it by self.
+        return call(Dialog[funcName], [], me);
+    },
+
+    #
+    # Handle keydown listener for window.
+    #
+    # @return void
+    #
+    _handleKeys: func() {
+        me._window.addEventListener("keydown", func(event) {
+            # Possible fields of event:
+            #   event.key - key as name
+            #   event.keyCode - key as code
+            # Modifiers:
+            #   event.shiftKey
+            #   event.ctrlKey
+            #   event.altKey
+            #   event.metaKey
+
+            if (event.key == "Escape") {
+                me._callMethodByChild("hide");
+            }
+        });
     },
 };

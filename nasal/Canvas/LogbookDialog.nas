@@ -60,6 +60,9 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
+        # Let the parent know who their child is.
+        me.setChild(me, LogbookDialog);
+
         if (me._isUsingSQLite) {
             me._storage.loadAllData();
         }
@@ -69,12 +72,6 @@ var LogbookDialog = {
         me._addonNodePath = g_Addon.node.getPath();
 
         me.setPositionOnCenter();
-
-        # Override window del method for close FilterSelector
-        var self = me;
-        me._window.del = func() {
-            call(LogbookDialog.hide, [], self);
-        };
 
         me._startIndex      = 0;
         me._data            = [];

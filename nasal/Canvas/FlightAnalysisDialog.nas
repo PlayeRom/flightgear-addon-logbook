@@ -47,15 +47,12 @@ var FlightAnalysisDialog = {
             _isFG2024Version: Utils.isFG2024Version(),
         };
 
+        # Let the parent know who their child is.
+        me.setChild(me, FlightAnalysisDialog);
+
         me.bgImage.hide();
 
         me.setPositionOnCenter();
-
-        # Override window del method (X button on bar) for stop _playTimer
-        var self = me;
-        me._window.del = func() {
-            call(FlightAnalysisDialog.hide, [], self);
-        };
 
         me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;

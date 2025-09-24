@@ -28,14 +28,11 @@ var InputDialog = {
     new: func(columns) {
         var me = { parents: [
             InputDialog,
-            Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value")
+            Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value"),
         ] };
 
-        # Override window del method for close FilterSelector
-        var self = me;
-        me._window.del = func() {
-            call(InputDialog.hide, [], self);
-        };
+        # Let the parent know who their child is.
+        me.setChild(me, InputDialog);
 
         me.bgImage.hide();
 
@@ -83,7 +80,6 @@ var InputDialog = {
         buttonBox.addItem(btnCancel);
 
         me.setPositionOnCenter();
-        me._window.hide();
 
         return me;
     },

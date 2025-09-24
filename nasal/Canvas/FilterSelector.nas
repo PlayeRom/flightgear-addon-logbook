@@ -42,6 +42,9 @@ var FilterSelector = {
             _columns: columns,
         };
 
+        # Let the parent know who their child is.
+        me.setChild(me, FilterSelector);
+
         me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 
         me._font     = "LiberationFonts/LiberationSans-Bold.ttf";

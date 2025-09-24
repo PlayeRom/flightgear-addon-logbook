@@ -37,6 +37,9 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
+        # Let the parent know who their child is.
+        me.setChild(me, SettingsDialog);
+
         me._soundOption = g_Settings.isSoundEnabled();
 
         me.bgImage.hide();
@@ -87,7 +90,7 @@ var SettingsDialog = {
 
         me._logbook.resetLogbookDialog();
 
-        me._window.hide();
+        me.hide();
     },
 
     #
@@ -216,7 +219,7 @@ var SettingsDialog = {
         var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
             .setText("Cancel")
             .setFixedSize(65, 26)
-            .listen("clicked", func { me._window.hide(); });
+            .listen("clicked", func { me.hide(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(btnSave);
