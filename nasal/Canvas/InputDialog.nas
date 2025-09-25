@@ -13,6 +13,8 @@
 # InputDialog class
 #
 var InputDialog = {
+    CLASS: "InputDialog",
+
     #
     # Constants
     #
@@ -32,7 +34,7 @@ var InputDialog = {
         ] };
 
         # Let the parent know who their child is.
-        me.setChild(me, InputDialog);
+        me.parents[1].setChild(me, InputDialog);
 
         me.bgImage.hide();
 

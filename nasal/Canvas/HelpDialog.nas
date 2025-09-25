@@ -13,6 +13,8 @@
 # HelpDialog class to display help text
 #
 var HelpDialog = {
+    CLASS: "HelpDialog",
+
     #
     # Constants
     #
@@ -39,7 +41,7 @@ var HelpDialog = {
         ] };
 
         # Let the parent know who their child is.
-        me.setChild(me, HelpDialog);
+        me.parents[1].setChild(me, HelpDialog);
 
         me.bgImage.hide();
 

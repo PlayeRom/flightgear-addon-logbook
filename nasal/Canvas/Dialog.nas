@@ -13,6 +13,8 @@
 # Base Dialog class
 #
 var Dialog = {
+    CLASS: "Dialog",
+
     #
     # Constructor
     #
@@ -357,7 +359,14 @@ var Dialog = {
     #
     _callMethodByChild: func(funcName) {
         if (me._childMe != nil and me._childCls != nil and typeof(me._childCls[funcName]) == "func") {
+            Log.print("Dialog._callMethodByChild(", funcName, ") - by child ", me._childCls.CLASS);
             return call(me._childCls[funcName], [], me._childMe);
+        }
+
+        if (me._childCls == nil) {
+            Log.print("Dialog._callMethodByChild(", funcName, ") - NO child");
+        } else {
+            Log.print("Dialog._callMethodByChild(", funcName, ") - child ", me._childCls.CLASS, " has no function ", funcName);
         }
 
         # Child doesn't have give function name, so run it by self.

@@ -13,6 +13,8 @@
 # FlightAnalysisDialog class
 #
 var FlightAnalysisDialog = {
+    CLASS: "FlightAnalysisDialog",
+
     #
     # Constants
     #
@@ -48,7 +50,7 @@ var FlightAnalysisDialog = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, FlightAnalysisDialog);
+        me.parents[1].setChild(me, FlightAnalysisDialog);
 
         me.bgImage.hide();
 

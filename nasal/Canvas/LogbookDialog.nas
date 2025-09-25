@@ -13,6 +13,8 @@
 # LogbookDialog class to display logbook
 #
 var LogbookDialog = {
+    CLASS: "LogbookDialog",
+
     #
     # Constants
     #
@@ -61,7 +63,7 @@ var LogbookDialog = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, LogbookDialog);
+        me.parents[1].setChild(me, LogbookDialog);
 
         if (me._isUsingSQLite) {
             me._storage.loadAllData();

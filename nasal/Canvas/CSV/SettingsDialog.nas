@@ -13,6 +13,8 @@
 # SettingsDialog class to display settings options for version with CSV file
 #
 var SettingsDialog = {
+    CLASS: "SettingsDialog",
+
     #
     # Constants
     #
@@ -38,7 +40,7 @@ var SettingsDialog = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, SettingsDialog);
+        me.parents[1].setChild(me, SettingsDialog);
 
         me._soundOption = g_Settings.isSoundEnabled();
 

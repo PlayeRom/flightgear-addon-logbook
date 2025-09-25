@@ -13,6 +13,8 @@
 # FilterSelector class
 #
 var FilterSelector = {
+    CLASS: "FilterSelector",
+
     #
     # Constants
     #
@@ -43,7 +45,7 @@ var FilterSelector = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, FilterSelector);
+        me.parents[1].setChild(me, FilterSelector);
 
         me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 

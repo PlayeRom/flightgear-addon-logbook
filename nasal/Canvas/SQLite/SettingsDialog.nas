@@ -13,6 +13,8 @@
 # SettingsDialog class to display settings options for version with SQLite DB
 #
 var SettingsDialog = {
+    CLASS: "SettingsDialog",
+
     #
     # Constants
     #
@@ -38,7 +40,7 @@ var SettingsDialog = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, SettingsDialog);
+        me.parents[1].setChild(me, SettingsDialog);
 
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         me._soundOption     = g_Settings.isSoundEnabled();

@@ -13,6 +13,8 @@
 # DetailsDialog class to display one row details
 #
 var DetailsDialog = {
+    CLASS: "DetailsDialog",
+
     #
     # Constants
     #
@@ -37,7 +39,7 @@ var DetailsDialog = {
         };
 
         # Let the parent know who their child is.
-        me.setChild(me, DetailsDialog);
+        me.parents[1].setChild(me, DetailsDialog);
 
         me._isUsingSQLite        = Utils.isUsingSQLite();
         me._parent               = nil; # LogbookDialog object

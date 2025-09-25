@@ -13,6 +13,8 @@
 # ConfirmationDialog class
 #
 var ConfirmationDialog = {
+    CLASS: "ConfirmationDialog",
+
     #
     # Constants
     #
@@ -36,7 +38,7 @@ var ConfirmationDialog = {
         ] };
 
         # Let the parent know who their child is.
-        me.setChild(me, ConfirmationDialog);
+        me.parents[1].setChild(me, ConfirmationDialog);
 
         me.bgImage.hide();
 

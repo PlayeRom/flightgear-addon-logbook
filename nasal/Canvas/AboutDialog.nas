@@ -13,6 +13,8 @@
 # AboutDialog class to display about info
 #
 var AboutDialog = {
+    CLASS: "AboutDialog",
+
     #
     # Constants
     #
@@ -32,7 +34,7 @@ var AboutDialog = {
         ] };
 
         # Let the parent know who their child is.
-        me.setChild(me, AboutDialog);
+        me.parents[1].setChild(me, AboutDialog);
 
         me.bgImage.hide();
 
