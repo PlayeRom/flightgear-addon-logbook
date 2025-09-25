@@ -201,7 +201,7 @@ var Environment = {
     #
     _daysInMonth: func(year, month) {
         var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        if (month == 2 and ((math.fmod(year, 4) == 0 and math.fmod(year, 100) != 0) or math.fmod(year, 400) == 0)) {
+        if (month == 2 and ((math.mod(year, 4) == 0 and math.mod(year, 100) != 0) or math.mod(year, 400) == 0)) {
             return 29;  # February in a leap year
         }
 
