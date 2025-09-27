@@ -39,14 +39,13 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, SettingsDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, SettingsDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me._soundOption = g_Settings.isSoundEnabled();
 
         me.bgImage.hide();
-
-        me.setPositionOnCenter();
 
         me._lineEditItemsPerPage = nil;
         me._hBoxLayout = nil;

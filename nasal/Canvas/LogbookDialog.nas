@@ -62,8 +62,9 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, LogbookDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, LogbookDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         if (me._isUsingSQLite) {
             me._storage.loadAllData();
@@ -72,8 +73,6 @@ var LogbookDialog = {
         me._itemsPerPage = g_Settings.getLogItemsPerPage();
 
         me._addonNodePath = g_Addon.node.getPath();
-
-        me.setPositionOnCenter();
 
         me._startIndex      = 0;
         me._data            = [];

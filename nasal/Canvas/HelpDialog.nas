@@ -40,12 +40,11 @@ var HelpDialog = {
             ),
         ] };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, HelpDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, HelpDialog);  # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me.bgImage.hide();
-
-        me.setPositionOnCenter();
 
         me._canvas.set("background", me.style.CANVAS_BG);
 

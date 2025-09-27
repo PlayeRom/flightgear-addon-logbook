@@ -38,8 +38,9 @@ var DetailsDialog = {
             _columns: columns,
         };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, DetailsDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, DetailsDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me._isUsingSQLite        = Utils.isUsingSQLite();
         me._parent               = nil; # LogbookDialog object
@@ -78,8 +79,6 @@ var DetailsDialog = {
         me._scrollData.setLayout(vBoxLayout);
 
         me._drawBottomBar();
-
-        me.setPositionOnCenter();
 
         return me;
     },

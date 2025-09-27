@@ -49,12 +49,11 @@ var FlightAnalysisDialog = {
             _isFG2024Version: Utils.isFG2024Version(),
         };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, FlightAnalysisDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, FlightAnalysisDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me.bgImage.hide();
-
-        me.setPositionOnCenter();
 
         me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;

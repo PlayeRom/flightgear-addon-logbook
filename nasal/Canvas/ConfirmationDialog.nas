@@ -37,8 +37,9 @@ var ConfirmationDialog = {
             )
         ] };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, ConfirmationDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, ConfirmationDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me.bgImage.hide();
 
@@ -68,8 +69,6 @@ var ConfirmationDialog = {
 
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
-
-        me.setPositionOnCenter();
 
         return me;
     },

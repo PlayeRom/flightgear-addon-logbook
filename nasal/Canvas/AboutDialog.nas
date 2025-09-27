@@ -33,12 +33,11 @@ var AboutDialog = {
             Dialog.new(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
         ] };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, AboutDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, AboutDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me.bgImage.hide();
-
-        me.setPositionOnCenter();
 
         me._vbox.addSpacing(AboutDialog.PADDING);
         me._drawContent();

@@ -33,8 +33,9 @@ var InputDialog = {
             Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value"),
         ] };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, InputDialog);
+        var dialogParent = me.parents[1];
+        dialogParent.setChild(me, InputDialog); # Let the parent know who their child is.
+        dialogParent.setPositionOnCenter();
 
         me.bgImage.hide();
 
@@ -80,8 +81,6 @@ var InputDialog = {
         buttonBox.addStretch(1);
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
-
-        me.setPositionOnCenter();
 
         return me;
     },
