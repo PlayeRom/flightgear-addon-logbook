@@ -80,7 +80,7 @@ var AboutDialog = {
         # TODO: Unfortunately, it seems that FG incorrectly handles wordWrap for widgets.Label, artificially narrowing
         # the Label's width so it doesn't adhere to the available window width. Therefore, I don't use wordWrap and
         # manually break the text using the \n character.
-        me._vbox.addItem(me._getLabel("This add-on uses © OpenStreetMap and\nOpenTopoMap to draw the map."));
+        me._vbox.addItem(me._getLabel("This add-on uses © OpenStreetMap and OpenTopoMap to draw the map.", true));
 
         me._vbox.addStretch(1);
 
@@ -105,7 +105,7 @@ var AboutDialog = {
     # @return ghost  Label widget.
     #
     _getLabel: func(text, wordWrap = 0) {
-        var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {wordWrap: wordWrap})
+        var label = canvas.gui.widgets.Label.new(me._group, canvas.style, { wordWrap: wordWrap })
             .setText(text);
 
         if (Utils.isFG2024Version()) {
