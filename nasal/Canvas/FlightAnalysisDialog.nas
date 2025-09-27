@@ -462,7 +462,7 @@ var FlightAnalysisDialog = {
 
             var comboBox = canvas.gui.widgets.ComboBox.new(me._group, canvas.style, {})
                 .setFixedSize(70, 26);
-            if (view.hasmember(comboBox, "createItem")) {
+            if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
                 # For next addMenuItem is deprecated
                 comboBox.createItem( "1x",  1);
                 comboBox.createItem( "2x",  2);
@@ -509,7 +509,7 @@ var FlightAnalysisDialog = {
 
             var comboBox = canvas.gui.widgets.ComboBox.new(me._group, {})
                 .setFixedSize(100, 26);
-            if (view.hasmember(comboBox, "createItem")) {
+            if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
                 # For next addMenuItem is deprecated
                 comboBox.createItem("distance", canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
                 comboBox.createItem("time",     canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP);
