@@ -10,7 +10,7 @@
 #
 
 #
-# Base Dialog class
+# Base Dialog class.
 #
 var Dialog = {
     CLASS: "Dialog",
@@ -18,11 +18,11 @@ var Dialog = {
     #
     # Constructor
     #
-    # @param  int  width  Initial width of window
-    # @param  int  height  Initial height of window
-    # @param  string  title  Title of window in the top bar
-    # @param  bool  resize  If true then user will be possible to resize the window
-    # @param  func|nil  onResize  Callback call when width or height of window was changed
+    # @param  int  width  Initial width of window.
+    # @param  int  height  Initial height of window.
+    # @param  string  title  Title of window in the top bar.
+    # @param  bool  resize  If true then user will be possible to resize the window.
+    # @param  func|nil  onResize  Callback call when width or height of window was changed.
     # @return hash
     #
     new: func(width, height, title, resize = 0, onResize = nil) {
@@ -39,9 +39,7 @@ var Dialog = {
         # For FG versions up to and including 2024 this is ‘/sim/gui/canvas’, but for the dev version it is ‘/canvas/desktop’
         # TODO: fix it in future when 2024 will be obsolete and "/canvas/desktop" will be a standard.
         me._isCanvas2024 = props.globals.getNode("/sim/gui/canvas") != nil;
-        me._canvasNode = me._isCanvas2024
-            ? props.globals.getNode("/sim/gui/canvas")
-            : props.globals.getNode("/canvas/desktop");
+        me._canvasNode = props.globals.getNode(me.getPathToCanvas());
 
         me.style = g_Settings.isDarkStyle()
             ? me.getStyle().dark
@@ -78,8 +76,8 @@ var Dialog = {
                 var resizeTimer = Timer.makeSelf(0.1, func() {
                     resizeTimer.stop();
 
-                    me._width  = int(getprop(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[0]"));
-                    me._height = int(getprop(me.getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[1]"));
+                    me._width  = int(me.getInnerWidth());
+                    me._height = int(me.getInnerHeight());
 
                     onResize(me._width, me._height);
                 });
@@ -113,10 +111,14 @@ var Dialog = {
     # @param  int  height
     # @param  string  title
     # @param  bool  resize
-    # @return ghost  Canvas Window object
+    # @return ghost  Canvas Window object.
     #
     _createCanvasWindow: func(width, height, title, resize) {
-        var window = canvas.Window.new([width, height], "dialog")
+        var type = "dialog";
+        var id = nil; # default
+        var allowFocus = true; # default
+
+        var window = canvas.Window.new([width, height], type, id, allowFocus)
             .set("title", title)
             .setBool("resize", resize);
 
@@ -129,7 +131,8 @@ var Dialog = {
             # bar and here we want hide the window only.
             # FG version 2024.x supports the destroy_on_close flag, which could
             # be set to false, then FG would call hide() on the window itself,
-            # but this will not give us the ability to call the child function.
+            # but this will not give us the ability to call the child's hide()
+            # function.
 
             self._callMethodByChild("hide");
         };
@@ -138,7 +141,7 @@ var Dialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -150,7 +153,7 @@ var Dialog = {
     },
 
     #
-    # Set position on center of screen
+    # Set position on center of screen.
     #
     # @param  int|nil  width, height  Dimension of window. If nil, the values provided by the constructor will be used.
     # @return void
@@ -159,13 +162,23 @@ var Dialog = {
         var screenW = me.getScreenWidth();
         var screenH = me.getScreenHeight();
 
-        var w = width  == nil ? me._width  : width;
-        var h = height == nil ? me._height : height;
+        var w = width  or me._width;
+        var h = height or me._height;
 
-        me._window.setPosition(
-            int(screenW / 2 - w / 2),
-            int(screenH / 2 - h / 2)
-        );
+        var newX = int(screenW / 2 - w / 2);
+        var newY = int(screenH / 2 - h / 2);
+
+        # Prevent the window top bar from going off-screen. It can happened if
+        # FG will open in small resolution.
+        if (newX < 0) {
+            newX = 0;
+        }
+
+        if (newY < 0) {
+            newY = 35; # Leave some space for FG main menu bar
+        }
+
+        me._window.setPosition(newX, newY);
     },
 
     #
@@ -210,7 +223,7 @@ var Dialog = {
     },
 
     #
-    # Show canvas dialog
+    # Show canvas dialog.
     #
     # @return void
     #
@@ -220,7 +233,7 @@ var Dialog = {
     },
 
     #
-    # Hide canvas dialog
+    # Hide canvas dialog.
     #
     # @return void
     #
@@ -229,7 +242,7 @@ var Dialog = {
     },
 
     #
-    # Return true if window is showing
+    # Return true if window is showing.
     #
     # @return bool
     #
@@ -293,7 +306,7 @@ var Dialog = {
     },
 
     #
-    # Get X position of this window
+    # Get X position of this window.
     #
     # @return int
     #
@@ -302,7 +315,7 @@ var Dialog = {
     },
 
     #
-    # Get Y position of this window
+    # Get Y position of this window.
     #
     # @return int
     #
@@ -311,12 +324,52 @@ var Dialog = {
     },
 
     #
+    # Get outer width of this window.
+    #
+    # @return double
+    #
+    getOuterWidth: func() {
+        return me._window.get("size[0]");
+    },
+
+    #
+    # Get outer height of this window.
+    #
+    # @return double
+    #
+    getOuterHeight: func() {
+        return me._window.get("size[1]");
+    },
+
+    #
+    # Get inner/content width of this window.
+    #
+    # @return double
+    #
+    getInnerWidth: func() {
+        return me._window.get("content-size[0]");
+    },
+
+    #
+    # Get inner/content height of this window.
+    #
+    # @return double
+    #
+    getInnerHeight: func() {
+        return me._window.get("content-size[1]");
+    },
+
+    #
+    # Get width of screen.
+    #
     # @return int
     #
     getScreenWidth: func() {
         return getprop(me.getPathToCanvas() ~ "/size[0]");
     },
 
+    #
+    # Get height of screen.
     #
     # @return int
     #
@@ -325,7 +378,7 @@ var Dialog = {
     },
 
     #
-    # Get path to canvas properties which depend of FG version
+    # Get path to canvas properties which depend of FG version.
     #
     # @return string
     #
