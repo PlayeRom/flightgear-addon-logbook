@@ -112,11 +112,11 @@ var SettingsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = ScrollAreaHelper.create(context: me._group, margins: margins);
+        me._scrollArea = ScrollAreaHelper.create(context: me._group, margins: margins);
 
-        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 
-        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData);
+        me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 
         me._drawScrollable();
 
@@ -136,7 +136,7 @@ var SettingsDialog = {
         vBoxLayout.addStretch(1);
         me._hBoxLayout.addItem(vBoxLayout);
 
-        me._scrollData.setLayout(me._hBoxLayout);
+        me._scrollArea.setLayout(me._hBoxLayout);
     },
 
     #
@@ -171,7 +171,7 @@ var SettingsDialog = {
 
         var hBoxLayout = canvas.HBoxLayout.new();
 
-        me._lineEditItemsPerPage = canvas.gui.widgets.LineEdit.new(me._scrollDataContent, canvas.style, {})
+        me._lineEditItemsPerPage = canvas.gui.widgets.LineEdit.new(me._scrollContent, canvas.style, {})
             .setText(sprintf("%d", g_Settings.getLogItemsPerPage()));
 
         hBoxLayout.addItem(me._lineEditItemsPerPage);
@@ -189,7 +189,7 @@ var SettingsDialog = {
     # @return ghost  Label widget
     #
     _getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me._scrollDataContent, canvas.style, {})
+        return canvas.gui.widgets.Label.new(me._scrollContent, canvas.style, {})
             .setText(text);
     },
 
@@ -202,7 +202,7 @@ var SettingsDialog = {
     # @return ghost  widgets.CheckBox
     #
     _getCheckbox: func(text, isChecked, isEnabled = 1) {
-        var checkbox = canvas.gui.widgets.CheckBox.new(me._scrollDataContent, canvas.style, { wordWrap: false })
+        var checkbox = canvas.gui.widgets.CheckBox.new(me._scrollContent, canvas.style, { wordWrap: false })
             .setText(text)
             .setChecked(isChecked)
             .setEnabled(isEnabled);

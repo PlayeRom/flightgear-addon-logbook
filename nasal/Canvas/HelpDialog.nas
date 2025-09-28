@@ -54,7 +54,7 @@ var HelpDialog = {
 
         me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 
-        me._scrollDataContent = ScrollAreaHelper.getContent(
+        me._scrollContent = ScrollAreaHelper.getContent(
             context  : me._scrollArea,
             font     : "LiberationFonts/LiberationSans-Regular.ttf",
             fontSize : 16,
@@ -100,12 +100,12 @@ var HelpDialog = {
     # @return void
     #
     _reDrawTexts: func(x, y, maxWidth = nil) {
-        me._scrollDataContent.removeAllChildren();
+        me._scrollContent.removeAllChildren();
         me._helpTexts.clear();
 
         foreach (var node; me._propHelpText.getChildren("paragraph")) {
             var isHeader = math.mod(node.getIndex(), 2) == 0;
-            var text = me._scrollDataContent.createChild("text")
+            var text = me._scrollContent.createChild("text")
                 .setText(node.getIndex() == 1
                     ? sprintf(node.getValue(), Storage.CSV_FILE_VERSION)
                     : node.getValue()
@@ -176,24 +176,14 @@ var HelpDialog = {
             #   event.metaKey
 
             if (event.key == "Up") {
-                me._scrollContent(-3);
+                me._scrollArea.vertScrollBarBy(-3);
             } elsif (event.key == "Down") {
-                me._scrollContent(3);
+                me._scrollArea.vertScrollBarBy(3);
             } elsif (event.key == "PageUp") {
-                me._scrollContent(-45);
+                me._scrollArea.vertScrollBarBy(-45);
             } elsif (event.key == "PageDown") {
-                me._scrollContent(45);
+                me._scrollArea.vertScrollBarBy(45);
             }
         });
-    },
-
-    #
-    # Scroll content vertically.
-    #
-    # @param  int  dy  Delta Y in pixels. A negative value scrolls up, a positive value scrolls down.
-    # @return void
-    #
-    _scrollContent: func(dy) {
-        me._scrollArea.vertScrollBarBy(dy);
     },
 };

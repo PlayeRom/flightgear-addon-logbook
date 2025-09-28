@@ -66,11 +66,11 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = ScrollAreaHelper.create(me._group, me._style.LIST_BG, margins);
-        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
-        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData);
+        me._scrollArea = ScrollAreaHelper.create(me._group, me._style.LIST_BG, margins);
+        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
+        me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollDataContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent, canvas.style, {})
             .setFontSizeLarge()
             .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()
@@ -80,7 +80,7 @@ var DetailsDialog = {
 
         var vBoxLayout = canvas.VBoxLayout.new();
         vBoxLayout.addItem(me._listView);
-        me._scrollData.setLayout(vBoxLayout);
+        me._scrollArea.setLayout(vBoxLayout);
 
         me._drawBottomBar();
 
@@ -192,7 +192,7 @@ var DetailsDialog = {
         me._style = style;
 
         me._canvas.set("background", me._style.CANVAS_BG);
-        me._scrollData.setColorBackground(me._style.LIST_BG);
+        me._scrollArea.setColorBackground(me._style.LIST_BG);
         me._setListViewStyle();
         me.toggleBgImage();
 

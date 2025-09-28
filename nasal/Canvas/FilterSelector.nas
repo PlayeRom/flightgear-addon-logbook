@@ -61,8 +61,8 @@ var FilterSelector = {
 
         me._items = std.Vector.new();
 
-        me._scrollData = nil;
-        me._scrollDataContent = nil;
+        me._scrollArea = nil;
+        me._scrollContent = nil;
         me._listView = nil;
         me._callback = nil;
         me._columnName = nil;
@@ -215,8 +215,8 @@ var FilterSelector = {
         me._style = style;
 
         me._canvas.set("background", me._style.CANVAS_BG);
-        if (me._scrollData != nil) {
-            me._scrollData.setColorBackground(me._style.CANVAS_BG);
+        if (me._scrollArea != nil) {
+            me._scrollArea.setColorBackground(me._style.CANVAS_BG);
         }
 
         if (me._listView != nil) {
@@ -241,11 +241,11 @@ var FilterSelector = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = ScrollAreaHelper.create(me._group, me._style.CANVAS_BG, margins);
+        me._scrollArea = ScrollAreaHelper.create(me._group, me._style.CANVAS_BG, margins);
 
-        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 
-        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData, me._font, me._fontSize);
+        me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea, me._font, me._fontSize);
 
         me._drawScrollable();
     },
@@ -258,7 +258,7 @@ var FilterSelector = {
     _drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollDataContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent, canvas.style, {})
             .setTitle(me._title)
             .useTextMaxWidth()
             .setFontSizeMedium()
@@ -269,7 +269,7 @@ var FilterSelector = {
             .setItems(me._items.vector);
 
         vBoxLayout.addItem(me._listView);
-        me._scrollData.setLayout(vBoxLayout);
+        me._scrollArea.setLayout(vBoxLayout);
     },
 
     #
