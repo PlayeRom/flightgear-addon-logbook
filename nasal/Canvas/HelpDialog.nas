@@ -50,12 +50,12 @@ var HelpDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = ScrollAreaHelper.create(context: me._group, margins: margins);
+        me._scrollArea = ScrollAreaHelper.create(context: me._group, margins: margins);
 
-        me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
+        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 
         me._scrollDataContent = ScrollAreaHelper.getContent(
-            context  : me._scrollData,
+            context  : me._scrollArea,
             font     : "LiberationFonts/LiberationSans-Regular.ttf",
             fontSize : 16,
             alignment: "left-baseline"
@@ -66,6 +66,8 @@ var HelpDialog = {
 
         me._reDrawTexts(x: 0, y: 0, maxWidth: HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
         me._drawBottomBar();
+
+        me._keyActions();
 
         return me;
     },
@@ -155,5 +157,43 @@ var HelpDialog = {
         me._vbox.addSpacing(10);
 
         return buttonBox;
+    },
+
+    #
+    # Handle keydown listener for window.
+    #
+    # @return void
+    #
+    _keyActions: func() {
+        me._window.addEventListener("keydown", func(event) {
+            # Possible fields of event:
+            #   event.key - key as name
+            #   event.keyCode - key as code
+            # Modifiers:
+            #   event.shiftKey
+            #   event.ctrlKey
+            #   event.altKey
+            #   event.metaKey
+
+            if (event.key == "Up") {
+                me._scrollContent(-3);
+            } elsif (event.key == "Down") {
+                me._scrollContent(3);
+            } elsif (event.key == "PageUp") {
+                me._scrollContent(-45);
+            } elsif (event.key == "PageDown") {
+                me._scrollContent(45);
+            }
+        });
+    },
+
+    #
+    # Scroll content vertically.
+    #
+    # @param  int  dy  Delta Y in pixels. A negative value scrolls up, a positive value scrolls down.
+    # @return void
+    #
+    _scrollContent: func(dy) {
+        me._scrollArea.vertScrollBarBy(dy);
     },
 };
