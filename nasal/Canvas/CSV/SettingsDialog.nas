@@ -112,11 +112,11 @@ var SettingsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(margins: margins);
+        me._scrollData = ScrollAreaHelper.create(context: me._group, margins: margins);
 
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
-        me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
+        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData);
 
         me._drawScrollable();
 

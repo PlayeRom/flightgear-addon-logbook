@@ -50,11 +50,11 @@ var HelpDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(margins: margins);
+        me._scrollData = ScrollAreaHelper.create(context: me._group, margins: margins);
 
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
-        me._scrollDataContent = me.getScrollAreaContent(
+        me._scrollDataContent = ScrollAreaHelper.getContent(
             context  : me._scrollData,
             font     : "LiberationFonts/LiberationSans-Regular.ttf",
             fontSize : 16,

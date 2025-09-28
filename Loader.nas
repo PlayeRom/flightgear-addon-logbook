@@ -51,6 +51,7 @@ var Loader = {
             "nasal/Canvas/BaseDialogs/Dialog",
             "nasal/Canvas/BaseDialogs/PersistentDialog",
             "nasal/Canvas/BaseDialogs/StylePersistentDialog",
+            "nasal/Canvas/ScrollAreaHelper",
             "nasal/Canvas/InputDialog",
             "nasal/Canvas/ConfirmationDialog",
             "nasal/Canvas/AboutDialog",

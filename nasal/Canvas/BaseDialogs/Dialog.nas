@@ -170,47 +170,6 @@ var Dialog = {
     },
 
     #
-    # @param  vector|nil  bgColor
-    # @param  hash|nil  margins  Margins hash or nil
-    # @return ghost  canvas.gui.widgets.ScrollArea object
-    #
-    createScrollArea: func(bgColor = nil, margins = nil) {
-        var scrollArea = canvas.gui.widgets.ScrollArea.new(me._group, canvas.style, {});
-        scrollArea.setColorBackground(bgColor == nil ? canvas.style.getColor("bg_color") : bgColor);
-
-        if (margins != nil) {
-            scrollArea.setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);
-        }
-
-        return scrollArea;
-    },
-
-    #
-    # @param  ghost  context  Parent object as ScrollArea widget
-    # @param  string|nil  font  Font file name
-    # @param  int|nil  fontSize  Font size
-    # @param  string|nil  alignment  Content alignment value
-    # @return ghost  Content group of ScrollArea
-    #
-    getScrollAreaContent: func(context, font = nil, fontSize = nil, alignment = nil) {
-        var scrollContent = context.getContent();
-
-        if (font != nil) {
-            scrollContent.set("font", font);
-        }
-
-        if (fontSize != nil) {
-            scrollContent.set("character-size", fontSize);
-        }
-
-        if (alignment != nil) {
-            scrollContent.set("alignment", alignment);
-        }
-
-        return scrollContent;
-    },
-
-    #
     # Return true if window is showing.
     #
     # @return bool

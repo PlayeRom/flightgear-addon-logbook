@@ -66,9 +66,9 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(me._style.LIST_BG, margins);
+        me._scrollData = ScrollAreaHelper.create(me._group, me._style.LIST_BG, margins);
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
-        me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
+        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData);
 
         me._listView = canvas.gui.widgets.LogbookList.new(me._scrollDataContent, canvas.style, {})
             .setFontSizeLarge()

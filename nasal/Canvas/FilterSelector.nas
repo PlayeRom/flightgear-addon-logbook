@@ -241,11 +241,11 @@ var FilterSelector = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(me._style.CANVAS_BG, margins);
+        me._scrollData = ScrollAreaHelper.create(me._group, me._style.CANVAS_BG, margins);
 
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
-        me._scrollDataContent = me.getScrollAreaContent(me._scrollData, me._font, me._fontSize);
+        me._scrollDataContent = ScrollAreaHelper.getContent(me._scrollData, me._font, me._fontSize);
 
         me._drawScrollable();
     },
