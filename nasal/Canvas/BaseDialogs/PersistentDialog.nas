@@ -74,19 +74,20 @@ var PersistentDialog = {
     # Show canvas dialog.
     #
     # @return void
+    # @override Dialog
     #
     show: func() {
-        me._window.raise();
-        me._window.show();
+        me.parents[1].show();
     },
 
     #
     # Hide canvas dialog.
     #
     # @return void
+    # @override Dialog
     #
     hide: func() {
-        me._window.hide();
+        me.parents[1].hide();
     },
 
     #

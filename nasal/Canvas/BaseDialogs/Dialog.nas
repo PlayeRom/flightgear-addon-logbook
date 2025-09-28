@@ -122,6 +122,25 @@ var Dialog = {
     },
 
     #
+    # Show canvas dialog.
+    #
+    # @return void
+    #
+    show: func() {
+        me._window.raise();
+        me._window.show();
+    },
+
+    #
+    # Hide canvas dialog.
+    #
+    # @return void
+    #
+    hide: func() {
+        me._window.hide();
+    },
+
+    #
     # Set position on center of screen.
     #
     # @param  int|nil  width, height  Dimension of window. If nil, the values provided by the constructor will be used.
