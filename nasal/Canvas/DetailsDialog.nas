@@ -32,7 +32,11 @@ var DetailsDialog = {
         var me = {
             parents: [
                 DetailsDialog,
-                Dialog.new(DetailsDialog.WINDOW_WIDTH, DetailsDialog.WINDOW_HEIGHT, "Logbook Details"),
+                StylePersistentDialog.new(
+                    DetailsDialog.WINDOW_WIDTH,
+                    DetailsDialog.WINDOW_HEIGHT,
+                    "Logbook Details",
+                ),
             ],
             _storage: storage,
             _columns: columns,
@@ -54,7 +58,7 @@ var DetailsDialog = {
         me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
         me._deleteDialog.setLabel("Do you really want to delete this entry?");
 
-        me._canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
 
         var margins = {
             left   : 0,
@@ -62,7 +66,7 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(me.style.LIST_BG, margins);
+        me._scrollData = me.createScrollArea(me._style.LIST_BG, margins);
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
         me._scrollDataContent = me.getScrollAreaContent(me._scrollData);
 
@@ -87,6 +91,7 @@ var DetailsDialog = {
     # Destructor
     #
     # @return void
+    # @override StylePersistentDialog
     #
     del: func() {
         if (me._flightAnalysisDialog != nil) {
@@ -96,7 +101,7 @@ var DetailsDialog = {
 
         me._inputDialog.del();
         me._deleteDialog.del();
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
@@ -184,10 +189,10 @@ var DetailsDialog = {
     # @return void
     #
     setStyle: func(style) {
-        me.style = style;
+        me._style = style;
 
-        me._canvas.set("background", me.style.CANVAS_BG);
-        me._scrollData.setColorBackground(me.style.LIST_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
+        me._scrollData.setColorBackground(me._style.LIST_BG);
         me._setListViewStyle();
         me.toggleBgImage();
 
@@ -199,9 +204,9 @@ var DetailsDialog = {
     #
     _setListViewStyle: func() {
         return me._listView
-            .setColorText(me.style.TEXT_COLOR)
-            .setColorBackground(me.style.LIST_BG)
-            .setColorHoverBackground(me.style.HOVER_BG);
+            .setColorText(me._style.TEXT_COLOR)
+            .setColorBackground(me._style.LIST_BG)
+            .setColorHoverBackground(me._style.HOVER_BG);
     },
 
     #
@@ -210,6 +215,7 @@ var DetailsDialog = {
     # @param  hash  parent  LogbookDialog object
     # @param  int  logbookId  Logbook ID in DB or row index in CSV file, if -1 then it's total row
     # @return void
+    # @override StylePersistentDialog
     #
     show: func(parent, logbookId) {
         me._parent = parent;
@@ -234,13 +240,14 @@ var DetailsDialog = {
 
         me._listView.setItems(me._getListViewRows(me._dataRow.columns));
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
     # Hide details window with its sub windows
     #
     # @return void
+    # @override StylePersistentDialog
     #
     hide: func() {
         if (me._parent != nil) {
@@ -257,7 +264,7 @@ var DetailsDialog = {
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
-        call(Dialog.hide, [], me);
+        me.parents[1].hide();
     },
 
     #
@@ -339,7 +346,7 @@ var DetailsDialog = {
         g_Sound.play('paper');
 
         me._listView.removeHighlightingRow();
-        me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+        me._listView.setHighlightingRow(index, me._style.SELECTED_BAR);
 
         me._inputDialog.getFilterSelector().hide();
 

@@ -28,20 +28,20 @@ var ConfirmationDialog = {
     # @return hash
     #
     new: func(title) {
-        var me = { parents: [
-            ConfirmationDialog,
-            Dialog.new(
-                ConfirmationDialog.WINDOW_WIDTH,
-                ConfirmationDialog.WINDOW_HEIGHT,
-                title
-            )
-        ] };
+        var me = {
+            parents: [
+                ConfirmationDialog,
+                PersistentDialog.new(
+                    ConfirmationDialog.WINDOW_WIDTH,
+                    ConfirmationDialog.WINDOW_HEIGHT,
+                    title,
+                ),
+            ],
+        };
 
         var dialogParent = me.parents[1];
         dialogParent.setChild(me, ConfirmationDialog); # Let the parent know who their child is.
         dialogParent.setPositionOnCenter();
-
-        me.bgImage.hide();
 
         me._logIndex      = nil;
         me._parentObj     = nil;
@@ -77,9 +77,10 @@ var ConfirmationDialog = {
     # Destructor
     #
     # @return void
+    # @override PersistentDialog
     #
     del: func() {
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
@@ -96,12 +97,13 @@ var ConfirmationDialog = {
     # @param  int logIndex
     # @param  hash|nil  parentObj  Dialog parent class
     # @return void
+    # @override PersistentDialog
     #
     show: func(logIndex, parentObj = nil) {
         me._logIndex = logIndex;
         me._parentObj = parentObj;
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
@@ -113,7 +115,7 @@ var ConfirmationDialog = {
         g_Sound.play('delete');
 
         if (me._parentObj == nil) {
-            call(Dialog.hide, [], me);
+            me.parents[1].hide();
         }
         else {
             # Also hide immediately the parent window that called ConfirmationDialog.
@@ -132,6 +134,6 @@ var ConfirmationDialog = {
     # @return void
     #
     _actionNegative: func() {
-        call(Dialog.hide, [], me);
+        me.parents[1].hide();
     },
 };

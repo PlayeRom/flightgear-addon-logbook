@@ -35,7 +35,7 @@ var FilterSelector = {
         var me = {
             parents: [
                 FilterSelector,
-                Dialog.new(
+                StylePersistentDialog.new(
                     FilterSelector.WINDOW_WIDTH,
                     FilterSelector.WINDOW_HEIGHT,
                     "Filter selector"
@@ -55,9 +55,9 @@ var FilterSelector = {
 
         me._window.set("decoration-border", "0 0 0");
 
-        me.bgImage.hide();
+        me._bgImage.hide();
 
-        me._canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
 
         me._items = std.Vector.new();
 
@@ -76,29 +76,32 @@ var FilterSelector = {
     # Destructor
     #
     # @return void
+    # @override StylePersistentDialog
     #
     del: func() {
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
     # Hide canvas window
     #
     # @return void
+    # @override StylePersistentDialog
     #
     hide: func() {
-        call(Dialog.hide, [], me);
+        me.parents[1].hide();
     },
 
     #
     # Show canvas window
     #
     # @return void
+    # @override StylePersistentDialog
     #
     show: func() {
         me._recalculateWindowHeight();
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
@@ -209,18 +212,18 @@ var FilterSelector = {
     # @return hash
     #
     setStyle: func(style) {
-        me.style = style;
+        me._style = style;
 
-        me._canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
         if (me._scrollData != nil) {
-            me._scrollData.setColorBackground(me.style.CANVAS_BG);
+            me._scrollData.setColorBackground(me._style.CANVAS_BG);
         }
 
         if (me._listView != nil) {
             me._listView
-                .setColorText(me.style.TEXT_COLOR)
-                .setColorBackground(me.style.CANVAS_BG)
-                .setColorHoverBackground(me.style.HOVER_BG);
+                .setColorText(me._style.TEXT_COLOR)
+                .setColorBackground(me._style.CANVAS_BG)
+                .setColorHoverBackground(me._style.HOVER_BG);
         }
 
         return me;
@@ -238,7 +241,7 @@ var FilterSelector = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
+        me._scrollData = me.createScrollArea(me._style.CANVAS_BG, margins);
 
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
@@ -259,9 +262,9 @@ var FilterSelector = {
             .setTitle(me._title)
             .useTextMaxWidth()
             .setFontSizeMedium()
-            .setColorText(me.style.TEXT_COLOR)
-            .setColorBackground(me.style.CANVAS_BG)
-            .setColorHoverBackground(me.style.HOVER_BG)
+            .setColorText(me._style.TEXT_COLOR)
+            .setColorBackground(me._style.CANVAS_BG)
+            .setColorHoverBackground(me._style.HOVER_BG)
             .setClickCallback(me._listViewCallback, me)
             .setItems(me._items.vector);
 

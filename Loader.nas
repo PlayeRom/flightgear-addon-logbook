@@ -48,9 +48,11 @@ var Loader = {
 
             "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version
 
+            "nasal/Canvas/BaseDialogs/Dialog",
+            "nasal/Canvas/BaseDialogs/PersistentDialog",
+            "nasal/Canvas/BaseDialogs/StylePersistentDialog",
             "nasal/Canvas/InputDialog",
             "nasal/Canvas/ConfirmationDialog",
-            "nasal/Canvas/Dialog",
             "nasal/Canvas/AboutDialog",
             "nasal/Canvas/DetailsDialog",
             "nasal/Canvas/HelpDialog",

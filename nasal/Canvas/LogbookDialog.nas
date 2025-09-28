@@ -53,7 +53,7 @@ var LogbookDialog = {
         var me = {
             parents : [
                 LogbookDialog,
-                Dialog.new(windowWidth, windowHeight, "Logbook"),
+                StylePersistentDialog.new(windowWidth, windowHeight, "Logbook"),
             ],
             _storage : storage,
             _filters : filters,
@@ -79,7 +79,7 @@ var LogbookDialog = {
         me._headersContent  = nil;
         me.selectedRecordId = nil;
 
-        me._canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
 
         me._detailsDialog  = DetailsDialog.new(storage, columns);
         me._filterSelector = FilterSelector.new(columns);
@@ -103,7 +103,7 @@ var LogbookDialog = {
 
         me._labelPaging = canvas.gui.widgets.Label.new(me._group, canvas.style, {});
         if (Utils.isFG2024Version()) {
-            me._labelPaging.setColor(me.style.TEXT_COLOR);
+            me._labelPaging.setColor(me._style.TEXT_COLOR);
         }
 
         me._btnFirst = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
@@ -229,6 +229,7 @@ var LogbookDialog = {
     # Destructor
     #
     # @return void
+    # @override StylePersistentDialog
     #
     del: func() {
         me._listeners.del();
@@ -236,13 +237,15 @@ var LogbookDialog = {
         me._filterSelector.del();
         me.helpDialog.del();
         me.aboutDialog.del();
-        call(Dialog.del, [], me);
+
+        me.parents[1].del();
     },
 
     #
     # Show canvas dialog
     #
     # @return void
+    # @override StylePersistentDialog
     #
     show: func() {
         if (g_isThreadPending) {
@@ -255,18 +258,20 @@ var LogbookDialog = {
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(withHeaders: true);
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
     # Hide canvas dialog
     #
     # @return void
+    # @override StylePersistentDialog
     #
     hide: func() {
         me._filterSelector.hide();
         me._detailsDialog.hide();
-        call(Dialog.hide, [], me);
+
+        me.parents[1].hide();
     },
 
     #
@@ -347,7 +352,7 @@ var LogbookDialog = {
 
         rowGroup.addEventListener("mouseenter", func {
             if (!g_isThreadPending) {
-                rect.setColorFill(me.style.HOVER_BG);
+                rect.setColorFill(me._style.HOVER_BG);
             }
         });
 
@@ -435,7 +440,7 @@ var LogbookDialog = {
     _drawText: func(context, x, y, label) {
         return context.createChild("text")
             .setTranslation(x, y)
-            .setColor(me.style.TEXT_COLOR)
+            .setColor(me._style.TEXT_COLOR)
             .setText(label);
     },
 
@@ -514,27 +519,26 @@ var LogbookDialog = {
 
         g_Sound.play('paper');
 
-        me.style = me.style.NAME == "dark"
+        me._style = me._style.NAME == "dark"
             ? me.getStyle().light
             : me.getStyle().dark;
 
-        g_Settings.setDarkMode(me.style.NAME == "dark");
+        g_Settings.setDarkMode(me._style.NAME == "dark");
 
         me.toggleBgImage();
 
-        me._canvas.set("background", me.style.CANVAS_BG);
+        me._canvas.set("background", me._style.CANVAS_BG);
         me._btnStyle.setText(me._getOppositeStyleName());
         me._setListViewStyle();
-        me._filterSelector.setStyle(me.style);
+        me._filterSelector.setStyle(me._style);
 
         if (Utils.isFG2024Version()) {
-            me._labelPaging.setColor(me.style.TEXT_COLOR);
+            me._labelPaging.setColor(me._style.TEXT_COLOR);
         }
 
         me.reloadData();
 
-        me._detailsDialog.setStyle(me.style);
-        me.helpDialog.setStyle(me.style);
+        me._detailsDialog.setStyle(me._style);
     },
 
     #
@@ -542,16 +546,16 @@ var LogbookDialog = {
     #
     _setListViewStyle: func() {
         me._listView
-            .setColorText(me.style.TEXT_COLOR)
-            .setColorBackground(me.style.LIST_BG)
-            .setColorHoverBackground(me.style.HOVER_BG);
+            .setColorText(me._style.TEXT_COLOR)
+            .setColorBackground(me._style.LIST_BG)
+            .setColorHoverBackground(me._style.HOVER_BG);
     },
 
     #
     # @return string
     #
     _getOppositeStyleName: func() {
-        return me.style.NAME == "dark"
+        return me._style.NAME == "dark"
             ? me.getStyle().light.NAME
             : me.getStyle().dark.NAME;
     },
@@ -760,6 +764,6 @@ var LogbookDialog = {
     _setHighlightingRow: func(id, index) {
         me.selectedRecordId = id;
         me._listView.removeHighlightingRow();
-        me._listView.setHighlightingRow(index, me.style.SELECTED_BAR);
+        me._listView.setHighlightingRow(index, me._style.SELECTED_BAR);
     },
 };

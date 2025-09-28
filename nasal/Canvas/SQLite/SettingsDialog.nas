@@ -33,7 +33,11 @@ var SettingsDialog = {
         var me = {
             parents: [
                 SettingsDialog,
-                Dialog.new(SettingsDialog.WINDOW_WIDTH, SettingsDialog.WINDOW_HEIGHT, "Logbook Settings"),
+                PersistentDialog.new(
+                    SettingsDialog.WINDOW_WIDTH,
+                    SettingsDialog.WINDOW_HEIGHT,
+                    "Logbook Settings",
+                ),
             ],
             _columns: columns,
             _logbook: logbook,
@@ -50,8 +54,6 @@ var SettingsDialog = {
         me._columnsVisible  = {};
         me._loadColumnsVisible();
 
-        me.bgImage.hide();
-
         me._checkboxReal         = nil;
         me._checkboxSimUtc       = nil;
         me._checkboxSimLocal     = nil;
@@ -66,15 +68,17 @@ var SettingsDialog = {
     # Destructor
     #
     # @return void
+    # @override PersistentDialog
     #
     del: func() {
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
     # Show this canvas dialog
     #
     # @return void
+    # @override PersistentDialog
     #
     show: func() {
         g_Sound.play('paper');
@@ -87,7 +91,7 @@ var SettingsDialog = {
 
         me._drawContent();
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #

@@ -28,16 +28,16 @@ var InputDialog = {
     # @return hash
     #
     new: func(columns) {
-        var me = { parents: [
-            InputDialog,
-            Dialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value"),
-        ] };
+        var me = {
+            parents: [
+                InputDialog,
+                PersistentDialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value"),
+            ],
+        };
 
         var dialogParent = me.parents[1];
         dialogParent.setChild(me, InputDialog); # Let the parent know who their child is.
         dialogParent.setPositionOnCenter();
-
-        me.bgImage.hide();
 
         me._addonNodePath = g_Addon.node.getPath();
 
@@ -89,10 +89,11 @@ var InputDialog = {
     # Destructor
     #
     # @return void
+    # @override PersistentDialog
     #
     del: func() {
         me._filterSelector.del();
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
@@ -123,6 +124,7 @@ var InputDialog = {
     # @param  string  value  Value to edit
     # @param  hash  columnItem  Column item from Columns class
     # @return void
+    # @override PersistentDialog
     #
     show: func(parent, id, value, columnItem) {
         me._parent     = parent;
@@ -134,11 +136,12 @@ var InputDialog = {
         me._setLineEdit(me._value);
         me._lineEdit.setFocus();
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
     # @return void
+    # @Override PersistentDialog
     #
     hide: func() {
         if (me._parent != nil) {
@@ -147,7 +150,7 @@ var InputDialog = {
         }
 
         me._filterSelector.hide();
-        call(Dialog.hide, [], me);
+        me.parents[1].hide();
     },
 
     #

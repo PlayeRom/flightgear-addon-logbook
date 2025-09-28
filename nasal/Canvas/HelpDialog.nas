@@ -31,7 +31,7 @@ var HelpDialog = {
     new: func() {
         var me = { parents: [
             HelpDialog,
-            Dialog.new(
+            PersistentDialog.new(
                 width   : HelpDialog.WINDOW_WIDTH,
                 height  : HelpDialog.WINDOW_HEIGHT,
                 title   : HelpDialog.TITLE,
@@ -44,17 +44,13 @@ var HelpDialog = {
         dialogParent.setChild(me, HelpDialog);  # Let the parent know who their child is.
         dialogParent.setPositionOnCenter();
 
-        me.bgImage.hide();
-
-        me._canvas.set("background", me.style.CANVAS_BG);
-
         var margins = {
             left   : HelpDialog.PADDING,
             top    : HelpDialog.PADDING,
             right  : 0,
             bottom : 0,
         };
-        me._scrollData = me.createScrollArea(me.style.CANVAS_BG, margins);
+        me._scrollData = me.createScrollArea(margins: margins);
 
         me._vbox.addItem(me._scrollData, 1); # 2nd param = stretch
 
@@ -78,9 +74,10 @@ var HelpDialog = {
     # Destructor
     #
     # @return void
+    # @override PersistentDialog
     #
     del: func() {
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
@@ -112,7 +109,7 @@ var HelpDialog = {
                     : node.getValue()
                 )
                 .setTranslation(x, y)
-                .setColor(me.style.TEXT_COLOR)
+                .setColor(canvas.style.getColor("text_color"))
                 .setFontSize(isHeader ? 18 : 16)
                 .setFont(isHeader
                     ? "LiberationFonts/LiberationSans-Bold.ttf"
@@ -158,20 +155,5 @@ var HelpDialog = {
         me._vbox.addSpacing(10);
 
         return buttonBox;
-    },
-
-    #
-    # @param  hash  style
-    # @return void
-    #
-    setStyle: func(style) {
-        me.style = style;
-
-        me._canvas.set("background", me.style.CANVAS_BG);
-        me._scrollData.setColorBackground(me.style.CANVAS_BG);
-
-        foreach (var text; me._helpTexts.vector) {
-            text.setColor(me.style.TEXT_COLOR);
-        }
     },
 };

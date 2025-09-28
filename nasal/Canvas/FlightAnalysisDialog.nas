@@ -38,7 +38,7 @@ var FlightAnalysisDialog = {
         var me = {
             parents: [
                 FlightAnalysisDialog,
-                Dialog.new(
+                PersistentDialog.new(
                     width : FlightAnalysisDialog.WINDOW_WIDTH,
                     height: FlightAnalysisDialog.WINDOW_HEIGHT,
                     title : title,
@@ -52,8 +52,6 @@ var FlightAnalysisDialog = {
         var dialogParent = me.parents[1];
         dialogParent.setChild(me, FlightAnalysisDialog); # Let the parent know who their child is.
         dialogParent.setPositionOnCenter();
-
-        me.bgImage.hide();
 
         me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;
@@ -79,17 +77,19 @@ var FlightAnalysisDialog = {
     # Destructor
     #
     # @return void
+    # @override PersistentDialog
     #
     del: func() {
         me._playTimer.stop();
 
-        call(Dialog.del, [], me);
+        me.parents[1].del();
     },
 
     #
     # Show this canvas dialog
     #
     # @return void
+    # @override PersistentDialog
     #
     show: func() {
         g_Sound.play('paper');
@@ -101,18 +101,19 @@ var FlightAnalysisDialog = {
         me._updateAfterZoom();
         me._btnPlay.setText("Play");
 
-        call(Dialog.show, [], me);
+        me.parents[1].show();
     },
 
     #
     # Hide this canvas dialog
     #
     # @return void
+    # @override PersistentDialog
     #
     hide: func() {
         me._playTimer.stop();
 
-        call(Dialog.hide, [], me);
+        me.parents[1].hide();
     },
 
     #
