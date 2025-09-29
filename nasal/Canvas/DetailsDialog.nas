@@ -66,7 +66,7 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollArea = ScrollAreaHelper.create(me._group, me._style.LIST_BG, margins);
+        me._scrollArea = ScrollAreaHelper.create(me._group, margins, me._style.LIST_BG);
         me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
         me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 

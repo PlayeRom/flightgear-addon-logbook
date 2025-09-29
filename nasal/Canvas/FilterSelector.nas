@@ -241,7 +241,7 @@ var FilterSelector = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollArea = ScrollAreaHelper.create(me._group, me._style.CANVAS_BG, margins);
+        me._scrollArea = ScrollAreaHelper.create(me._group, margins, me._style.CANVAS_BG);
 
         me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 

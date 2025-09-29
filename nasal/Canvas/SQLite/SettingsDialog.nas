@@ -141,7 +141,7 @@ var SettingsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollArea = ScrollAreaHelper.create(context: me._group, margins: margins);
+        me._scrollArea = ScrollAreaHelper.create(me._group, margins);
 
         me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
 

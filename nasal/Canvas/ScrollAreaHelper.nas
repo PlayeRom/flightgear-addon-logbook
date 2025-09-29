@@ -17,11 +17,11 @@ var ScrollAreaHelper = {
     # Create ScrollArea widget.
     #
     # @param  ghost  context
-    # @param  vector|nil  bgColor  RGB color for background.
     # @param  hash|nil  margins  Margins hash or nil.
+    # @param  vector|nil  bgColor  RGB color for background.
     # @return ghost  ScrollArea widget.
     #
-    create: func(context, bgColor = nil, margins = nil) {
+    create: func(context, margins = nil, bgColor = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(context, canvas.style, {});
 
         scrollArea.setColorBackground(bgColor or canvas.style.getColor("bg_color"));
