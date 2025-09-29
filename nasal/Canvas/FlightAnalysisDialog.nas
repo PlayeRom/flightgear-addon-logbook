@@ -56,14 +56,14 @@ var FlightAnalysisDialog = {
         me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
         me._playSpeed = 16;
 
-        me._infoView = canvas.gui.widgets.FlightInfo.new(me._group, canvas.style, {});
+        me._infoView = canvas.gui.widgets.FlightInfo.new(me._group);
 
-        me._mapView = canvas.gui.widgets.FlightMap.new(me._group, canvas.style, {});
+        me._mapView = canvas.gui.widgets.FlightMap.new(me._group);
         me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
         me._mapView.setUpdateZoomCallback(me._mapViewUpdateZoom, me);
         me._mapView.setLiveUpdateMode(liveUpdateMode);
 
-        me._profileView = canvas.gui.widgets.FlightProfile.new(me._group, canvas.style, {});
+        me._profileView = canvas.gui.widgets.FlightProfile.new(me._group);
         me._profileView.setUpdatePositionCallback(me._profileViewUpdatePosition, me);
         me._profileView.setUpdateZoomCallback(me._profileViewUpdateZoom, me);
         me._profileView.setLiveUpdateMode(liveUpdateMode);
@@ -507,7 +507,7 @@ var FlightAnalysisDialog = {
             var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
                 .setText("Profile mode");
 
-            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, {})
+            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, canvas.style, {})
                 .setFixedSize(100, 26);
             if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
                 # For next addMenuItem is deprecated

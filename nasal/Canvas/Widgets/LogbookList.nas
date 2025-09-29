@@ -24,7 +24,7 @@
 # var vbox = canvas.VBoxLayout.new();
 # myCanvas.setLayout(vbox);
 #
-# var listView = canvas.gui.widgets.LogbookList.new(root, canvas.style, {});
+# var listView = canvas.gui.widgets.LogbookList.new(root);
 # vbox.addItem(listView, 1);
 #
 # listView
@@ -193,13 +193,14 @@ gui.widgets.LogbookList = {
     # Constructor
     #
     # @param  ghost  parent
-    # @param  hash  style
-    # @param  hash  cfg
+    # @param  hash|nil  style
+    # @param  hash|nil  cfg
     # @return ghost
     #
-    new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.LogbookList);
-        me._cfg = Config.new(cfg);
+    new: func(parent, style = nil, cfg = nil) {
+        style = style or canvas.style;
+        cfg = Config.new(cfg);
+        var me = gui.Widget.new(gui.widgets.LogbookList, cfg);
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "logbook-list-view", me._cfg));
 

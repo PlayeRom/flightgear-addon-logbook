@@ -70,7 +70,7 @@ var DetailsDialog = {
         me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
         me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent)
             .setFontSizeLarge()
             .setClickCallback(me._listViewCallback, me)
             .useTextMaxWidth()

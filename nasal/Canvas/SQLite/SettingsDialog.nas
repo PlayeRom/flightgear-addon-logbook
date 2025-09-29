@@ -244,7 +244,7 @@ var SettingsDialog = {
 
         hBoxLayout.addItem(me._getLabel("Map provider"));
 
-        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent, canvas.style, {});
+        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent);
         if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
             # For next addMenuItem is deprecated
             comboBox.createItem("OpenStreetMap", "OpenStreetMap");
@@ -319,7 +319,7 @@ var SettingsDialog = {
 
         hBoxLayout.addItem(me._getLabel("Items per page"));
 
-        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent, {});
+        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent);
         if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
             # For next addMenuItem is deprecated
             comboBox.createItem( "5",  5);
@@ -406,7 +406,7 @@ var SettingsDialog = {
     # @return ghost  Label widget
     #
     _getLabel: func(text, cfg = nil) {
-        return canvas.gui.widgets.Label.new(me._scrollContent, canvas.style, cfg)
+        return canvas.gui.widgets.Label.new(parent: me._scrollContent, cfg: cfg)
             .setText(text);
     },
 
@@ -419,7 +419,7 @@ var SettingsDialog = {
     # @return ghost  widgets.CheckBox
     #
     _getCheckbox: func(text, isChecked, isEnabled = 1) {
-        var checkbox = canvas.gui.widgets.CheckBox.new(me._scrollContent, canvas.style, { wordWrap: false })
+        var checkbox = canvas.gui.widgets.CheckBox.new(parent: me._scrollContent, cfg: { wordWrap: false })
             .setText(text)
             .setChecked(isChecked)
             .setEnabled(isEnabled);
@@ -435,7 +435,7 @@ var SettingsDialog = {
     # @return ghost  widgets.RadioButton
     #
     _getRadioButton: func(text, cfg = nil) {
-        return canvas.gui.widgets.RadioButton.new(me._scrollContent, canvas.style, cfg)
+        return canvas.gui.widgets.RadioButton.new(parent: me._scrollContent, cfg: cfg)
             .setText(text);
     },
 
@@ -445,12 +445,12 @@ var SettingsDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnSave = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnSave = canvas.gui.widgets.Button.new(me._group)
             .setText("OK")
             .setFixedSize(65, 26)
             .listen("clicked", func { me._save(); });
 
-        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(me._group)
             .setText("Cancel")
             .setFixedSize(65, 26)
             .listen("clicked", func { me.hide(); });

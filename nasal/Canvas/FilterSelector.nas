@@ -258,7 +258,7 @@ var FilterSelector = {
     _drawScrollable: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent, canvas.style, {})
+        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent)
             .setTitle(me._title)
             .useTextMaxWidth()
             .setFontSizeMedium()

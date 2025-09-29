@@ -29,13 +29,14 @@ gui.widgets.FlightProfile = {
     # Constructor
     #
     # @param  ghost  parent
-    # @param  hash  style
-    # @param  hash  cfg
+    # @param  hash|nil  style
+    # @param  hash|nil  cfg
     # @return ghost
     #
-    new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.FlightProfile);
-        me._cfg = Config.new(cfg);
+    new: func(parent, style = nil, cfg = nil) {
+        style = style or canvas.style;
+        cfg = Config.new(cfg);
+        var me = gui.Widget.new(gui.widgets.FlightProfile, cfg);
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "flight-profile-view", me._cfg));
 

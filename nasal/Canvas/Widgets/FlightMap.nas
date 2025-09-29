@@ -25,13 +25,14 @@ gui.widgets.FlightMap = {
     # Constructor
     #
     # @param  ghost  parent
-    # @param  hash  style
-    # @param  hash  cfg
+    # @param  hash|nil  style
+    # @param  hash|nil  cfg
     # @return ghost
     #
-    new: func(parent, style, cfg) {
-        var me = gui.Widget.new(gui.widgets.FlightMap);
-        me._cfg = Config.new(cfg);
+    new: func(parent, style = nil, cfg = nil) {
+        style = style or canvas.style;
+        cfg = Config.new(cfg);
+        var me = gui.Widget.new(gui.widgets.FlightMap, cfg);
         me._focus_policy = me.NoFocus;
         me._setView(style.createWidget(parent, "flight-map-view", me._cfg));
 
