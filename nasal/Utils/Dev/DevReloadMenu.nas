@@ -79,7 +79,6 @@ var DevReloadMenu = {
 
         var item = me._getMenuItem(menuNode);
         if (item == nil) {
-            Log.alert("menu item already doesn't exist");
             return;
         }
 

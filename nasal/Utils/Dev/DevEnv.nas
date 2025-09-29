@@ -53,6 +53,20 @@ var DevEnv = {
     },
 
     #
+    # Get boolean  value of variable.
+    #
+    # @param  string  key  Variable name.
+    # @return bool
+    #
+    getBoolValue: func(key) {
+        if (!me.hasKey(key)) {
+            return false;
+        }
+
+        return me._variables[key];
+    },
+
+    #
     # Try to read .env file. If file exist ten build variable hash.
     #
     # @return bool  True if success.
@@ -107,6 +121,7 @@ var DevEnv = {
     # @return mixed
     #
     _convertValue: func(value) {
+        value = me._removeQuotes(value);
         var valueUc = string.uc(value);
 
            if (valueUc == "TRUE") return true;
@@ -119,6 +134,23 @@ var DevEnv = {
         elsif (valueUc == "LOG_DEBUG") return LOG_DEBUG;
         elsif (valueUc == "LOG_BULK") return LOG_BULK;
         # TODO: add more here if needed
+
+        return value;
+    },
+
+    #
+    # Remove leading and trailing quotes from string.
+    #
+    # @param  string  value
+    # @return string
+    #
+    _removeQuotes: func(value) {
+        if (size(value) >= 2
+            and value[0] == `"`
+            and value[-1] == `"`
+        ) {
+            return globals.substr(value, 1, size(value) - 2);
+        }
 
         return value;
     },

@@ -39,6 +39,7 @@ var Loader = {
         var modules = [
             "nasal/Utils/Dev/DevEnv",
             "nasal/Utils/Dev/DevReloadMenu",
+            "nasal/Utils/Dev/DevReloadMultiKey",
             "nasal/Utils/Callback",
             "nasal/Utils/Listeners",
             "nasal/Utils/Log",
