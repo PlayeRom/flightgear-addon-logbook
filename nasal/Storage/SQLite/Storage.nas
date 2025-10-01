@@ -683,6 +683,19 @@ var Storage = {
     # @return bool
     #
     deleteLog: func(logbookId) {
+        if (me.deleteLogQuiet(logbookId)) {
+            gui.popupTip("The log has been deleted!");
+            return true;
+        }
+
+        return false;
+    },
+
+    #
+    # @param  int|nil  logbookId  Logbook ID to delete.
+    # @return bool
+    #
+    deleteLogQuiet: func(logbookId) {
         if (logbookId == nil or logbookId < 0) {
             Log.print("ID out of range in deleteLog");
             return false;
@@ -694,8 +707,6 @@ var Storage = {
         # Delete data from trackers
         query = sprintf("DELETE FROM %s WHERE logbook_id = ?", Storage.TABLE_TRACKERS);
         DB.exec(query, logbookId);
-
-        gui.popupTip("The log has been deleted!");
 
         return true;
     },

@@ -744,6 +744,16 @@ var Storage = {
     },
 
     #
+    # This is using only for SQLite version.
+    #
+    # @param  int|nil  index  Index to delete.
+    # @return bool
+    #
+    deleteLogQuiet: func(index) {
+        return false;
+    },
+
+    #
     # Export logbook from SQLite to CSV file as a separate thread job.
     #
     # @return void

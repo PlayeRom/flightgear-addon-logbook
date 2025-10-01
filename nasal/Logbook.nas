@@ -457,11 +457,19 @@ var Logbook = {
 
         var logbookId = me._recovery.getLogbookId();
 
-        me._storage.saveLogData(me._logData, logbookId);
+        # Save only if flight duration > 5s to prevent creating "empty" records if something go wrong.
+        if (me._logData.duration > (5 / 360)) {
+            me._storage.saveLogData(me._logData, logbookId);
 
-        # Also save data to the trackers table for a given logbook record
-        if (me._isUsingSQLite) {
-            me._storage.addTrackerItem(logbookId, me._buildAnalysisData(me._logData));
+            # Also save data to the trackers table for a given logbook record
+            if (me._isUsingSQLite) {
+                me._storage.addTrackerItem(logbookId, me._buildAnalysisData(me._logData));
+            }
+        } else {
+            # Delete the record created by recovery (SQLite only)
+            if (logbookId != nil) {
+                me._storage.deleteLogQuiet(logbookId);
+            }
         }
 
         me._logData = nil;
