@@ -42,9 +42,9 @@ var DetailsDialog = {
             _columns: columns,
         };
 
-        var dialogParent = me.parents[1];
-        dialogParent.setChild(me, DetailsDialog); # Let the parent know who their child is.
-        dialogParent.setPositionOnCenter();
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, DetailsDialog); # Let the parent know who their child is.
+        me._parentDialog.setPositionOnCenter();
 
         me._isUsingSQLite        = Utils.isUsingSQLite();
         me._parent               = nil; # LogbookDialog object
@@ -101,7 +101,7 @@ var DetailsDialog = {
 
         me._inputDialog.del();
         me._deleteDialog.del();
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #
@@ -240,7 +240,7 @@ var DetailsDialog = {
 
         me._listView.setItems(me._getListViewRows(me._dataRow.columns));
 
-        me.parents[1].show();
+        me._parentDialog.show();
     },
 
     #
@@ -264,7 +264,7 @@ var DetailsDialog = {
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
-        me.parents[1].hide();
+        me._parentDialog.hide();
     },
 
     #

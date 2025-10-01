@@ -40,9 +40,9 @@ var HelpDialog = {
             ),
         ] };
 
-        var dialogParent = me.parents[1];
-        dialogParent.setChild(me, HelpDialog);  # Let the parent know who their child is.
-        dialogParent.setPositionOnCenter();
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, HelpDialog);  # Let the parent know who their child is.
+        me._parentDialog.setPositionOnCenter();
 
         var margins = {
             left   : HelpDialog.PADDING,
@@ -79,7 +79,7 @@ var HelpDialog = {
     # @override PersistentDialog
     #
     del: func() {
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #

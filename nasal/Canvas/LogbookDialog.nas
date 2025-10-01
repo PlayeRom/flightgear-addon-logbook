@@ -62,9 +62,9 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
-        var dialogParent = me.parents[1];
-        dialogParent.setChild(me, LogbookDialog); # Let the parent know who their child is.
-        dialogParent.setPositionOnCenter();
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, LogbookDialog); # Let the parent know who their child is.
+        me._parentDialog.setPositionOnCenter();
 
         if (me._isUsingSQLite) {
             me._storage.loadAllData();
@@ -238,7 +238,7 @@ var LogbookDialog = {
         me.helpDialog.del();
         me.aboutDialog.del();
 
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #
@@ -258,7 +258,7 @@ var LogbookDialog = {
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(withHeaders: true);
 
-        me.parents[1].show();
+        me._parentDialog.show();
     },
 
     #
@@ -271,7 +271,7 @@ var LogbookDialog = {
         me._filterSelector.hide();
         me._detailsDialog.hide();
 
-        me.parents[1].hide();
+        me._parentDialog.hide();
     },
 
     #

@@ -35,9 +35,9 @@ var InputDialog = {
             ],
         };
 
-        var dialogParent = me.parents[1];
-        dialogParent.setChild(me, InputDialog); # Let the parent know who their child is.
-        dialogParent.setPositionOnCenter();
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, InputDialog); # Let the parent know who their child is.
+        me._parentDialog.setPositionOnCenter();
 
         me._addonNodePath = g_Addon.node.getPath();
 
@@ -93,7 +93,7 @@ var InputDialog = {
     #
     del: func() {
         me._filterSelector.del();
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #
@@ -136,7 +136,7 @@ var InputDialog = {
         me._setLineEdit(me._value);
         me._lineEdit.setFocus();
 
-        me.parents[1].show();
+        me._parentDialog.show();
     },
 
     #
@@ -150,7 +150,7 @@ var InputDialog = {
         }
 
         me._filterSelector.hide();
-        me.parents[1].hide();
+        me._parentDialog.hide();
     },
 
     #

@@ -39,9 +39,9 @@ var ConfirmationDialog = {
             ],
         };
 
-        var dialogParent = me.parents[1];
-        dialogParent.setChild(me, ConfirmationDialog); # Let the parent know who their child is.
-        dialogParent.setPositionOnCenter();
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, ConfirmationDialog); # Let the parent know who their child is.
+        me._parentDialog.setPositionOnCenter();
 
         me._logIndex      = nil;
         me._parentObj     = nil;
@@ -80,7 +80,7 @@ var ConfirmationDialog = {
     # @override PersistentDialog
     #
     del: func() {
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #
@@ -103,7 +103,7 @@ var ConfirmationDialog = {
         me._logIndex = logIndex;
         me._parentObj = parentObj;
 
-        me.parents[1].show();
+        me._parentDialog.show();
     },
 
     #
@@ -115,7 +115,7 @@ var ConfirmationDialog = {
         g_Sound.play('delete');
 
         if (me._parentObj == nil) {
-            me.parents[1].hide();
+            me._parentDialog.hide();
         }
         else {
             # Also hide immediately the parent window that called ConfirmationDialog.
@@ -134,6 +134,6 @@ var ConfirmationDialog = {
     # @return void
     #
     _actionNegative: func() {
-        me.parents[1].hide();
+        me._parentDialog.hide();
     },
 };

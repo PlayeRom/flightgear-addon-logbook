@@ -44,8 +44,8 @@ var FilterSelector = {
             _columns: columns,
         };
 
-        # Let the parent know who their child is.
-        me.parents[1].setChild(me, FilterSelector);
+        me._parentDialog = me.parents[1];
+        me._parentDialog.setChild(me, FilterSelector); # Let the parent know who their child is.
 
         me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 
@@ -79,7 +79,7 @@ var FilterSelector = {
     # @override StylePersistentDialog
     #
     del: func() {
-        me.parents[1].del();
+        me._parentDialog.del();
     },
 
     #
@@ -89,7 +89,7 @@ var FilterSelector = {
     # @override StylePersistentDialog
     #
     hide: func() {
-        me.parents[1].hide();
+        me._parentDialog.hide();
     },
 
     #
@@ -101,7 +101,7 @@ var FilterSelector = {
     show: func() {
         me._recalculateWindowHeight();
 
-        me.parents[1].show();
+        me._parentDialog.show();
     },
 
     #
