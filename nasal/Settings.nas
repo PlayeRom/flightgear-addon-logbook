@@ -11,7 +11,7 @@
 
 #
 # Settings class to set/get settings from property list.
-# FlightGear will save them to the autosave.xml file automatically.
+# FlightGear will save them to the autosave.xml file automatically by using userarchive="y" in addon-config.xml file.
 #
 var Settings = {
     #
