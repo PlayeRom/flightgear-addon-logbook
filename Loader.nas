@@ -43,6 +43,7 @@ var Loader = {
             "nasal/Utils/Callback",
             "nasal/Utils/Listeners",
             "nasal/Utils/Log",
+            "nasal/Utils/Profiler",
             "nasal/Utils/Thread",
             "nasal/Utils/Timer",
             "nasal/Utils/Utils",
