@@ -244,16 +244,12 @@ var SettingsDialog = {
 
         hBoxLayout.addItem(me._getLabel("Map provider"));
 
-        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent);
-        if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
-            # For next addMenuItem is deprecated
-            comboBox.createItem("OpenStreetMap", "OpenStreetMap");
-            comboBox.createItem("OpenTopoMap",   "OpenTopoMap");
-        }
-        else { # for 2024.1
-            comboBox.addMenuItem("OpenStreetMap", "OpenStreetMap");
-            comboBox.addMenuItem("OpenTopoMap",   "OpenTopoMap");
-        }
+        var items = [
+            { label: "OpenStreetMap", value: "OpenStreetMap" },
+            { label: "OpenTopoMap",   value: "OpenTopoMap" },
+        ];
+
+        var comboBox = ComboBoxHelper.create(me._scrollContent, items);
         comboBox.setSelectedByValue(g_Settings.getMapProvider());
         comboBox.listen("selected-item-changed", func(e) {
             me._mapProvider = e.detail.value;
@@ -315,31 +311,22 @@ var SettingsDialog = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawLogItemsPerPage: func() {
-        var hBoxLayout = canvas.HBoxLayout.new();
+        var items = [
+            { label:  "5", value:  5 },
+            { label: "10", value: 10 },
+            { label: "15", value: 15 },
+            { label: "20", value: 20 },
+        ];
 
-        hBoxLayout.addItem(me._getLabel("Items per page"));
-
-        var comboBox = canvas.gui.widgets.ComboBox.new(me._scrollContent);
-        if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
-            # For next addMenuItem is deprecated
-            comboBox.createItem( "5",  5);
-            comboBox.createItem("10", 10);
-            comboBox.createItem("15", 15);
-            comboBox.createItem("20", 20);
-        }
-        else { # for 2024.1
-            comboBox.addMenuItem( "5",  5);
-            comboBox.addMenuItem("10", 10);
-            comboBox.addMenuItem("15", 15);
-            comboBox.addMenuItem("20", 20);
-        }
+        var comboBox = ComboBoxHelper.create(me._scrollContent, items);
         comboBox.setSelectedByValue(g_Settings.getLogItemsPerPage());
         comboBox.listen("selected-item-changed", func(e) {
             me._logItemsPerPage = e.detail.value;
         });
 
+        var hBoxLayout = canvas.HBoxLayout.new();
+        hBoxLayout.addItem(me._getLabel("Items per page"));
         hBoxLayout.addItem(comboBox);
-
         hBoxLayout.addStretch(1); # Decrease combo width
 
         return hBoxLayout;

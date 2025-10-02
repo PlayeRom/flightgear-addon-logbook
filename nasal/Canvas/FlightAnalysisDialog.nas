@@ -460,25 +460,16 @@ var FlightAnalysisDialog = {
             var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
                 .setText("Speed");
 
-            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, canvas.style, {})
-                .setFixedSize(70, 26);
-            if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
-                # For next addMenuItem is deprecated
-                comboBox.createItem( "1x",  1);
-                comboBox.createItem( "2x",  2);
-                comboBox.createItem( "4x",  4);
-                comboBox.createItem( "8x",  8);
-                comboBox.createItem("16x", 16);
-                comboBox.createItem("32x", 32);
-            }
-            else { # for 2024.1
-                comboBox.addMenuItem( "1x",  1);
-                comboBox.addMenuItem( "2x",  2);
-                comboBox.addMenuItem( "4x",  4);
-                comboBox.addMenuItem( "8x",  8);
-                comboBox.addMenuItem("16x", 16);
-                comboBox.addMenuItem("32x", 32);
-            }
+            var items = [
+                { label:  "1x", value:  1 },
+                { label:  "2x", value:  2 },
+                { label:  "4x", value:  4 },
+                { label:  "8x", value:  8 },
+                { label: "16x", value: 16 },
+                { label: "32x", value: 32 },
+            ];
+
+            var comboBox = ComboBoxHelper.create(me._group, items, 70, 26);
             comboBox.setSelectedByValue(me._playSpeed);
             comboBox.listen("selected-item-changed", func(e) {
                 me._playSpeed = e.detail.value;
@@ -507,17 +498,12 @@ var FlightAnalysisDialog = {
             var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
                 .setText("Profile mode");
 
-            var comboBox = canvas.gui.widgets.ComboBox.new(me._group, canvas.style, {})
-                .setFixedSize(100, 26);
-            if (Utils.tryCatch(func { typeof(comboBox.createItem) == "func"; }, [])) {
-                # For next addMenuItem is deprecated
-                comboBox.createItem("distance", canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
-                comboBox.createItem("time",     canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP);
-            }
-            else { # for 2024.1
-                comboBox.addMenuItem("distance", canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
-                comboBox.addMenuItem("time",     canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP);
-            }
+            var items = [
+                { label: "distance", value: canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE },
+                { label: "time",     value: canvas.gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP },
+            ];
+
+            var comboBox = ComboBoxHelper.create(me._group, items, 100, 26);
             comboBox.setSelectedByValue(canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE);
             comboBox.listen("selected-item-changed", func(e) {
                 me._profileView.setDrawMode(e.detail.value);
