@@ -29,6 +29,9 @@ var AircraftType = {
     GA_MULTI   : "ga-multi",  # small piston multi-engine
     OTHERS     : "others",    # undefined or not recognized
 
+    # This name doesn't matter, as long as no one writes it in the aircraft's tags:
+    TERMINATE  : "logbook-terminate-mark",
+
     #
     # Constructor
     #
@@ -38,6 +41,17 @@ var AircraftType = {
         var me = { parents: [AircraftType] };
 
         me._tagsNode = props.globals.getNode("/sim/tags");
+
+        me._tags = {};
+
+        if (me._tagsNode != nil) {
+            foreach (var tagNode; me._tagsNode.getChildren("tag")) {
+                var tag = tagNode == nil ? nil : tagNode.getValue();
+                if (tag != nil) {
+                    me._tags[tag] = 1;
+                }
+            }
+        }
 
         return me;
     },
@@ -67,19 +81,52 @@ var AircraftType = {
             return AircraftType.OTHERS;
         }
 
-        if (me._searchTag({"or" : ["helicopter"], "and" : []})) {
-            return AircraftType.HELICOPTER;
-        }
+        # The order of the tags matters because it determines what will be found first.
+        var rules = [
+            { tag: "helicopter",  value: AircraftType.HELICOPTER },
+            { tag: "balloon",     value: AircraftType.BALLOON },
+            { tag: "airship",     value: AircraftType.BALLOON },
+            { tag: "spaceship",   value: AircraftType.SPACE },
+            { tag: "seaplane",    value: AircraftType.SEAPLANE },
+            { tag: "amphibious",  value: AircraftType.SEAPLANE },
+            { tag: "fighter",     value: AircraftType.MILITARY },
+            { tag: "interceptor", value: AircraftType.MILITARY },
+            { tag: "combat",      value: AircraftType.MILITARY },
+            { tag: "bomber",      value: AircraftType.MILITARY },
+            { tag: "tanker",      value: AircraftType.MILITARY },
+            { tag: "carrier",     value: AircraftType.MILITARY },
+            { tag: "glider",      value: AircraftType.GLIDER },
+            { tag: "turboprop",   value: AircraftType.TURBOPROP },
+            { tag: "bizjet",      value: AircraftType.BIZJET },
+            { tag: "business",    value: [
+                { tag: "jet",                  value: AircraftType.BIZJET },
+                { tag: AircraftType.TERMINATE, value: nil }, # nil = continue searching
+            ]},
+            { tag: "jet",         value: AircraftType.AIRLINER },
+            { tag: "turbojet",    value: AircraftType.AIRLINER },
+            { tag: "passenger",   value: [
+                { tag: "4-engine",    value: AircraftType.AIRLINER },
+                { tag: "four-engine", value: AircraftType.AIRLINER },
+                { tag: "6-engine",    value: AircraftType.AIRLINER },
+                { tag: "six-engine",  value: AircraftType.AIRLINER },
+                { tag: AircraftType.TERMINATE, value: nil }, # nil = continue searching
+            ]},
+            { tag: "piston", value: [
+                { tag: "single-engine",        value: AircraftType.GA_SINGLE },
+                { tag: "1-engine",             value: AircraftType.GA_SINGLE },
+                { tag: AircraftType.TERMINATE, value: AircraftType.GA_MULTI }, # If none of the above
+            ]},
+            { tag: "propeller", value: [
+                { tag: "single-engine",        value: AircraftType.GA_SINGLE },
+                { tag: "1-engine",             value: AircraftType.GA_SINGLE },
+                { tag: AircraftType.TERMINATE, value: AircraftType.GA_MULTI }, # If none of the above
+            ]},
+        ];
 
-        if (me._searchTag({"or" : ["balloon", "airship"], "and" : []})) {
-            return AircraftType.BALLOON;
-        }
+        var type = me._getTypeByTagRules(rules);
 
-        if (me._searchTag({"or" : ["spaceship"], "and" : []})) {
-            return AircraftType.SPACE;
-        }
-
-        if (me._searchTag({"or" : ["seaplane", "amphibious"], "and" : []})) {
+        # Extra special conditions:
+        if (type == AircraftType.SEAPLANE) {
             # Handle exception where the aircraft has multiple versions i.e. with wheels and floats,
             # but tags are the same for all versions so it finds the seaplane when it has wheels.
             var aircraftId = Aircraft.getAircraftId();
@@ -96,85 +143,46 @@ var AircraftType = {
                     return AircraftType.GA_SINGLE;
                 }
             }
-
-            return AircraftType.SEAPLANE;
-        }
-
-        if (me._searchTag({"or" : ["fighter", "interceptor", "combat", "bomber", "tanker", "carrier"], "and" : []})) { # cargo, transport?
-            return AircraftType.MILITARY;
-        }
-
-        if (me._searchTag({"or" : ["glider"], "and" : []})) {
-            return AircraftType.GLIDER;
-        }
-
-        if (me._searchTag({"or" : ["turboprop"], "and" : []})) {
-            return AircraftType.TURBOPROP;
-        }
-
-        if (me._searchTag({"or" : ["bizjet"], "and" : ["business", "jet"]})) {
-            return AircraftType.BIZJET;
-        }
-
-        if (   me._searchTag({"or" : ["jet", "turbojet"], "and" : ["passenger", "4-engine"]})
-            or me._searchTag({"or" : [],                  "and" : ["passenger", "four-engine"]})
-            or me._searchTag({"or" : [],                  "and" : ["passenger", "6-engine"]})
-            or me._searchTag({"or" : [],                  "and" : ["passenger", "six-engine"]})
-        ) {
-            return AircraftType.AIRLINER;
-        }
-
-        if (   me._searchTag({"or" : [], "and" : ["piston", "single-engine"]})
-            or me._searchTag({"or" : [], "and" : ["piston", "1-engine"]})
-            or me._searchTag({"or" : [], "and" : ["propeller", "single-engine"]})
-            or me._searchTag({"or" : [], "and" : ["propeller", "1-engine"]})
-        ) {
+        } elsif (type == AircraftType.GA_SINGLE) {
             var aircraftId = Aircraft.getAircraftId();
             if (   string.match(aircraftId, "*-float") # for c172p
                 or string.match(aircraftId, "*-amphibious")
             ) {
                 return AircraftType.SEAPLANE;
             }
-
-            return AircraftType.GA_SINGLE;
         }
 
-        if (me._searchTag({"or" : ["piston", "propeller"], "and" : []})) {
-            return AircraftType.GA_MULTI;
-        }
-
-        return AircraftType.OTHERS;
+        return type;
     },
 
     #
-    # Serach group of tags
+    # @param  vector  rules  Vector of hashes with tag rules.
+    # @return string
     #
-    # @param  hash  itemsToSearch  Hash with 2 key "or" and "and" indicated to the vectors of tags.
-    #       Vector of "or" means that this function return true if at least one is found.
-    #       Vector of "and" means that this function return true if all of them are found.
-    #       Both vectors ("or" and "and") are working with "or" logic.
-    # @return bool  Return true if tag or group of tags is found
-    #
-    _searchTag: func(itemsToSearch) {
-        var andCounter = 0;
-        var andSize = size(itemsToSearch["and"]);
-
-        foreach (var tagNode; me._tagsNode.getChildren("tag")) {
-            var tag = tagNode.getValue();
-            foreach (var search; itemsToSearch["or"]) {
-                if (search == tag) {
-                    return true;
-                }
+    _getTypeByTagRules: func(rules) {
+        foreach (var rule; rules) {
+            if (!contains(me._tags, rule.tag)) {
+                continue;
             }
 
-            foreach (var search; itemsToSearch["and"]) {
-                if (search == tag) {
-                    andCounter += 1;
+            if (typeof(rule.value) == "vector") {
+                foreach (var subRule; rule.value) {
+                    if (contains(me._tags, subRule.tag)) {
+                        return subRule.value;
+                    }
+
+                    if (subRule.tag == AircraftType.TERMINATE and subRule.value != nil) {
+                        return subRule.value;
+                    }
                 }
+
+                continue;
             }
+
+            return rule.value;
         }
 
-        return andSize > 0 and andCounter == andSize;
+        return AircraftType.OTHERS;
     },
 
     #
