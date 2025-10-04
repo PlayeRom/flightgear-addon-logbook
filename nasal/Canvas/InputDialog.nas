@@ -129,7 +129,7 @@ var InputDialog = {
     show: func(parent, id, value, columnItem) {
         me._parent     = parent;
         me._recordId   = id;
-        me._value      = Utils.toString(value);
+        me._value      = value;
         me._columnItem = columnItem;
 
         me._setLabel(me._columnItem.header);

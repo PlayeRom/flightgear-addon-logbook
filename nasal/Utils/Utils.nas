@@ -64,16 +64,6 @@ var Utils = {
     },
 
     #
-    # Convert value to string
-    #
-    # @param  string|int|double  value
-    # @return string
-    #
-    toString: func(value) {
-        return sprintf("%s", value);
-    },
-
-    #
     # Convert decimal hours to hours:minutes:seconds, e.g. 1.5 -> 1:30
     #
     # @param  double|string  decimalHours
