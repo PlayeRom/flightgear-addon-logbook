@@ -24,7 +24,11 @@ var ScrollAreaHelper = {
     create: func(context, margins = nil, bgColor = nil) {
         var scrollArea = canvas.gui.widgets.ScrollArea.new(context, canvas.style, {});
 
-        scrollArea.setColorBackground(bgColor or canvas.style.getColor("bg_color"));
+        if (bgColor == nil) {
+            bgColor = canvas.style.getColor("bg_color");
+        }
+
+        scrollArea.setColorBackground(bgColor);
 
         if (margins != nil) {
             scrollArea.setContentsMargins(margins.left, margins.top, margins.right, margins.bottom);

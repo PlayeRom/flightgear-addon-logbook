@@ -34,11 +34,14 @@ gui.widgets.FlightProfile = {
     # @return ghost
     #
     new: func(parent, style = nil, cfg = nil) {
-        style = style or canvas.style;
+        if (style == nil) {
+            style = canvas.style;
+        }
+
         cfg = Config.new(cfg);
         var me = gui.Widget.new(gui.widgets.FlightProfile, cfg);
         me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "flight-profile-view", me._cfg));
+        me._setView(style.createWidget(parent, "flight-profile-view", cfg));
 
         # Vector of hashes with flight data
         me._trackItems = [];

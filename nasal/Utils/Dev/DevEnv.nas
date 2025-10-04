@@ -73,12 +73,12 @@ var DevEnv = {
     # @return bool  True if success.
     #
     _readEnvFile: func() {
-        var envFilePath = g_Addon.basePath ~ "/.env";
-        if (!io.exists(envFilePath)) {
+        var envFilePath = os.path.new(g_Addon.basePath ~ "/.env");
+        if (!envFilePath.exists()) {
             return false;
         }
 
-        var content = io.readfile(envFilePath);
+        var content = io.readfile(envFilePath.realpath);
 
         var lines = globals.split("\n", content);
 
