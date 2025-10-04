@@ -22,7 +22,7 @@ var DevEnv = {
     new: func() {
         var me = { parents: [DevEnv] };
 
-        me._variables = {};
+        me._variables = std.Hash.new();
         me._readEnvFile();
 
         return me;
@@ -35,21 +35,21 @@ var DevEnv = {
     # @return bool
     #
     hasKey: func(key) {
-        return globals.contains(me._variables, key);
+        return me._variables.contains(key);
     },
 
     #
     # Get value of variable.
     #
     # @param  string  key  Variable name.
-    # @return mixed
+    # @return scalar|nil
     #
     getValue: func(key) {
         if (!me.hasKey(key)) {
             return nil;
         }
 
-        return me._variables[key];
+        return me._variables.get(key);
     },
 
     #
@@ -59,11 +59,12 @@ var DevEnv = {
     # @return bool
     #
     getBoolValue: func(key) {
-        if (!me.hasKey(key)) {
-            return false;
+        var value = me.getValue(key);
+        if (value == true or value == false) {
+            return value;
         }
 
-        return me._variables[key];
+        return false;
     },
 
     #
@@ -91,7 +92,7 @@ var DevEnv = {
 
                 Log.alert("read .env file: ", key, "=", value);
 
-                me._variables[key] = me._convertValue(value);
+                me._variables.set(key, me._convertValue(value));
             }
         }
 
@@ -111,14 +112,14 @@ var DevEnv = {
             return line;
         }
 
-        return substr(line, 0, pos);
+        return globals.substr(line, 0, pos);
     },
 
     #
     # Convert known string values ​​to their scalar representation.
     #
     # @param  string  value
-    # @return mixed
+    # @return scalar
     #
     _convertValue: func(value) {
         value = me._removeQuotes(value);
@@ -126,8 +127,7 @@ var DevEnv = {
 
            if (valueUc == "TRUE") return true;
         elsif (valueUc == "FALSE") return false;
-        elsif (valueUc == "1") return 1;
-        elsif (valueUc == "0") return 0;
+        elsif (globals.isnum(valueUc)) return globals.num(valueUc);
         elsif (valueUc == "LOG_ALERT") return LOG_ALERT;
         elsif (valueUc == "LOG_WARN") return LOG_WARN;
         elsif (valueUc == "LOG_INFO") return LOG_INFO;
@@ -135,7 +135,7 @@ var DevEnv = {
         elsif (valueUc == "LOG_BULK") return LOG_BULK;
         # TODO: add more here if needed
 
-        return value;
+        return value; # return string as default
     },
 
     #
