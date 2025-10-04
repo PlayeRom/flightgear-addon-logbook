@@ -122,7 +122,7 @@ var Bootstrap = {
         if (g_isDevMode) {
             var reloadMenu = DevReloadMenu.new();
 
-            env.getBoolValue("ADD_RELOAD_MENU")
+            env.getBoolValue("RELOAD_MENU")
                 ? reloadMenu.addMenu()
                 : reloadMenu.removeMenu();
 
