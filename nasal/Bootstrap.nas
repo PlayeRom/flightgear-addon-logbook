@@ -16,22 +16,22 @@
 var MY_LOG_LEVEL = LOG_INFO;
 
 #
-# Global object of addons.Addon
+# Global object of addons.Addon.
 #
 var g_Addon = nil;
 
 #
-# Global object of Settings
+# Global object of Settings.
 #
 var g_Settings = nil;
 
 #
-# Global object of Sound
+# Global object of Sound.
 #
 var g_Sound = nil;
 
 #
-# Global object of Logbook
+# Global object of Logbook.
 #
 var g_Logbook = nil;
 
@@ -76,6 +76,7 @@ var Bootstrap = {
         # its canvas textures earlier than the airplane, which will cause that at index 15 there will be no MCDU texture
         # but the texture from the add-on. So thanks to this delay, the textures of the plane will be created first, and
         # then the textures of this add-on.
+
         Timer.singleShot(3, func() {
             g_Logbook = Logbook.new();
 
@@ -91,6 +92,8 @@ var Bootstrap = {
     # @return void
     #
     uninit: func() {
+        Profiler.clear();
+
         if (g_Logbook != nil) {
             g_Logbook.del();
         }

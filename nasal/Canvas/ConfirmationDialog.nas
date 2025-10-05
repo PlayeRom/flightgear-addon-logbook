@@ -10,19 +10,13 @@
 #
 
 #
-# ConfirmationDialog class
+# ConfirmationDialog class.
 #
 var ConfirmationDialog = {
     CLASS: "ConfirmationDialog",
 
     #
-    # Constants
-    #
-    WINDOW_WIDTH  : 300,
-    WINDOW_HEIGHT : 80,
-
-    #
-    # Constructor
+    # Constructor.
     #
     # @param  string  title
     # @return hash
@@ -32,9 +26,9 @@ var ConfirmationDialog = {
             parents: [
                 ConfirmationDialog,
                 PersistentDialog.new(
-                    ConfirmationDialog.WINDOW_WIDTH,
-                    ConfirmationDialog.WINDOW_HEIGHT,
-                    title,
+                    width: 300,
+                    height: 80,
+                    title: title,
                 ),
             ],
         };
@@ -74,7 +68,7 @@ var ConfirmationDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override PersistentDialog
@@ -84,7 +78,7 @@ var ConfirmationDialog = {
     },
 
     #
-    # Set label text
+    # Set label text.
     #
     # @param  string  label
     # @return void
@@ -95,7 +89,7 @@ var ConfirmationDialog = {
 
     #
     # @param  int logIndex
-    # @param  hash|nil  parentObj  Dialog parent class
+    # @param  hash|nil  parentObj  Dialog parent class.
     # @return void
     # @override PersistentDialog
     #
@@ -107,7 +101,7 @@ var ConfirmationDialog = {
     },
 
     #
-    # Positive button action
+    # Positive button action.
     #
     # @return void
     #
@@ -129,7 +123,7 @@ var ConfirmationDialog = {
     },
 
     #
-    # Negative button action
+    # Negative button action.
     #
     # @return void
     #

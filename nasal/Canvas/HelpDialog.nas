@@ -10,13 +10,13 @@
 #
 
 #
-# HelpDialog class to display help text
+# HelpDialog class to display help text.
 #
 var HelpDialog = {
     CLASS: "HelpDialog",
 
     #
-    # Constants
+    # Constants:
     #
     WINDOW_WIDTH  : 700,
     WINDOW_HEIGHT : 420,
@@ -24,7 +24,7 @@ var HelpDialog = {
     TITLE         : "Logbook Help",
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -73,7 +73,7 @@ var HelpDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override PersistentDialog
@@ -83,7 +83,7 @@ var HelpDialog = {
     },
 
     #
-    # Resize callback from parent Dialog
+    # Resize callback from parent Dialog.
     #
     # @param  int  width
     # @param  int  height
@@ -130,7 +130,7 @@ var HelpDialog = {
     },
 
     #
-    # @return ghost  HBoxLayout object with button
+    # @return ghost  HBoxLayout object with button.
     #
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();

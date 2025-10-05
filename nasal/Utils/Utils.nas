@@ -10,7 +10,7 @@
 #
 
 #
-# Utils static methods
+# Utils static methods.
 #
 var Utils = {
     #

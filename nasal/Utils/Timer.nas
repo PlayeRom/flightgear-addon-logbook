@@ -17,7 +17,8 @@ var Timer = {
     # Run timer as single shot.
     #
     # @param  double  delaySec  Delay in seconds for execute timer's callback.
-    # @param  hash  self  Optional parameter specifying what any "me" references in the function being called will refer to.
+    # @param  hash  self  Optional parameter specifying what any "me" references
+    #                     in the function being called will refer to.
     # @param  func  callback  Function to be called after given delay.
     # @return ghost  Return timer object.
     #
@@ -41,7 +42,8 @@ var Timer = {
     # Create a timer object with a "self" parameter that points to the owner of the callback.
     #
     # @param  double  delaySec  Delay in seconds for execute timer's callback.
-    # @param  hash  self  Optional parameter specifying what any "me" references in the function being called will refer to.
+    # @param  hash  self  Optional parameter specifying what any "me" references
+    #                     in the function being called will refer to.
     # @param  func  callback  Function to be called after given delay.
     # @return ghost  Return timer object.
     #

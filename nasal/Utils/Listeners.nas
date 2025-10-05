@@ -10,7 +10,7 @@
 #
 
 #
-# Class to handle listeners
+# Class to handle listeners.
 #
 var Listeners = {
     #
@@ -21,7 +21,7 @@ var Listeners = {
     ON_CHILD_CHANGE: 2, # Triggered always, event if child properties has been changed.
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -34,12 +34,12 @@ var Listeners = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
     del: func() {
-        me._removeListeners();
+        me.clear();
     },
 
     #
@@ -54,11 +54,22 @@ var Listeners = {
     #                    1 means that the trigger will always be triggered when the property is written to.
     #                    2 will mean that the listener will be triggered even if child properties are modified.
     #                    This argument is optional and defaults to 1.
-    # @return void
+    # @return int  Listener handler.
     #
     add: func(node, code, init = false, type = 1) {
-        var handler = setlistener(node, code, init, type);
+        var handler = globals.setlistener(node, code, init, type);
         me._listeners.append(handler);
+
+        return handler;
+    },
+
+    #
+    # Returns the number of listeners added.
+    #
+    # @return int
+    #
+    size: func() {
+        return me._listeners.size();
     },
 
     #
@@ -66,9 +77,9 @@ var Listeners = {
     #
     # @return void
     #
-    _removeListeners: func() {
+    clear: func() {
         foreach (var listener; me._listeners.vector) {
-            removelistener(listener);
+            globals.removelistener(listener);
         }
 
         me._listeners.clear();

@@ -10,16 +10,16 @@
 #
 
 #
-# FlightAnalysis class used to collect data for flight analysis of the current session
+# FlightAnalysis class used to collect data for flight analysis of the current session.
 #
 var FlightAnalysis = {
     #
-    # Constant
+    # Constants:
     #
     INTERVAL_AUTO_THRESHOLD: 1.0,
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -60,7 +60,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Get initial interval for timer
+    # Get initial interval for timer.
     #
     # @return double
     #
@@ -74,7 +74,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Return true if setting TrackerIntervalSec is in auto mode
+    # Return true if setting TrackerIntervalSec is in auto mode.
     #
     # @return bool
     #
@@ -83,7 +83,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Change timer interval if needed
+    # Change timer interval if needed.
     #
     # @return void
     #
@@ -102,7 +102,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Get timer interval according to situation
+    # Get timer interval according to situation.
     #
     # @return double
     #
@@ -142,7 +142,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Clear recovery variable
+    # Clear recovery variable.
     #
     # @return void
     #
@@ -154,7 +154,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Timer update function
+    # Timer update function.
     #
     # @return void
     #
@@ -189,7 +189,7 @@ var FlightAnalysis = {
     },
 
     #
-    # Open Flight Analysis Dialog
+    # Open Flight Analysis Dialog.
     #
     # @return void
     #

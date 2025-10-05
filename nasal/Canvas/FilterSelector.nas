@@ -10,13 +10,13 @@
 #
 
 #
-# FilterSelector class
+# FilterSelector class.
 #
 var FilterSelector = {
     CLASS: "FilterSelector",
 
     #
-    # Constants
+    # Constants:
     #
     WINDOW_WIDTH           : 250,
     WINDOW_HEIGHT          : 300,
@@ -26,9 +26,9 @@ var FilterSelector = {
     SEPARATOR_H_MULTIPLIER : 0.25,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  columns  Columns object
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(columns) {
@@ -38,7 +38,7 @@ var FilterSelector = {
                 StylePersistentDialog.new(
                     FilterSelector.WINDOW_WIDTH,
                     FilterSelector.WINDOW_HEIGHT,
-                    "Filter selector"
+                    "Filter selector",
                 ),
             ],
             _columns: columns,
@@ -73,7 +73,7 @@ var FilterSelector = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override StylePersistentDialog
@@ -83,7 +83,7 @@ var FilterSelector = {
     },
 
     #
-    # Hide canvas window
+    # Hide canvas window.
     #
     # @return void
     # @override StylePersistentDialog
@@ -93,7 +93,7 @@ var FilterSelector = {
     },
 
     #
-    # Show canvas window
+    # Show canvas window.
     #
     # @return void
     # @override StylePersistentDialog
@@ -129,7 +129,7 @@ var FilterSelector = {
     },
 
     #
-    # @param  vector  items  Vector of strings
+    # @param  vector  items  Vector of strings.
     # @param  bool  withDefaultAll
     # @return hash
     #
@@ -186,9 +186,9 @@ var FilterSelector = {
     },
 
     #
-    # Set column name
+    # Set column name.
     #
-    # @param  string  name  Column name
+    # @param  string  name  Column name.
     # @return hash
     #
     setColumnName: func(name) {
@@ -251,7 +251,7 @@ var FilterSelector = {
     },
 
     #
-    # Draw content for scrollable area
+    # Draw content for scrollable area.
     #
     # @return void
     #
@@ -276,7 +276,7 @@ var FilterSelector = {
     # The click callback on the LogbookList widget.
     # Call other callback passed by parent object by setCallback and hide this dialog.
     #
-    # @param  int  index  Index of row
+    # @param  int  index  Index of row.
     # @return void
     #
     _listViewCallback: func(index) {

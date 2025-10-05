@@ -38,6 +38,7 @@ var Profiler = {
     #
     stop: func() {
         var count = Profiler._stack.size();
+
         if (count == 0) {
             Log.print("profiler time = ? seconds. FIRST RUN start() METHOD.");
             return 0;

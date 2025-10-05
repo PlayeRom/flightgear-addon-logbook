@@ -16,7 +16,7 @@ var Dialog = {
     CLASS: "Dialog",
 
     #
-    # Constructor
+    # Constructor.
     #
     # @param  int  width  Initial width of window.
     # @param  int  height  Initial height of window.
@@ -117,7 +117,8 @@ var Dialog = {
     del: func() {
         me._listeners.del();
 
-        # Since we override window.del() to only hide the window, we need to actually destroy the window here by:
+        # Since PersistentDialog override window.del() to only hide the window,
+        # we need to actually destroy the window here by call() function:
         call(canvas.Window.del, [], me._window);
     },
 

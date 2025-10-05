@@ -19,7 +19,7 @@ var PersistentDialog = {
     CLASS: "PersistentDialog",
 
     #
-    # Constructor
+    # Constructor.
     #
     # @param  int  width  Initial width of window.
     # @param  int  height  Initial height of window.

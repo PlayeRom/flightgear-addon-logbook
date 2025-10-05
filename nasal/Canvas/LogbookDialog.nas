@@ -10,13 +10,13 @@
 #
 
 #
-# LogbookDialog class to display logbook
+# LogbookDialog class to display logbook.
 #
 var LogbookDialog = {
     CLASS: "LogbookDialog",
 
     #
-    # Constants
+    # Constants:
     #
     MAX_WINDOW_WIDTH : 1500,
     MIN_WINDOW_WIDTH : 540,
@@ -25,12 +25,12 @@ var LogbookDialog = {
     MIN_WINDOW_HEIGHT: 260,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  storage  Storage object
-    # @param  hash  filters  Filters object
-    # @param  hash  columns  Columns object
-    # @param  hash  logbook  Logbook object
+    # @param  hash  storage  Storage object.
+    # @param  hash  filters  Filters object.
+    # @param  hash  columns  Columns object.
+    # @param  hash  logbook  Logbook object.
     # @return hash
     #
     new: func(storage, filters, columns, logbook) {
@@ -198,7 +198,7 @@ var LogbookDialog = {
     },
 
     #
-    # Callback from "/addons/by-id/org.flightgear.addons.logbook/addon-devel/reload-logbook" listener
+    # Callback from "/addons/by-id/org.flightgear.addons.logbook/addon-devel/reload-logbook" listener.
     #
     # @return void
     #
@@ -226,7 +226,7 @@ var LogbookDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override StylePersistentDialog
@@ -242,7 +242,7 @@ var LogbookDialog = {
     },
 
     #
-    # Show canvas dialog
+    # Show canvas dialog.
     #
     # @return void
     # @override StylePersistentDialog
@@ -262,7 +262,7 @@ var LogbookDialog = {
     },
 
     #
-    # Hide canvas dialog
+    # Hide canvas dialog.
     #
     # @return void
     # @override StylePersistentDialog
@@ -275,7 +275,7 @@ var LogbookDialog = {
     },
 
     #
-    # @return ghost  LogbookList widget
+    # @return ghost  LogbookList widget.
     #
     getListView: func() {
         return me._listView;
@@ -299,7 +299,7 @@ var LogbookDialog = {
     },
 
     #
-    # Draw headers row
+    # Draw headers row.
     #
     # @return void
     #
@@ -337,11 +337,11 @@ var LogbookDialog = {
     },
 
     #
-    # @param  ghost  rowGroup  Canvas group
-    # @param  ghost  rect  Rectangle canvas object
-    # @param  vector|nil  items  Items for FilterSelector
-    # @param  string  title  FilterSelector title dialog
-    # @param  string  columnName  Column name
+    # @param  ghost  rowGroup  Canvas group.
+    # @param  ghost  rect  Rectangle canvas object.
+    # @param  vector|nil  items  Items for FilterSelector.
+    # @param  string  title  FilterSelector title dialog.
+    # @param  string  columnName  Column name.
     # @return void
     #
     _setMouseHoverHeadersListener: func(rowGroup, rect, items, title, columnName) {
@@ -387,7 +387,7 @@ var LogbookDialog = {
     },
 
     #
-    # Replace some too long header text or set "filtered" marker
+    # Replace some too long header text or set "filtered" marker.
     #
     # @param  string  columnName
     # @param  string  text
@@ -430,12 +430,12 @@ var LogbookDialog = {
     },
 
     #
-    # Draw text
+    # Draw text.
     #
-    # @param  ghost  context  Parent canvas group
-    # @param  int  x, y  Position of text
-    # @param  string  label  Text to draw
-    # @return ghost  Text canvas element
+    # @param  ghost  context  Parent canvas group.
+    # @param  int  x, y  Position of text.
+    # @param  string  label  Text to draw.
+    # @return ghost  Text canvas element.
     #
     _drawText: func(context, x, y, label) {
         return context.createChild("text")
@@ -445,7 +445,7 @@ var LogbookDialog = {
     },
 
     #
-    # Draw bottom bar with buttons
+    # Draw bottom bar with buttons.
     #
     # @return void
     #
@@ -561,7 +561,7 @@ var LogbookDialog = {
     },
 
     #
-    # Go to first logbook items
+    # Go to first logbook items.
     #
     # @return void
     #
@@ -581,7 +581,7 @@ var LogbookDialog = {
     },
 
     #
-    # Go to previous logbook items
+    # Go to previous logbook items.
     #
     # @return void
     #
@@ -601,7 +601,7 @@ var LogbookDialog = {
     },
 
     #
-    # Go to next logbook items
+    # Go to next logbook items.
     #
     # @return void
     #
@@ -621,7 +621,7 @@ var LogbookDialog = {
     },
 
     #
-    # Go to last logbook items
+    # Go to last logbook items.
     #
     # @return void
     #
@@ -644,10 +644,10 @@ var LogbookDialog = {
     },
 
     #
-    # Reload logbook data
+    # Reload logbook data.
     #
     # @param  bool  withHeaders  Set true when headers/filters must be change too.
-    # @param  hash|nil  filter  FilterData object as {"columnName": name, "value": "text"}
+    # @param  hash|nil  filter  FilterData object as {"columnName": name, "value": "text"}.
     # @return void
     #
     reloadData: func(withHeaders = 1, filter = nil) {
@@ -674,7 +674,7 @@ var LogbookDialog = {
     #
     # This function is call when loadDataRange thread finish its job and give as a results.
     #
-    # @param  vector  data  Vector of hashes {"id": index, "columns": vector}
+    # @param  vector  data  Vector of hashes {"id": index, "columns": vector}.
     # @param  bool  withHeaders
     # @return void
     #
@@ -721,7 +721,7 @@ var LogbookDialog = {
     },
 
     #
-    # Set paging information
+    # Set paging information.
     #
     # @return void
     #
@@ -757,8 +757,8 @@ var LogbookDialog = {
     },
 
     #
-    # @param  int  id  Record ID from SQLite or index of row in whole CSV file
-    # @param  int  index  Index of row in list view (among displayed rows)
+    # @param  int  id  Record ID from SQLite or index of row in whole CSV file.
+    # @param  int  index  Index of row in list view (among displayed rows).
     # @return void
     #
     _setHighlightingRow: func(id, index) {

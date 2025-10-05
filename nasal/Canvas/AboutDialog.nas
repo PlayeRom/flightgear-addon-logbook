@@ -10,20 +10,18 @@
 #
 
 #
-# AboutDialog class to display about info
+# AboutDialog class to display about info.
 #
 var AboutDialog = {
     CLASS: "AboutDialog",
 
     #
-    # Constants
+    # Constants:
     #
-    WINDOW_WIDTH  : 280,
-    WINDOW_HEIGHT : 400,
-    PADDING       : 10,
+    PADDING: 10,
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -31,7 +29,11 @@ var AboutDialog = {
         var me = {
             parents: [
                 AboutDialog,
-                PersistentDialog.new(AboutDialog.WINDOW_WIDTH, AboutDialog.WINDOW_HEIGHT, "Logbook About"),
+                PersistentDialog.new(
+                    width: 280,
+                    height: 400,
+                    title: "About Logbook",
+                ),
             ],
         };
 
@@ -51,7 +53,7 @@ var AboutDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -128,9 +130,9 @@ var AboutDialog = {
     },
 
     #
-    # @param  string  label  Label of button
-    # @param  func  callback  function which will be executed after click the button
-    # @return ghost  HBoxLayout object with button
+    # @param  string  label  Label of button.
+    # @param  func  callback  function which will be executed after click the button.
+    # @return ghost  HBoxLayout object with button.
     #
     _drawBottomBar: func(label, callback) {
         var buttonBox = canvas.HBoxLayout.new();

@@ -10,13 +10,13 @@
 #
 
 #
-# DetailsDialog class to display one row details
+# DetailsDialog class to display one row details.
 #
 var DetailsDialog = {
     CLASS: "DetailsDialog",
 
     #
-    # Constants
+    # Constants:
     #
     WINDOW_WIDTH  : 610,
     WINDOW_HEIGHT : 660,
@@ -24,8 +24,8 @@ var DetailsDialog = {
     #
     # Constructor
     #
-    # @param  hash  storage  Storage object
-    # @param  hash  columns  Columns object
+    # @param  hash  storage  Storage object.
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(storage, columns) {
@@ -88,7 +88,7 @@ var DetailsDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override StylePersistentDialog
@@ -105,14 +105,14 @@ var DetailsDialog = {
     },
 
     #
-    # @return ghost  LogbookList widget
+    # @return ghost  LogbookList widget.
     #
     getListView: func() {
         return me._listView;
     },
 
     #
-    # @return hash  InputDialog object
+    # @return hash  InputDialog object.
     #
     getInputDialog: func() {
         return me._inputDialog;
@@ -200,7 +200,7 @@ var DetailsDialog = {
     },
 
     #
-    # @return ghost  LogbookList widget
+    # @return ghost  LogbookList widget.
     #
     _setListViewStyle: func() {
         return me._listView
@@ -210,10 +210,10 @@ var DetailsDialog = {
     },
 
     #
-    # Show canvas dialog
+    # Show canvas dialog.
     #
-    # @param  hash  parent  LogbookDialog object
-    # @param  int  logbookId  Logbook ID in DB or row index in CSV file, if -1 then it's total row
+    # @param  hash  parent  LogbookDialog object.
+    # @param  int  logbookId  Logbook ID in DB or row index in CSV file, if -1 then it's total row.
     # @return void
     # @override StylePersistentDialog
     #
@@ -244,7 +244,7 @@ var DetailsDialog = {
     },
 
     #
-    # Hide details window with its sub windows
+    # Hide details window with its sub windows.
     #
     # @return void
     # @override StylePersistentDialog
@@ -268,9 +268,9 @@ var DetailsDialog = {
     },
 
     #
-    # Prepare columns data for LogbookList
+    # Prepare columns data for LogbookList.
     #
-    # @param  vector  columns  Vector of hashes with columns for LogbookList widget
+    # @param  vector  columns  Vector of hashes with columns for LogbookList widget.
     # @return vector
     #
     _getListViewRows: func(columns) {
@@ -308,7 +308,7 @@ var DetailsDialog = {
     },
 
     #
-    # Reload current log
+    # Reload current log.
     #
     # @return void
     #

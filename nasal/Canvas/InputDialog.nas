@@ -10,21 +10,21 @@
 #
 
 #
-# InputDialog class
+# InputDialog class.
 #
 var InputDialog = {
     CLASS: "InputDialog",
 
     #
-    # Constants
+    # Constants:
     #
     WINDOW_WIDTH  : 400,
     WINDOW_HEIGHT : 120,
 
     #
-    # Constructor
+    # Constructor.
     #
-    # @param  hash  columns  Columns object
+    # @param  hash  columns  Columns object.
     # @return hash
     #
     new: func(columns) {
@@ -86,7 +86,7 @@ var InputDialog = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     # @override PersistentDialog
@@ -97,7 +97,7 @@ var InputDialog = {
     },
 
     #
-    # Set label text
+    # Set label text.
     #
     # @param  string  label
     # @return void
@@ -109,7 +109,7 @@ var InputDialog = {
     },
 
     #
-    # Set input text
+    # Set input text.
     #
     # @param  string  text
     # @return void
@@ -119,10 +119,10 @@ var InputDialog = {
     },
 
     #
-    # @param  hash  parent  DetailsDialog object
-    # @param  int  id  Record ID in SQLite or index of whole CSV file
-    # @param  string  value  Value to edit
-    # @param  hash  columnItem  Column item from Columns class
+    # @param  hash  parent  DetailsDialog object.
+    # @param  int  id  Record ID in SQLite or index of whole CSV file.
+    # @param  string  value  Value to edit.
+    # @param  hash  columnItem  Column item from Columns class.
     # @return void
     # @override PersistentDialog
     #
@@ -163,9 +163,9 @@ var InputDialog = {
     },
 
     #
-    # Get FilterSelector dialog
+    # Get FilterSelector dialog.
     #
-    # @return hash  FilterSelector object
+    # @return hash  FilterSelector object.
     #
     getFilterSelector: func() {
         return me._filterSelector;
@@ -197,7 +197,7 @@ var InputDialog = {
     },
 
     #
-    # Save action
+    # Save action.
     #
     # @return void
     #
@@ -230,7 +230,7 @@ var InputDialog = {
     },
 
     #
-    # Cancel action
+    # Cancel action.
     #
     # @return void
     #
@@ -242,10 +242,10 @@ var InputDialog = {
     },
 
     #
-    # Validate the value according to header
+    # Validate the value according to header.
     #
     # @param  string  value
-    # @return bool  Return true if value is correct
+    # @return bool  Return true if value is correct.
     #
     _validate: func(value) {
         if (!Utils.isUsingSQLite()) {

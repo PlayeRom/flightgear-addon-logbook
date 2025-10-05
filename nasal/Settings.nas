@@ -15,7 +15,7 @@
 #
 var Settings = {
     #
-    # Constants
+    # Constants:
     #
     # Possible options for date and time display:
     DATE_TIME_REAL   : "real",      # real time from OS
@@ -31,7 +31,7 @@ var Settings = {
     MAP_PROVIDER_TOPO: 'OpenTopoMap',
 
     #
-    # Constructor
+    # Constructor.
     #
     # @return hash
     #
@@ -75,7 +75,7 @@ var Settings = {
     },
 
     #
-    # Destructor
+    # Destructor.
     #
     # @return void
     #
@@ -84,7 +84,7 @@ var Settings = {
     },
 
     #
-    # Get log items per page
+    # Get log items per page.
     #
     # @return int
     #
@@ -93,7 +93,7 @@ var Settings = {
     },
 
     #
-    # Set log items per page
+    # Set log items per page.
     #
     # @param  int  value
     # @return void
@@ -103,7 +103,7 @@ var Settings = {
     },
 
     #
-    # Validate log items per page
+    # Validate log items per page.
     #
     # @param  int|string|double|nil  value
     # @return int
@@ -134,7 +134,7 @@ var Settings = {
     },
 
     #
-    # Validate boolean value
+    # Validate boolean value.
     #
     # @param  int|string|double|nil  value  Value to validate
     # @param  bool  default  Default value if param value is invalid
@@ -254,7 +254,7 @@ var Settings = {
     },
 
     #
-    # Set number of seconds as data recording interval during flight
+    # Set number of seconds as data recording interval during flight.
     #
     # @param  double  value
     # @return void
@@ -268,7 +268,7 @@ var Settings = {
     },
 
     #
-    # Validate tracker-interval-sec option
+    # Validate tracker-interval-sec option.
     #
     # @param  int|string|double|nil  value
     # @return bool  Return true if given value is valid
@@ -280,7 +280,7 @@ var Settings = {
     },
 
     #
-    # Get map provider name
+    # Get map provider name.
     #
     # @return string
     #
@@ -289,7 +289,7 @@ var Settings = {
     },
 
     #
-    # Set map provider name
+    # Set map provider name.
     #
     # @param  string  name
     # @return void
@@ -303,7 +303,7 @@ var Settings = {
     },
 
     #
-    # Validate map provider option
+    # Validate map provider option.
     #
     # @param  string  name
     # @return bool

@@ -1,5 +1,5 @@
 #
-# Logbook - Add-on for FlightGear
+# FlightMap widget - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #

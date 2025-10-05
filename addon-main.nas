@@ -12,9 +12,9 @@
 io.include("Loader.nas");
 
 #
-# Main Nasal function
+# Main add-on function.
 #
-# @param  ghost  addon  addons.Addon object
+# @param  ghost  addon  The addons.Addon object.
 # @return void
 #
 var main = func(addon) {
@@ -26,9 +26,9 @@ var main = func(addon) {
 };
 
 #
-# This function is for addon development only. It is called on addon reload.
-# The addons system will replace setlistener() and maketimer() to track this
-# resources automatically for you.
+# This function is for addon development only. It is called on addon
+# reload. The addons system will replace setlistener() and maketimer() to
+# track this resources automatically for you.
 #
 # Listeners created with setlistener() will be removed automatically for you.
 # Timers created with maketimer() will have their stop() method called
@@ -38,7 +38,7 @@ var main = func(addon) {
 # Other resources should be freed by adding the corresponding code here,
 # e.g. myCanvas.del();
 #
-# @param  ghost  addon  addons.Addon object
+# @param  ghost  addon  The addons.Addon object.
 # @return void
 #
 var unload = func(addon) {

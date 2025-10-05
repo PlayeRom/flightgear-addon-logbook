@@ -10,25 +10,23 @@
 #
 
 #
-# FlightAnalysisDialog class
+# FlightAnalysisDialog class.
 #
 var FlightAnalysisDialog = {
     CLASS: "FlightAnalysisDialog",
 
     #
-    # Constants
+    # Constants:
     #
-    WINDOW_WIDTH    : 1360,
-    WINDOW_HEIGHT   : 720,
-    PADDING         : 10,
-    FRACTION        : { labels: 2, map: 11 },
+    PADDING : 10,
+    FRACTION: { labels: 2, map: 11 },
     #
     # Aircraft icon:
     #
     FAST_POS_CHANGE : 10,
 
     #
-    # Constructor
+    # Constructor.
     #
     # @param  string  title
     # @param  bool  liveUpdateMode
@@ -39,8 +37,8 @@ var FlightAnalysisDialog = {
             parents: [
                 FlightAnalysisDialog,
                 PersistentDialog.new(
-                    width : FlightAnalysisDialog.WINDOW_WIDTH,
-                    height: FlightAnalysisDialog.WINDOW_HEIGHT,
+                    width : 1360,
+                    height: 720,
                     title : title,
                     resize: true,
                 ),
@@ -86,7 +84,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Show this canvas dialog
+    # Show this canvas dialog.
     #
     # @return void
     # @override PersistentDialog
@@ -105,7 +103,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Hide this canvas dialog
+    # Hide this canvas dialog.
     #
     # @return void
     # @override PersistentDialog
@@ -117,9 +115,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Set map provider by name
+    # Set map provider by name.
     #
-    # @param  string  name  Map provider name: "OpenStreetMap" or "OpenTopoMap"
+    # @param  string  name  Map provider name: "OpenStreetMap" or "OpenTopoMap".
     # @return void
     #
     setMapProvider: func(name) {
@@ -132,11 +130,11 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Set track data
+    # Set track data.
     #
-    # @param  vector  trackItems  Vector of hashes with all path points
-    # @param  double  maxAlt  Max altitude of aircraft or terrain elevation
-    # @param  bool  withResetPosition  If true then aircraft position will be set to 0
+    # @param  vector  trackItems  Vector of hashes with all path points.
+    # @param  double  maxAlt  Max altitude of aircraft or terrain elevation.
+    # @param  bool  withResetPosition  If true then aircraft position will be set to 0.
     # @return void
     #
     setData: func(trackItems, maxAlt, withResetPosition = 1) {
@@ -146,10 +144,10 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Add one hash point
+    # Add one hash point.
     #
-    # @param  hash  trackItem  Hash of one path point
-    # @param  double  maxAlt  Max altitude of aircraft or terrain elevation
+    # @param  hash  trackItem  Hash of one path point.
+    # @param  double  maxAlt  Max altitude of aircraft or terrain elevation.
     # @return void
     #
     appendData: func(trackItem, maxAlt) {
@@ -159,7 +157,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Redraw hole widgets from strach
+    # Redraw hole widgets from strach.
     #
     # @return void
     #
@@ -171,7 +169,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Soft redraw widgets, however profile must be always hard redraw
+    # Soft redraw widgets, however profile must be always hard redraw.
     #
     # @return void
     #
@@ -183,7 +181,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Draw whole dialog content
+    # Draw whole dialog content.
     #
     # @return void
     #
@@ -210,7 +208,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Update values for all info labels
+    # Update values for all info labels.
     #
     # @return void
     #
@@ -232,7 +230,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Zoom in the profile view
+    # Zoom in the profile view.
     #
     # @return void
     #
@@ -246,7 +244,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Zoom out the profile view
+    # Zoom out the profile view.
     #
     # @return void
     #
@@ -260,7 +258,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Update label and buttons according to current zoom level
+    # Update label and buttons according to current zoom level.
     #
     # @return void
     #
@@ -280,7 +278,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Move aircraft to first position on the map and profile
+    # Move aircraft to first position on the map and profile.
     #
     # @return void
     #
@@ -292,7 +290,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Move aircraft to last position on the map and profile
+    # Move aircraft to last position on the map and profile.
     #
     # @return void
     #
@@ -304,7 +302,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Move the aircraft position forward by the specified interval
+    # Move the aircraft position forward by the specified interval.
     #
     # @param  int  interval
     # @return void
@@ -317,7 +315,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Move the aircraft position backward by the specified interval
+    # Move the aircraft position backward by the specified interval.
     #
     # @param  int  interval
     # @return void
@@ -330,7 +328,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Update buttons according to current aircraft position
+    # Update buttons according to current aircraft position.
     #
     # @return void
     #
@@ -352,9 +350,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from FlightMap when user click on the map
+    # Callback function called from FlightMap when user click on the map.
     #
-    # @param  int  position  New aircraft position
+    # @param  int  position  New aircraft position.
     # @return void
     #
     _mapViewUpdatePosition: func(position) {
@@ -364,7 +362,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from FlightMap when user change zoom by scroll
+    # Callback function called from FlightMap when user change zoom by scroll.
     #
     # @return void
     #
@@ -373,7 +371,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from FlightProfile when user change zoom by scroll
+    # Callback function called from FlightProfile when user change zoom by scroll.
     #
     # @return void
     #
@@ -382,9 +380,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Callback function called from FlightProfile when user click on diagram
+    # Callback function called from FlightProfile when user click on diagram.
     #
-    # @param  int  position  New aircraft position
+    # @param  int  position  New aircraft position.
     # @return void
     #
     _profileViewUpdatePosition: func(position) {
@@ -394,9 +392,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Draw bottom bar with buttons
+    # Draw bottom bar with buttons.
     #
-    # @return ghost  HBoxLayout object with button
+    # @return ghost  HBoxLayout object with button.
     #
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
@@ -449,9 +447,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Draw animation speed selection control
+    # Draw animation speed selection control.
     #
-    # @return ghost  Canvas object depend of FG version
+    # @return ghost  Canvas object depend of FG version.
     #
     _drawSpeedSelector: func() {
         if (me._isFG2024Version) {
@@ -487,9 +485,9 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Draw a profile mode selection control
+    # Draw a profile mode selection control.
     #
-    # @return ghost  Canvas object depend of FG version
+    # @return ghost  Canvas object depend of FG version.
     #
     _drawProfileModeSelector: func() {
         if (me._isFG2024Version) {
@@ -560,7 +558,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Start/stop play animation of fly
+    # Start/stop play animation of fly.
     #
     # @return void
     #
@@ -577,7 +575,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Play animation update timer callback
+    # Play animation update timer callback.
     #
     # @return void
     #
@@ -595,7 +593,7 @@ var FlightAnalysisDialog = {
     },
 
     #
-    # Calculate animation speed
+    # Calculate animation speed.
     #
     # @param  int  position
     # @return void

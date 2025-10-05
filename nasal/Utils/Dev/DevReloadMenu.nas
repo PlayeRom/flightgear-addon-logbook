@@ -26,7 +26,7 @@ var DevReloadMenu = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [DevReloadMenu]};
+        var me = { parents: [DevReloadMenu] };
 
         me._reloadMenuName = g_Addon.id ~ "-dev-reload";
 
@@ -54,8 +54,8 @@ var DevReloadMenu = {
             label  : DevReloadMenu.RELOAD_MENU_LABEL,
             name   : me._reloadMenuName,
             binding: {
-                "command": "addon-reload",
-                "id"     : g_Addon.id,
+                command: "addon-reload",
+                id     : g_Addon.id,
             }
         };
 
@@ -105,7 +105,7 @@ var DevReloadMenu = {
     },
 
     #
-    # Prevent to add menu item more than once, e.g. after reload the sim by <Shift-Esc>
+    # Prevent to add menu item more than once, e.g. after reload the sim by <Shift-Esc>.
     #
     # @param  ghost  menuNode
     # @return bool
