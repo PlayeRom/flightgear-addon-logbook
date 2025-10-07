@@ -25,115 +25,96 @@ var Loader = {
             _addon: addon,
         };
 
+        # List of files that should not be loaded.
+        me._excluded = std.Hash.new({
+            "/addon-main.nas":,
+            "/Loader.nas":,
+        });
+
+        if (me._isFG2024Version()) {
+            me._excluded.set("/Boolean.nas", nil);
+            me._excluded.set("/nasal/Storage/CSV/Storage.nas", nil);
+            me._excluded.set("/nasal/Storage/CSV/Recovery.nas", nil);
+            me._excluded.set("/nasal/Canvas/CSV/SettingsDialog.nas", nil);
+        } else {
+            me._excluded.set("/nasal/Storage/SQLite/DB.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/MigrationBase.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Migration.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Storage.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Recovery.nas", nil);
+            me._excluded.set("/nasal/Storage/SQLite/Exporter.nas", nil);
+            me._excluded.set("/nasal/Canvas/SQLite/SettingsDialog.nas", nil);
+        }
+
+        me._fullPath = os.path.new();
+
         return me;
     },
 
     #
     # Search for ".nas" files recursively and load them.
     #
-    # @param  string  path  Starts as base path of add-on.
+    # @param  string  path  Starts as base absolute path of add-on.
     # @param  string  namespace  Namespace of add-on.
+    # @param  int  level  Starts from 0, each subsequent subdirectory gets level + 1.
+    # @param  string  relPath  Relative path to the add-on's root directory.
     # @return void
     #
-    load: func(path, namespace) {
-        var modules = [
-            "nasal/Utils/Dev/DevEnv",
-            "nasal/Utils/Dev/DevReloadMenu",
-            "nasal/Utils/Dev/DevReloadMultiKey",
-            "nasal/Utils/Callback",
-            "nasal/Utils/Listeners",
-            "nasal/Utils/Log",
-            "nasal/Utils/Profiler",
-            "nasal/Utils/Thread",
-            "nasal/Utils/Timer",
-            "nasal/Utils/Utils",
+    load: func(path, namespace, level = 0, relPath = "") {
+        var entries = globals.directory(path);
 
-            "nasal/Storage/CSV/MigrationCsv", # <- this file is using also for SQLite version
+        foreach (var entry; entries) {
+            if (entry == "." or entry == "..") {
+                continue;
+            }
 
-            "nasal/Canvas/Helpers/ComboBoxHelper",
-            "nasal/Canvas/Helpers/ScrollAreaHelper",
-            "nasal/Canvas/BaseDialogs/Dialog",
-            "nasal/Canvas/BaseDialogs/PersistentDialog",
-            "nasal/Canvas/BaseDialogs/StylePersistentDialog",
-            "nasal/Canvas/InputDialog",
-            "nasal/Canvas/ConfirmationDialog",
-            "nasal/Canvas/AboutDialog",
-            "nasal/Canvas/DetailsDialog",
-            "nasal/Canvas/HelpDialog",
-            "nasal/Canvas/FlightAnalysisDialog",
-            "nasal/Canvas/LogbookDialog",
-            "nasal/Canvas/FilterSelector",
+            var fullRelPath = relPath ~ "/" ~ entry;
+            if (me._excluded.contains(fullRelPath)) {
+                logprint(LOG_WARN, level, ". ", namespace, " excluded -> ", fullRelPath);
+                continue;
+            }
 
-            "nasal/Counters/BaseCounter",
-            "nasal/Counters/Environment",
-            "nasal/Counters/Multiplayer",
-            "nasal/Counters/Flight",
+            me._fullPath.set(path);
+            me._fullPath.append(entry);
 
-            "nasal/Columns",
-            "nasal/FlightAnalysis",
-            "nasal/Aircraft",
-            "nasal/AircraftType",
-            "nasal/Airport",
-            "nasal/CrashDetector",
-            "nasal/FilterData",
-            "nasal/Filters",
-            "nasal/LandingGear",
-            "nasal/LogData",
-            "nasal/Logbook",
-            "nasal/Settings",
-            "nasal/SpaceShuttle",
-            "nasal/Sound",
-            "nasal/Bootstrap",
-        ];
+            if (me._fullPath.isFile() and me._fullPath.lower_extension == "nas") {
+                logprint(LOG_WARN, level, ". ", namespace, " -> ", me._fullPath.realpath);
+                io.load_nasal(me._fullPath.realpath, namespace);
+                continue;
+            }
 
-        if (me._isFG2024Version()) {
-            modules = [
-                "nasal/Storage/SQLite/DB",
-                "nasal/Storage/SQLite/Migrations/MigrationBase",
-                "nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable",
-                "nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable",
-                "nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns",
-                "nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns",
-                "nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable",
-                "nasal/Storage/SQLite/Migration",
-                "nasal/Storage/SQLite/Storage",
-                "nasal/Storage/SQLite/Recovery",
-                "nasal/Storage/SQLite/Exporter",
-                "nasal/Canvas/SQLite/SettingsDialog",
-            ] ~ modules;
+            if (level == 0 and !string.imatch(entry, "nasal")) {
+                # At level 0 we are only interested in the "nasal" directory.
+                continue;
+            }
+
+            if (!me._fullPath.isDir()) {
+                continue;
+            }
+
+            if (me._isDirInPath("Widgets")) {
+                me.load(me._fullPath.realpath, "canvas",  level + 1, fullRelPath);
+            } else {
+                me.load(me._fullPath.realpath, namespace, level + 1, fullRelPath);
+            }
         }
-        else {
-            # Nasal in 2024.x version is support `true` and `false` keywords but previous FG versions not,
-            # so for them add Boolean.nas file
-            modules = [
-                "Boolean",
-                "nasal/Storage/CSV/Storage",
-                "nasal/Storage/CSV/Recovery",
-                "nasal/Canvas/CSV/SettingsDialog",
-            ] ~ modules;
-        }
+    },
 
-        # Add widgets to "canvas" namespace
-        var widgets = [
-            "nasal/Canvas/Widgets/FlightInfo",
-            "nasal/Canvas/Widgets/FlightMap",
-            "nasal/Canvas/Widgets/FlightProfile",
-            "nasal/Canvas/Widgets/LogbookList",
-
-            "nasal/Canvas/Widgets/Styles/FlightInfoView",
-            "nasal/Canvas/Widgets/Styles/FlightMapView",
-            "nasal/Canvas/Widgets/Styles/FlightProfileView",
-            "nasal/Canvas/Widgets/Styles/LogbookListView",
-
-            "nasal/Canvas/Widgets/Styles/Components/WindBarbs",
-            "nasal/Canvas/Widgets/Styles/Components/FlightPathMap",
-            "nasal/Canvas/Widgets/Styles/Components/ZoomFractions",
-            "nasal/Canvas/Widgets/Styles/Components/PlaneIcon",
-            "nasal/Canvas/Widgets/Styles/Components/MapButtons",
-        ];
-
-        me._loadVectorOfModules(path, modules, namespace);
-        me._loadVectorOfModules(path, widgets, "canvas");
+    #
+    # Returns true if expectedDirName is the last part of the me._fullPath,
+    # or if expectedDirName is contained in the current path.
+    #
+    # @param  string  expectedDirName  The expected directory name, which means the namespace should change.
+    # @return bool
+    #
+    _isDirInPath: func(expectedDirName) {
+        return string.imatch(me._fullPath.file, expectedDirName)
+            or string.imatch(me._fullPath.realpath, me._addon.basePath ~ "/*/" ~ expectedDirName ~ "/*");
     },
 
     #
@@ -143,21 +124,5 @@ var Loader = {
         var fgVersion = getprop("/sim/version/flightgear");
         var (major, minor, patch) = globals.split(".", fgVersion);
         return major >= 2024;
-    },
-
-    #
-    # Load given array of Nasal files to given namespace.
-    #
-    # @param  string  path  Base path of add-on.
-    # @param  vector  files
-    # @param  string  namespace
-    # @return void
-    #
-    _loadVectorOfModules: func(path, files, namespace) {
-        foreach (var file; files) {
-            var fullFileName = path ~ "/" ~ file ~ ".nas";
-
-            io.load_nasal(fullFileName, namespace);
-        }
     },
 };
