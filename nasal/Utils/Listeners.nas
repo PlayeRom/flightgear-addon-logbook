@@ -57,7 +57,7 @@ var Listeners = {
     # @return int  Listener handler.
     #
     add: func(node, code, init = false, type = 1) {
-        var handler = globals.setlistener(node, code, init, type);
+        var handler = setlistener(node, code, init, type);
         me._listeners.append(handler);
 
         return handler;
@@ -79,7 +79,20 @@ var Listeners = {
     #
     clear: func() {
         foreach (var listener; me._listeners.vector) {
-            globals.removelistener(listener);
+            # If this file is loaded into the `__addon[id]__` namespace, FG will
+            # call removelistener on our listeners automatically during unload.
+            # Therefore this removelistener will throw an error on the console,
+            # so we intercept it with the `call()` method.
+            call(removelistener, [listener], var errors = []);
+
+            foreach (var error; errors) {
+                if (error == "removelistener() with invalid listener id") {
+                    # Don't display an error that the lister has already been deleted.
+                    break;
+                }
+
+                Log.print(error);
+            }
         }
 
         me._listeners.clear();
