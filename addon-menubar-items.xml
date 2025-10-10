@@ -29,7 +29,7 @@
                 <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.showLogbookDialog();</script>
+                    <script>logbookAddon.g_Logbook.showLogbookDialog();</script>
                 </binding>
             </item>
             <item>
@@ -38,7 +38,7 @@
                 <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.showCurrentFlightAnalysisDialog();</script>
+                    <script>logbookAddon.g_Logbook.showCurrentFlightAnalysisDialog();</script>
                 </binding>
             </item>
 
@@ -52,7 +52,7 @@
                 <enabled type="bool">false</enabled>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.exportToCsv();</script>
+                    <script>logbookAddon.g_Logbook.exportToCsv();</script>
                 </binding>
             </item>
             <item>
@@ -60,7 +60,7 @@
                 <name>logbook-addon-help</name>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.showHelpDialog();</script>
+                    <script>logbookAddon.g_Logbook.showHelpDialog();</script>
                 </binding>
             </item>
             <item>
@@ -68,7 +68,7 @@
                 <name>logbook-addon-about</name>
                 <binding>
                     <command>nasal</command>
-                    <script>logbook.g_Logbook.showAboutDialog();</script>
+                    <script>logbookAddon.g_Logbook.showAboutDialog();</script>
                 </binding>
             </item>
 

@@ -20,9 +20,14 @@ io.include("Loader.nas");
 var main = func(addon) {
     logprint(LOG_INFO, addon.name, " Add-on initialized from path ", addon.basePath);
 
-    Loader.new(addon).load(addon.basePath, "logbook");
+    var namespace = addons.getNamespaceName(addon);
 
-    logbook.Bootstrap.init(addon);
+    # Create an alias to the add-on namespace for easier reference in addon-menubar-items.xml:
+    globals.logbookAddon = globals[namespace];
+
+    Loader.new(addon).load(addon.basePath, namespace);
+
+    Bootstrap.init(addon);
 };
 
 #
@@ -42,6 +47,6 @@ var main = func(addon) {
 # @return void
 #
 var unload = func(addon) {
-    logbook.Log.print("unload");
-    logbook.Bootstrap.uninit();
+    Log.print("unload");
+    Bootstrap.uninit();
 };
