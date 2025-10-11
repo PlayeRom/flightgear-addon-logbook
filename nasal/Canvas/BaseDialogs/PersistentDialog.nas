@@ -138,7 +138,7 @@ var PersistentDialog = {
     # Call this method in the child constructor if your child class needs
     # to call its stuff in methods like hide() or del().
     #
-    # @param  hash  childMe  Child instance of object.
+    # @param  hash  childMe  Child instance of object ("me").
     # @param  hash  childCls  Child class hash.
     # @return void
     #
