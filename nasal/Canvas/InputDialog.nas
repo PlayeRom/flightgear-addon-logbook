@@ -93,7 +93,8 @@ var InputDialog = {
     #
     del: func() {
         me._filterSelector.del();
-        me._parentDialog.del();
+
+        call(PersistentDialog.del, [], me);
     },
 
     #
@@ -136,7 +137,7 @@ var InputDialog = {
         me._setLineEdit(me._value);
         me._lineEdit.setFocus();
 
-        me._parentDialog.show();
+        call(PersistentDialog.show, [], me);
     },
 
     #
@@ -150,7 +151,8 @@ var InputDialog = {
         }
 
         me._filterSelector.hide();
-        me._parentDialog.hide();
+
+        call(PersistentDialog.hide, [], me);
     },
 
     #

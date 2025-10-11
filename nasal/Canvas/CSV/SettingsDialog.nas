@@ -64,7 +64,7 @@ var SettingsDialog = {
     # @override PersistentDialog
     #
     del: func() {
-        me._parentDialog.del();
+        call(PersistentDialog.del, [], me);
     },
 
     #
@@ -80,7 +80,7 @@ var SettingsDialog = {
 
         me._drawContent();
 
-        me._parentDialog.show();
+        call(PersistentDialog.show, [], me);
     },
 
     #

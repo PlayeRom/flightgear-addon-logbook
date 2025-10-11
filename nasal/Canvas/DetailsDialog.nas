@@ -101,7 +101,8 @@ var DetailsDialog = {
 
         me._inputDialog.del();
         me._deleteDialog.del();
-        me._parentDialog.del();
+
+        call(StylePersistentDialog.del, [], me);
     },
 
     #
@@ -240,7 +241,7 @@ var DetailsDialog = {
 
         me._listView.setItems(me._getListViewRows(me._dataRow.columns));
 
-        me._parentDialog.show();
+        call(StylePersistentDialog.show, [], me);
     },
 
     #
@@ -264,7 +265,8 @@ var DetailsDialog = {
 
         me._inputDialog.hide();
         me._deleteDialog.hide();
-        me._parentDialog.hide();
+
+        call(StylePersistentDialog.hide, [], me);
     },
 
     #

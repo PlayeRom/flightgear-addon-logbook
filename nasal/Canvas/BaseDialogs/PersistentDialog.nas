@@ -67,7 +67,7 @@ var PersistentDialog = {
     # @override Dialog
     #
     del: func() {
-        me.parents[1].del();
+        call(Dialog.del, [], me);
     },
 
     #
@@ -77,7 +77,7 @@ var PersistentDialog = {
     # @override Dialog
     #
     show: func() {
-        me.parents[1].show();
+        call(Dialog.show, [], me);
     },
 
     #
@@ -87,7 +87,7 @@ var PersistentDialog = {
     # @override Dialog
     #
     hide: func() {
-        me.parents[1].hide();
+        call(Dialog.hide, [], me);
     },
 
     #

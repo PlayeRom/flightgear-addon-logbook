@@ -58,7 +58,7 @@ var AboutDialog = {
     # @return void
     #
     del: func() {
-        me._parentDialog.del();
+        call(PersistentDialog.del, [], me);
     },
 
     #

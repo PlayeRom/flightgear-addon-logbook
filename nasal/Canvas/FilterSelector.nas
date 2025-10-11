@@ -79,7 +79,7 @@ var FilterSelector = {
     # @override StylePersistentDialog
     #
     del: func() {
-        me._parentDialog.del();
+        call(StylePersistentDialog.del, [], me);
     },
 
     #
@@ -89,7 +89,7 @@ var FilterSelector = {
     # @override StylePersistentDialog
     #
     hide: func() {
-        me._parentDialog.hide();
+        call(StylePersistentDialog.hide, [], me);
     },
 
     #
@@ -101,7 +101,7 @@ var FilterSelector = {
     show: func() {
         me._recalculateWindowHeight();
 
-        me._parentDialog.show();
+        call(StylePersistentDialog.show, [], me);
     },
 
     #

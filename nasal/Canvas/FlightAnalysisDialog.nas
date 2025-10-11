@@ -80,7 +80,7 @@ var FlightAnalysisDialog = {
     del: func() {
         me._playTimer.stop();
 
-        me._parentDialog.del();
+        call(PersistentDialog.del, [], me);
     },
 
     #
@@ -99,7 +99,7 @@ var FlightAnalysisDialog = {
         me._updateAfterZoom();
         me._btnPlay.setText("Play");
 
-        me._parentDialog.show();
+        call(PersistentDialog.show, [], me);
     },
 
     #
@@ -111,7 +111,7 @@ var FlightAnalysisDialog = {
     hide: func() {
         me._playTimer.stop();
 
-        me._parentDialog.hide();
+        call(PersistentDialog.hide, [], me);
     },
 
     #

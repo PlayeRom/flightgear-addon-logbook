@@ -74,7 +74,7 @@ var ConfirmationDialog = {
     # @override PersistentDialog
     #
     del: func() {
-        me._parentDialog.del();
+        call(PersistentDialog.del, [], me);
     },
 
     #
@@ -97,7 +97,7 @@ var ConfirmationDialog = {
         me._logIndex = logIndex;
         me._parentObj = parentObj;
 
-        me._parentDialog.show();
+        call(PersistentDialog.show, [], me);
     },
 
     #
@@ -109,7 +109,7 @@ var ConfirmationDialog = {
         g_Sound.play('delete');
 
         if (me._parentObj == nil) {
-            me._parentDialog.hide();
+            call(PersistentDialog.hide, [], me);
         }
         else {
             # Also hide immediately the parent window that called ConfirmationDialog.
@@ -128,6 +128,6 @@ var ConfirmationDialog = {
     # @return void
     #
     _actionNegative: func() {
-        me._parentDialog.hide();
+        call(PersistentDialog.show, [], me);
     },
 };

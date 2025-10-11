@@ -238,7 +238,7 @@ var LogbookDialog = {
         me.helpDialog.del();
         me.aboutDialog.del();
 
-        me._parentDialog.del();
+        call(StylePersistentDialog.del, [], me);
     },
 
     #
@@ -258,7 +258,7 @@ var LogbookDialog = {
         # the data had not yet been loaded (they load in a separate thread), so nothing was drawn.
         me.reloadData(withHeaders: true);
 
-        me._parentDialog.show();
+        call(StylePersistentDialog.show, [], me);
     },
 
     #
@@ -271,7 +271,7 @@ var LogbookDialog = {
         me._filterSelector.hide();
         me._detailsDialog.hide();
 
-        me._parentDialog.hide();
+        call(StylePersistentDialog.hide, [], me);
     },
 
     #
