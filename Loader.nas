@@ -66,7 +66,7 @@ var Loader = {
     # @return void
     #
     load: func(path, namespace, level = 0, relPath = "") {
-        var entries = globals.directory(path);
+        var entries = directory(path);
 
         foreach (var entry; entries) {
             if (entry == "." or entry == "..") {
@@ -122,7 +122,7 @@ var Loader = {
     #
     _isFG2024Version: func() {
         var fgVersion = getprop("/sim/version/flightgear");
-        var (major, minor, patch) = globals.split(".", fgVersion);
+        var (major, minor, patch) = split(".", fgVersion);
         return major >= 2024;
     },
 };
