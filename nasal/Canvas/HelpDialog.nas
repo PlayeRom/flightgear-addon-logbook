@@ -165,24 +165,25 @@ var HelpDialog = {
     #
     _keyActions: func() {
         me._window.addEventListener("keydown", func(event) {
-            # Possible fields of event:
-            #   event.key - key as name
-            #   event.keyCode - key as code
-            # Modifiers:
-            #   event.shiftKey
-            #   event.ctrlKey
-            #   event.altKey
-            #   event.metaKey
-
-            if (event.key == "Up") {
-                me._scrollArea.vertScrollBarBy(-3);
-            } elsif (event.key == "Down") {
-                me._scrollArea.vertScrollBarBy(3);
-            } elsif (event.key == "PageUp") {
-                me._scrollArea.vertScrollBarBy(-45);
-            } elsif (event.key == "PageDown") {
-                me._scrollArea.vertScrollBarBy(45);
-            }
+               if (event.key == "Up"     or event.key == "Down")     me._handleScrollKey(true,  event.key == "Up");
+            elsif (event.key == "PageUp" or event.key == "PageDown") me._handleScrollKey(false, event.key == "PageUp");
         });
+    },
+
+    #
+    # @param  bool  isArrow  If true then arrow up/down keys, otherwise page up/down keys.
+    # @param  bool  isUp  If true then dy must be converted to negative.
+    # @return void
+    #
+    _handleScrollKey: func(isArrow, isUp) {
+        var dy = isArrow
+            ? 20
+            : ScrollAreaHelper.getScrollPageHeight(me._scrollArea);
+
+        if (isUp) {
+            dy = -dy;
+        }
+
+        me._scrollArea.vertScrollBarBy(dy);
     },
 };
