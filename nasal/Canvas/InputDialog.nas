@@ -35,9 +35,8 @@ var InputDialog = {
             ],
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, InputDialog); # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(PersistentDialog.setChild, [me, InputDialog], me.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         me._addonNodePath = g_Addon.node.getPath();
 

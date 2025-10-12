@@ -48,26 +48,26 @@ var StylePersistentDialog = {
     # @return hash
     #
     new: func(width, height, title, resize = false, onResize = nil) {
-        var me = {
+        var obj = {
             parents: [
                 StylePersistentDialog,
                 PersistentDialog.new(width, height, title, resize, onResize),
             ],
         };
 
-        me._style = g_Settings.isDarkStyle()
-            ? me.getStyle().dark
-            : me.getStyle().light;
+        obj._style = g_Settings.isDarkStyle()
+            ? obj.getStyle().dark
+            : obj.getStyle().light;
 
-        me._bgImage = me._group.createChild("image", "bgImage")
+        obj._bgImage = obj._group.createChild("image", "bgImage")
             .setFile("Textures/paper.png")
             .setTranslation(0, 0)
             # paper.png has 1360x1024 px
             .setSize(LogbookDialog.MAX_WINDOW_WIDTH, int((1024 / 1360) * LogbookDialog.MAX_WINDOW_WIDTH));
 
-        me.toggleBgImage();
+        obj.toggleBgImage();
 
-        return me;
+        return obj;
     },
 
     #
@@ -81,7 +81,7 @@ var StylePersistentDialog = {
     # @override PersistentDialog
     #
     setChild: func(childMe, childCls) {
-        me.parents[1].setChild(childMe, childCls);
+        call(PersistentDialog.setChild, [childMe, childCls], me.parents[1]);
     },
 
     #
@@ -92,7 +92,7 @@ var StylePersistentDialog = {
     # @override PersistentDialog
     #
     setPositionOnCenter: func(width = nil, height = nil) {
-        me.parents[1].setPositionOnCenter(width, height);
+        call(PersistentDialog.setPositionOnCenter, [width, height], me.parents[1]);
     },
 
     #

@@ -40,9 +40,8 @@ var HelpDialog = {
             ),
         ] };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, HelpDialog);  # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(PersistentDialog.setChild, [me, HelpDialog], me.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         var margins = {
             left   : HelpDialog.PADDING,

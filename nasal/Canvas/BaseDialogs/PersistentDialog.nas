@@ -29,17 +29,17 @@ var PersistentDialog = {
     # @return hash
     #
     new: func(width, height, title, resize = false, onResize = nil) {
-        var me = {
+        var obj = {
             parents: [
                 PersistentDialog,
                 Dialog.new(width, height, title, resize, onResize),
             ],
         };
 
-        me._window.hide();
+        obj._window.hide();
 
-        var self = me;
-        me._window.del = func() {
+        var self = obj;
+        obj._window.del = func() {
             # This method will be call after click on (X) button in canvas top
             # bar and here we want hide the window only.
             # FG version 2024.x supports the destroy_on_close flag, which could
@@ -50,14 +50,14 @@ var PersistentDialog = {
             self._callMethodByChild("hide");
         };
 
-        me._childMe = nil;
-        me._childCls = nil;
+        obj._childMe = nil;
+        obj._childCls = nil;
 
-        me._usePositionOnCenter = false;
+        obj._usePositionOnCenter = false;
 
-        me._handleKeys();
+        obj._handleKeys();
 
-        return me;
+        return obj;
     },
 
     #
@@ -98,7 +98,7 @@ var PersistentDialog = {
     # @override Dialog
     #
     setPositionOnCenter: func(width = nil, height = nil) {
-        me.parents[1].setPositionOnCenter(width, height);
+        call(Dialog.setPositionOnCenter, [width, height], me);
 
         if (!me._usePositionOnCenter) {
             me._usePositionOnCenter = true;

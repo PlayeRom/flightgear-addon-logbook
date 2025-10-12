@@ -62,9 +62,8 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, LogbookDialog); # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(StylePersistentDialog.setChild, [me, LogbookDialog], me.parents[1]);
+        call(StylePersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         if (me._isUsingSQLite) {
             me._storage.loadAllData();
@@ -111,7 +110,7 @@ var LogbookDialog = {
         me._btnNext  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
         me._btnLast  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
 
-        me._btnStyle    = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
+        me._btnStyle = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
         me._drawBottomBar();
 
         me._listeners = Listeners.new();

@@ -44,8 +44,7 @@ var FilterSelector = {
             _columns: columns,
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, FilterSelector); # Let the parent know who their child is.
+        call(StylePersistentDialog.setChild, [me, FilterSelector], me.parents[1]); # Let the parent know who their child is.
 
         me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 

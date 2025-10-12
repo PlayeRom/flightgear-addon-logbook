@@ -42,9 +42,8 @@ var DetailsDialog = {
             _columns: columns,
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, DetailsDialog); # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(StylePersistentDialog.setChild, [me, DetailsDialog], me.parents[1]); # Let the parent know who their child is.
+        call(StylePersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         me._isUsingSQLite        = Utils.isUsingSQLite();
         me._parent               = nil; # LogbookDialog object

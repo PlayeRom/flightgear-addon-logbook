@@ -26,7 +26,7 @@ var Dialog = {
     # @return hash
     #
     new: func(width, height, title, resize = 0, onResize = nil) {
-        var me = {
+        var obj = {
             parents: [Dialog],
             _width : width,
             _height: height,
@@ -35,22 +35,22 @@ var Dialog = {
         # Recognize the path to the canvas property.
         # For FG versions up to and including 2024 this is ‘/sim/gui/canvas’, but for the dev version it is ‘/canvas/desktop’
         # TODO: fix it in future when 2024 will be obsolete and "/canvas/desktop" will be a standard.
-        me._isCanvas2024 = props.globals.getNode("/sim/gui/canvas") != nil;
-        me._canvasNode = props.globals.getNode(me._getPathToCanvas());
+        obj._isCanvas2024 = props.globals.getNode("/sim/gui/canvas") != nil;
+        obj._canvasNode = props.globals.getNode(obj._getPathToCanvas());
 
-        me._window = me._createCanvasWindow(me._width, me._height, title, resize);
-        me._canvas = me._window.createCanvas().set("background", canvas.style.getColor("bg_color"));
-        me._group  = me._canvas.createGroup();
-        me._vbox   = canvas.VBoxLayout.new();
-        me._canvas.setLayout(me._vbox);
+        obj._window = obj._createCanvasWindow(obj._width, obj._height, title, resize);
+        obj._canvas = obj._window.createCanvas().set("background", canvas.style.getColor("bg_color"));
+        obj._group  = obj._canvas.createGroup();
+        obj._vbox   = canvas.VBoxLayout.new();
+        obj._canvas.setLayout(obj._vbox);
 
-        me._windowPropIndex = nil;
+        obj._windowPropIndex = nil;
 
-        me._listeners = Listeners.new();
+        obj._listeners = Listeners.new();
 
         if (resize and onResize != nil) {
-            me._windowPropIndex = me._getWindowPropertyIndex(title);
-            if (me._windowPropIndex > -1) {
+            obj._windowPropIndex = obj._getWindowPropertyIndex(title);
+            if (obj._windowPropIndex > -1) {
                 # Our goal is to observe the change in width and height, but we want to call onResize only once,
                 # regardless of whether only the width, height or both values have changed.
                 # FG handles the following listeners in such a way that it will always trigger both, even if only one of
@@ -60,15 +60,15 @@ var Dialog = {
                 var resizeTimer = Timer.makeSelf(0.1, func() {
                     resizeTimer.stop();
 
-                    me._width  = int(me.getInnerWidth());
-                    me._height = int(me.getInnerHeight());
+                    obj._width  = int(obj.getInnerWidth());
+                    obj._height = int(obj.getInnerHeight());
 
-                    onResize(me._width, me._height);
+                    onResize(obj._width, obj._height);
                 });
 
                 # Set listener for resize width of window
-                me._listeners.add(
-                    node: me._getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[0]",
+                obj._listeners.add(
+                    node: obj._getPathToCanvas() ~ "/window[" ~ obj._windowPropIndex ~ "]/content-size[0]",
                     code: func() {
                         resizeTimer.isRunning
                             ? resizeTimer.restart(0.1)
@@ -76,8 +76,8 @@ var Dialog = {
                     },
                 );
 
-                me._listeners.add(
-                    node: me._getPathToCanvas() ~ "/window[" ~ me._windowPropIndex ~ "]/content-size[1]",
+                obj._listeners.add(
+                    node: obj._getPathToCanvas() ~ "/window[" ~ obj._windowPropIndex ~ "]/content-size[1]",
                     code: func() {
                         resizeTimer.isRunning
                             ? resizeTimer.restart(0.1)
@@ -87,7 +87,7 @@ var Dialog = {
             }
         }
 
-        return me;
+        return obj;
     },
 
     #

@@ -33,9 +33,8 @@ var ConfirmationDialog = {
             ],
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, ConfirmationDialog); # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(PersistentDialog.setChild, [me, ConfirmationDialog], me.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         me._logIndex      = nil;
         me._parentObj     = nil;

@@ -43,9 +43,8 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
-        me._parentDialog = me.parents[1];
-        me._parentDialog.setChild(me, SettingsDialog); # Let the parent know who their child is.
-        me._parentDialog.setPositionOnCenter();
+        call(PersistentDialog.setChild, [me, SettingsDialog], me.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
 
         me._soundOption = g_Settings.isSoundEnabled();
 
