@@ -39,27 +39,27 @@ gui.widgets.FlightProfile = {
         }
 
         cfg = Config.new(cfg);
-        var me = gui.Widget.new(gui.widgets.FlightProfile, cfg);
-        me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "flight-profile-view", cfg));
+        var obj = gui.Widget.new(gui.widgets.FlightProfile, cfg);
+        obj._focus_policy = obj.NoFocus;
+        obj._setView(style.createWidget(parent, "flight-profile-view", cfg));
 
         # Vector of hashes with flight data
-        me._trackItems = [];
-        me._trackItemsSize = 0;
+        obj._trackItems = [];
+        obj._trackItemsSize = 0;
 
-        # Maximum flight altitude or elevation from all me._trackItems provided
-        me._maxAlt = 0;
+        # Maximum flight altitude or elevation from all obj._trackItems provided
+        obj._maxAlt = 0;
 
-        # Current index of me._trackItems (current aircraft position)
-        me._position = 0;
+        # Current index of obj._trackItems (current aircraft position)
+        obj._position = 0;
 
         # Callback function called when this widget changes the aircraft's position
-        me._callbackPos = nil;
-        me._objCallbackPos = nil; # object as owner of callback function
+        obj._callbackPos = nil;
+        obj._objCallbackPos = nil; # object as owner of callback function
 
         # Callback function called when this widget changes the profile zoom
-        me._callbackZoom    = nil;
-        me._objCallbackZoom = nil;
+        obj._callbackZoom    = nil;
+        obj._objCallbackZoom = nil;
 
         # Defines whether the X-axis should be drawn based on time or distance traveled.
         # When based on time, the graph will be evenly and linearly distributed, even when the aircraft is stationary
@@ -68,16 +68,16 @@ gui.widgets.FlightProfile = {
         # When based on distance, the points will be drawn close to each other or overlapping when the aircraft is
         # stationary or flying slowly, but they will be more spread out when flying fast, making it possible to
         # recognize places where the flight was performed at higher speeds and where at lower ones.
-        me._drawMode = gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
+        obj._drawMode = gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
 
         # Graph zoom level
-        me._zoom = gui.widgets.FlightProfile.ZOOM_DEFAULT;
+        obj._zoom = gui.widgets.FlightProfile.ZOOM_DEFAULT;
 
         # A mode where new track points are added live.
         # In this mode, the ability to change the zoom level is disabled.
-        me._isLiveUpdateMode = 0;
+        obj._isLiveUpdateMode = 0;
 
-        return me;
+        return obj;
     },
 
     #

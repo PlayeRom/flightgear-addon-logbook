@@ -20,12 +20,12 @@ var DevEnv = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [DevEnv] };
+        var obj = { parents: [DevEnv] };
 
-        me._variables = std.Hash.new();
-        me._readEnvFile();
+        obj._variables = std.Hash.new();
+        obj._readEnvFile();
 
-        return me;
+        return obj;
     },
 
     #

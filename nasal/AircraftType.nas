@@ -38,22 +38,22 @@ var AircraftType = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [AircraftType] };
+        var obj = { parents: [AircraftType] };
 
-        me._tagsNode = props.globals.getNode("/sim/tags");
+        obj._tagsNode = props.globals.getNode("/sim/tags");
 
-        me._tags = {};
+        obj._tags = {};
 
-        if (me._tagsNode != nil) {
-            foreach (var tagNode; me._tagsNode.getChildren("tag")) {
+        if (obj._tagsNode != nil) {
+            foreach (var tagNode; obj._tagsNode.getChildren("tag")) {
                 var tag = tagNode == nil ? nil : tagNode.getValue();
                 if (tag != nil) {
-                    me._tags[tag] = 1;
+                    obj._tags[tag] = 1;
                 }
             }
         }
 
-        return me;
+        return obj;
     },
 
     #

@@ -57,7 +57,7 @@ var Bootstrap = {
         # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
         g_Addon.createStorageDir();
 
-        Bootstrap._initDevMode();
+        me._initDevMode();
 
         # Disable Logbook menu because we have to load data first in thread
         gui.menuEnable("logbook-addon-main-dialog", false);

@@ -19,21 +19,21 @@ var Multiplayer = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [
+        var obj = { parents: [
             Multiplayer,
             BaseCounter.new(
-                func()               { me._onResetCounters(); },
-                func(diffElapsedSec) { me._onUpdate(diffElapsedSec); }
+                func()               { obj._onResetCounters(); },
+                func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
 
-        me._multiplayerCounter = 0;
-        me._swiftCounter       = 0;
+        obj._multiplayerCounter = 0;
+        obj._swiftCounter       = 0;
 
-        me._propMultiplayer = nil;
-        me._propSwift       = nil;
+        obj._propMultiplayer = nil;
+        obj._propSwift       = nil;
 
-        return me;
+        return obj;
     },
 
     #

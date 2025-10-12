@@ -19,32 +19,32 @@ var Filters = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Filters] };
+        var obj = { parents: [Filters] };
 
         # Filter data for each column by which we can filter, loaded in Storage.loadAllData
-        me.data = {};
-        me.data[Columns.DATE]         = std.Vector.new();
-        me.data[Columns.SIM_UTC_DATE] = std.Vector.new();
-        me.data[Columns.SIM_LOC_DATE] = std.Vector.new();
-        me.data[Columns.AIRCRAFT]     = std.Vector.new();
-        me.data[Columns.VARIANT]      = std.Vector.new();
-        me.data[Columns.AC_TYPE]      = std.Vector.new();
-        me.data[Columns.CALLSIGN]     = std.Vector.new();
-        me.data[Columns.FROM]         = std.Vector.new();
-        me.data[Columns.TO]           = std.Vector.new();
-        me.data[Columns.LANDING]      = std.Vector.new();
-        me.data[Columns.CRASH]        = std.Vector.new();
+        obj.data = {};
+        obj.data[Columns.DATE]         = std.Vector.new();
+        obj.data[Columns.SIM_UTC_DATE] = std.Vector.new();
+        obj.data[Columns.SIM_LOC_DATE] = std.Vector.new();
+        obj.data[Columns.AIRCRAFT]     = std.Vector.new();
+        obj.data[Columns.VARIANT]      = std.Vector.new();
+        obj.data[Columns.AC_TYPE]      = std.Vector.new();
+        obj.data[Columns.CALLSIGN]     = std.Vector.new();
+        obj.data[Columns.FROM]         = std.Vector.new();
+        obj.data[Columns.TO]           = std.Vector.new();
+        obj.data[Columns.LANDING]      = std.Vector.new();
+        obj.data[Columns.CRASH]        = std.Vector.new();
 
         # Vector of FilterData objects
-        me.appliedFilters = std.Vector.new();
+        obj.appliedFilters = std.Vector.new();
 
         # The dirty true flag says that the data has been modified, e.g. by
         # applying a new filter or adding new data to be filtered, which means
         # we have to recalculate everything.
         # This is only for CSV, SQLite doesn't need it.
-        me.dirty = false;
+        obj.dirty = false;
 
-        return me;
+        return obj;
     },
 
     #

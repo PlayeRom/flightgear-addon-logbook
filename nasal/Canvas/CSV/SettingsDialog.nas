@@ -30,7 +30,7 @@ var SettingsDialog = {
     # @return hash
     #
     new: func(columns, logbook) {
-        var me = {
+        var obj = {
             parents: [
                 SettingsDialog,
                 PersistentDialog.new(
@@ -43,17 +43,17 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
-        call(PersistentDialog.setChild, [me, SettingsDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, SettingsDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._soundOption = g_Settings.isSoundEnabled();
+        obj._soundOption = g_Settings.isSoundEnabled();
 
-        me._lineEditItemsPerPage = nil;
-        me._hBoxLayout = nil;
+        obj._lineEditItemsPerPage = nil;
+        obj._hBoxLayout = nil;
 
-        me._drawContent();
+        obj._drawContent();
 
-        return me;
+        return obj;
     },
 
     #

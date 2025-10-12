@@ -24,26 +24,26 @@ var FlightAnalysis = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [FlightAnalysis] };
+        var obj = { parents: [FlightAnalysis] };
 
-        me._callback = nil;
-        me._flightAnalysisDlg = nil;
+        obj._callback = nil;
+        obj._flightAnalysisDlg = nil;
 
-        # me._mpClockSecNode = props.globals.getNode("/sim/time/mp-clock-sec"); # elapse of real time
-        me._mpClockSecNode = props.globals.getNode("/sim/time/elapsed-sec");
-        me._rollDegNode    = props.globals.getNode("/orientation/roll-deg");
-        me._altAglFtNode   = props.globals.getNode("/position/altitude-agl-ft");
+        # obj._mpClockSecNode = props.globals.getNode("/sim/time/mp-clock-sec"); # elapse of real time
+        obj._mpClockSecNode = props.globals.getNode("/sim/time/elapsed-sec");
+        obj._rollDegNode    = props.globals.getNode("/orientation/roll-deg");
+        obj._altAglFtNode   = props.globals.getNode("/position/altitude-agl-ft");
 
-        me._currentFlightData = std.Vector.new();
-        me._currentFlightMaxAlt = 0.0;
+        obj._currentFlightData = std.Vector.new();
+        obj._currentFlightMaxAlt = 0.0;
 
-        me._lastElapsedTime = me._mpClockSecNode.getValue();
-        me._timestamp = 0;
+        obj._lastElapsedTime = obj._mpClockSecNode.getValue();
+        obj._timestamp = 0;
 
-        me._lastIntervalSec = me._getInitialIntervalSec();
-        me._timer = Timer.make(me._lastIntervalSec, me, me._update);
+        obj._lastIntervalSec = obj._getInitialIntervalSec();
+        obj._timer = Timer.make(obj._lastIntervalSec, obj, obj._update);
 
-        return me;
+        return obj;
     },
 
     #

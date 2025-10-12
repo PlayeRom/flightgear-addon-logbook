@@ -26,11 +26,11 @@ var DevReloadMenu = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [DevReloadMenu] };
+        var obj = { parents: [DevReloadMenu] };
 
-        me._reloadMenuName = g_Addon.id ~ "-dev-reload";
+        obj._reloadMenuName = g_Addon.id ~ "-dev-reload";
 
-        return me;
+        return obj;
     },
 
     #

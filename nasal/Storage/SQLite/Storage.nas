@@ -35,24 +35,24 @@ var Storage = {
     # @return hash
     #
     new: func(filters, columns) {
-        var me = {
+        var obj = {
             parents  : [Storage],
             _filters : filters,
             _columns : columns,
         };
 
-        me._exporter = Exporter.new(columns);
+        obj._exporter = Exporter.new(columns);
 
-        me._filePath    = me._getPathToFile();
-        me._loadedData  = std.Vector.new();
+        obj._filePath    = obj._getPathToFile();
+        obj._loadedData  = std.Vector.new();
 
-        DB.open(me._filePath);
+        DB.open(obj._filePath);
 
         Migration.new().migrate();
 
         gui.menuEnable("logbook-addon-export-csv", true);
 
-        return me;
+        return obj;
     },
 
     #

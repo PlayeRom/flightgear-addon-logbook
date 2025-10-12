@@ -26,7 +26,7 @@ var AboutDialog = {
     # @return hash
     #
     new: func() {
-        var me = {
+        var obj = {
             parents: [
                 AboutDialog,
                 PersistentDialog.new(
@@ -37,18 +37,18 @@ var AboutDialog = {
             ],
         };
 
-        call(PersistentDialog.setChild, [me, AboutDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, AboutDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._vbox.addSpacing(AboutDialog.PADDING);
-        me._drawContent();
+        obj._vbox.addSpacing(AboutDialog.PADDING);
+        obj._drawContent();
 
-        var buttonBoxClose = me._drawBottomBar("Close", func { me.hide(); });
-        me._vbox.addSpacing(AboutDialog.PADDING);
-        me._vbox.addItem(buttonBoxClose);
-        me._vbox.addSpacing(AboutDialog.PADDING);
+        var buttonBoxClose = obj._drawBottomBar("Close", func { obj.hide(); });
+        obj._vbox.addSpacing(AboutDialog.PADDING);
+        obj._vbox.addItem(buttonBoxClose);
+        obj._vbox.addSpacing(AboutDialog.PADDING);
 
-        return me;
+        return obj;
     },
 
     #

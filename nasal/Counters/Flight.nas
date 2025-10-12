@@ -19,32 +19,32 @@ var Flight = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [
+        var obj = { parents: [
             Flight,
             BaseCounter.new(
-                func()               { me._onResetCounters(); },
-                func(diffElapsedSec) { me._onUpdate(diffElapsedSec); }
+                func()               { obj._onResetCounters(); },
+                func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
 
-        me._maxAlt        = 0.0;
-        me._maxGSKt       = 0.0;
-        me._maxMach       = 0.0;
-        me._odometer      = 0.0;
-        me._startFuel     = 0.0; # amount of fuel at takeoff
-        me._startOdometer = 0.0; # distance at takeoff
+        obj._maxAlt        = 0.0;
+        obj._maxGSKt       = 0.0;
+        obj._maxMach       = 0.0;
+        obj._odometer      = 0.0;
+        obj._startFuel     = 0.0; # amount of fuel at takeoff
+        obj._startOdometer = 0.0; # distance at takeoff
 
-        me._propAltFt    = props.globals.getNode("/position/altitude-ft");
-        me._propGSKt     = props.globals.getNode("/velocities/groundspeed-kt");
-        me._propASKt     = props.globals.getNode("/velocities/airspeed-kt");
-        me._propMach     = props.globals.getNode("/velocities/mach");
-        me._propHdgTrue  = props.globals.getNode("/orientation/heading-deg");
-        me._propHdgMag   = props.globals.getNode("/orientation/heading-magnetic-deg");
-        me._propPitch    = props.globals.getNode("/orientation/pitch-deg");
-        me._propFuel     = props.globals.getNode("/consumables/fuel/total-fuel-gal_us");
-        me._propOdometer = props.globals.getNode("/instrumentation/gps/odometer");
+        obj._propAltFt    = props.globals.getNode("/position/altitude-ft");
+        obj._propGSKt     = props.globals.getNode("/velocities/groundspeed-kt");
+        obj._propASKt     = props.globals.getNode("/velocities/airspeed-kt");
+        obj._propMach     = props.globals.getNode("/velocities/mach");
+        obj._propHdgTrue  = props.globals.getNode("/orientation/heading-deg");
+        obj._propHdgMag   = props.globals.getNode("/orientation/heading-magnetic-deg");
+        obj._propPitch    = props.globals.getNode("/orientation/pitch-deg");
+        obj._propFuel     = props.globals.getNode("/consumables/fuel/total-fuel-gal_us");
+        obj._propOdometer = props.globals.getNode("/instrumentation/gps/odometer");
 
-        return me;
+        return obj;
     },
 
     #

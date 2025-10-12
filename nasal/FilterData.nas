@@ -21,10 +21,10 @@ var FilterData = {
     # @return hash
     #
     new: func(columnName, value) {
-        var me = {
-            parents    : [FilterData],
-            columnName : columnName,
-            value      : value,
+        var obj = {
+            parents   : [FilterData],
+            columnName: columnName,
+            value     : value,
         };
 
         if (value == ""
@@ -35,10 +35,10 @@ var FilterData = {
             # In the SQLite database, the `landing` and `crash` columns have
             # the value 0 and in the filter we have an empty string, so we need
             # to change the empty string to the value "0".
-            me.value = "0";
+            obj.value = "0";
         }
 
-        return me;
+        return obj;
     },
 
     #

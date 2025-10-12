@@ -30,7 +30,7 @@ var SettingsDialog = {
     # @return hash
     #
     new: func(columns, logbook) {
-        var me = {
+        var obj = {
             parents: [
                 SettingsDialog,
                 PersistentDialog.new(
@@ -43,24 +43,24 @@ var SettingsDialog = {
             _logbook: logbook,
         };
 
-        call(PersistentDialog.setChild, [me, SettingsDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, SettingsDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
-        me._soundOption     = g_Settings.isSoundEnabled();
-        me._logItemsPerPage = g_Settings.getLogItemsPerPage();
-        me._mapProvider     = g_Settings.getMapProvider();
-        me._columnsVisible  = {};
-        me._loadColumnsVisible();
+        obj._dateTimeDisplay = g_Settings.getDateTimeDisplay();
+        obj._soundOption     = g_Settings.isSoundEnabled();
+        obj._logItemsPerPage = g_Settings.getLogItemsPerPage();
+        obj._mapProvider     = g_Settings.getMapProvider();
+        obj._columnsVisible  = {};
+        obj._loadColumnsVisible();
 
-        me._checkboxReal         = nil;
-        me._checkboxSimUtc       = nil;
-        me._checkboxSimLocal     = nil;
-        me._lineEditItemsPerPage = nil;
-        me._columnCheckBoxes     = {};
-        me._hBoxLayout           = nil;
+        obj._checkboxReal         = nil;
+        obj._checkboxSimUtc       = nil;
+        obj._checkboxSimLocal     = nil;
+        obj._lineEditItemsPerPage = nil;
+        obj._columnCheckBoxes     = {};
+        obj._hBoxLayout           = nil;
 
-        return me;
+        return obj;
     },
 
     #

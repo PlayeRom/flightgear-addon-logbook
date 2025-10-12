@@ -33,7 +33,7 @@ var FlightAnalysisDialog = {
     # @return hash
     #
     new: func(title, liveUpdateMode = false) {
-        var me = {
+        var obj = {
             parents: [
                 FlightAnalysisDialog,
                 PersistentDialog.new(
@@ -47,27 +47,27 @@ var FlightAnalysisDialog = {
             _isFG2024Version: Utils.isFG2024Version(),
         };
 
-        call(PersistentDialog.setChild, [me, FlightAnalysisDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, FlightAnalysisDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._playTimer = Timer.make(0.2, me, me._onPlayUpdate);
-        me._playSpeed = 16;
+        obj._playTimer = Timer.make(0.2, obj, obj._onPlayUpdate);
+        obj._playSpeed = 16;
 
-        me._infoView = canvas.gui.widgets.FlightInfo.new(me._group);
+        obj._infoView = canvas.gui.widgets.FlightInfo.new(obj._group);
 
-        me._mapView = canvas.gui.widgets.FlightMap.new(me._group);
-        me._mapView.setUpdatePositionCallback(me._mapViewUpdatePosition, me);
-        me._mapView.setUpdateZoomCallback(me._mapViewUpdateZoom, me);
-        me._mapView.setLiveUpdateMode(liveUpdateMode);
+        obj._mapView = canvas.gui.widgets.FlightMap.new(obj._group);
+        obj._mapView.setUpdatePositionCallback(obj._mapViewUpdatePosition, obj);
+        obj._mapView.setUpdateZoomCallback(obj._mapViewUpdateZoom, obj);
+        obj._mapView.setLiveUpdateMode(liveUpdateMode);
 
-        me._profileView = canvas.gui.widgets.FlightProfile.new(me._group);
-        me._profileView.setUpdatePositionCallback(me._profileViewUpdatePosition, me);
-        me._profileView.setUpdateZoomCallback(me._profileViewUpdateZoom, me);
-        me._profileView.setLiveUpdateMode(liveUpdateMode);
+        obj._profileView = canvas.gui.widgets.FlightProfile.new(obj._group);
+        obj._profileView.setUpdatePositionCallback(obj._profileViewUpdatePosition, obj);
+        obj._profileView.setUpdateZoomCallback(obj._profileViewUpdateZoom, obj);
+        obj._profileView.setLiveUpdateMode(liveUpdateMode);
 
-        me._drawContent();
+        obj._drawContent();
 
-        return me;
+        return obj;
     },
 
     #

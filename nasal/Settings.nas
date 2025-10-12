@@ -36,13 +36,13 @@ var Settings = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Settings] };
+        var obj = { parents: [Settings] };
 
-        me._pathToSettingsProp = g_Addon.node.getPath() ~ "/addon-devel/settings";
-        me._settingsNode = props.globals.getNode(me._pathToSettingsProp); # node object with data to save/load
+        obj._pathToSettingsProp = g_Addon.node.getPath() ~ "/addon-devel/settings";
+        obj._settingsNode = props.globals.getNode(obj._pathToSettingsProp); # node object with data to save/load
 
         # Name of columns that can be hidden/shown
-        me._columnsVisible = [
+        obj._columnsVisible = [
             Columns.VARIANT,
             Columns.AC_TYPE,
             Columns.CALLSIGN,
@@ -63,15 +63,15 @@ var Settings = {
             Columns.MAX_MACH,
         ];
 
-        me._itemsPerPageNode       = props.globals.getNode(me._pathToSettingsProp ~ "/log-items-per-page");
-        me._darkModeNode           = props.globals.getNode(me._pathToSettingsProp ~ "/dark-style");
-        me._realTimeNode           = props.globals.getNode(me._pathToSettingsProp ~ "/real-time-duration");
-        me._soundEnabledNode       = props.globals.getNode(me._pathToSettingsProp ~ "/sound-enabled");
-        me._dateTimeDisplayNode    = props.globals.getNode(me._pathToSettingsProp ~ "/date-time-display");
-        me._trackerIntervalSecNode = props.globals.getNode(me._pathToSettingsProp ~ "/tracker-interval-sec");
-        me._mapProviderNode        = props.globals.getNode(me._pathToSettingsProp ~ "/map-provider");
+        obj._itemsPerPageNode       = props.globals.getNode(obj._pathToSettingsProp ~ "/log-items-per-page");
+        obj._darkModeNode           = props.globals.getNode(obj._pathToSettingsProp ~ "/dark-style");
+        obj._realTimeNode           = props.globals.getNode(obj._pathToSettingsProp ~ "/real-time-duration");
+        obj._soundEnabledNode       = props.globals.getNode(obj._pathToSettingsProp ~ "/sound-enabled");
+        obj._dateTimeDisplayNode    = props.globals.getNode(obj._pathToSettingsProp ~ "/date-time-display");
+        obj._trackerIntervalSecNode = props.globals.getNode(obj._pathToSettingsProp ~ "/tracker-interval-sec");
+        obj._mapProviderNode        = props.globals.getNode(obj._pathToSettingsProp ~ "/map-provider");
 
-        return me;
+        return obj;
     },
 
     #

@@ -53,31 +53,31 @@ var Storage = {
     # @return hash
     #
     new: func(filters, columns) {
-        var me = {
+        var obj = {
             parents : [Storage],
             _filters: filters,
             _columns: columns,
         };
 
-        me._filePath      = me._getPathToFile(Storage.CSV_FILE_VERSION);
-        me._addonNodePath = g_Addon.node.getPath();
-        me._loadedData    = std.Vector.new();
-        me._headersData   = [];
-        me._withHeaders   = true;
-        me._allData       = std.Vector.new();
+        obj._filePath      = obj._getPathToFile(Storage.CSV_FILE_VERSION);
+        obj._addonNodePath = g_Addon.node.getPath();
+        obj._loadedData    = std.Vector.new();
+        obj._headersData   = [];
+        obj._withHeaders   = true;
+        obj._allData       = std.Vector.new();
 
         # Temporary filtered data as a cache for optimized viewing of large logs
-        me._cachedData    = std.Vector.new();
+        obj._cachedData    = std.Vector.new();
 
         # Total lines in CSV file (without headers)
-        me._totalLines    = -1;
+        obj._totalLines    = -1;
 
-        me._saveHeaders();
+        obj._saveHeaders();
 
         # Callback for return results of loadDataRange
-        me._callback = nil;
+        obj._callback = nil;
 
-        return me;
+        return obj;
     },
 
     #

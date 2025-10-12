@@ -26,11 +26,11 @@ var Listeners = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Listeners] };
+        var obj = { parents: [Listeners] };
 
-        me._listeners = std.Vector.new();
+        obj._listeners = std.Vector.new();
 
-        return me;
+        return obj;
     },
 
     #

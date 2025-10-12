@@ -27,11 +27,11 @@ gui.widgets.FlightInfo = {
         }
 
         cfg = Config.new(cfg);
-        var me = gui.Widget.new(gui.widgets.FlightInfo, cfg);
-        me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "flight-info-view", cfg));
+        var obj = gui.Widget.new(gui.widgets.FlightInfo, cfg);
+        obj._focus_policy = obj.NoFocus;
+        obj._setView(style.createWidget(parent, "flight-info-view", cfg));
 
-        return me;
+        return obj;
     },
 
     #

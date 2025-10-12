@@ -19,17 +19,17 @@ var WindBarbs = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [WindBarbs] };
+        var obj = { parents: [WindBarbs] };
 
-        me._LENGTH          = 50;
-        me._MARGIN          = 10;
-        me._WIND_LINE_WIDTH = 2;
+        obj._LENGTH          = 50;
+        obj._MARGIN          = 10;
+        obj._WIND_LINE_WIDTH = 2;
 
-        me._windPath = nil;
+        obj._windPath = nil;
 
-        me._windBarbRules = me._createBarbRules();
+        obj._windBarbRules = obj._createBarbRules();
 
-        return me;
+        return obj;
     },
 
     #

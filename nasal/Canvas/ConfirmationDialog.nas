@@ -22,7 +22,7 @@ var ConfirmationDialog = {
     # @return hash
     #
     new: func(title) {
-        var me = {
+        var obj = {
             parents: [
                 ConfirmationDialog,
                 PersistentDialog.new(
@@ -33,37 +33,37 @@ var ConfirmationDialog = {
             ],
         };
 
-        call(PersistentDialog.setChild, [me, ConfirmationDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, ConfirmationDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._logIndex      = nil;
-        me._parentObj     = nil;
-        me._addonNodePath = g_Addon.node.getPath();
+        obj._logIndex      = nil;
+        obj._parentObj     = nil;
+        obj._addonNodePath = g_Addon.node.getPath();
 
         var MARGIN = 12;
-        me._vbox.setContentsMargin(MARGIN);
+        obj._vbox.setContentsMargin(MARGIN);
 
-        me._label = canvas.gui.widgets.Label.new(me._group, canvas.style, {wordWrap: true});
-        me._vbox.addItem(me._label);
+        obj._label = canvas.gui.widgets.Label.new(obj._group, canvas.style, {wordWrap: true});
+        obj._vbox.addItem(obj._label);
 
         var buttonBox = canvas.HBoxLayout.new();
-        me._vbox.addItem(buttonBox);
+        obj._vbox.addItem(buttonBox);
 
         buttonBox.addStretch(1);
-        var btnOK = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnOK = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
             .setText("Delete")
-            .listen("clicked", func { me._actionPositive(); }
+            .listen("clicked", func { obj._actionPositive(); }
         );
 
-        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
             .setText("Cancel")
-            .listen("clicked", func { me._actionNegative(); }
+            .listen("clicked", func { obj._actionNegative(); }
         );
 
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
 
-        return me;
+        return obj;
     },
 
     #

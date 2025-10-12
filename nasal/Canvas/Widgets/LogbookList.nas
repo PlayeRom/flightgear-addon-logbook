@@ -203,46 +203,46 @@ gui.widgets.LogbookList = {
         }
 
         cfg = Config.new(cfg);
-        var me = gui.Widget.new(gui.widgets.LogbookList, cfg);
-        me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "logbook-list-view", cfg));
+        var obj = gui.Widget.new(gui.widgets.LogbookList, cfg);
+        obj._focus_policy = obj.NoFocus;
+        obj._setView(style.createWidget(parent, "logbook-list-view", cfg));
 
         # The items of the list
-        me._items = [];
+        obj._items = [];
 
         # Optional non-clickable title at the top of the list
-        me._title = nil;
+        obj._title = nil;
 
         # The callback function which will be call on click action on row
-        me._callback = func;
+        obj._callback = func;
 
         # The object which is the owner of the _callback function
-        me._callbackContext = nil;
+        obj._callbackContext = nil;
 
         # Index of row with permanent special highlighting
-        me._highlightingRowIndex = nil;
+        obj._highlightingRowIndex = nil;
 
         # If it's set on true, then "Loading..." text is displaying instead of list
-        me._isLoading = 0;
+        obj._isLoading = 0;
 
         # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
-        me._isUseTextMaxWidth = 0;
+        obj._isUseTextMaxWidth = 0;
 
         # If it's set on true, then the entire one row will be drawn on a single “text” element, which greater
         # performance. If false then each cell will be a separate “text” (or "image") element. Only when it is false
         # is it possible to draw pictures on the list.
-        me._isOptimizeRow = 0;
+        obj._isOptimizeRow = 0;
 
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
-        me._placeholder = nil;
+        obj._placeholder = nil;
 
         # Images height, default 64 px.
-        me._imgHeight = 64;
+        obj._imgHeight = 64;
 
         # Aspect ratio of image width. The image width will be = _imgHeight * _imgAspectRatio.
-        me._imgAspectRatio = 1.3333;
+        obj._imgAspectRatio = 1.3333;
 
-        return me;
+        return obj;
     },
 
     #

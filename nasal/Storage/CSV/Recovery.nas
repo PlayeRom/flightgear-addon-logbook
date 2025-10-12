@@ -27,19 +27,19 @@ var Recovery = {
     # @return hash
     #
     new: func(storage) {
-        var me = {
+        var obj = {
             parents : [Recovery],
             _storage: storage,
         };
 
-        me._callback = nil;
+        obj._callback = nil;
 
-        me._filePath = g_Addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, Storage.CSV_FILE_VERSION);
-        me._timer    = Timer.make(Recovery.INTERVAL_SEC, me, me._update);
+        obj._filePath = g_Addon.storagePath ~ "/" ~ sprintf(Recovery.RECOVERY_FILE, Storage.CSV_FILE_VERSION);
+        obj._timer    = Timer.make(Recovery.INTERVAL_SEC, obj, obj._update);
 
-        me._restore();
+        obj._restore();
 
-        return me;
+        return obj;
     },
 
     #

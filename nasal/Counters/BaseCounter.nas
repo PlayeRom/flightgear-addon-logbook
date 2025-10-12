@@ -21,21 +21,21 @@ var BaseCounter = {
     # @return hash
     #
     new: func(onResetCounters, onUpdate) {
-        var me = {
+        var obj = {
             parents                 : [BaseCounter],
             _onResetCountersCallback: onResetCounters,
             _onUpdateCallback       : onUpdate,
         };
 
-        me._propElapsedSec = props.globals.getNode("/sim/time/elapsed-sec");
+        obj._propElapsedSec = props.globals.getNode("/sim/time/elapsed-sec");
 
-        me._isRealTimeDuration = g_Settings.isRealTimeDuration();
-        me._lastElapsedSec     = me._isRealTimeDuration ? 0 : me._getElapsedSec();
+        obj._isRealTimeDuration = g_Settings.isRealTimeDuration();
+        obj._lastElapsedSec     = obj._isRealTimeDuration ? 0 : obj._getElapsedSec();
 
-        # me._isReplayMode       = false;
-        me._isRunning          = false;
+        # obj._isReplayMode       = false;
+        obj._isRunning          = false;
 
-        return me;
+        return obj;
     },
 
     #

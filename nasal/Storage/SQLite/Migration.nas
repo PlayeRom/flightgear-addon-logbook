@@ -19,9 +19,9 @@ var Migration = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Migration] };
+        var obj = { parents: [Migration] };
 
-        me._migrations = [
+        obj._migrations = [
             {
                 name    : "M2024_10_30_08_44_CreateMigrationsTable",
                 function: func() {
@@ -57,9 +57,9 @@ var Migration = {
 
         # Helper flag so that we don't have to make many of the same queries to
         # the database about whether the `migrations` table exists in the database.
-        me._isMigrationsTable = false;
+        obj._isMigrationsTable = false;
 
-        return me;
+        return obj;
     },
 
     #

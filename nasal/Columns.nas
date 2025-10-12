@@ -51,9 +51,9 @@ var Columns = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Columns] };
+        var obj = { parents: [Columns] };
 
-        me._isUsingSQLite = Utils.isUsingSQLite();
+        obj._isUsingSQLite = Utils.isUsingSQLite();
 
         # Default columns state
         # * name     - column name in SQLite DB
@@ -63,7 +63,7 @@ var Columns = {
         # * totals   - SQL function for totals row or nil if column should not be displayed in totals
         # * totalVal - value for total row (if totals != nil)
         # * totalFrm - formatting value for total row (if totals != nil)
-        me._allColumnsSQLite = [
+        obj._allColumnsSQLite = [
             { name: Columns.DATE,         header: "Real date",      width:  84 + 1, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.TIME,         header: "Real time",      width:  49 + 2, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.SIM_UTC_DATE, header: "Sim UTC date",   width:  84 + 1, visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
@@ -92,7 +92,7 @@ var Columns = {
             { name: Columns.NOTE,         header: "Note",           width: 147,     visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
         ];
 
-        me._allColumnsCsv = [
+        obj._allColumnsCsv = [
             { name: Columns.DATE,         header: "Date",           width:  84 + 1, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.TIME,         header: "Time",           width:  49 + 2, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
             { name: Columns.AIRCRAFT,     header: "Aircraft",       width: 147 + 2, visible: true,  totals: nil,   totalVal: "", totalFrm: "",     },
@@ -115,15 +115,15 @@ var Columns = {
             { name: Columns.NOTE,         header: "Note",           width: 147,     visible: false, totals: nil,   totalVal: "", totalFrm: "",     },
         ];
 
-        me._allColumns = me._isUsingSQLite
-            ? me._allColumnsSQLite
-            : me._allColumnsCsv;
+        obj._allColumns = obj._isUsingSQLite
+            ? obj._allColumnsSQLite
+            : obj._allColumnsCsv;
 
-        me._allColumnsSize = size(me._allColumns);
+        obj._allColumnsSize = size(obj._allColumns);
 
-        me.updateColumnsVisible();
+        obj.updateColumnsVisible();
 
-        return me;
+        return obj;
     },
 
     #

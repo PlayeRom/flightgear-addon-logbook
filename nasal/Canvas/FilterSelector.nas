@@ -32,7 +32,7 @@ var FilterSelector = {
     # @return hash
     #
     new: func(columns) {
-        var me = {
+        var obj = {
             parents: [
                 FilterSelector,
                 StylePersistentDialog.new(
@@ -44,31 +44,31 @@ var FilterSelector = {
             _columns: columns,
         };
 
-        call(StylePersistentDialog.setChild, [me, FilterSelector], me.parents[1]); # Let the parent know who their child is.
+        call(StylePersistentDialog.setChild, [obj, FilterSelector], obj.parents[1]); # Let the parent know who their child is.
 
-        me._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
+        obj._MAX_WINDOW_HEIGHT = LogbookDialog.MAX_WINDOW_HEIGHT - 50;
 
-        me._font     = "LiberationFonts/LiberationSans-Bold.ttf";
-        me._fontSize = 14;
-        me._title    = "Filter";
+        obj._font     = "LiberationFonts/LiberationSans-Bold.ttf";
+        obj._fontSize = 14;
+        obj._title    = "Filter";
 
-        me._window.set("decoration-border", "0 0 0");
+        obj._window.set("decoration-border", "0 0 0");
 
-        me._bgImage.hide();
+        obj._bgImage.hide();
 
-        me._canvas.set("background", me._style.CANVAS_BG);
+        obj._canvas.set("background", obj._style.CANVAS_BG);
 
-        me._items = std.Vector.new();
+        obj._items = std.Vector.new();
 
-        me._scrollArea = nil;
-        me._scrollContent = nil;
-        me._listView = nil;
-        me._callback = nil;
-        me._columnName = nil;
+        obj._scrollArea = nil;
+        obj._scrollContent = nil;
+        obj._listView = nil;
+        obj._callback = nil;
+        obj._columnName = nil;
 
-        me._drawContent();
+        obj._drawContent();
 
-        return me;
+        return obj;
     },
 
     #

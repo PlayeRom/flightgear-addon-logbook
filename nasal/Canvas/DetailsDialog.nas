@@ -29,7 +29,7 @@ var DetailsDialog = {
     # @return hash
     #
     new: func(storage, columns) {
-        var me = {
+        var obj = {
             parents: [
                 DetailsDialog,
                 StylePersistentDialog.new(
@@ -42,22 +42,22 @@ var DetailsDialog = {
             _columns: columns,
         };
 
-        call(StylePersistentDialog.setChild, [me, DetailsDialog], me.parents[1]); # Let the parent know who their child is.
-        call(StylePersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(StylePersistentDialog.setChild, [obj, DetailsDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(StylePersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._isUsingSQLite        = Utils.isUsingSQLite();
-        me._parent               = nil; # LogbookDialog object
-        me._dataRow              = nil;
-        me._isTotals             = false;
-        me._logbookId            = nil;
-        me._btnDelete            = nil;
-        me._btnFlightAnalysis    = nil;
-        me._inputDialog          = InputDialog.new(me._columns);
-        me._flightAnalysisDialog = nil;
-        me._deleteDialog         = ConfirmationDialog.new("Delete entry log");
-        me._deleteDialog.setLabel("Do you really want to delete this entry?");
+        obj._isUsingSQLite        = Utils.isUsingSQLite();
+        obj._parent               = nil; # LogbookDialog object
+        obj._dataRow              = nil;
+        obj._isTotals             = false;
+        obj._logbookId            = nil;
+        obj._btnDelete            = nil;
+        obj._btnFlightAnalysis    = nil;
+        obj._inputDialog          = InputDialog.new(obj._columns);
+        obj._flightAnalysisDialog = nil;
+        obj._deleteDialog         = ConfirmationDialog.new("Delete entry log");
+        obj._deleteDialog.setLabel("Do you really want to delete this entry?");
 
-        me._canvas.set("background", me._style.CANVAS_BG);
+        obj._canvas.set("background", obj._style.CANVAS_BG);
 
         var margins = {
             left   : 0,
@@ -65,25 +65,25 @@ var DetailsDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollArea = ScrollAreaHelper.create(me._group, margins, me._style.LIST_BG);
-        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
-        me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
+        obj._scrollArea = ScrollAreaHelper.create(obj._group, margins, obj._style.LIST_BG);
+        obj._vbox.addItem(obj._scrollArea, 1); # 2nd param = stretch
+        obj._scrollContent = ScrollAreaHelper.getContent(obj._scrollArea);
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent)
+        obj._listView = canvas.gui.widgets.LogbookList.new(obj._scrollContent)
             .setFontSizeLarge()
-            .setClickCallback(me._listViewCallback, me)
+            .setClickCallback(obj._listViewCallback, obj)
             .useTextMaxWidth()
             .setEmptyPlaceholder("-");
 
-        me._setListViewStyle();
+        obj._setListViewStyle();
 
         var vBoxLayout = canvas.VBoxLayout.new();
-        vBoxLayout.addItem(me._listView);
-        me._scrollArea.setLayout(vBoxLayout);
+        vBoxLayout.addItem(obj._listView);
+        obj._scrollArea.setLayout(vBoxLayout);
 
-        me._drawBottomBar();
+        obj._drawBottomBar();
 
-        return me;
+        return obj;
     },
 
     #

@@ -21,16 +21,16 @@ var SpaceShuttle = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [SpaceShuttle] };
+        var obj = { parents: [SpaceShuttle] };
 
-        me._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
-        me._ignition = false;
-        me._launched = false;
+        obj._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
+        obj._ignition = false;
+        obj._launched = false;
 
-        me._listeners = Listeners.new();
-        me._setListeners();
+        obj._listeners = Listeners.new();
+        obj._setListeners();
 
-        return me;
+        return obj;
     },
 
     #

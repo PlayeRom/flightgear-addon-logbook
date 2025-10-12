@@ -19,14 +19,14 @@ var Sound = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Sound] };
+        var obj = { parents: [Sound] };
 
         # Unfortunately, reading wav from $FG_ROOT does not work:
         # getprop('/sim/fg-root') ~ '/Sounds',
         # Read sounds from addon path:
         var addonSoundsPath = g_Addon.basePath ~ '/FGData/Sounds';
 
-        me._samples = {
+        obj._samples = {
             'paper' : props.Node.new({
                 path   : addonSoundsPath,
                 file   : 'paper.wav',
@@ -41,7 +41,7 @@ var Sound = {
             }),
         };
 
-        return me;
+        return obj;
     },
 
     #

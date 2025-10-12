@@ -20,17 +20,17 @@ var Log = {
     # @return void
     #
     print: func(msg...) {
-        logprint(MY_LOG_LEVEL, Log._getFullMessage(string.join("", msg)));
+        logprint(MY_LOG_LEVEL, me._getFullMessage(string.join("", msg)));
     },
 
     #
-    # Print log with ALERT level.
+    # Print log with ALERT level, which means the log will always be printed.
     #
     # @param  vector  msg...  List of texts.
     # @return void
     #
     alert: func(msg...) {
-        logprint(LOG_ALERT, Log._getFullMessage(string.join("", msg)));
+        logprint(LOG_ALERT, me._getFullMessage(string.join("", msg)));
     },
 
     #

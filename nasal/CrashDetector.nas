@@ -25,26 +25,26 @@ var CrashDetector = {
     # @return hash
     #
     new: func(spaceShuttle) {
-        var me = {
+        var obj = {
             parents: [CrashDetector],
             _spaceShuttle: spaceShuttle,
         };
 
-        me._lastAircraftCoord = nil;
-        me._lastAircraftAltAgl = nil;
-        me._crashCounter = 0;
+        obj._lastAircraftCoord = nil;
+        obj._lastAircraftAltAgl = nil;
+        obj._crashCounter = 0;
 
-        me._propWingLeft  = props.globals.getNode("/fdm/jsbsim/wing-damage/left-wing");
-        me._propWingRight = props.globals.getNode("/fdm/jsbsim/wing-damage/right-wing");
+        obj._propWingLeft  = props.globals.getNode("/fdm/jsbsim/wing-damage/left-wing");
+        obj._propWingRight = props.globals.getNode("/fdm/jsbsim/wing-damage/right-wing");
 
-        me._propGForce = props.globals.getNode("/accelerations/pilot-gdamped");
-        me._lastGForces = std.Vector.new();
+        obj._propGForce = props.globals.getNode("/accelerations/pilot-gdamped");
+        obj._lastGForces = std.Vector.new();
 
-        me._timerGForce = Timer.make(CrashDetector.G_FORCE_INTERVAL, me, me._gForceCallback);
+        obj._timerGForce = Timer.make(CrashDetector.G_FORCE_INTERVAL, obj, obj._gForceCallback);
 
-        me._maxGForceSize = int(12 * (1 / CrashDetector.G_FORCE_INTERVAL)); # from last 12 seconds
+        obj._maxGForceSize = int(12 * (1 / CrashDetector.G_FORCE_INTERVAL)); # from last 12 seconds
 
-        return me;
+        return obj;
     },
 
     #

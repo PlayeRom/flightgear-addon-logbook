@@ -25,27 +25,27 @@ var Environment = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [
+        var obj = { parents: [
             Environment,
             BaseCounter.new(
-                func()               { me._onResetCounters(); },
-                func(diffElapsedSec) { me._onUpdate(diffElapsedSec); }
+                func()               { obj._onResetCounters(); },
+                func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
 
-        me._dayCounter         = 0;
-        me._nightCounter       = 0;
-        me._instrumentCounter  = 0;
+        obj._dayCounter         = 0;
+        obj._nightCounter       = 0;
+        obj._instrumentCounter  = 0;
 
-        me._propSunAngleRad    = props.globals.getNode("/sim/time/sun-angle-rad");
+        obj._propSunAngleRad    = props.globals.getNode("/sim/time/sun-angle-rad");
 
-        me._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
-        me._propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
+        obj._propGroundVisiM    = props.globals.getNode("/environment/ground-visibility-m");
+        obj._propEffectiveVisiM = props.globals.getNode("/environment/effective-visibility-m");
 
-        me._propWindHeading    = props.globals.getNode("/environment/wind-from-heading-deg");
-        me._propWindSpeed      = props.globals.getNode("/environment/wind-speed-kt");
+        obj._propWindHeading    = props.globals.getNode("/environment/wind-from-heading-deg");
+        obj._propWindSpeed      = props.globals.getNode("/environment/wind-speed-kt");
 
-        return me;
+        return obj;
     },
 
     #

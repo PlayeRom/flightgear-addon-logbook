@@ -35,42 +35,42 @@ gui.widgets.FlightMap = {
         }
 
         cfg = Config.new(cfg);
-        var me = gui.Widget.new(gui.widgets.FlightMap, cfg);
-        me._focus_policy = me.NoFocus;
-        me._setView(style.createWidget(parent, "flight-map-view", cfg));
+        var obj = gui.Widget.new(gui.widgets.FlightMap, cfg);
+        obj._focus_policy = obj.NoFocus;
+        obj._setView(style.createWidget(parent, "flight-map-view", cfg));
 
         # Variables for map
-        me._mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
-        me._makeUrl  = nil;
-        me._makePath = nil;
+        obj._mapsBase = getprop("/sim/fg-home") ~ '/cache/maps';
+        obj._makeUrl  = nil;
+        obj._makePath = nil;
 
         # The background color of the map, where the alpha channel makes the map more faded
-        me._colorFill = [1.0, 1.0, 1.0, 1.0];
+        obj._colorFill = [1.0, 1.0, 1.0, 1.0];
 
-        me.setOpenStreetMap();
+        obj.setOpenStreetMap();
 
         # Vector of hashes with flight data
-        me._trackItems = [];
-        me._trackItemsSize = 0;
+        obj._trackItems = [];
+        obj._trackItemsSize = 0;
 
-        me._zoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
+        obj._zoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
 
-        # Current index of me._trackItems
-        me._position = 0;
+        # Current index of obj._trackItems
+        obj._position = 0;
 
         # Callback function called when this widget changes the aircraft's position
-        me._callbackPos     = nil;
-        me._objCallbackPos  = nil;
+        obj._callbackPos     = nil;
+        obj._objCallbackPos  = nil;
 
         # Callback function called when this widget changes the map zoom
-        me._callbackZoom    = nil;
-        me._objCallbackZoom = nil;
+        obj._callbackZoom    = nil;
+        obj._objCallbackZoom = nil;
 
         # A mode where new track points are added live.
         # In this mode, drawing the flight path is less optimal.
-        me._isLiveUpdateMode = 0;
+        obj._isLiveUpdateMode = 0;
 
-        return me;
+        return obj;
     },
 
     #

@@ -29,7 +29,7 @@ var ComboBoxHelper = {
             comboBox.setFixedSize(width, height);
         }
 
-        return ComboBoxHelper.addItems(comboBox, items);
+        return me.addItems(comboBox, items);
     },
 
     #
@@ -40,7 +40,7 @@ var ComboBoxHelper = {
     # @return ghost  ComboBix widget.
     #
     addItems: func(comboBoxWidget, items) {
-        var funcName = ComboBoxHelper._isCreateItemAvailable(comboBoxWidget)
+        var funcName = me._isCreateItemAvailable(comboBoxWidget)
             ? "createItem"   # <- FG dev version
             : "addMenuItem"; # <- FG 2024.1.x
 

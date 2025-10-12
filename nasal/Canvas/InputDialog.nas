@@ -28,60 +28,60 @@ var InputDialog = {
     # @return hash
     #
     new: func(columns) {
-        var me = {
+        var obj = {
             parents: [
                 InputDialog,
                 PersistentDialog.new(InputDialog.WINDOW_WIDTH, InputDialog.WINDOW_HEIGHT, "Change value"),
             ],
         };
 
-        call(PersistentDialog.setChild, [me, InputDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, InputDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        me._addonNodePath = g_Addon.node.getPath();
+        obj._addonNodePath = g_Addon.node.getPath();
 
-        me._recordId        = nil; # Record ID in SQLLite or index of log entry in whole CSV file
-        me._parent          = nil; # DetailsDialog
-        me._value           = nil;
-        me._columnItem      = nil; # columnItem from Columns class
+        obj._recordId        = nil; # Record ID in SQLLite or index of log entry in whole CSV file
+        obj._parent          = nil; # DetailsDialog
+        obj._value           = nil;
+        obj._columnItem      = nil; # columnItem from Columns class
 
-        me._filterSelector = FilterSelector.new(columns);
+        obj._filterSelector = FilterSelector.new(columns);
 
         var MARGIN = 12;
-        me._vbox.setContentsMargin(MARGIN);
+        obj._vbox.setContentsMargin(MARGIN);
 
-        me._label = canvas.gui.widgets.Label.new(me._group, canvas.style, {wordWrap: true});
-        me._vbox.addItem(me._label);
+        obj._label = canvas.gui.widgets.Label.new(obj._group, canvas.style, { wordWrap: true });
+        obj._vbox.addItem(obj._label);
 
-        me._lineEdit = canvas.gui.widgets.LineEdit.new(me._group, canvas.style, {});
-        me._vbox.addItem(me._lineEdit);
-        me._lineEdit.setFocus();
+        obj._lineEdit = canvas.gui.widgets.LineEdit.new(obj._group, canvas.style, {});
+        obj._vbox.addItem(obj._lineEdit);
+        obj._lineEdit.setFocus();
 
         var buttonBox = canvas.HBoxLayout.new();
-        me._vbox.addItem(buttonBox);
+        obj._vbox.addItem(buttonBox);
 
-        me._btnTypeSelector = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        obj._btnTypeSelector = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
             .setText("Select")
-            .listen("clicked", func { me._actionTypeSelect(); }
+            .listen("clicked", func { obj._actionTypeSelect(); }
         );
-        me._btnTypeSelector.setVisible(false);
+        obj._btnTypeSelector.setVisible(false);
 
-        var btnOK = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnOK = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
             .setText("Save")
-            .listen("clicked", func { me._actionSave(); }
+            .listen("clicked", func { obj._actionSave(); }
         );
 
-        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
+        var btnCancel = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
             .setText("Cancel")
-            .listen("clicked", func { me._actionCancel(); }
+            .listen("clicked", func { obj._actionCancel(); }
         );
 
-        buttonBox.addItem(me._btnTypeSelector);
+        buttonBox.addItem(obj._btnTypeSelector);
         buttonBox.addStretch(1);
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
 
-        return me;
+        return obj;
     },
 
     #

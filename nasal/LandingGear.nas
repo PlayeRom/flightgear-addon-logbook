@@ -24,17 +24,17 @@ var LandingGear = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [LandingGear] };
+        var obj = { parents: [LandingGear] };
 
-        me._gearIndexes = std.Vector.new();
+        obj._gearIndexes = std.Vector.new();
 
         # Used to count seconds during landing without landing gear recognition
-        me._landingCountSec = 0;
-        me._landingAmount = 0;
+        obj._landingCountSec = 0;
+        obj._landingAmount = 0;
 
-        me._addonHintsNode = props.globals.getNode(g_Addon.node.getPath() ~ "/hints");
+        obj._addonHintsNode = props.globals.getNode(g_Addon.node.getPath() ~ "/hints");
 
-        return me;
+        return obj;
     },
 
     #

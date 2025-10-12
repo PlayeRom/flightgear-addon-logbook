@@ -29,19 +29,19 @@ var HelpDialog = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [
+        var obj = { parents: [
             HelpDialog,
             PersistentDialog.new(
                 width   : HelpDialog.WINDOW_WIDTH,
                 height  : HelpDialog.WINDOW_HEIGHT,
                 title   : HelpDialog.TITLE,
                 resize  : true,
-                onResize: func(w, h) { me._onResize(w, h); }
+                onResize: func(w, h) { obj._onResize(w, h); }
             ),
         ] };
 
-        call(PersistentDialog.setChild, [me, HelpDialog], me.parents[1]); # Let the parent know who their child is.
-        call(PersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(PersistentDialog.setChild, [obj, HelpDialog], obj.parents[1]); # Let the parent know who their child is.
+        call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
         var margins = {
             left   : HelpDialog.PADDING,
@@ -49,26 +49,26 @@ var HelpDialog = {
             right  : 0,
             bottom : 0,
         };
-        me._scrollArea = ScrollAreaHelper.create(me._group, margins);
+        obj._scrollArea = ScrollAreaHelper.create(obj._group, margins);
 
-        me._vbox.addItem(me._scrollArea, 1); # 2nd param = stretch
+        obj._vbox.addItem(obj._scrollArea, 1); # 2nd param = stretch
 
-        me._scrollContent = ScrollAreaHelper.getContent(
-            context  : me._scrollArea,
+        obj._scrollContent = ScrollAreaHelper.getContent(
+            context  : obj._scrollArea,
             font     : "LiberationFonts/LiberationSans-Regular.ttf",
             fontSize : 16,
             alignment: "left-baseline"
         );
 
-        me._helpTexts = std.Vector.new();
-        me._propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
+        obj._helpTexts = std.Vector.new();
+        obj._propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
 
-        me._reDrawTexts(x: 0, y: 0, maxWidth: HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
-        me._drawBottomBar();
+        obj._reDrawTexts(x: 0, y: 0, maxWidth: HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        obj._drawBottomBar();
 
-        me._keyActions();
+        obj._keyActions();
 
-        return me;
+        return obj;
     },
 
     #

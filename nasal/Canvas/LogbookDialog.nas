@@ -50,7 +50,7 @@ var LogbookDialog = {
             windowHeight = LogbookDialog.MAX_WINDOW_HEIGHT;
         }
 
-        var me = {
+        var obj = {
             parents : [
                 LogbookDialog,
                 StylePersistentDialog.new(windowWidth, windowHeight, "Logbook"),
@@ -62,61 +62,61 @@ var LogbookDialog = {
             _isUsingSQLite: Utils.isUsingSQLite(),
         };
 
-        call(StylePersistentDialog.setChild, [me, LogbookDialog], me.parents[1]);
-        call(StylePersistentDialog.setPositionOnCenter, [], me.parents[1]);
+        call(StylePersistentDialog.setChild, [obj, LogbookDialog], obj.parents[1]);
+        call(StylePersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        if (me._isUsingSQLite) {
-            me._storage.loadAllData();
+        if (obj._isUsingSQLite) {
+            obj._storage.loadAllData();
         }
 
-        me._itemsPerPage = g_Settings.getLogItemsPerPage();
+        obj._itemsPerPage = g_Settings.getLogItemsPerPage();
 
-        me._addonNodePath = g_Addon.node.getPath();
+        obj._addonNodePath = g_Addon.node.getPath();
 
-        me._startIndex      = 0;
-        me._data            = [];
-        me._headersContent  = nil;
-        me.selectedRecordId = nil;
+        obj._startIndex      = 0;
+        obj._data            = [];
+        obj._headersContent  = nil;
+        obj.selectedRecordId = nil;
 
-        me._canvas.set("background", me._style.CANVAS_BG);
+        obj._canvas.set("background", obj._style.CANVAS_BG);
 
-        me._detailsDialog  = DetailsDialog.new(storage, columns);
-        me._filterSelector = FilterSelector.new(columns);
-        me.helpDialog      = HelpDialog.new();
-        me.aboutDialog     = AboutDialog.new();
+        obj._detailsDialog  = DetailsDialog.new(storage, columns);
+        obj._filterSelector = FilterSelector.new(columns);
+        obj.helpDialog      = HelpDialog.new();
+        obj.aboutDialog     = AboutDialog.new();
 
-        me._drawHeaders();
+        obj._drawHeaders();
 
-        me._listView = canvas.gui.widgets.LogbookList.new(me._group, canvas.style, {})
+        obj._listView = canvas.gui.widgets.LogbookList.new(obj._group, canvas.style, {})
             .setFontSizeSmall()
             .setTranslation( # Set translation for align LogbookList with headers row
                 canvas.DefaultStyle.widgets["logbook-list-view"].PADDING,
                 canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT
             )
             .useOptimizeRow()
-            .setClickCallback(me._listViewCallback, me);
+            .setClickCallback(obj._listViewCallback, obj);
 
-        me._setListViewStyle();
+        obj._setListViewStyle();
 
-        me._vbox.addItem(me._listView, 1); # 2nd param = stretch
+        obj._vbox.addItem(obj._listView, 1); # 2nd param = stretch
 
-        me._labelPaging = canvas.gui.widgets.Label.new(me._group, canvas.style, {});
+        obj._labelPaging = canvas.gui.widgets.Label.new(obj._group, canvas.style, {});
         if (Utils.isFG2024Version()) {
-            me._labelPaging.setColor(me._style.TEXT_COLOR);
+            obj._labelPaging.setColor(obj._style.TEXT_COLOR);
         }
 
-        me._btnFirst = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
-        me._btnPrev  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
-        me._btnNext  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
-        me._btnLast  = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
+        obj._btnFirst = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._btnPrev  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._btnNext  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._btnLast  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
 
-        me._btnStyle = canvas.gui.widgets.Button.new(me._group, canvas.style, {});
-        me._drawBottomBar();
+        obj._btnStyle = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._drawBottomBar();
 
-        me._listeners = Listeners.new();
-        me._setListeners();
+        obj._listeners = Listeners.new();
+        obj._setListeners();
 
-        return me;
+        return obj;
     },
 
     #

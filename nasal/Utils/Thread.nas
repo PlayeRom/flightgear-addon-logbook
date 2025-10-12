@@ -20,14 +20,14 @@ var Thread = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Thread] };
+        var obj = { parents: [Thread] };
 
-        me._isPending = false;
-        me._callback = nil;
+        obj._isPending = false;
+        obj._callback = nil;
 
-        me._timer = Timer.make(0.1, me, me._checkEnd);
+        obj._timer = Timer.make(0.1, obj, obj._checkEnd);
 
-        return me;
+        return obj;
     },
 
     #
@@ -36,9 +36,7 @@ var Thread = {
     # @return void
     #
     del: func() {
-        if (me._timer != nil) {
-            me._timer.stop();
-        }
+        me._timer.stop();
     },
 
     #

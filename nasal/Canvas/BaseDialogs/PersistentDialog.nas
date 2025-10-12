@@ -57,6 +57,8 @@ var PersistentDialog = {
 
         obj._handleKeys();
 
+        obj._posCenterTimer = nil;
+
         return obj;
     },
 
@@ -98,7 +100,11 @@ var PersistentDialog = {
     # @override Dialog
     #
     setPositionOnCenter: func(width = nil, height = nil) {
-        call(Dialog.setPositionOnCenter, [width, height], me);
+        if (me._posCenterTimer) {
+            me._posCenterTimer.stop();
+        }
+
+        call(Dialog.setPositionOnCenter, [width, height], me.parents[1]);
 
         if (!me._usePositionOnCenter) {
             me._usePositionOnCenter = true;
@@ -112,25 +118,35 @@ var PersistentDialog = {
     # @return void
     #
     _addScreenSizeListeners: func() {
+        me._posCenterTimer = Timer.make(0.1, me, me.setPositionOnCenter);
+
         me._listeners.add(
             node: me._getPathToCanvas() ~ "/size[0]",
-            code: func() {
-                if (me._usePositionOnCenter) {
-                    me.setPositionOnCenter();
-                }
-            },
+            code: func me._handleSizeChange(),
             type: Listeners.ON_CHANGE_ONLY,
         );
 
         me._listeners.add(
             node: me._getPathToCanvas() ~ "/size[1]",
-            code: func() {
-                if (me._usePositionOnCenter) {
-                    me.setPositionOnCenter();
-                }
-            },
+            code: func me._handleSizeChange(),
             type: Listeners.ON_CHANGE_ONLY,
         );
+    },
+
+    #
+    # Method triggered when changing the FlightGear window resolution.
+    # The timer prevents setPositionOnCenter from being called multiple times
+    # when the width and height change simultaneously, or when the window is
+    # stretched with the mouse.
+    #
+    # @return void
+    #
+    _handleSizeChange: func() {
+        if (me._usePositionOnCenter) {
+            me._posCenterTimer.isRunning
+                ? me._posCenterTimer.restart(0.1)
+                : me._posCenterTimer.start();
+        }
     },
 
     #

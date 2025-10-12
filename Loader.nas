@@ -20,40 +20,40 @@ var Loader = {
     # @return hash
     #
     new: func(addon) {
-        var me = {
+        var obj = {
             parents: [Loader],
             _addon: addon,
         };
 
         # List of files that should not be loaded.
-        me._excluded = std.Hash.new({
+        obj._excluded = std.Hash.new({
             "/addon-main.nas":,
             "/Loader.nas":,
         });
 
-        if (me._isFG2024Version()) {
-            me._excluded.set("/Boolean.nas", nil);
-            me._excluded.set("/nasal/Storage/CSV/Storage.nas", nil);
-            me._excluded.set("/nasal/Storage/CSV/Recovery.nas", nil);
-            me._excluded.set("/nasal/Canvas/CSV/SettingsDialog.nas", nil);
+        if (obj._isFG2024Version()) {
+            obj._excluded.set("/Boolean.nas", nil);
+            obj._excluded.set("/nasal/Storage/CSV/Storage.nas", nil);
+            obj._excluded.set("/nasal/Storage/CSV/Recovery.nas", nil);
+            obj._excluded.set("/nasal/Canvas/CSV/SettingsDialog.nas", nil);
         } else {
-            me._excluded.set("/nasal/Storage/SQLite/DB.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/MigrationBase.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Migration.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Storage.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Recovery.nas", nil);
-            me._excluded.set("/nasal/Storage/SQLite/Exporter.nas", nil);
-            me._excluded.set("/nasal/Canvas/SQLite/SettingsDialog.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/DB.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/MigrationBase.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Migration.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Storage.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Recovery.nas", nil);
+            obj._excluded.set("/nasal/Storage/SQLite/Exporter.nas", nil);
+            obj._excluded.set("/nasal/Canvas/SQLite/SettingsDialog.nas", nil);
         }
 
-        me._fullPath = os.path.new();
+        obj._fullPath = os.path.new();
 
-        return me;
+        return obj;
     },
 
     #

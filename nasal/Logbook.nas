@@ -25,50 +25,50 @@ var Logbook = {
     # @return hash
     #
     new: func() {
-        var me = { parents: [Logbook] };
+        var obj = { parents: [Logbook] };
 
         # Auxiliary variables
-        me._isUsingSQLite  = Utils.isUsingSQLite();
-        me._onGround       = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
-        Log.print("init onGround = ", me._onGround);
-        me._initAltAglFt   = Logbook.ALT_AGL_FT_THRESHOLD;
-        me._isSimPaused    = false;
-        me._isReplayMode   = false;
+        obj._isUsingSQLite  = Utils.isUsingSQLite();
+        obj._onGround       = getprop("/sim/presets/onground"); # 1 - on ground, 0 - in air
+        Log.print("init onGround = ", obj._onGround);
+        obj._initAltAglFt   = Logbook.ALT_AGL_FT_THRESHOLD;
+        obj._isSimPaused    = false;
+        obj._isReplayMode   = false;
 
-        me._mainTimer      = Timer.make(Logbook.MAIN_TIMER_INTERVAL, me, me._update);
-        me._delayInit      = Timer.make(2, me, me._initLogbook);
+        obj._mainTimer      = Timer.make(Logbook.MAIN_TIMER_INTERVAL, obj, obj._update);
+        obj._delayInit      = Timer.make(2, obj, obj._initLogbook);
 
-        me._wowSec         = 0;
-        me._logData        = nil;
-        me._environment    = Environment.new();
-        me._multiplayer    = Multiplayer.new();
-        me._flight         = Flight.new();
-        me._landingGear    = LandingGear.new();
-        me._columns        = Columns.new();
-        me._filters        = Filters.new();
-        me._storage        = Storage.new(me._filters, me._columns);
-        me._spaceShuttle   = SpaceShuttle.new();
-        me._crashDetector  = CrashDetector.new(me._spaceShuttle);
-        me._airport        = Airport.new();
-        me._flightAnalysis = FlightAnalysis.new();
-        me._recovery       = Recovery.new(me._storage);
-        me._aircraft       = Aircraft.new();
-        me._logbookDialog  = LogbookDialog.new(me._storage, me._filters, me._columns, me);
-        me._settingsDialog = SettingsDialog.new(me._columns, me);
+        obj._wowSec         = 0;
+        obj._logData        = nil;
+        obj._environment    = Environment.new();
+        obj._multiplayer    = Multiplayer.new();
+        obj._flight         = Flight.new();
+        obj._landingGear    = LandingGear.new();
+        obj._columns        = Columns.new();
+        obj._filters        = Filters.new();
+        obj._storage        = Storage.new(obj._filters, obj._columns);
+        obj._spaceShuttle   = SpaceShuttle.new();
+        obj._crashDetector  = CrashDetector.new(obj._spaceShuttle);
+        obj._airport        = Airport.new();
+        obj._flightAnalysis = FlightAnalysis.new();
+        obj._recovery       = Recovery.new(obj._storage);
+        obj._aircraft       = Aircraft.new();
+        obj._logbookDialog  = LogbookDialog.new(obj._storage, obj._filters, obj._columns, obj);
+        obj._settingsDialog = SettingsDialog.new(obj._columns, obj);
 
-        me._aircraftPrimary = "";
-        me._aircraftId      = "";
-        me._aircraftType    = "";
+        obj._aircraftPrimary = "";
+        obj._aircraftId      = "";
+        obj._aircraftType    = "";
 
-        me._isLoggingStarted = false;
-        me._firstTrackPoint = nil;
+        obj._isLoggingStarted = false;
+        obj._firstTrackPoint = nil;
 
-        me._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
+        obj._propAltAglFt = props.globals.getNode("/position/altitude-agl-ft");
 
-        me._listeners = Listeners.new();
-        me._setListeners();
+        obj._listeners = Listeners.new();
+        obj._setListeners();
 
-        return me;
+        return obj;
     },
 
     #

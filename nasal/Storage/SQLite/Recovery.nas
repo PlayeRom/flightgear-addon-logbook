@@ -27,18 +27,18 @@ var Recovery = {
     # @return hash
     #
     new: func(storage) {
-        var me = {
+        var obj = {
             parents : [Recovery],
             _storage: storage,
         };
 
-        me._callback  = nil;
-        me._logbookId = nil;
-        me._inserted  = false;
+        obj._callback  = nil;
+        obj._logbookId = nil;
+        obj._inserted  = false;
 
-        me._timer = Timer.make(Recovery.INTERVAL_SEC, me, me._update);
+        obj._timer = Timer.make(Recovery.INTERVAL_SEC, obj, obj._update);
 
-        return me;
+        return obj;
     },
 
     #
