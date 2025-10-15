@@ -17,8 +17,8 @@ var DevReloadMenu = {
     #
     # Constants:
     #
-    MAIN_MENU_LABEL: "Logbook",
-    RELOAD_MENU_LABEL: "Dev Reload",
+    _MAIN_MENU_LABEL: "Logbook",
+    _RELOAD_MENU_LABEL: "Dev Reload",
 
     #
     # Constructor.
@@ -51,7 +51,7 @@ var DevReloadMenu = {
         }
 
         var data = {
-            label  : DevReloadMenu.RELOAD_MENU_LABEL,
+            label  : me._RELOAD_MENU_LABEL,
             name   : me._reloadMenuName,
             binding: {
                 command: "addon-reload",
@@ -62,7 +62,7 @@ var DevReloadMenu = {
         menuNode.addChild("item").setValues(data);
         fgcommand("gui-redraw");
 
-        Log.alert("the menu item \"", DevReloadMenu.RELOAD_MENU_LABEL, "\" has been added.");
+        Log.alert("the menu item \"", me._RELOAD_MENU_LABEL, "\" has been added.");
     },
 
     #
@@ -85,7 +85,7 @@ var DevReloadMenu = {
         item.remove();
         fgcommand("gui-redraw");
 
-        Log.alert("the menu item \"", DevReloadMenu.RELOAD_MENU_LABEL, "\" has been removed.");
+        Log.alert("the menu item \"", me._RELOAD_MENU_LABEL, "\" has been removed.");
     },
 
     #
@@ -96,7 +96,7 @@ var DevReloadMenu = {
     _getMenuNode: func() {
         foreach (var menu; props.globals.getNode("/sim/menubar/default").getChildren("menu")) {
             var name = menu.getChild("label");
-            if (name != nil and name.getValue() == DevReloadMenu.MAIN_MENU_LABEL) {
+            if (name != nil and name.getValue() == me._MAIN_MENU_LABEL) {
                 return menu;
             }
         }
