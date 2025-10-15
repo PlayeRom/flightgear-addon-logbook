@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# CanvasSkeleton Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2025 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# This is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -26,10 +26,8 @@ var Loader = {
         };
 
         # List of files that should not be loaded.
-        obj._excluded = std.Hash.new({
-            "/addon-main.nas":,
-            "/Loader.nas":,
-        });
+        obj._excluded = std.Hash.new();
+        obj._excludedByConfig();
 
         if (obj._isFG2024Version()) {
             obj._excluded.set("/Boolean.nas", nil);
@@ -75,7 +73,7 @@ var Loader = {
 
             var fullRelPath = relPath ~ "/" ~ entry;
             if (me._excluded.contains(fullRelPath)) {
-                logprint(LOG_WARN, level, ". ", namespace, " excluded -> ", fullRelPath);
+                logprint(LOG_WARN, "Level: ", level, ". namespace: ", namespace, " excluded -> ", fullRelPath);
                 continue;
             }
 
@@ -83,7 +81,7 @@ var Loader = {
             me._fullPath.append(entry);
 
             if (me._fullPath.isFile() and me._fullPath.lower_extension == "nas") {
-                logprint(LOG_WARN, level, ". ", namespace, " -> ", me._fullPath.realpath);
+                logprint(LOG_WARN, "Level: ", level, ". namespace: ", namespace, " -> ", fullRelPath);
                 io.load_nasal(me._fullPath.realpath, namespace);
                 continue;
             }
@@ -97,12 +95,20 @@ var Loader = {
                 continue;
             }
 
-            if (me._isDirInPath("Widgets")) {
-                me.load(me._fullPath.realpath, "canvas",  level + 1, fullRelPath);
-            } else {
-                me.load(me._fullPath.realpath, namespace, level + 1, fullRelPath);
-            }
+            me.load(me._fullPath.realpath, me._getNamespace(namespace), level + 1, fullRelPath);
         }
+    },
+
+    #
+    # Get namespace for load new directory.
+    #
+    # @param  string  currentNamespace
+    # @return string
+    #
+    _getNamespace: func(currentNamespace) {
+        return me._isDirInPath("Widgets")
+            ? "canvas"
+            : currentNamespace;
     },
 
     #
@@ -124,5 +130,30 @@ var Loader = {
         var fgVersion = getprop("/sim/version/flightgear");
         var (major, minor, patch) = split(".", fgVersion);
         return major >= 2024;
+    },
+
+    #
+    # @return void
+    #
+    _excludedByConfig: func() {
+        if (!Config.dev.useEnvFile) {
+            me._excluded.set("/nasal/Utils/Dev/DevEnv.nas", nil);
+            me._excluded.set("/nasal/Utils/Dev/DevReloadMenu.nas", nil);
+            me._excluded.set("/nasal/Utils/Dev/DevReloadMultiKey.nas", nil);
+        }
+
+        if (!Config.useVersionCheck.byGitTag) {
+            me._excluded.set("/nasal/Utils/VersionCheck/GitTagVersionChecker.nas", nil);
+            me._excluded.set("/nasal/Utils/VersionCheck/Base/JsonVersionChecker.nas", nil);
+        }
+
+        if (!Config.useVersionCheck.byMetaData) {
+            me._excluded.set("/nasal/Utils/VersionCheck/MetaDataVersionChecker.nas", nil);
+            me._excluded.set("/nasal/Utils/VersionCheck/Base/XmlVersionChecker.nas", nil);
+        }
+
+        foreach (var file; Config.excludedFiles) {
+            me._excluded.set(file, nil);
+        }
     },
 };

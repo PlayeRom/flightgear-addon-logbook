@@ -1,24 +1,38 @@
 #
-# Logbook - Add-on for FlightGear
+# CanvasSkeleton Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2022 Roman Ludwicki
+# Copyright (C) 2025 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# This is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# MY_LOG_LEVEL is using in logprint() to quickly change all logs visibility used in "logbook" namespace.
-# Possible flags: LOG_ALERT, LOG_WARN, LOG_INFO, LOG_DEBUG, LOG_BULK.
+# MY_LOG_LEVEL is using in Log.print() to quickly change all logs visibility used in addon's namespace.
+# Possible values: LOG_ALERT, LOG_WARN, LOG_INFO, LOG_DEBUG, LOG_BULK.
 #
-var MY_LOG_LEVEL = LOG_INFO;
+var MY_LOG_LEVEL = LOG_WARN;
+
+#
+# Global flag to enable dev mode.
+# You can use this flag to condition on heavier logging that shouldn't be
+# executed for the end user, but you want to keep it in your code for development
+# purposes. This flag will be set to true automatically when you use an .env
+# file with DEV_MODE=true.
+#
+var g_isDevMode = false;
 
 #
 # Global object of addons.Addon.
 #
 var g_Addon = nil;
+
+#
+# Global object of VersionChecker.
+#
+var g_VersionChecker = nil;
 
 #
 # Global object of Settings.
@@ -59,6 +73,8 @@ var Bootstrap = {
 
         me._initDevMode();
 
+        g_VersionChecker = VersionChecker.make();
+
         # Disable Logbook menu because we have to load data first in thread
         gui.menuEnable("logbook-addon-main-dialog", false);
         gui.menuEnable("logbook-addon-flight-analysis", false);
@@ -80,6 +96,10 @@ var Bootstrap = {
         Timer.singleShot(3, func() {
             g_Logbook = Logbook.new();
 
+            # Check the version at the end, because dialogs must first register
+            # their callbacks to VersionChecker in their constructors.
+            g_VersionChecker.checkLastVersion();
+
             gui.menuEnable("logbook-addon-flight-analysis", true);
             gui.menuEnable("logbook-addon-help", true);
             gui.menuEnable("logbook-addon-about", true);
@@ -93,6 +113,10 @@ var Bootstrap = {
     #
     uninit: func() {
         Profiler.clear();
+
+        if (g_VersionChecker) {
+            g_VersionChecker.del();
+        }
 
         if (g_Logbook != nil) {
             g_Logbook.del();
@@ -113,6 +137,10 @@ var Bootstrap = {
     # @return void
     #
     _initDevMode: func() {
+        if (!Config.dev.useEnvFile) {
+            return;
+        }
+
         var env = DevEnv.new();
 
         var logLevel = env.getValue("MY_LOG_LEVEL");

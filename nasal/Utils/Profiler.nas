@@ -1,11 +1,11 @@
 #
-# Which Runway - Add-on for FlightGear
+# CanvasSkeleton Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
 # Copyright (C) 2025 Roman Ludwicki
 #
-# Which Runway is an Open Source project and it is licensed
+# This is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 

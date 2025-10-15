@@ -9,6 +9,7 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
+io.include("Config.nas");
 io.include("Loader.nas");
 
 #

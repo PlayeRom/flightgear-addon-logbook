@@ -1,11 +1,11 @@
 #
-# Logbook - Add-on for FlightGear
+# CanvasSkeleton Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2024 Roman Ludwicki
+# Copyright (C) 2025 Roman Ludwicki
 #
-# Logbook is an Open Source project and it is licensed
+# This is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
@@ -100,5 +100,29 @@ var Utils = {
         call(function, params, obj, errors);
 
         return !size(errors);
+    },
+
+    #
+    # Encode URL the given string.
+    #
+    # @param  string  str
+    # @return string
+    #
+    urlEncode: func(str) {
+        var result = "";
+        var allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~";
+        var count = size(str);
+
+        for (var i = 0; i < count; i += 1) {
+            var char = str[i];
+
+            if (find(chr(char), allowed) == -1) {
+                result ~= "%" ~ sprintf("%02X", char);
+            } else {
+                result ~= chr(char);
+            }
+        }
+
+        return result;
     },
 };
