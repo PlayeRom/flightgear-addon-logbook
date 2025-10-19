@@ -135,13 +135,13 @@ var FilterSelector = {
     setItems: func(items, withDefaultAll = 1) {
         me._items.clear();
 
-        var columnWidth = FilterSelector.WINDOW_WIDTH - (FilterSelector.PADDING * 2);
+        var columnWidth = me.WINDOW_WIDTH - (me.PADDING * 2);
 
         if (withDefaultAll) {
             me._items.append({
                 columns: [{
                     width: columnWidth,
-                    data : FilterSelector.CLEAR_FILTER_VALUE,
+                    data : me.CLEAR_FILTER_VALUE,
                 }],
             });
         }
@@ -166,14 +166,14 @@ var FilterSelector = {
     # @return void
     #
     _recalculateWindowHeight: func() {
-        var count = me._items.size() + 1 + FilterSelector.SEPARATOR_H_MULTIPLIER; # +1 for title bar
+        var count = me._items.size() + 1 + me.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
         var windowHeight = int(count * canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT);
         if (windowHeight > me._MAX_WINDOW_HEIGHT) {
             windowHeight = me._MAX_WINDOW_HEIGHT;
         }
 
-        me._window.setSize(FilterSelector.WINDOW_WIDTH, windowHeight);
+        me._window.setSize(me.WINDOW_WIDTH, windowHeight);
 
         # Check whether the selector window does not go outside the screen at the bottom, if so, move it up
         var posY = me.getPosY();

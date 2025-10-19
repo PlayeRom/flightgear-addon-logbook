@@ -50,6 +50,8 @@ var FlightAnalysisDialog = {
         call(PersistentDialog.setChild, [obj, FlightAnalysisDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         obj._playTimer = Timer.make(0.2, obj, obj._onPlayUpdate);
         obj._playSpeed = 16;
 
@@ -187,18 +189,18 @@ var FlightAnalysisDialog = {
     _drawContent: func() {
         var hBoxLayout = canvas.HBoxLayout.new();
 
-        hBoxLayout.addSpacing(FlightAnalysisDialog.PADDING);
-        hBoxLayout.addItem(me._infoView, FlightAnalysisDialog.FRACTION.labels); # 2nd param = stretch
-        hBoxLayout.addItem(me._mapView, FlightAnalysisDialog.FRACTION.map); # 2nd param = stretch
+        hBoxLayout.addSpacing(me.PADDING);
+        hBoxLayout.addItem(me._infoView, me.FRACTION.labels); # 2nd param = stretch
+        hBoxLayout.addItem(me._mapView, me.FRACTION.map); # 2nd param = stretch
 
         me._vbox.addItem(hBoxLayout, 2); # 2nd param = stretch
 
         var hBoxProfile = canvas.HBoxLayout.new();
-        hBoxProfile.addSpacing(FlightAnalysisDialog.PADDING);
+        hBoxProfile.addSpacing(me.PADDING);
         hBoxProfile.addItem(me._profileView);
-        hBoxProfile.addSpacing(FlightAnalysisDialog.PADDING);
+        hBoxProfile.addSpacing(me.PADDING);
 
-        me._vbox.addSpacing(FlightAnalysisDialog.PADDING);
+        me._vbox.addSpacing(me.PADDING);
         me._vbox.addItem(hBoxProfile, 1); # 2nd param = stretch
 
         me._updateLabelValues();
@@ -398,23 +400,21 @@ var FlightAnalysisDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        me._labelZoom    = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
-            .setText("Zoom " ~ me._mapView.getZoomLevel());
+        me._labelZoom      = me._widget.getLabel("Zoom " ~ me._mapView.getZoomLevel());
 
-        me._btnZoomMinus   = me._createButtonNarrow("-",   func { me._zoomOut(); });
-        me._btnZoomPlus    = me._createButtonNarrow("+",   func { me._zoomIn(); });
+        me._btnZoomMinus   = me._widget.getButton("-",   26, func me._zoomOut());
+        me._btnZoomPlus    = me._widget.getButton("+",   26, func me._zoomIn());
 
-        me._labelFrame     = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
-            .setText(sprintf("Frame %d/%d", 1, me._mapView.getTrackItemsSize()));
+        me._labelFrame     = me._widget.getLabel(sprintf("Frame %d/%d", 1, me._mapView.getTrackItemsSize()));
 
-        me._btnStart       = me._createButtonNarrow("|<<", func { me._goStartTrack(); });
-        me._btnBackFast    = me._createButtonNarrow("<<",  func { me._goPrevTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
-        me._btnBack        = me._createButtonNarrow("<",   func { me._goPrevTrack(); });
-        me._btnForward     = me._createButtonNarrow(">",   func { me._goNextTrack(); });
-        me._btnForwardFast = me._createButtonNarrow(">>",  func { me._goNextTrack(FlightAnalysisDialog.FAST_POS_CHANGE); });
-        me._btnEnd         = me._createButtonNarrow(">>|", func { me.goEndTrack(); });
+        me._btnStart       = me._widget.getButton("|<<",  26, func me._goStartTrack());
+        me._btnBackFast    = me._widget.getButton("<<",   26, func me._goPrevTrack(me.FAST_POS_CHANGE));
+        me._btnBack        = me._widget.getButton("<",    26, func me._goPrevTrack());
+        me._btnPlay        = me._widget.getButton("Play", 65, func me._togglePlay());
+        me._btnForward     = me._widget.getButton(">",    26, func me._goNextTrack());
+        me._btnForwardFast = me._widget.getButton(">>",   26, func me._goNextTrack(me.FAST_POS_CHANGE));
+        me._btnEnd         = me._widget.getButton(">>|",  26, func me.goEndTrack());
 
-        me._btnPlay        = me._createButtonWide("Play",  func { me._togglePlay(); });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnZoomMinus);
@@ -436,9 +436,9 @@ var FlightAnalysisDialog = {
         buttonBox.addItem(me._drawProfileModeSelector());
         buttonBox.addStretch(1);
 
-        me._vbox.addSpacing(FlightAnalysisDialog.PADDING);
+        me._vbox.addSpacing(me.PADDING);
         me._vbox.addItem(buttonBox);
-        me._vbox.addSpacing(FlightAnalysisDialog.PADDING);
+        me._vbox.addSpacing(me.PADDING);
 
         me._updateAfterChangePosition();
 
@@ -452,10 +452,7 @@ var FlightAnalysisDialog = {
     #
     _drawSpeedSelector: func() {
         if (me._isFG2024Version) {
-            var buttonBox = canvas.HBoxLayout.new();
-
-            var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
-                .setText("Speed");
+            var label = me._widget.getLabel("Speed");
 
             var items = [
                 { label:  "1x", value:  1 },
@@ -472,6 +469,7 @@ var FlightAnalysisDialog = {
                 me._playSpeed = e.detail.value;
             });
 
+            var buttonBox = canvas.HBoxLayout.new();
             buttonBox.addItem(label);
             buttonBox.addItem(comboBox);
 
@@ -479,8 +477,7 @@ var FlightAnalysisDialog = {
         }
 
         # Canvas in the FG 2020 version does not have a combobox, so we only have information about the speed
-        return canvas.gui.widgets.Label.new(me._group, canvas.style, {})
-            .setText("Speed " ~ me._playSpeed ~ "x");
+        return me._widget.getLabel("Speed " ~ me._playSpeed ~ "x");
     },
 
     #
@@ -492,8 +489,7 @@ var FlightAnalysisDialog = {
         if (me._isFG2024Version) {
             var buttonBox = canvas.HBoxLayout.new();
 
-            var label = canvas.gui.widgets.Label.new(me._group, canvas.style, {})
-                .setText("Profile mode");
+            var label = me._widget.getLabel("Profile mode");
 
             var items = [
                 { label: "distance", value: canvas.gui.widgets.FlightProfile.DRAW_MODE_DISTANCE },
@@ -512,9 +508,7 @@ var FlightAnalysisDialog = {
             return buttonBox;
         }
 
-        var checkbox = canvas.gui.widgets.CheckBox.new(me._group, canvas.style, { wordWrap: false })
-            .setText("Profile mode as time")
-            .setChecked(false)
+        var checkbox = me._widget.getCheckBox("Profile mode as time", false)
             .setEnabled(true);
 
         checkbox.listen("toggled", func(e) {
@@ -525,35 +519,6 @@ var FlightAnalysisDialog = {
         });
 
         return checkbox;
-    },
-
-    #
-    # @param  string  label
-    # @param  func  clickedCallback
-    # @return ghost  Button widget
-    #
-    _createButtonNarrow: func(label, clickedCallback) {
-        return me._createButton(label, clickedCallback).setFixedSize(26, 26);
-    },
-
-    #
-    # @param  string  label
-    # @param  func  clickedCallback
-    # @return ghost  Button widget
-    #
-    _createButtonWide: func(label, clickedCallback) {
-        return me._createButton(label, clickedCallback).setFixedSize(65, 26);
-    },
-
-    #
-    # @param  string  label
-    # @param  func  clickedCallback
-    # @return ghost  Button widget
-    #
-    _createButton: func(label, clickedCallback) {
-        return canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText(label)
-            .listen("clicked", clickedCallback)
     },
 
     #

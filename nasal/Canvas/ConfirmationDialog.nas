@@ -36,6 +36,8 @@ var ConfirmationDialog = {
         call(PersistentDialog.setChild, [obj, ConfirmationDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         obj._logIndex      = nil;
         obj._parentObj     = nil;
         obj._addonNodePath = g_Addon.node.getPath();
@@ -43,25 +45,18 @@ var ConfirmationDialog = {
         var MARGIN = 12;
         obj._vbox.setContentsMargin(MARGIN);
 
-        obj._label = canvas.gui.widgets.Label.new(obj._group, canvas.style, {wordWrap: true});
-        obj._vbox.addItem(obj._label);
+        obj._label = obj._widget.getLabel("", true);
+
+        var btnOK     = obj._widget.getButton("Delete", func obj._actionPositive());
+        var btnCancel = obj._widget.getButton("Cancel", func obj._actionNegative());
 
         var buttonBox = canvas.HBoxLayout.new();
-        obj._vbox.addItem(buttonBox);
-
         buttonBox.addStretch(1);
-        var btnOK = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
-            .setText("Delete")
-            .listen("clicked", func { obj._actionPositive(); }
-        );
-
-        var btnCancel = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
-            .setText("Cancel")
-            .listen("clicked", func { obj._actionNegative(); }
-        );
-
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
+
+        obj._vbox.addItem(obj._label);
+        obj._vbox.addItem(buttonBox);
 
         return obj;
     },
@@ -127,6 +122,6 @@ var ConfirmationDialog = {
     # @return void
     #
     _actionNegative: func() {
-        call(PersistentDialog.show, [], me);
+        call(PersistentDialog.hide, [], me);
     },
 };

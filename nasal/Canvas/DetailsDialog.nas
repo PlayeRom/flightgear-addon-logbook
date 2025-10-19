@@ -45,6 +45,8 @@ var DetailsDialog = {
         call(StylePersistentDialog.setChild, [obj, DetailsDialog], obj.parents[1]); # Let the parent know who their child is.
         call(StylePersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         obj._isUsingSQLite        = Utils.isUsingSQLite();
         obj._parent               = nil; # LogbookDialog object
         obj._dataRow              = nil;
@@ -124,17 +126,8 @@ var DetailsDialog = {
     _drawBottomBar: func() {
         var buttonBox = canvas.HBoxLayout.new();
 
-        var btnClose = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Close")
-            .setFixedSize(75, 26)
-            .listen("clicked", func {
-                call(me.hide, [], me);
-            }
-        );
-
-        me._btnFlightAnalysis = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Analysis")
-            .setFixedSize(75, 26);
+        var btnClose = me._widget.getButton("Close", func me.hide(), 75);
+        me._btnFlightAnalysis = me._widget.getButton("Analysis", 75);
 
         if (me._isUsingSQLite) {
             me._btnFlightAnalysis.listen("clicked", func {
@@ -161,15 +154,11 @@ var DetailsDialog = {
             me._btnFlightAnalysis.setVisible(false);
         }
 
-        me._btnDelete = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Delete")
-            .setFixedSize(75, 26)
-            .listen("clicked", func {
-                if (!g_isThreadPending) {
-                    me._deleteDialog.show(me._logbookId, me);
-                }
+        me._btnDelete = me._widget.getButton("Delete", 75, func {
+            if (!g_isThreadPending) {
+                me._deleteDialog.show(me._logbookId, me);
             }
-        );
+        });
 
         buttonBox.addStretch(1);
         buttonBox.addItem(me._btnFlightAnalysis);
@@ -443,6 +432,7 @@ var DetailsDialog = {
         var strToCheck  = numberParts[0];
         var newValue    = strToCheck;
         var length      = size(strToCheck);
+
         if (length > 3) {
             newValue = "";
             var modulo = math.mod(length, 3);

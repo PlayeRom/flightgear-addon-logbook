@@ -65,6 +65,8 @@ var LogbookDialog = {
         call(StylePersistentDialog.setChild, [obj, LogbookDialog], obj.parents[1]);
         call(StylePersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         if (obj._isUsingSQLite) {
             obj._storage.loadAllData();
         }
@@ -100,17 +102,18 @@ var LogbookDialog = {
 
         obj._vbox.addItem(obj._listView, 1); # 2nd param = stretch
 
-        obj._labelPaging = canvas.gui.widgets.Label.new(obj._group, canvas.style, {});
+        obj._labelPaging = obj._widget.getLabel();
         if (Utils.isFG2024Version()) {
             obj._labelPaging.setColor(obj._style.TEXT_COLOR);
         }
 
-        obj._btnFirst = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
-        obj._btnPrev  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
-        obj._btnNext  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
-        obj._btnLast  = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._btnFirst = obj._widget.getButton("|<<", 65, func obj._first());
+        obj._btnPrev  = obj._widget.getButton("<",   65, func obj._prev());
+        obj._btnNext  = obj._widget.getButton(">",   65, func obj._next());
+        obj._btnLast  = obj._widget.getButton(">>|", 65, func obj._last());
 
-        obj._btnStyle = canvas.gui.widgets.Button.new(obj._group, canvas.style, {});
+        obj._btnStyle = obj._widget.getButton(obj._getOppositeStyleName(), 65, func obj._toggleStyle());
+
         obj._drawBottomBar();
 
         obj._listeners = Listeners.new();
@@ -449,45 +452,12 @@ var LogbookDialog = {
     # @return void
     #
     _drawBottomBar: func() {
-        var buttonBox = canvas.HBoxLayout.new();
-
-        me._btnFirst
-            .setText("|<<")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._first(); });
-
-        me._btnPrev
-            .setText("<")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._prev(); });
-
         me._setPaging();
 
-        me._btnNext
-            .setText(">")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._next(); });
+        var btnSettings = me._widget.getButton("≡", 26, func me._logbook.showSettingDialog());
+        var btnHelp     = me._widget.getButton("?", 26, func me.helpDialog.show());
 
-        me._btnLast
-            .setText(">>|")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._last(); });
-
-        me._btnStyle
-            .setText(me._getOppositeStyleName())
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._toggleStyle(); });
-
-        var btnSettings = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("≡")
-            .setFixedSize(26, 26)
-            .listen("clicked", func { me._logbook.showSettingDialog(); });
-
-        var btnHelp = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("?")
-            .setFixedSize(26, 26)
-            .listen("clicked", func { me.helpDialog.show(); });
-
+        var buttonBox = canvas.HBoxLayout.new();
         buttonBox.addStretch(4);
         buttonBox.addItem(me._btnFirst);
         buttonBox.addItem(me._btnPrev);

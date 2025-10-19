@@ -46,6 +46,9 @@ var SettingsDialog = {
         call(PersistentDialog.setChild, [obj, SettingsDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widgetGroup  = WidgetHelper.new(obj._group);
+        obj._widgetScroll = WidgetHelper.new();
+
         obj._dateTimeDisplay = g_Settings.getDateTimeDisplay();
         obj._soundOption     = g_Settings.isSoundEnabled();
         obj._logItemsPerPage = g_Settings.getLogItemsPerPage();
@@ -146,6 +149,8 @@ var SettingsDialog = {
 
         me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 
+        me._widgetScroll.setContext(me._scrollContent);
+
         me._drawScrollable();
 
         me._drawBottomBar();
@@ -179,16 +184,16 @@ var SettingsDialog = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawDateTimeOptions: func(vBoxLayout) {
-        vBoxLayout.addItem(me._getLabel("Date and time displayed\nin the Logbook view", { wordWrap: true }));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Date and time displayed\nin the Logbook view", true));
         vBoxLayout.addSpacing(10);
 
-        var radio1 = me._getRadioButton("Real date & time (from your OS)")
+        var radio1 = me._widgetScroll.getRadioButton("Real date & time (from your OS)")
             .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_REAL);
 
-        var radio2 = me._getRadioButton("UTC time in simulator",   { "parent-radio": radio1 })
+        var radio2 = me._widgetScroll.getRadioButton("UTC time in simulator", radio1)
             .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_UTC);
 
-        var radio3 = me._getRadioButton("Local time in simulator", { "parent-radio": radio1 })
+        var radio3 = me._widgetScroll.getRadioButton("Local time in simulator", radio1)
             .setChecked(me._dateTimeDisplay == Settings.DATE_TIME_SIM_LOC);
 
         radio1.listen("group-checked-radio-changed", func(e) {
@@ -227,7 +232,7 @@ var SettingsDialog = {
     #
     _drawFlightAnalysisOptions: func(vBoxLayout) {
         vBoxLayout.addSpacing(30);
-        vBoxLayout.addItem(me._getLabel("Flight Analysis Options"));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Flight Analysis Options"));
         vBoxLayout.addItem(me._drawMapProvider());
 
         return vBoxLayout;
@@ -241,7 +246,7 @@ var SettingsDialog = {
     _drawMapProvider: func() {
         var hBoxLayout = canvas.HBoxLayout.new();
 
-        hBoxLayout.addItem(me._getLabel("Map provider"));
+        hBoxLayout.addItem(me._widgetScroll.getLabel("Map provider"));
 
         var items = [
             { label: "OpenStreetMap", value: "OpenStreetMap" },
@@ -270,33 +275,28 @@ var SettingsDialog = {
     #
     _drawMiscellaneousOptions: func(vBoxLayout) {
         vBoxLayout.addSpacing(30);
-        vBoxLayout.addItem(me._getLabel("Miscellaneous Options"));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Miscellaneous Options"));
 
-        var checkboxSound = me._getCheckbox(text: "Click sound", isChecked: me._soundOption);
-        checkboxSound.listen("toggled", func(e) {
-            me._soundOption = e.detail.checked;
+        var checkboxSound = me._widgetScroll.getCheckBox("Click sound", me._soundOption, func(e) {
+            me._soundOption = e.detail.checked ? true : false;
         });
 
         vBoxLayout.addItem(checkboxSound);
 
         vBoxLayout.addItem(me._drawLogItemsPerPage());
 
-        vBoxLayout.addItem(
-            me._getLabel(
-                'The "Optimize database" button will defragment the database file, which will speed up database operations and reduce its size on the disk.',
-                { wordWrap: true }
+        vBoxLayout.addItem(me._widgetScroll.getLabel(
+            'The "Optimize database" button will defragment the database file, which will speed up database operations and reduce its size on the disk.',
+            true,
         ));
-        var btnVacuum = canvas.gui.widgets.Button.new(me._scrollContent, canvas.style, {})
-            .setText("Optimize database")
-            .setFixedSize(150, 26)
-            .listen("clicked", func {
-                if (!g_isThreadPending) {
-                    if (me._logbook.vacuumSQLite()) {
-                        gui.popupTip("The database has been optimized");
-                    }
+
+        var btnVacuum = me._widgetScroll.getButton("Optimize database", 150, func {
+            if (!g_isThreadPending) {
+                if (me._logbook.vacuumSQLite()) {
+                    gui.popupTip("The database has been optimized");
                 }
             }
-        );
+        });
 
         vBoxLayout.addSpacing(20);
         vBoxLayout.addItem(btnVacuum);
@@ -324,7 +324,7 @@ var SettingsDialog = {
         });
 
         var hBoxLayout = canvas.HBoxLayout.new();
-        hBoxLayout.addItem(me._getLabel("Items per page"));
+        hBoxLayout.addItem(me._widgetScroll.getLabel("Items per page"));
         hBoxLayout.addItem(comboBox);
         hBoxLayout.addStretch(1); # Decrease combo width
 
@@ -339,11 +339,11 @@ var SettingsDialog = {
     _drawColumnsVisible: func() {
         var vBoxLayout = canvas.VBoxLayout.new();
 
-        vBoxLayout.addItem(me._getLabel("Columns to display in the Logbook view", { wordWrap: true }));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Columns to display in the Logbook view", true));
         vBoxLayout.addSpacing(10);
 
-        var checkboxDate = me._getCheckbox(text: "Date", isChecked: true, isEnabled: false);
-        var checkboxTime = me._getCheckbox(text: "Time", isChecked: true, isEnabled: false);
+        var checkboxDate = me._widgetScroll.getCheckBox("Date", true).setEnabled(false);
+        var checkboxTime = me._widgetScroll.getCheckBox("Time", true).setEnabled(false);
         vBoxLayout.addItem(checkboxDate);
         vBoxLayout.addItem(checkboxTime);
 
@@ -365,7 +365,8 @@ var SettingsDialog = {
 
             var isChecked = me._columnsVisible[columnItem.name];
 
-            var checkbox = me._getCheckbox(columnItem.header, isChecked, !isDisabled);
+            var checkbox = me._widgetScroll.getCheckBox(columnItem.header, isChecked)
+                .setEnabled(!isDisabled);
 
             if (!isDisabled) {
                 func() {
@@ -385,62 +386,13 @@ var SettingsDialog = {
     },
 
     #
-    # Get widgets.Label
-    #
-    # @param  string  text  Label text
-    # @param  hash  cfg
-    # @return ghost  Label widget
-    #
-    _getLabel: func(text, cfg = nil) {
-        return canvas.gui.widgets.Label.new(parent: me._scrollContent, cfg: cfg)
-            .setText(text);
-    },
-
-    #
-    # Get widgets.CheckBox
-    #
-    # @param  string  text  Label text
-    # @param  bool  isChecked
-    # @param  bool  isEnabled
-    # @return ghost  widgets.CheckBox
-    #
-    _getCheckbox: func(text, isChecked, isEnabled = 1) {
-        var checkbox = canvas.gui.widgets.CheckBox.new(parent: me._scrollContent, cfg: { wordWrap: false })
-            .setText(text)
-            .setChecked(isChecked)
-            .setEnabled(isEnabled);
-
-        return checkbox;
-    },
-
-    #
-    # Get widgets.RadioButton
-    #
-    # @param  string  text  Label text
-    # @param  hash|nil  cfg  Config hash or nil
-    # @return ghost  widgets.RadioButton
-    #
-    _getRadioButton: func(text, cfg = nil) {
-        return canvas.gui.widgets.RadioButton.new(parent: me._scrollContent, cfg: cfg)
-            .setText(text);
-    },
-
-    #
-    # @return ghost  HBoxLayout object with button
+    # @return void
     #
     _drawBottomBar: func() {
+        var btnSave   = me._widgetGroup.getButton("OK", func me._save(), 65);
+        var btnCancel = me._widgetGroup.getButton("Cancel", func me.hide(), 65);
+
         var buttonBox = canvas.HBoxLayout.new();
-
-        var btnSave = canvas.gui.widgets.Button.new(me._group)
-            .setText("OK")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._save(); });
-
-        var btnCancel = canvas.gui.widgets.Button.new(me._group)
-            .setText("Cancel")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me.hide(); });
-
         buttonBox.addStretch(1);
         buttonBox.addItem(btnSave);
         buttonBox.addItem(btnCancel);
@@ -449,7 +401,5 @@ var SettingsDialog = {
         me._vbox.addSpacing(10);
         me._vbox.addItem(buttonBox);
         me._vbox.addSpacing(10);
-
-        return buttonBox;
     },
 };

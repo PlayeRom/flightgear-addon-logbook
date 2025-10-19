@@ -38,6 +38,8 @@ var InputDialog = {
         call(PersistentDialog.setChild, [obj, InputDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         obj._addonNodePath = g_Addon.node.getPath();
 
         obj._recordId        = nil; # Record ID in SQLLite or index of log entry in whole CSV file
@@ -48,38 +50,28 @@ var InputDialog = {
         obj._filterSelector = FilterSelector.new(columns);
 
         var MARGIN = 12;
-        obj._vbox.setContentsMargin(MARGIN);
 
-        obj._label = canvas.gui.widgets.Label.new(obj._group, canvas.style, { wordWrap: true });
-        obj._vbox.addItem(obj._label);
+        obj._label = obj._widget.getLabel("", true);
+        obj._lineEdit = obj._widget.getLineEdit();
 
-        obj._lineEdit = canvas.gui.widgets.LineEdit.new(obj._group, canvas.style, {});
-        obj._vbox.addItem(obj._lineEdit);
-        obj._lineEdit.setFocus();
+        obj._btnTypeSelector = obj._widget.getButton("Select", func obj._actionTypeSelect())
+            .setVisible(false);
+
+        var btnOK     = obj._widget.getButton("Save", func obj._actionSave());
+        var btnCancel = obj._widget.getButton("Cancel", func obj._actionCancel());
 
         var buttonBox = canvas.HBoxLayout.new();
-        obj._vbox.addItem(buttonBox);
-
-        obj._btnTypeSelector = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
-            .setText("Select")
-            .listen("clicked", func { obj._actionTypeSelect(); }
-        );
-        obj._btnTypeSelector.setVisible(false);
-
-        var btnOK = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
-            .setText("Save")
-            .listen("clicked", func { obj._actionSave(); }
-        );
-
-        var btnCancel = canvas.gui.widgets.Button.new(obj._group, canvas.style, {})
-            .setText("Cancel")
-            .listen("clicked", func { obj._actionCancel(); }
-        );
-
         buttonBox.addItem(obj._btnTypeSelector);
         buttonBox.addStretch(1);
         buttonBox.addItem(btnOK);
         buttonBox.addItem(btnCancel);
+
+        obj._vbox.setContentsMargin(MARGIN);
+        obj._vbox.addItem(obj._label);
+        obj._vbox.addItem(obj._lineEdit);
+        obj._vbox.addItem(buttonBox);
+
+        obj._lineEdit.setFocus();
 
         return obj;
     },

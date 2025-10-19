@@ -46,6 +46,9 @@ var SettingsDialog = {
         call(PersistentDialog.setChild, [obj, SettingsDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widgetGroup  = WidgetHelper.new(obj._group);
+        obj._widgetScroll = WidgetHelper.new();
+
         obj._soundOption = g_Settings.isSoundEnabled();
 
         obj._lineEditItemsPerPage = nil;
@@ -117,6 +120,8 @@ var SettingsDialog = {
 
         me._scrollContent = ScrollAreaHelper.getContent(me._scrollArea);
 
+        me._widgetScroll.setContext(me._scrollContent);
+
         me._drawScrollable();
 
         me._drawBottomBar();
@@ -128,11 +133,11 @@ var SettingsDialog = {
     # @return void
     #
     _drawScrollable: func() {
-        me._hBoxLayout = canvas.HBoxLayout.new();
-
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawMiscellaneousOptions(vBoxLayout);
         vBoxLayout.addStretch(1);
+
+        me._hBoxLayout = canvas.HBoxLayout.new();
         me._hBoxLayout.addItem(vBoxLayout);
 
         me._scrollArea.setLayout(me._hBoxLayout);
@@ -145,11 +150,10 @@ var SettingsDialog = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawMiscellaneousOptions: func(vBoxLayout) {
-        vBoxLayout.addItem(me._getLabel("Miscellaneous Options"));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Miscellaneous Options"));
 
-        var checkboxSound = me._getCheckbox("Click sound", me._soundOption);
-        checkboxSound.listen("toggled", func(e) {
-            me._soundOption = e.detail.checked;
+        var checkboxSound = me._widgetScroll.getCheckBox("Click sound", me._soundOption, func(e) {
+            me._soundOption = e.detail.checked ? true : false;
         });
 
         vBoxLayout.addItem(checkboxSound);
@@ -166,13 +170,11 @@ var SettingsDialog = {
     # @return ghost  canvas.VBoxLayout
     #
     _drawLogItemsPerPage: func(vBoxLayout) {
-        vBoxLayout.addItem(me._getLabel("Items per page (min 5, max 20)"));
+        vBoxLayout.addItem(me._widgetScroll.getLabel("Items per page (min 5, max 20)"));
+
+        me._lineEditItemsPerPage = me._widgetScroll.getLineEdit(sprintf("%d", g_Settings.getLogItemsPerPage()));
 
         var hBoxLayout = canvas.HBoxLayout.new();
-
-        me._lineEditItemsPerPage = canvas.gui.widgets.LineEdit.new(me._scrollContent, canvas.style, {})
-            .setText(sprintf("%d", g_Settings.getLogItemsPerPage()));
-
         hBoxLayout.addItem(me._lineEditItemsPerPage);
         hBoxLayout.addStretch(1); # Decrease LineEdit width
 
@@ -182,49 +184,13 @@ var SettingsDialog = {
     },
 
     #
-    # Get widgets.Label
-    #
-    # @param  string  text  Label text
-    # @return ghost  Label widget
-    #
-    _getLabel: func(text) {
-        return canvas.gui.widgets.Label.new(me._scrollContent, canvas.style, {})
-            .setText(text);
-    },
-
-    #
-    # Get widgets.CheckBox
-    #
-    # @param  string  text  Label text
-    # @param  bool  isChecked
-    # @param  bool  isEnabled
-    # @return ghost  widgets.CheckBox
-    #
-    _getCheckbox: func(text, isChecked, isEnabled = 1) {
-        var checkbox = canvas.gui.widgets.CheckBox.new(me._scrollContent, canvas.style, { wordWrap: false })
-            .setText(text)
-            .setChecked(isChecked)
-            .setEnabled(isEnabled);
-
-        return checkbox;
-    },
-
-    #
-    # @return ghost  HBoxLayout object with button
+    # @return void
     #
     _drawBottomBar: func() {
+        var btnSave   = me._widgetGroup.getButton("OK", func me._save(), 65);
+        var btnCancel = me._widgetGroup.getButton("Cancel", func me.hide(), 65);
+
         var buttonBox = canvas.HBoxLayout.new();
-
-        var btnSave = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("OK")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me._save(); });
-
-        var btnCancel = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Cancel")
-            .setFixedSize(65, 26)
-            .listen("clicked", func { me.hide(); });
-
         buttonBox.addStretch(1);
         buttonBox.addItem(btnSave);
         buttonBox.addItem(btnCancel);
@@ -233,7 +199,5 @@ var SettingsDialog = {
         me._vbox.addSpacing(10);
         me._vbox.addItem(buttonBox);
         me._vbox.addSpacing(10);
-
-        return buttonBox;
     },
 };

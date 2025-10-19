@@ -21,7 +21,6 @@ var HelpDialog = {
     WINDOW_WIDTH  : 700,
     WINDOW_HEIGHT : 420,
     PADDING       : 10,
-    TITLE         : "Logbook Help",
 
     #
     # Constructor.
@@ -34,7 +33,7 @@ var HelpDialog = {
             PersistentDialog.new(
                 width   : HelpDialog.WINDOW_WIDTH,
                 height  : HelpDialog.WINDOW_HEIGHT,
-                title   : HelpDialog.TITLE,
+                title   : "Logbook Help",
                 resize  : true,
                 onResize: func(w, h) { obj._onResize(w, h); }
             ),
@@ -43,9 +42,11 @@ var HelpDialog = {
         call(PersistentDialog.setChild, [obj, HelpDialog], obj.parents[1]); # Let the parent know who their child is.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
+        obj._widget = WidgetHelper.new(obj._group);
+
         var margins = {
-            left   : HelpDialog.PADDING,
-            top    : HelpDialog.PADDING,
+            left   : me.PADDING,
+            top    : me.PADDING,
             right  : 0,
             bottom : 0,
         };
@@ -63,7 +64,7 @@ var HelpDialog = {
         obj._helpTexts = std.Vector.new();
         obj._propHelpText = props.globals.getNode(g_Addon.node.getPath() ~ "/addon-devel/help-text");
 
-        obj._reDrawTexts(x: 0, y: 0, maxWidth: HelpDialog.WINDOW_WIDTH - (HelpDialog.PADDING * 2));
+        obj._reDrawTexts(x: 0, y: 0, maxWidth: me.WINDOW_WIDTH - (me.PADDING * 2));
         obj._drawBottomBar();
 
         obj._keyActions();
@@ -89,7 +90,7 @@ var HelpDialog = {
     # @return void
     #
     _onResize: func(width, height) {
-        me._reDrawTexts(x: 0, y: 0, maxWidth: width - (HelpDialog.PADDING * 2));
+        me._reDrawTexts(0, 0, width - (me.PADDING * 2));
     },
 
     #
@@ -129,33 +130,22 @@ var HelpDialog = {
     },
 
     #
-    # @return ghost  HBoxLayout object with button.
+    # @return void
     #
     _drawBottomBar: func() {
+        var btnAddonDir = me._widget.getButton("Open Storage Folder", 200, func {
+            Utils.openBrowser({ path: g_Addon.storagePath });
+        });
+
+        var btnClose = me._widget.getButton("Close", 75, func me.hide());
+
         var buttonBox = canvas.HBoxLayout.new();
-
-        var btnAddonDir = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Open Storage Folder")
-            .setFixedSize(200, 26)
-            .listen("clicked", func {
-                Utils.openBrowser({ "path": g_Addon.storagePath });
-            });
-
-        var btnClose = canvas.gui.widgets.Button.new(me._group, canvas.style, {})
-            .setText("Close")
-            .setFixedSize(75, 26)
-            .listen("clicked", func {
-                me.hide();
-            });
-
         buttonBox.addItem(btnAddonDir);
         buttonBox.addItem(btnClose);
 
         me._vbox.addSpacing(10);
         me._vbox.addItem(buttonBox);
         me._vbox.addSpacing(10);
-
-        return buttonBox;
     },
 
     #
