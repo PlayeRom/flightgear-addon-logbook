@@ -5,7 +5,7 @@
 #
 # Copyright (C) 2025 Roman Ludwicki
 #
-# Which Runway is an Open Source project and it is licensed
+# Logbook is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
