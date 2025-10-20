@@ -244,7 +244,7 @@ var InputDialog = {
         if (!Utils.isUsingSQLite()) {
             for (var i = 0; i < size(value); i += 1) {
                 if (   value[i] == `,`
-                    or value[i] == `"` #"# <- Fix syntax coloring in Visual Code
+                    or value[i] == `"`
                 ) {
                     gui.popupTip("Please don't use `,` and `\"` as these are special characters for the CSV file.");
                     return false;
