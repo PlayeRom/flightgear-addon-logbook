@@ -102,7 +102,7 @@ var WidgetHelper = {
     },
 
     #
-    # Get RadioButton widget.
+    # Create RadioButton widget.
     #
     # @param  string  text  Label text.
     # @param  ghost|nil  parent
