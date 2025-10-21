@@ -75,34 +75,15 @@ var Bootstrap = {
 
         g_VersionChecker = VersionChecker.make();
 
-        # Disable Logbook menu because we have to load data first in thread
-        gui.menuEnable("logbook-addon-main-dialog", false);
-        gui.menuEnable("logbook-addon-flight-analysis", false);
-        gui.menuEnable("logbook-addon-export-csv", false); # this will be enabled only on FG version >= 2024
-
-        # Disable others menus because of delayTimer
-        gui.menuEnable("logbook-addon-help", false);
-        gui.menuEnable("logbook-addon-about", false);
-
         g_Settings = Settings.new();
         g_Sound    = Sound.new();
 
-        # Delay loading of the whole addon so as not to break the MCDUs for aircraft like A320, A330. The point is that,
-        # for example, the A320 hard-coded the texture index from /canvas/by-index/texture[15]. But this add-on creates
-        # its canvas textures earlier than the airplane, which will cause that at index 15 there will be no MCDU texture
-        # but the texture from the add-on. So thanks to this delay, the textures of the plane will be created first, and
-        # then the textures of this add-on.
-
-        Timer.singleShot(3, func() {
+        me._delayCanvasLoading(func {
             g_Logbook = Logbook.new();
 
             # Check the version at the end, because dialogs must first register
             # their callbacks to VersionChecker in their constructors.
             g_VersionChecker.checkLastVersion();
-
-            gui.menuEnable("logbook-addon-flight-analysis", true);
-            gui.menuEnable("logbook-addon-help", true);
-            gui.menuEnable("logbook-addon-about", true);
         });
     },
 
@@ -129,6 +110,32 @@ var Bootstrap = {
         if (g_Settings != nil) {
             g_Settings.del();
         }
+    },
+
+    #
+    # Delay loading the entire Canvas add-on to avoid damaging aircraft displays such as A320, A330. The point is that,
+    # for example, the A320 hard-coded the texture index from /canvas/by-index/texture[15]. But this add-on may creates
+    # its canvas textures earlier than the airplane, which will cause that at index 15 there will be no texture of some
+    # display but the texture from the add-on. So thanks to this delay, the textures of the plane will be created first,
+    # and then the textures of this add-on.
+    #
+    # @param  func  callback
+    # @return void
+    #
+    _delayCanvasLoading: func(callback) {
+        # Disable menu items responsible for launching persistent dialogs.
+        var menu = MenuStateHandler.new();
+        menu.toggleItems(false);
+
+        Timer.singleShot(3, func() {
+            callback();
+
+            # Enable menu items responsible for launching persistent dialogs.
+            menu.toggleItems(true, {
+                "logbook-addon-main-dialog":,
+                "logbook-addon-export-csv":, # this will be enabled only on FG version >= 2024
+            });
+        });
     },
 
     #
