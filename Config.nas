@@ -45,13 +45,13 @@ var Config = {
         # Set to `true` if you want to check for a newer version by downloading the `/addon-metadata.xml` file from the
         # repository. Only GitHub, GitLab and FGAddons are supported.
         #
-        byMetaData: false,
+        byMetaData: 0,
 
         #
         # Set to `true` if you want to check for a newer version by checking your repository's git tags, where tag
         # is the version number, e.g. "1.2.5" or "v.1.2.5". Only GitHub and GitLab are supported.
         #
-        byGitTag: false,
+        byGitTag: 0,
     },
 
     #
@@ -64,6 +64,6 @@ var Config = {
         # Setting this flag to `false` will prevent files from the `/nasal/Utils/Dev/` directory from being loaded when
         # the simulator is started.
         #
-        useEnvFile: true,
+        useEnvFile: 1,
     },
 };

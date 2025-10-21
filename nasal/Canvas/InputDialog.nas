@@ -54,8 +54,8 @@ var InputDialog = {
         obj._label = obj._widget.getLabel("", true);
         obj._lineEdit = obj._widget.getLineEdit();
 
-        obj._btnTypeSelector = obj._widget.getButton("Select", func obj._actionTypeSelect())
-            .setVisible(false);
+        obj._btnTypeSelector = obj._widget.getButton("Select", func obj._actionTypeSelect());
+        obj._btnTypeSelector.setVisible(false);
 
         var btnOK     = obj._widget.getButton("Save", func obj._actionSave());
         var btnCancel = obj._widget.getButton("Cancel", func obj._actionCancel());
