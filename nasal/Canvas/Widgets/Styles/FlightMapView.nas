@@ -42,7 +42,7 @@ DefaultStyle.widgets["flight-map-view"] = {
             max: { x: 0, y: 0 },
         };
 
-        me._isEventsSet = 0;
+        me._isEventsSet = false;
 
         me._refPosition = 0;
         me._refZoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
@@ -51,7 +51,7 @@ DefaultStyle.widgets["flight-map-view"] = {
 
         me._zoomLabel = nil;
 
-        me._isReDrew = 0;
+        me._isReDrew = false;
 
         me._planeIcon  = PlaneIcon.new();
         me._windBarbs  = WindBarbs.new();
@@ -103,7 +103,7 @@ DefaultStyle.widgets["flight-map-view"] = {
             return;
         }
 
-        me._isReDrew = 1;
+        me._isReDrew = true;
 
         me._addEvents(model);
 
@@ -149,7 +149,7 @@ DefaultStyle.widgets["flight-map-view"] = {
             return;
         }
 
-        me._isEventsSet = 1;
+        me._isEventsSet = true;
 
         me._content.addEventListener("click", func(e) {
             # Find the path point closest to the click
@@ -260,7 +260,7 @@ DefaultStyle.widgets["flight-map-view"] = {
     # @param  bool  forceSetTile
     # @return void
     #
-    updateTiles: func(model, forceSetTile = 0) {
+    updateTiles: func(model, forceSetTile = true) {
         if (model._trackItems == nil or model._trackItemsSize == 0) {
             return;
         }

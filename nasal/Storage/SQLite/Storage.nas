@@ -90,7 +90,7 @@ var Storage = {
     #     without rest of stuff (used only for CSV recovery).
     # @return void
     #
-    saveLogData: func(logData, logbookId = nil, onlyIO = 0) {
+    saveLogData: func(logData, logbookId = nil, onlyIO = false) {
         logbookId == nil
             ? me.addItem(logData) # insert
             : me.updateItem(logData, logbookId); # update
@@ -462,7 +462,7 @@ var Storage = {
     #                                 otherwise all columns will be updated.
     # @return void
     #
-    _updateTotalsValues: func(where, withCheckVisible = 1) {
+    _updateTotalsValues: func(where, withCheckVisible = true) {
         var select = "";
         foreach (var columnItem; me._columns.getAll()) {
             if (withCheckVisible and !columnItem.visible) {
@@ -505,7 +505,7 @@ var Storage = {
     # @param  bool  withCheckVisible  If false then return even those columns which have visible set to false.
     # @return void
     #
-    getTotalsRow: func(withCheckVisible = 1) {
+    getTotalsRow: func(withCheckVisible = true) {
         if (!withCheckVisible) {
             # Build where from filters
             var where = me._getWhereQueryFilters();

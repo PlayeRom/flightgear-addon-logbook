@@ -132,7 +132,7 @@ var FilterSelector = {
     # @param  bool  withDefaultAll
     # @return hash
     #
-    setItems: func(items, withDefaultAll = 1) {
+    setItems: func(items, withDefaultAll = true) {
         me._items.clear();
 
         var columnWidth = me.WINDOW_WIDTH - (me.PADDING * 2);

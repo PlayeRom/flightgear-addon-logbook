@@ -75,7 +75,7 @@ gui.widgets.FlightProfile = {
 
         # A mode where new track points are added live.
         # In this mode, the ability to change the zoom level is disabled.
-        obj._isLiveUpdateMode = 0;
+        obj._isLiveUpdateMode = false;
 
         return obj;
     },
@@ -99,7 +99,7 @@ gui.widgets.FlightProfile = {
     # @param  bool  withResetPosition
     # @return ghost
     #
-    setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = 1) {
+    setTrackItems: func(trackItems, maxAlt = nil, withResetPosition = true) {
         if (withResetPosition) {
             me._zoom = gui.widgets.FlightProfile.ZOOM_DEFAULT;
             me._position = 0;

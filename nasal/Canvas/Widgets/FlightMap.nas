@@ -68,7 +68,7 @@ gui.widgets.FlightMap = {
 
         # A mode where new track points are added live.
         # In this mode, drawing the flight path is less optimal.
-        obj._isLiveUpdateMode = 0;
+        obj._isLiveUpdateMode = false;
 
         return obj;
     },
@@ -113,7 +113,7 @@ gui.widgets.FlightMap = {
     # @param  bool  withResetPosition
     # @return ghost
     #
-    setTrackItems: func(trackItems, withResetPosition = 1) {
+    setTrackItems: func(trackItems, withResetPosition = true) {
         if (withResetPosition) {
             me._zoom = gui.widgets.FlightMap.ZOOM_DEFAULT;
             me._position = 0;
@@ -151,7 +151,7 @@ gui.widgets.FlightMap = {
     # @param  bool  forceSetTile
     # @return void
     #
-    softUpdateView: func(forceSetTile = 0) {
+    softUpdateView: func(forceSetTile = false) {
         me._view.updateTiles(me, forceSetTile);
     },
 

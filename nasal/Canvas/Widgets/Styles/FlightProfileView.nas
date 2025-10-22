@@ -33,7 +33,7 @@ DefaultStyle.widgets["flight-profile-view"] = {
         me._firstValueX = 0;
 
         me._pointsX = std.Vector.new();
-        me._isEventsSet = 0;
+        me._isEventsSet = false;
 
         me._trackItems     = nil;
         me._trackItemsSize = 0;
@@ -104,7 +104,7 @@ DefaultStyle.widgets["flight-profile-view"] = {
             return;
         }
 
-        me._isEventsSet = 1;
+        me._isEventsSet = true;
 
         me._root.addEventListener("click", func(e) {
             var position = me._findClosestXBinary(e.localX, me._pointsX.vector);

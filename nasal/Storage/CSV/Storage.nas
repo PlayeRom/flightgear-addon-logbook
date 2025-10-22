@@ -230,7 +230,7 @@ var Storage = {
     #     without rest of stuff (used only for CSV recovery).
     # @return void
     #
-    saveLogData: func(logData, id = nil, onlyIO = 0) {
+    saveLogData: func(logData, id = nil, onlyIO = false) {
         var file = io.open(me._filePath, "a");
         me.addItem(logData, file);
         io.close(file);

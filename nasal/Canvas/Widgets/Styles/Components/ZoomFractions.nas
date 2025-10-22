@@ -33,7 +33,7 @@ var ZoomFractions = {
                 timestamp: std.Vector.new(),
             },
 
-            _isCreated: 0,
+            _isCreated: false,
             _firstFractionPosition: nil,
         };
     },
@@ -49,7 +49,7 @@ var ZoomFractions = {
             return;
         }
 
-        me._isCreated = 1;
+        me._isCreated = true;
 
         me._maxZoomLevel = gui.widgets.FlightProfile.ZOOM_MAX;
 
@@ -296,6 +296,6 @@ var ZoomFractions = {
     # @return void
     #
     setToRecreate: func() {
-        me._isCreated = 0;
+        me._isCreated = false;
     },
 };

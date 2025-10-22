@@ -138,7 +138,7 @@ var FlightAnalysisDialog = {
     # @param  bool  withResetPosition  If true then aircraft position will be set to 0.
     # @return void
     #
-    setData: func(trackItems, maxAlt, withResetPosition = 1) {
+    setData: func(trackItems, maxAlt, withResetPosition = true) {
         # Put data to widgets
         me._mapView.setTrackItems(trackItems, withResetPosition);
         me._profileView.setTrackItems(trackItems, maxAlt, withResetPosition);

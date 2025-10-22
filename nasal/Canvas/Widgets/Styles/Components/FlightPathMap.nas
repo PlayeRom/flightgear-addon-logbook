@@ -22,7 +22,7 @@ var FlightPathMap = {
         return {
             parents              : [FlightPathMap],
             _FLIGHT_LINE_WIDTH   : 2,
-            _isFlightPathRendered: 0,
+            _isFlightPathRendered: false,
             _flightPath          : nil,
             _pointsToDraw        : std.Vector.new(),
         };
@@ -40,7 +40,7 @@ var FlightPathMap = {
             .setStrokeLineWidth(me._FLIGHT_LINE_WIDTH)
             .set("z-index", 1);
 
-        me._isFlightPathRendered = 0;
+        me._isFlightPathRendered = false;
     },
 
     #
@@ -78,7 +78,7 @@ var FlightPathMap = {
         var edgeTiles = me._getTileThresholds(model, tileBoundaries);
 
         # = true because the first point must start with moveTo method
-        var discontinuity = 1;
+        var discontinuity = true;
 
         # The first loop is to build an array of points that are within the map
         forindex (var index; model._trackItems) {
@@ -98,11 +98,11 @@ var FlightPathMap = {
                     : me._flightPath.lineTo(pos.x, pos.y);
 
                 # We have just drawn a point, so there is no discontinuity
-                discontinuity = 0;
+                discontinuity = false;
             }
             else {
                 # The path point is out of map tiles, so ship it and mark discontinuity
-                discontinuity = 1;
+                discontinuity = true;
             }
         }
     },
@@ -145,7 +145,7 @@ var FlightPathMap = {
                 : me._flightPath.lineTo(pos.x, pos.y);
         }
 
-        me._isFlightPathRendered = 1;
+        me._isFlightPathRendered = true;
     },
 
     #

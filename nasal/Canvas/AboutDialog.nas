@@ -106,7 +106,7 @@ var AboutDialog = {
     # @param  bool  wordWrap  If true then text will be wrapped.
     # @return ghost  Label widget.
     #
-    _getLabel: func(text, wordWrap = 0) {
+    _getLabel: func(text, wordWrap = true) {
         var align = nil;
 
         if (Utils.isFG2024Version()) {

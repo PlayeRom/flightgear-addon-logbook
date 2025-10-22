@@ -223,15 +223,15 @@ gui.widgets.LogbookList = {
         obj._highlightingRowIndex = nil;
 
         # If it's set on true, then "Loading..." text is displaying instead of list
-        obj._isLoading = 0;
+        obj._isLoading = false;
 
         # If it's set on true, long texts will be wrapped to the width of the column by setMaxWidth() method
-        obj._isUseTextMaxWidth = 0;
+        obj._isUseTextMaxWidth = false;
 
         # If it's set on true, then the entire one row will be drawn on a single “text” element, which greater
         # performance. If false then each cell will be a separate “text” (or "image") element. Only when it is false
         # is it possible to draw pictures on the list.
-        obj._isOptimizeRow = 0;
+        obj._isOptimizeRow = false;
 
         #  The placeholder text to use when a cell has an empty string value, default nil - without placeholder
         obj._placeholder = nil;
@@ -378,9 +378,9 @@ gui.widgets.LogbookList = {
     # @param  bool  disableLoading
     # @return ghost
     #
-    setItems: func(items, disableLoading = 1) {
+    setItems: func(items, disableLoading = true) {
         if (disableLoading) {
-            me._isLoading = 0;
+            me._isLoading = false;
         }
 
         me._items = items;
@@ -432,7 +432,7 @@ gui.widgets.LogbookList = {
     # @return ghost
     #
     enableLoading: func() {
-        me._isLoading = 1;
+        me._isLoading = true;
         me._view.reDrawContent(me);
         return me;
     },
@@ -443,7 +443,7 @@ gui.widgets.LogbookList = {
     # @return ghost
     #
     disableLoading: func() {
-        me._isLoading = 0;
+        me._isLoading = false;
         me._view.reDrawContent(me);
         return me;
     },
@@ -462,7 +462,7 @@ gui.widgets.LogbookList = {
     # @return ghost
     #
     useTextMaxWidth: func() {
-        me._isUseTextMaxWidth = 1;
+        me._isUseTextMaxWidth = true;
         return me;
     },
 
@@ -473,7 +473,7 @@ gui.widgets.LogbookList = {
     # @return ghost
     #
     useOptimizeRow: func() {
-        me._isOptimizeRow = 1;
+        me._isOptimizeRow = true;
         return me;
     },
 

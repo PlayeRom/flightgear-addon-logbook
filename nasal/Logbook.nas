@@ -401,7 +401,7 @@ var Logbook = {
     # @param  bool  crashed  Set true when aircraft crashed
     # @return void
     #
-    _stopLogging: func(landed, crashed = 0) {
+    _stopLogging: func(landed, crashed = false) {
         if (me._logData == nil) {
             # Log.print("_stopLogging: invalid state, it's trying to run stop without running start.");
             return;
