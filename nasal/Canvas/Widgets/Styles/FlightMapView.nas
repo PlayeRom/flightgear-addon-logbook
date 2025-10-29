@@ -289,9 +289,13 @@ DefaultStyle.widgets["flight-map-view"] = {
         var lon = track.lon;
 
         var scale = math.pow(2, model._zoom);
+
+        var latRad = lat * math.pi / 180;
+        var mercatorY = math.ln(math.tan(latRad) + 1 / math.cos(latRad));
+
         var offset = {
             x: scale * ((lon + 180) / 360) - me._centerTileOffset.x,
-            y: (1 - math.ln(math.tan(lat * math.pi / 180) + 1 / math.cos(lat * math.pi / 180)) / math.pi) / 2 * scale - me._centerTileOffset.y,
+            y: (1 - mercatorY / math.pi) / 2 * scale - me._centerTileOffset.y,
         };
 
         var tileIndex = {
