@@ -98,7 +98,7 @@ var PersistentDialog = {
     # @override Dialog
     #
     setPositionOnCenter: func(width = nil, height = nil) {
-        if (me._posCenterTimer) {
+        if (me._posCenterTimer != nil) {
             me._posCenterTimer.stop();
         }
 
