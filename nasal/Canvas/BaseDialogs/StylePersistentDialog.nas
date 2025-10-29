@@ -47,7 +47,7 @@ var StylePersistentDialog = {
     # @param  func|nil  onResize  Callback call when width or height of window was changed.
     # @return hash
     #
-    new: func(width, height, title, resize = false, onResize = nil) {
+    new: func(width, height, title, resize = 0, onResize = nil) {
         var obj = {
             parents: [
                 StylePersistentDialog,

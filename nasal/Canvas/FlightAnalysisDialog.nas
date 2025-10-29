@@ -32,7 +32,7 @@ var FlightAnalysisDialog = {
     # @param  bool  liveUpdateMode
     # @return hash
     #
-    new: func(title, liveUpdateMode = false) {
+    new: func(title, liveUpdateMode = 0) {
         var obj = {
             parents: [
                 FlightAnalysisDialog,

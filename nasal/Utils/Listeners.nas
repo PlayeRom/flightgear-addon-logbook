@@ -56,7 +56,7 @@ var Listeners = {
     #                    This argument is optional and defaults to 1.
     # @return int  Listener handler.
     #
-    add: func(node, code, init = false, type = 1) {
+    add: func(node, code, init = 0, type = 1) {
         var handler = setlistener(node, code, init, type);
         me._listeners.append(handler);
 

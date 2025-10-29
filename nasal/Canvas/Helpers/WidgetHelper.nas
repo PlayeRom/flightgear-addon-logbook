@@ -44,7 +44,7 @@ var WidgetHelper = {
     # @param  string|nil  align
     # @return ghost  Label widget.
     #
-    getLabel: func(text = nil, wordWrap = false, align = nil) {
+    getLabel: func(text = nil, wordWrap = 0, align = nil) {
         var label = canvas.gui.widgets.Label.new(me._context, canvas.style, { wordWrap: wordWrap });
 
         if (text != nil) {
