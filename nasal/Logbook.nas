@@ -147,6 +147,17 @@ var Logbook = {
         );
 
         me._listeners.add(
+            node: "/sim/signals/reinit",
+            code: func(node) {
+                if (node.getBoolValue()) {
+                    # User restart the sim by Shift + Esc, or reposition the aircraft
+                    me._stopLogging(landed: false);
+                    me._mainTimer.stop();
+                }
+            },
+        );
+
+        me._listeners.add(
             node: "/sim/signals/exit",
             code: func(node) {
                 if (node.getBoolValue()) {
