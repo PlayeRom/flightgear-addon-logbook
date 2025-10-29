@@ -116,7 +116,7 @@ var Logbook = {
             code: func(node) {
                 var oldOnGround = me._onGround;
                 me._onGround = node.getBoolValue(); # 1 - on ground, 0 - in air
-                Log.print("init onGround = ", me._onGround);
+                Log.print("init onGround by listener = ", me._onGround);
 
                 # User probably used the "Location" -> "in air" or change airport even during a flight
                 if (!oldOnGround and me._onGround) {
@@ -152,7 +152,12 @@ var Logbook = {
                 if (node.getBoolValue()) {
                     # User restart the sim by Shift + Esc, or reposition the aircraft
                     me._stopLogging(landed: false);
+
+                    # Stop all timers
                     me._mainTimer.stop();
+                    me._recovery.stop();
+                    me._flightAnalysis.stop();
+                    me._crashDetector.stopGForce();
                 }
             },
         );
