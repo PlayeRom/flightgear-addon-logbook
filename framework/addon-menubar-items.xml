@@ -28,7 +28,7 @@
                 <binding>
                     <command>nasal</command>
                     <script><![CDATA[
-                        globals['__addon[org.flightgear.addons.framework]__'].Message.success("Hello, I am a framework add-on.");
+                        globals['__addon[org.flightgear.addons.framework]__'].Message.success("Hello, I am just a framework for add-ons.");
                     ]]></script>
                 </binding>
             </item>
