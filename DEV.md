@@ -18,7 +18,7 @@ git remote add framework git@github.com:PlayeRom/flightgear-addon-framework.git
 ### ...with auto commit
 
 ```bash
-git subtree pull --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash
+git subtree pull --prefix=framework framework main --squash -m "Update framework"
 ```
 
 ## ...manually
