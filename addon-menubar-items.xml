@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+#
+# Framework Add-on for FlightGear
+#
+# Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
+#
+# Copyright (C) 2025 Roman Ludwicki
+#
+# This is an Open Source project and it is licensed
+# under the GNU Public License v3 (GPLv3)
+#
+-->
+
+<PropertyList>
+    <meta>
+        <file-type type="string">FlightGear add-on menu bar items</file-type>
+        <format-version type="int">1</format-version>
+    </meta>
+    <menubar-items>
+        <menu>
+            <label>Framework</label>
+            <enabled type="bool">true</enabled>
+
+            <item>
+                <label>Say hello</label>
+                <binding>
+                    <command>nasal</command>
+                    <script><![CDATA[
+                        globals['__addon[org.flightgear.addons.framework]__'].Message.success("Hello, I am a framework add-on.");
+                    ]]></script>
+                </binding>
+            </item>
+
+            <!--
+            FOR DEVELOPMENT ONLY!
+            trigger reload of addon-main.nas
+            1) This item should be REMOVED for release versions.
+            2) replace addon ID to match your addon
+            3) For convenience, you can use a .env file with DEV_MODE=true to
+                enable this menu item, without the need to edit this file.
+            -->
+            <!-- <item>
+                <label>Dev Reload</label>
+                <binding>
+                    <command>addon-reload</command>
+                    <id>org.flightgear.addons.framework</id>
+                </binding>
+            </item> -->
+
+        </menu>
+    </menubar-items>
+</PropertyList>
