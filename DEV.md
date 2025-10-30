@@ -8,6 +8,7 @@ The `/framework` directory belongs to a separate project [Framework](https://git
 
 ```bash
 git subtree add --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash
+git remote add framework git@github.com:PlayeRom/flightgear-addon-framework.git
 ```
 
 **Note**: `--prefix` must be `framework`.
@@ -23,8 +24,8 @@ git subtree pull --prefix=framework git@github.com:PlayeRom/flightgear-addon-fra
 ## ...manually
 
 ```bash
-git fetch git@github.com:PlayeRom/flightgear-addon-framework.git main
-git subtree merge --prefix=framework FETCH_HEAD --squash
+git fetch framework main
+git merge -s subtree --squash framework/main --allow-unrelated-histories
 git diff
 ```
 
