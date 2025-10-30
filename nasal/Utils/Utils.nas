@@ -1,18 +1,20 @@
 #
-# CanvasSkeleton Add-on for FlightGear
+# Logbook - Add-on for FlightGear
 #
 # Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
 #
-# Copyright (C) 2025 Roman Ludwicki
+# Copyright (C) 2022 Roman Ludwicki
 #
-# This is an Open Source project and it is licensed
+# Logbook is an Open Source project and it is licensed
 # under the GNU Public License v3 (GPLv3)
 #
 
 #
-# Utils static methods.
+# UtilsExtended static methods.
 #
-var Utils = {
+var UtilsExtended = {
+    parents: [Utils],
+
     #
     # Check that file already exists.
     # From FG 2024.x we have io.exists() but for older versions we have to write it ourselves.
@@ -37,10 +39,8 @@ var Utils = {
     #
     # @return bool  Return true if running on FG version 2024.x and later
     #
-    isFG2024Version: func() {
-        var fgVersion = getprop("/sim/version/flightgear");
-        var (major, minor, patch) = split(".", fgVersion);
-        return major >= 2024;
+    isFG2024Version: func {
+        return g_FGVersion.greaterThanOrEqual('2024.1.1');
     },
 
     #
@@ -48,7 +48,7 @@ var Utils = {
     #
     # @return bool
     #
-    isUsingSQLite: func() {
+    isUsingSQLite: func {
         return Utils.isFG2024Version();
     },
 
@@ -59,7 +59,7 @@ var Utils = {
     # @return bool
     #
     isSpace: func(text) {
-        var parts = split(" ", text);
+        var parts = split(' ', text);
         return size(parts) > 1;
     },
 
@@ -76,53 +76,9 @@ var Utils = {
         var minutes = math.floor(fractionalPart * 60);
         var seconds = math.floor((fractionalPart * 60 - minutes) * 60);
 
-        return sprintf("%d:%02.0f:%02.0f", hours, minutes, seconds);
-    },
-
-    #
-    # Open URL or path in the system browser or file explorer.
-    #
-    # @param  hash  params  Parameters for open-browser command, can be "path" or "url".
-    # @return void
-    #
-    openBrowser: func(params) {
-        fgcommand("open-browser", props.Node.new(params));
-    },
-
-    #
-    # @param  func  function
-    # @param  vector  params  Vector of function params.
-    # @param  hash  obj  Function context.
-    # @return bool  Return true if given function was called without errors (die).
-    #
-    tryCatch: func(function, params, obj = nil) {
-        var errors = [];
-        call(function, params, obj, errors);
-
-        return !size(errors);
-    },
-
-    #
-    # Encode URL the given string.
-    #
-    # @param  string  str
-    # @return string
-    #
-    urlEncode: func(str) {
-        var result = "";
-        var allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~";
-        var count = size(str);
-
-        for (var i = 0; i < count; i += 1) {
-            var char = str[i];
-
-            if (find(chr(char), allowed) == -1) {
-                result ~= "%" ~ sprintf("%02X", char);
-            } else {
-                result ~= chr(char);
-            }
-        }
-
-        return result;
+        return sprintf('%d:%02.0f:%02.0f', hours, minutes, seconds);
     },
 };
+
+# Replace original Utils
+Utils = UtilsExtended;

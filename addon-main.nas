@@ -9,8 +9,28 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
-io.include("Config.nas");
-io.include("Loader.nas");
+io.include('framework/nasal/App.nas');
+
+#
+# Global object of Settings.
+#
+var g_Settings = nil;
+
+#
+# Global object of Sound.
+#
+var g_Sound = nil;
+
+#
+# Global object of Logbook.
+#
+var g_Logbook = nil;
+
+#
+# This flag indicates that a separate thread is running (for loading data) and
+# other actions should be temporarily blocked.
+#
+var g_isThreadPending = false;
 
 #
 # Main add-on function.
@@ -19,16 +39,41 @@ io.include("Loader.nas");
 # @return void
 #
 var main = func(addon) {
-    logprint(LOG_INFO, addon.name, " Add-on initialized from path ", addon.basePath);
+    logprint(LOG_INFO, addon.name, ' Add-on initialized from path ', addon.basePath);
 
-    var namespace = addons.getNamespaceName(addon);
+    # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
+    addon.createStorageDir();
 
-    # Create an alias to the add-on namespace for easier reference in addon-menubar-items.xml:
-    globals.logbookAddon = globals[namespace];
+    Config.excludedFiles = [
+        # Framework files I don't use
+        '/framework/Canvas/BaseDialogs/TransientDialog.nas',
+        '/framework/Utils/Message.nas',
+    ];
 
-    Loader.new(addon).load(addon.basePath, namespace);
+    if (g_FGVersion.greaterThanOrEqual('2024.1.1')) {
+        Config.excludedFiles ~= [
+            '/nasal/Storage/CSV/Storage.nas',
+            '/nasal/Storage/CSV/Recovery.nas',
+            '/nasal/Canvas/CSV/SettingsDialog.nas',
+        ];
+    } else {
+        Config.excludedFiles ~= [
+            '/nasal/Storage/SQLite/DB.nas',
+            '/nasal/Storage/SQLite/Migrations/MigrationBase.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas',
+            '/nasal/Storage/SQLite/Migration.nas',
+            '/nasal/Storage/SQLite/Storage.nas',
+            '/nasal/Storage/SQLite/Recovery.nas',
+            '/nasal/Storage/SQLite/Exporter.nas',
+            '/nasal/Canvas/SQLite/SettingsDialog.nas',
+        ];
+    }
 
-    Bootstrap.init(addon);
+    App.load(addon, 'logbookAddon');
 };
 
 #
@@ -48,6 +93,52 @@ var main = func(addon) {
 # @return void
 #
 var unload = func(addon) {
-    Log.print("unload");
-    Bootstrap.uninit();
+    App.unload();
+};
+
+#
+# Create object here not related with Canvas.
+#
+var bootInit = func {
+    g_Settings = Settings.new();
+    g_Sound    = Sound.new();
+};
+
+#
+# Create Canvas object here.
+#
+var bootInitCanvas = func {
+    g_Logbook = Logbook.new();
+};
+
+#
+# Remove all object here.
+#
+var bootUninit = func {
+    if (g_Logbook != nil) {
+        g_Logbook.del();
+    }
+
+    if (g_Sound != nil) {
+        g_Sound.del();
+    }
+
+    if (g_Settings != nil) {
+        g_Settings.del();
+    }
+};
+
+#
+# For the menu with 'name', which is disabled while the Canvas is loading,
+# you can specify here the names of the menu items that should not be enabled
+# automatically, but you can decide in your code when to enable them again,
+# using gui.menuEnable().
+#
+# @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
+#
+var excludedMenuNamesForEnabled = func {
+    return {
+        'logbook-addon-main-dialog':,
+        'logbook-addon-export-csv':, # <- this will be enabled only on FG version >= 2024
+    };
 };
