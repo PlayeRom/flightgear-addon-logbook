@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+#
+# Framework Add-on for FlightGear
+#
+# Written and developer by Roman Ludwicki (PlayeRom, SP-ROM)
+#
+# Copyright (C) 2025 Roman Ludwicki
+#
+# This is an Open Source project and it is licensed
+# under the GNU Public License v3 (GPLv3)
+#
+-->
+
+<PropertyList>
+    <meta>
+        <file-type type="string">FlightGear add-on metadata</file-type>
+        <format-version type="int">1</format-version>
+    </meta>
+
+    <addon>
+        <identifier type="string">org.flightgear.addons.framework</identifier>
+        <name type="string">Canvas Skeleton</name>
+        <version type="string">1.0.0</version>
+
+        <authors>
+            <author>
+                <name type="string">Torsten Dreyer</name>
+                <email type="string"></email>
+                <url type="string"></url>
+            </author>
+            <author>
+                <name type="string">Henning Stahlke</name>
+                <email type="string"></email>
+                <url type="string"></url>
+            </author>
+            <author>
+                <name type="string">Roman Ludwicki</name>
+                <email type="string"></email>
+                <url type="string"></url>
+            </author>
+        </authors>
+
+        <maintainers>
+            <maintainer>
+                <name type="string">FlightGear developers</name>
+                <url type="string">https://sourceforge.net/p/flightgear/mailman/flightgear-devel/</url>
+            </maintainer>
+        </maintainers>
+
+        <short-description type="string">
+            Template add-on to help new add-on developers.
+        </short-description>
+
+        <long-description type="string">
+            This add-on does nothing particular, but you may use it as a starting point when writing a new add-on for FlightGear using the Canvas GUI.
+        </long-description>
+
+        <license>
+            <designation type="string">GNU GPL version 3 or later</designation>
+            <file type="string">LICENSE</file>
+            <url type="string">https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+
+        <min-FG-version type="string">2020.1.1</min-FG-version>
+        <max-FG-version type="string">none</max-FG-version>
+
+        <urls>
+            <home-page type="string">https://example.com/FlightGear-Skeleton-addon/</home-page>
+            <download type="string">https://example.com/FlightGear-Skeleton-addon/download</download>
+            <support type="string">https://example.com/FlightGear-Skeleton-addon/support</support>
+            <code-repository type="string">https://github.com/PlayeRom/flightgear-addon-canvas-skeleton</code-repository>
+        </urls>
+
+        <tags>
+            <tag type="string">skeleton</tag>
+            <tag type="string">dummy</tag>
+            <tag type="string">template</tag>
+            <tag type="string">canvas</tag>
+        </tags>
+
+        <localized>
+            <!-- If no specific translation is needed for the French territory (the
+                '-FR' part in 'fr-FR'), the following block (fr-FR element) should
+                be omitted. Indeed, the 'fr' element will be used as a fallback if
+                the preferred language is fr-FR, fr-BE, fr-CA, etc. and no matching
+                territory-specific translation is available. -->
+            <fr-FR>
+                <name type="string">Squelette (traduction spécifique fr-FR)</name>
+                <short-description type="string">
+                    Modèle de greffon pour aider les nouveaux développeurs de greffons (traduction spécifique fr-FR).
+                </short-description>
+
+                <long-description type="string">
+                    Ce greffon ne fait rien de particulier, mais vous pouvez l'utiliser comme point de départ pour l'écriture d'un greffon destiné à FlightGear (traduction spécifique fr-FR).
+                </long-description>
+            </fr-FR>
+
+            <fr>
+                <name type="string">Squelette</name>
+                <short-description type="string">
+                    Modèle de greffon pour aider les nouveaux développeurs de greffons.
+                </short-description>
+
+                <long-description type="string">
+                    Ce greffon ne fait rien de particulier, mais vous pouvez l'utiliser comme point de départ pour l'écriture d'un greffon destiné à FlightGear.
+                </long-description>
+            </fr>
+
+            <pl>
+                <short-description type="string">
+                    Szablonu wspomagający początkujących twórców dodatków.
+                </short-description>
+
+                <long-description type="string">
+                    Ten dodatek nie robi nic szczególnego, ale możesz go wykorzystać jako punkt wyjścia przy pisaniu nowego dodatku do FlightGear z wykorzystaniem Canvas GUI.
+                </long-description>
+            </pl>
+        </localized>
+    </addon>
+</PropertyList>
