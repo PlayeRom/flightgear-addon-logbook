@@ -120,6 +120,7 @@ var Loader = {
             '/nasal/Loader.nas',
             '/nasal/Config.nas',
             '/nasal/App.nas',
+            '/nasal/Boolean.nas',
             '/nasal/Utils/FGVersion.nas',
         ];
 
