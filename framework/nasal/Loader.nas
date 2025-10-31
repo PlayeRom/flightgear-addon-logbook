@@ -109,23 +109,42 @@ var Loader = {
     },
 
     #
+    # Return `/framework` dir if Framework is located inside `/framework`,
+    # which means it is used by a specific add-on and not the Framework itself.
+    #
+    # @return boolean
+    #
+    _getFrameworkSubDir: func {
+        var path = caller(0)[2];
+
+        if (string.imatch(path, g_Addon.basePath ~ '/framework/*')) {
+            return '/framework';
+        }
+
+        return '';
+    },
+
+    #
     # Files that must always be excluded from automatic loading, either because
     # FlightGear loads them or because they are loaded via io.include().
     #
     # @return void
     #
     _excludedPermanent: func {
+        var subDir = me._getFrameworkSubDir();
+
         var excludedFiles = [
             '/addon-main.nas',
-            '/nasal/Loader.nas',
-            '/nasal/Config.nas',
-            '/nasal/App.nas',
-            '/nasal/Boolean.nas',
-            '/nasal/Utils/FGVersion.nas',
+            subDir ~ '/addon-main.nas', # It may repeat, but it doesn't matter, it will be there once in the hash
+            subDir ~ '/nasal/Loader.nas',
+            subDir ~ '/nasal/Config.nas',
+            subDir ~ '/nasal/App.nas',
+            subDir ~ '/nasal/Boolean.nas',
+            subDir ~ '/nasal/Utils/FGVersion.nas',
         ];
 
         foreach (var file; excludedFiles) {
-            me._addToExcluded(file);
+            me._excluded.set(file, nil);
         }
     },
 
@@ -133,32 +152,34 @@ var Loader = {
     # @return void
     #
     _excludedByConfig: func {
+        var subDir = me._getFrameworkSubDir();
+
         var files = [];
 
         if (!Config.dev.useEnvFile) {
             files ~= [
-                '/nasal/Dev/DevEnv.nas',
-                '/nasal/Dev/DevReloadMenu.nas',
-                '/nasal/Dev/DevReloadMultiKey.nas',
+                subDir ~ '/nasal/Dev/DevEnv.nas',
+                subDir ~ '/nasal/Dev/DevReloadMenu.nas',
+                subDir ~ '/nasal/Dev/DevReloadMultiKey.nas',
             ];
         }
 
         if (!Config.useVersionCheck.byGitTag) {
             files ~= [
-                '/nasal/VersionCheck/GitTagVersionChecker.nas',
-                '/nasal/VersionCheck/Base/JsonVersionChecker.nas',
+                subDir ~ '/nasal/VersionCheck/GitTagVersionChecker.nas',
+                subDir ~ '/nasal/VersionCheck/Base/JsonVersionChecker.nas',
             ];
         }
 
         if (!Config.useVersionCheck.byMetaData) {
             files ~= [
-                '/nasal/VersionCheck/MetaDataVersionChecker.nas',
-                '/nasal/VersionCheck/Base/XmlVersionChecker.nas',
+                subDir ~ '/nasal/VersionCheck/MetaDataVersionChecker.nas',
+                subDir ~ '/nasal/VersionCheck/Base/XmlVersionChecker.nas',
             ];
         }
 
         foreach (var file; files) {
-            me._addToExcluded(file);
+            me._excluded.set(file, nil);
         }
 
         if (isvec(Config.excludedFiles)) {
@@ -183,20 +204,5 @@ var Loader = {
                 obj._excluded.set(file, nil);
             }
         }
-    },
-
-    #
-    # Add the file to the excluded list but twice, from the framework's perspective (default),
-    # and from the perspective of the actual project using the framework.
-    #
-    # @param  string  file
-    # @return void
-    #
-    _addToExcluded: func(file) {
-        # From the framework's perspective:
-        me._excluded.set(file, nil);
-
-        # From the perspective of the project using the framework:
-        me._excluded.set('/framework' ~ file, nil);
     },
 };
