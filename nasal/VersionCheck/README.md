@@ -14,7 +14,7 @@ The advantage is that this solution is more repository-agnostic. Currently, GitH
 Requirements:
 
 1. In the `/addon-metadata.xml` file, in the `<code-repository>` field, place the full URL to your repository, e.g., `https://github.com/PlayeRom/flightgear-addon-canvas-skeleton`.
-2. In `/addon-main.nas` file add `Config.useVersionCheck.byMetaData = true;`.
+2. In the `/addon-main.nas` file, in the `main` function, before calling `App.load()`, add `Config.useVersionCheck.byMetaData = true;`.
 
 ### Method 2. GitTagVersionChecker
 
@@ -23,7 +23,7 @@ You can use this version checking method if you host your add-on on GitHab or Gi
 The advantage of this approach is that you can upload an `/addon-metadata.xml` file with the upgraded version of the add-on to the main branch, but users won't be notified of the new version until you decide to do so by releasing it. Therefore, it's a method independent of what's in the code.
 
 1. In the `/addon-metadata.xml` file, in the `<code-repository>` field, place the full URL to your repository, e.g., `https://github.com/PlayeRom/flightgear-addon-canvas-skeleton`.
-2. In `/addon-main.nas` file add `Config.useVersionCheck.byGitTag = true;`.
+2. In the `/addon-main.nas` file, in the `main` function, before calling `App.load()`, add `Config.useVersionCheck.byGitTag = true;`.
 3. Git tags must be in version notation as accepted by the `<version>` field in the `/addon-metadata.xml` file (see below). Optionally, you can prefix the version in the tag with `v.` or `v`, e.g. `v.1.2.5`. or `v1.2.5`.
 
 ## Version notation for add-on
