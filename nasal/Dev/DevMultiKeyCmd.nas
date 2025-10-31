@@ -58,10 +58,8 @@ var DevMultiKeyCmd = {
     addRunTests: func(sequence, withExit = 1) {
         var path = me._add(sequence, withExit);
         if (path != nil) {
-            setprop(path ~ '/binding[0]/command', 'nasal-test-dir');
-            setprop(path ~ '/binding[0]/path', g_Addon.basePath ~ '/tests');
-            setprop(path ~ '/binding[1]/command', 'nasal-test-dir');
-            setprop(path ~ '/binding[1]/path', g_Addon.basePath ~ '/framework/tests');
+            setprop(path ~ '/binding/command', 'nasal-test-dir');
+            setprop(path ~ '/binding/path', g_Addon.basePath ~ '/tests');
         }
 
         return me;
