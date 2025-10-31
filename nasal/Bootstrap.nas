@@ -66,7 +66,7 @@ var Bootstrap = {
     uninit: func {
         Profiler.clear();
 
-        if (g_VersionChecker) {
+        if (g_VersionChecker != nil) {
             g_VersionChecker.del();
         }
 

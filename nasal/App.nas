@@ -29,8 +29,7 @@ var g_FGVersion = FGVersion.new();
 # FlightGear from version 2024.1.1 supports the `true` and `false` keywords natively.
 #
 if (g_FGVersion.lowerThan('2024.1.1')) {
-    var true  = 1;
-    var false = 0;
+    io.include('Boolean.nas');
 }
 
 #
