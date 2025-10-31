@@ -97,48 +97,63 @@ var unload = func(addon) {
 };
 
 #
-# Create object here not related with Canvas.
+# This class defines a set of callback functions that the framework will invoke
+# at specific points during the add-on's lifecycle. Add-on authors implement
+# these functions to provide custom behavior, but the framework itself handles
+# when and how they are called.
 #
-var bootInit = func {
-    g_Settings = Settings.new();
-    g_Sound    = Sound.new();
-};
+# The Hooks object acts purely as a container for these functions. It does not
+# implement any framework logic itself — it is the add-on's responsibility to
+# provide meaningful implementations.
+#
+# All of these methods are optional and can be removed entirely from the code
+# if they are not needed.
+#
+var Hooks = {
+    #
+    # Create non-Canvas objects here.
+    #
+    onInit: func {
+        g_Settings = Settings.new();
+        g_Sound    = Sound.new();
+    },
 
-#
-# Create Canvas object here.
-#
-var bootInitCanvas = func {
-    g_Logbook = Logbook.new();
-};
+    #
+    # Create Canvas objects here.
+    #
+    onInitCanvas: func {
+        g_Logbook = Logbook.new();
+    },
 
-#
-# Remove all object here.
-#
-var bootUninit = func {
-    if (g_Logbook != nil) {
-        g_Logbook.del();
-    }
+    #
+    # Remove all objects here.
+    #
+    onUninit: func {
+        if (g_Logbook != nil) {
+            g_Logbook.del();
+        }
 
-    if (g_Sound != nil) {
-        g_Sound.del();
-    }
+        if (g_Sound != nil) {
+            g_Sound.del();
+        }
 
-    if (g_Settings != nil) {
-        g_Settings.del();
-    }
-};
+        if (g_Settings != nil) {
+            g_Settings.del();
+        }
+    },
 
-#
-# For the menu with 'name', which is disabled while the Canvas is loading,
-# you can specify here the names of the menu items that should not be enabled
-# automatically, but you can decide in your code when to enable them again,
-# using gui.menuEnable().
-#
-# @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
-#
-var excludedMenuNamesForEnabled = func {
-    return {
-        'logbook-addon-main-dialog':,
-        'logbook-addon-export-csv':, # <- this will be enabled only on FG version >= 2024
-    };
+    #
+    # For the menu with 'name', which is disabled while the Canvas is loading,
+    # you can specify here the names of the menu items that should not be enabled
+    # automatically, but you can decide in your code when to enable them again,
+    # using gui.menuEnable().
+    #
+    # @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
+    #
+    excludedMenuNamesForEnabled: func {
+        return {
+            'logbook-addon-main-dialog':,
+            'logbook-addon-export-csv':, # <- this will be enabled only on FG version >= 2024
+        };
+    },
 };
