@@ -171,11 +171,11 @@ var Loader = {
     # @return void
     #
     _excludedByHookFunc: func {
-        if (!defined('filesExcludedFromLoading') or !isfunc(filesExcludedFromLoading)) {
+        if (!defined('Hooks.filesExcludedFromLoading') or !isfunc(Hooks.filesExcludedFromLoading)) {
             return;
         }
 
-        var excludedFiles = filesExcludedFromLoading();
+        var excludedFiles = Hooks.filesExcludedFromLoading();
 
         if (isvec(excludedFiles)) {
             foreach (var file; excludedFiles) {
