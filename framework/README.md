@@ -16,6 +16,10 @@ This is a Framework project containing a set of classes and mechanisms to help c
     2. [Minimal example of creating a Transient dialog](#minimal-example-of-creating-a-transient-dialog)
     3. [Minimal example of creating a Persistent dialog](#minimal-example-of-creating-a-persistent-dialog)
 7. [Deferring Canvas loading](#deferring-canvas-loading)
+8. [Autoloader of Nasal files](#autoloader-of-nasal-files)
+9. [Namespaces](#namespaces)
+9. [Version checker](#version-checker)
+9. [Global variables](#global-variables)
 
 ## Features in brief
 
@@ -301,3 +305,21 @@ So the framework loads Nasal files into `__addon[your-addon-id]__`, which means 
 However, Canvas widgets are (and must be) loaded into the `canvas` namespace. This is the namespace used by FlightGear. It's important that your widget names don't conflict with other names used in this namespace, including those loaded from other add-ons. Therefore, if you're migrating a widget from another add-on or FlightGear to your project, rename it in the code to a unique name (both the view and the model).
 
 The Framework autoloader will automatically load widget files into the `canvas` namespace, provided that your widgets are located in the `Widgets` subdirectory, which will be somewhere in the `/nasal` directory. The suggested directory is `/nasal/Canvas/Widgets/`.
+
+## Version checker
+
+See [nasal/VersionCheck/README.md](nasal/VersionCheck/README.md).
+
+## Global variables
+
+The framework provides the following global variables that you can use in your add-on:
+
+1. `g_Addon` ─ object of `addons.Addon` ghost, here is everything about your addon.
+2. `g_FGVersion` ─ object of `/framework/nasal/Utils/FGVersion` class. With this object you can easily add conditions related to the FlightGear version, e.g.:
+    ```nasal
+    if (g_FGVersion.lowerThan('2024.1.1')) {
+        # ...
+    }
+    ```
+3. `g_isDevMode` ─ boolean variable. Defaults to false. Set to true when you set the `DEV_MODE=true` variable in the `.env` file. This variable allows you to set conditions to place code only for development, such as logging in large and heavy loops that shouldn't be executed for the end user, but you want to leave it in the code for development purposes.
+4. `g_VersionChecker` ─ object of one of method to check the new version of yor add-on: `/framework/nasal/VersionCheck/GitTagVersionChecker.nas` or `/framework/nasal/VersionCheck/MetaDataVersionChecker.nas`. See [Version checker](#version-checker).
