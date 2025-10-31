@@ -171,7 +171,7 @@ var Loader = {
     # @return void
     #
     _excludedByHookFunc: func {
-        if (!defined('Hooks.filesExcludedFromLoading') or !isfunc(Hooks.filesExcludedFromLoading)) {
+        if (!g_isHook('filesExcludedFromLoading')) {
             return;
         }
 

@@ -34,6 +34,18 @@ if (g_FGVersion.lowerThan('2024.1.1')) {
 }
 
 #
+# A helper function that checks if the dev has implemented a given hook.
+#
+# @param  string  name  Function name in Hooks object.
+# @return bool
+#
+var g_isHook = func(name) {
+    return defined('Hooks')
+        and contains(Hooks, name)
+        and isfunc(Hooks[name]);
+};
+
+#
 # Main Addon class for load and run all submodules.
 #
 var App = {

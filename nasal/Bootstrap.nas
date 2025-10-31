@@ -43,12 +43,12 @@ var Bootstrap = {
 
         g_VersionChecker = VersionChecker.make();
 
-        if (defined('Hooks.onInit') and isfunc(Hooks.onInit)) {
+        if (g_isHook('onInit')) {
             Hooks.onInit();
         }
 
         me._delayCanvasLoading(func {
-            if (defined('Hooks.onInitCanvas') and isfunc(Hooks.onInitCanvas)) {
+            if (g_isHook('onInitCanvas')) {
                 Hooks.onInitCanvas();
             }
 
@@ -70,7 +70,7 @@ var Bootstrap = {
             g_VersionChecker.del();
         }
 
-        if (defined('Hooks.onUninit') and isfunc(Hooks.onUninit)) {
+        if (g_isHook('onUninit')) {
             Hooks.onUninit();
         }
     },
@@ -94,7 +94,7 @@ var Bootstrap = {
             callback();
 
             # Enable menu items responsible for launching persistent dialogs.
-            var excluded = defined('Hooks.excludedMenuNamesForEnabled') and isfunc(Hooks.excludedMenuNamesForEnabled)
+            var excluded = g_isHook('excludedMenuNamesForEnabled')
                 ? Hooks.excludedMenuNamesForEnabled()
                 : {};
 
