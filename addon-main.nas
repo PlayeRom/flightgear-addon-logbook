@@ -44,35 +44,6 @@ var main = func(addon) {
     # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
     addon.createStorageDir();
 
-    Config.excludedFiles = [
-        # Framework files I don't use
-        '/framework/Canvas/BaseDialogs/TransientDialog.nas',
-        '/framework/Utils/Message.nas',
-    ];
-
-    if (g_FGVersion.greaterThanOrEqual('2024.1.1')) {
-        Config.excludedFiles ~= [
-            '/nasal/Storage/CSV/Storage.nas',
-            '/nasal/Storage/CSV/Recovery.nas',
-            '/nasal/Canvas/CSV/SettingsDialog.nas',
-        ];
-    } else {
-        Config.excludedFiles ~= [
-            '/nasal/Storage/SQLite/DB.nas',
-            '/nasal/Storage/SQLite/Migrations/MigrationBase.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas',
-            '/nasal/Storage/SQLite/Migration.nas',
-            '/nasal/Storage/SQLite/Storage.nas',
-            '/nasal/Storage/SQLite/Recovery.nas',
-            '/nasal/Storage/SQLite/Exporter.nas',
-            '/nasal/Canvas/SQLite/SettingsDialog.nas',
-        ];
-    }
-
     App.load(addon, 'logbookAddon');
 };
 
@@ -110,6 +81,44 @@ var unload = func(addon) {
 # if they are not needed.
 #
 var Hooks = {
+    #
+    # Return vector of Nasal files excluded from loading. Files must be specified with a path relative to the add-on's
+    # root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if
+    # you don't use a certain Nasal file, but you also don't want to remove it from your project.
+    #
+    # @return vector
+    #
+    filesExcludedFromLoading: func {
+        var excluded = [
+            # Framework files I don't use
+            '/framework/Canvas/BaseDialogs/TransientDialog.nas',
+            '/framework/Utils/Message.nas',
+        ];
+
+        if (g_FGVersion.greaterThanOrEqual('2024.1.1')) {
+            return excluded ~ [
+                '/nasal/Storage/CSV/Storage.nas',
+                '/nasal/Storage/CSV/Recovery.nas',
+                '/nasal/Canvas/CSV/SettingsDialog.nas',
+            ];
+        }
+
+        return excluded ~ [
+            '/nasal/Storage/SQLite/DB.nas',
+            '/nasal/Storage/SQLite/Migrations/MigrationBase.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas',
+            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas',
+            '/nasal/Storage/SQLite/Migration.nas',
+            '/nasal/Storage/SQLite/Storage.nas',
+            '/nasal/Storage/SQLite/Recovery.nas',
+            '/nasal/Storage/SQLite/Exporter.nas',
+            '/nasal/Canvas/SQLite/SettingsDialog.nas',
+        ];
+    },
+
     #
     # Create non-Canvas objects here.
     #
