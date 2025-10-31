@@ -77,7 +77,8 @@ var unload = func(addon) {
 var Hooks = {
     #
     # Return vector of Nasal files excluded from loading. Files must be specified with a path relative to the add-on's
-    # root directory and must start with `/` (where `/` represents the add-on's root directory).
+    # root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if
+    # you don't use a certain Nasal file, but you also don't want to remove it from your project.
     #
     # @return vector
     #
