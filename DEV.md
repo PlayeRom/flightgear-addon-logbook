@@ -7,8 +7,8 @@ The `/framework` directory belongs to a separate project [Framework](https://git
 ## Adding Framework project to `/framework` directory (once only)
 
 ```bash
-git subtree add --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash
 git remote add framework git@github.com:PlayeRom/flightgear-addon-framework.git
+git subtree add --prefix=framework framework main --squash
 ```
 
 **Note**: `--prefix` must be `framework`.
