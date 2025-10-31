@@ -62,44 +62,59 @@ var unload = func(addon) {
 };
 
 #
-# Return vector of Nasal files excluded from loading. Files must be specified with a path relative to the add-on's
-# root directory and must start with `/` (where `/` represents the add-on's root directory).
+# This class defines a set of callback functions that the framework will invoke
+# at specific points during the add-on's lifecycle. Add-on authors implement
+# these functions to provide custom behavior, but the framework itself handles
+# when and how they are called.
 #
-# @return vector
+# The Hooks object acts purely as a container for these functions. It does not
+# implement any framework logic itself — it is the add-on's responsibility to
+# provide meaningful implementations.
 #
-var filesExcludedFromLoading = func {
-    return [];
-};
+# All of these methods are optional and can be removed entirely from the code
+# if they are not needed.
+#
+var Hooks = {
+    #
+    # Return vector of Nasal files excluded from loading. Files must be specified with a path relative to the add-on's
+    # root directory and must start with `/` (where `/` represents the add-on's root directory).
+    #
+    # @return vector
+    #
+    filesExcludedFromLoading: func {
+        return [];
+    },
 
-#
-# Create object here not related with Canvas.
-#
-var bootInit = func {
-    # TODO: crate objects here...
-};
+    #
+    # Create non-Canvas objects here.
+    #
+    onInit: func {
+        # TODO: crate objects here...
+    },
 
-#
-# Create Canvas object here.
-#
-var bootInitCanvas = func {
-    # TODO: crate objects here...
-};
+    #
+    # Create Canvas objects here.
+    #
+    onInitCanvas: func {
+        # TODO: crate objects here...
+    },
 
-#
-# Remove all object here.
-#
-var bootUninit = func {
-    # TODO: release objects here...
-};
+    #
+    # Remove all objects here.
+    #
+    onUninit: func {
+        # TODO: release objects here...
+    },
 
-#
-# For the menu with 'name', which is disabled while the Canvas is loading,
-# you can specify here the names of the menu items that should not be enabled
-# automatically, but you can decide in your code when to enable them again,
-# using gui.menuEnable().
-#
-# @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
-#
-var excludedMenuNamesForEnabled = func {
-    return {};
+    #
+    # For the menu with 'name', which is disabled while the Canvas is loading,
+    # you can specify here the names of the menu items that should not be enabled
+    # automatically, but you can decide in your code when to enable them again,
+    # using gui.menuEnable().
+    #
+    # @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
+    #
+    excludedMenuNamesForEnabled: func {
+        return {};
+    },
 };

@@ -43,13 +43,13 @@ var Bootstrap = {
 
         g_VersionChecker = VersionChecker.make();
 
-        if (defined('bootInit') and isfunc(bootInit)) {
-            bootInit();
+        if (defined('Hooks.onInit') and isfunc(Hooks.onInit)) {
+            Hooks.onInit();
         }
 
         me._delayCanvasLoading(func {
-            if (defined('bootInitCanvas') and isfunc(bootInitCanvas)) {
-                bootInitCanvas();
+            if (defined('Hooks.onInitCanvas') and isfunc(Hooks.onInitCanvas)) {
+                Hooks.onInitCanvas();
             }
 
             # Check the version at the end, because dialogs must first register
@@ -70,8 +70,8 @@ var Bootstrap = {
             g_VersionChecker.del();
         }
 
-        if (defined('bootUninit') and isfunc(bootUninit)) {
-            bootUninit();
+        if (defined('Hooks.onUninit') and isfunc(Hooks.onUninit)) {
+            Hooks.onUninit();
         }
     },
 
@@ -94,8 +94,8 @@ var Bootstrap = {
             callback();
 
             # Enable menu items responsible for launching persistent dialogs.
-            var excluded = defined('excludedMenuNamesForEnabled') and isfunc(excludedMenuNamesForEnabled)
-                ? excludedMenuNamesForEnabled()
+            var excluded = defined('Hooks.excludedMenuNamesForEnabled') and isfunc(Hooks.excludedMenuNamesForEnabled)
+                ? Hooks.excludedMenuNamesForEnabled()
                 : {};
 
             menu.toggleItems(true, excluded);
