@@ -21,7 +21,7 @@
 var getAddonNamespaceName = func {
     var path = caller(0)[2];
     var parts = split('/', path);
-    var path = string.join('/', parts[0:-4]); # remove 'framework/tests/file.nut'
+    var path = string.join('/', parts[0:-3]); # remove 'tests/file.nut'
 
     foreach (var addon; addons.registeredAddons()) {
         if (addon.basePath == path) {
