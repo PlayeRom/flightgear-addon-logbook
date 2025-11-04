@@ -196,7 +196,7 @@ var Loader = {
 
         if (isvec(excludedFiles)) {
             foreach (var file; excludedFiles) {
-                obj._excluded.set(file, nil);
+                me._excluded.set(file, nil);
             }
         }
     },
