@@ -1,5 +1,5 @@
-Framework Add-on for FlightGear
-===============================
+FlightGear Add-on Framework
+===========================
 
 This is a Framework project containing a set of classes and mechanisms to help create add-ons for FlightGear.
 
@@ -38,16 +38,18 @@ First, you need to create a skeleton of your add-on, for example, based on [Skel
 ```text
 your-addon/
 |── framework/    (the entire framework project)
-|   |── nasal/
-|   |── addon-main.nas
+|   |── nasal/    (Nasal framework files that will be used)
+|   |── addon-main.nas   (framework main file - not used in your add-on, but serves as a template)
+|   |── addon-menubar-items.xml    (this file will not be used)
+|   └── addon-metadata.xml         (this file will not be used)
 |   └── etc...
-|── nasal/    (your additional nasal files)
-|── addon-main.nas
+|── nasal/    (your additional Nasal files)
+|── addon-main.nas    (main file of your add-on - it's the one being used)
 |── addon-menubar-items.xml
 └── addon-metadata.xml
 ```
 
-I recommend using Git and its subtree for this purpose, which will allow you to automatically update the framework. Assuming your add-on also uses Git, to do this, run:
+It's recommended using Git and its subtree for this purpose, which will allow you to automatically update the framework. Assuming your add-on also uses Git, to do this, run:
 
 ```bash
 git subtree add --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash
