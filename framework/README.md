@@ -8,18 +8,19 @@ This is a Framework project containing a set of classes and mechanisms to help c
 1. [Features in brief](#features-in-brief)
 2. [How to install](#how-to-install)
 3. [How to use it](#how-to-use-it)
-4. [Hooks](#hooks)
+4. [Application Hooks](#application-hooks)
 5. [Reload add-on and `.env` file](#reload-add-on-and-env-file)
 6. [Canvas Dialog](#canvas-dialog)
     1. [`PersistentDialog` Class](#persistentdialog-class)
-        1. [Center position](#center-position)
     2. [Minimal example of creating a Transient dialog](#minimal-example-of-creating-a-transient-dialog)
     3. [Minimal example of creating a Persistent dialog](#minimal-example-of-creating-a-persistent-dialog)
-7. [Deferring Canvas loading](#deferring-canvas-loading)
-8. [Autoloader of Nasal files](#autoloader-of-nasal-files)
-9. [Namespaces](#namespaces)
+    4. [Deferring Canvas loading](#deferring-canvas-loading)
+7. [Autoloader of Nasal files](#autoloader-of-nasal-files)
+8. [Namespaces](#namespaces)
 9. [Version checker](#version-checker)
-9. [Global variables](#global-variables)
+10. [Framework Config](#framework-config)
+11. [Global variables](#global-variables)
+12. [Class Diagram](#class-diagram-of-framework)
 
 ## Features in brief
 
@@ -60,26 +61,26 @@ Then, to update the framework, for example, from the `main` branch, simply run:
 git subtree pull --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash -m "Update framework"
 ```
 
+Alternatively, you can also download [Canvas Skeleton](https://github.com/PlayeRom/flightgear-addon-canvas-skeleton), which already includes this Framework and sample canvas dialogs with an example Widget.
+
 ## How to use it
 
 Copy the contents of this framework's `/framework/addon-main.nas` file and paste it into your add-on's `/addon-main.nas` file and make the following modifications:
 
-1. Replace the entry `io.include('nasal/App.nas');` with `io.include('framework/nasal/App.nas');`.
+1. Replace the entry `io.include('nasal/Application.nas');` with `io.include('framework/nasal/Application.nas');`.
 2. In the `.gitignore` file, add a line with the `.env` entry.
 
-## Hooks
+## Application Hooks
 
-Now your `/addon-main.nas` file (your add-on's, not the framework's) should contain a `Hooks` hash with the functions to fill in. Each function in `Hooks` is optional, and if you don't need one, you can remove it entirely. If necessary, the `/framework/addon-main.nas` file will contain the entire template from which you can copy.
+Now your `/addon-main.nas` file (your add-on's, not the framework's) should contain a `main` function where is using `Application` class with some hooks functions to fill in. Each hook function is optional, and if you don't need one, you can remove it entirely. If necessary, the `/framework/addon-main.nas` file will contain the entire template from which you can copy.
 
-1. `filesExcludedFromLoading` ─ here you can specify vector as a list of Nasal files to be excluded from loading (by default the framework automatically loads almost everything). Files must be specified with a path relative to the add-on's root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if you don't use a certain Nasal file, but you also don't want to remove it from your project.
+1. `hookFilesExcludedFromLoading` ─ here you can specify vector as a list of Nasal files to be excluded from loading (by default the framework automatically loads almost everything). Files must be specified with a path relative to the add-on's root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if you don't use a certain Nasal file, but you also don't want to remove it from your project.
 
-2. `onInit` ─ this function will be called by the framework upon initialization. Here, you can instantiate your objects, but not those related to Canvas. This could be, for example, some logic in your add-on.
+2. `hookOnInit` ─ this function will be called by the framework upon initialization. Here, you can instantiate your objects, but not those related to Canvas. This could be, for example, some logic in your add-on.
 
-3. `onInitCanvas` ─ this function will be called by the framework when it's time to initialize the Canvas objects ─ this will happen 3 seconds after onInit. Here you can instantiate your windows in Canvas.
+3. `hookOnInitCanvas` ─ this function will be called by the framework when it's time to initialize the Canvas objects ─ this will happen 3 seconds after `hookOnInit()`. Here you can instantiate your windows in Canvas.
 
-4. `onUninit` ─ this function will be called by the framework when the add-on is restarted. This should only happen during add-on development. During normal use of the add-on, the user should not be able to restart the add-on.
-
-5. `excludedMenuNamesForEnabled` ─ a very specific function to keep the given menu items disabled after loading the Canvas (see [Deferring Canvas loading](#deferring-canvas-loading)).
+4. `hookExcludedMenuNamesForEnabled` ─ a very specific function to keep the given menu items disabled after loading the Canvas (see [Deferring Canvas loading](#deferring-canvas-loading)).
 
 ## Reload add-on and `.env` file
 
@@ -91,7 +92,7 @@ You can also use the multi-key command (default `:Yarfr`) to restart the Nasal f
 
 Please note that when entering a multi-key command, suggestions do not work.
 
-If you're not interested in this at all and don't want the add-on to load the Nasal classes associated with the `.env` file, you can disable this mechanism entirely. In the `/addon-main.nas` file, in the `main` function, before calling `App.load()`, add the entry `Config.dev.useEnvFile = false;`.
+If you're not interested in this at all and don't want the add-on to load the Nasal classes associated with the `.env` file, you can disable this mechanism entirely. In the `/addon-main.nas` file, in the `main` function, before calling `Application.create()`, add the entry `Config.dev.useEnvFile = false;`.
 
 ## Canvas Dialog
 
@@ -241,7 +242,7 @@ var AboutDialog = {
 };
 ```
 
-## Deferring Canvas loading
+### Deferring Canvas loading
 
 Creating Canvas windows immediately when the simulator starts (`PersistentDialog`) has another drawback I haven't mentioned yet. Many aircraft developers assume that Canvas indices and textures will never change, and simply hardcode expectations like "the PFD texture is always at index 10." This can cause unintended side effects, such as your dialog boxes appearing on aircraft displays!
 
@@ -249,7 +250,7 @@ To avoid this, the add-on defers the creation of its `PersistentDialog` windows 
 
 This approach also requires disabling any menu items that open Canvas windows until those windows have been created. Otherwise, clicking such a menu item could try to show a non-existent Canvas window and cause the add-on to crash. Therefore, the menu item that operates on the Persistent dialog should have the `<name>` tag set with some unique name (see the `/addon-menubar-items.xml` file).
 
-The framework will first disable all menu items that contain the `<name>` tag, and then automatically re-enable them after the `onInitCanvas()` hook is called, unless you've specified the names of menu items that you don't want to be automatically re-enabled in the `excludedMenuNamesForEnabled()` hook. This can be useful if you need to manually control menu re-enablement due to other factors. In that case, you should call `gui.menuEnable('your-name-of-menu-item', true);` in the appropriate place in your code.
+The framework will first disable all menu items that contain the `<name>` tag, and then automatically re-enable them after the `onInitCanvas` hook is called, unless you've specified the names of menu items that you don't want to be automatically re-enabled in the `excludedMenuNamesForEnabled` hook. This can be useful if you need to manually control menu re-enablement due to other factors. In that case, you should call `gui.menuEnable('your-name-of-menu-item', true);` in the appropriate place in your code.
 
 If aircraft implementations improve, or if FlightGear introduces a proper solution, this delay will no longer be necessary.
 
@@ -259,11 +260,11 @@ Of course, for simpler cases, you can also solve this differently, for example, 
 
 If you add new `.nas` files to the project, you don't need to modify anything – `/framework/nasal/Loader.nas` will automatically detect and load them when the add-on restarts. However, keep in mind:
 
-- Other Nasal files can be placed in the root of your add-ons `/` or in a `/nasal` subdirectory.
-- Any additional subdirectories for Nasal must be located inside `/nasal` directory.
-- All Nasal files must use the `.nas` extension, otherwise they won't be recognized.
-- Canvas widget files must be placed in the `Widgets` directory inside somewhere `/nasal` directory; all files there are automatically loaded into the `canvas` namespace.
-- Placing new Nasal files in the `/framework` directory is possible, but is strongly discouraged, as it will make updating the Framework more difficult and will break the separation of the Framework from your add-on files.
+1. Other Nasal files can be placed in the root of your add-ons `/` or in a `/nasal` subdirectory.
+2. Any additional subdirectories for Nasal must be located inside `/nasal` directory.
+3. All Nasal files must use the `.nas` extension, otherwise they won't be recognized.
+4. Canvas widget files must be placed in the `Widgets` directory inside somewhere `/nasal` directory; all files there are automatically loaded into the `canvas` namespace.
+5. Placing new Nasal files in the `/framework` directory is possible, but is strongly discouraged, as it will make updating the Framework more difficult and will break the separation of the Framework from your add-on files.
 
 The file structure of your add-on should be as follows:
 
@@ -292,13 +293,13 @@ your-addon/
 
 ## Namespaces
 
-The namespace into which the add-on's additional Nasal files will be loaded it will be a namespace created by FlightGear, in the format `__addon[your-addon-id]__`, where `your-addon-id` is the ID of your add-on specified in the `/addon-metadata.xml` file in `<identifier>` tag. To access this namespace, you need to refer to it as follows: `globals[‘__addon[your-addon-id]__’]`, what will be needed, for example, to execute your code from the menu item (`/addon-menubar-items.xml` file). This is an inconvenient and long name to use, so if you want, you can create a global alias for it. This namespace alias can be passed as the second argument to the `App.load()` function, e.g.:
+The namespace into which the add-on's additional Nasal files will be loaded it will be a namespace created by FlightGear, in the format `__addon[your-addon-id]__`, where `your-addon-id` is the ID of your add-on specified in the `/addon-metadata.xml` file in `<identifier>` tag. To access this namespace from `globals` namespace, you need to refer to it as follows: `globals[‘__addon[your-addon-id]__’]`, what will be needed, for example, to execute your code from the menu item (`/addon-menubar-items.xml` file). This is an inconvenient and long name to use, so if you want, you can create a global alias for it. This namespace alias can be passed as the second argument to the `Application.create()` function, e.g.:
 
 ```nasal
-App.load(addon, 'yourNamespace');
+Application.create(addon, 'yourAddon');
 ```
 
-Here, of course, change the name `yourNamespace` to something that reflects your addon and is unique to the entire FlightGear project. Now, in the `/addon-menubar-items.xml` file, you can refer to the add-on variables like this: `yourNamespace.g_AboutDialog.show();`, which greatly simplifies the code.
+Here, of course, change the name `yourAddon` to something that reflects your addon and is unique to the entire FlightGear project. Now, in the `/addon-menubar-items.xml` file, you can refer to the add-on variables like this: `yourAddon.g_AboutDialog.show();`, which greatly simplifies the code.
 
 So the framework loads Nasal files into `__addon[your-addon-id]__`, which means it does not create additional namespaces, keeping everything in one place.
 
@@ -310,16 +311,48 @@ The Framework autoloader will automatically load widget files into the `canvas` 
 
 See [nasal/VersionCheck/README.md](nasal/VersionCheck/README.md).
 
+## Framework Config
+
+The framework includes a `nasal/Config.nas` file that configures some of the framework's functions. If you want to change these options, you should not change them in the `Config.nas` file, but use the appropriate entries in the `/addon-main.nas` file in the `main` function, before calling `Application`:
+
+1. `Config.useVersionCheck.byMetaData = true;` ─ enables the mechanism for checking for a new version of your add-on by checking the version in the `/addon-metadata.xml` file. Only GitHub, GitLab and FGAddons are supported.
+
+2. `Config.useVersionCheck.byGitTag = true;` ─ enables the mechanism for checking for a new version of your add-on by checking the latest tag in the Git repository, where tag is the version number, e.g. "1.2.5" or "v.1.2.5". Only GitHub and GitLab are supported.
+
+3. `Config.dev.useEnvFile = false;` ─ by default, the framework will check for the existence of a `/.env` file in your add-on. If you want to completely disable `.env` file checking and thus exclude the related Nasal files from loading, you can use this option with the value `false`.
+
 ## Global variables
 
 The framework provides the following global variables that you can use in your add-on:
 
-1. `g_Addon` ─ object of `addons.Addon` ghost, here is everything about your addon.
-2. `g_FGVersion` ─ object of `/framework/nasal/Utils/FGVersion` class. With this object you can easily add conditions related to the FlightGear version, e.g.:
-    ```nasal
-    if (g_FGVersion.lowerThan('2024.1.1')) {
-        # ...
-    }
-    ```
-3. `g_isDevMode` ─ boolean variable. Defaults to false. Set to true when you set the `DEV_MODE=true` variable in the `.env` file. This variable allows you to set conditions to place code only for development, such as logging in large and heavy loops that shouldn't be executed for the end user, but you want to leave it in the code for development purposes.
-4. `g_VersionChecker` ─ object of one of method to check the new version of yor add-on: `/framework/nasal/VersionCheck/GitTagVersionChecker.nas` or `/framework/nasal/VersionCheck/MetaDataVersionChecker.nas`. See [Version checker](#version-checker).
+### `g_Addon`
+
+Object of `addons.Addon` ghost, here is everything about your addon.
+
+### `g_FGVersion`
+
+Object of `nasal/Utils/FGVersion` class. With this object you can easily add conditions related to the FlightGear version, e.g.:
+
+```nasal
+if (g_FGVersion.lowerThan('2024.1.1')) {
+    # ...
+}
+```
+
+### `g_isDevMode`
+
+Boolean variable. Defaults to false. Set to true when you set the `DEV_MODE=true` variable in the `.env` file. This variable allows you to set conditions to place code only for development, such as logging in large and heavy loops that shouldn't be executed for the end user, but you want to leave it in the code for development purposes.
+
+### `g_VersionChecker`
+
+Object of one of method to check the new version of yor add-on: `/framework/nasal/VersionCheck/GitTagVersionChecker.nas` or `/framework/nasal/VersionCheck/MetaDataVersionChecker.nas`. See [Version checker](#version-checker).
+
+### `MY_LOG_LEVEL`
+
+The constant using in `Log.print()` method (which is a wrapper for `logprint`, where first parameter is log level, where the `MY_LOG_LEVEL` can be use here). This constant is ease configurable by `.env` file, so you don't have to modify it in the code.
+
+By default, it's set to LOG_INFO, so to see the logs from `Log.print()`, you'd have to run the simulator with the `--log-level=info` option. But you don't have to. You can also set `MY_LOG_LEVEL=LOG_ALERT` in the `.env` file, which will cause `Log.print()` to always be logged, without the need to use FlightGear's `--log-level` option.
+
+## Class Diagram of Framework
+
+![alt Class Diagram](docs/class-diagram.png "Class Diagram")

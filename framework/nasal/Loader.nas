@@ -54,7 +54,7 @@ var Loader = {
 
             var fullRelPath = relPath ~ '/' ~ entry;
             if (me._excluded.contains(fullRelPath)) {
-                logprint(LOG_WARN, 'Level: ', level, '. namespace: ', namespace, ' excluded -> ', fullRelPath);
+                Log.printYellow('Level: ', level, '. namespace: ', namespace, ' excluded -> ', fullRelPath);
                 continue;
             }
 
@@ -62,7 +62,7 @@ var Loader = {
             me._fullPath.append(entry);
 
             if (me._fullPath.isFile() and me._fullPath.lower_extension == 'nas') {
-                logprint(LOG_WARN, 'Level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
+                Log.printGreen('Level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
                 io.load_nasal(me._fullPath.realpath, namespace);
                 continue;
             }
@@ -112,7 +112,7 @@ var Loader = {
     # Return `/framework` dir if Framework is located inside `/framework`,
     # which means it is used by a specific add-on and not the Framework itself.
     #
-    # @return boolean
+    # @return string
     #
     _getFrameworkSubDir: func {
         var path = caller(0)[2];
@@ -138,8 +138,13 @@ var Loader = {
             subDir ~ '/addon-main.nas', # It may repeat, but it doesn't matter, it will be there once in the hash
             subDir ~ '/nasal/Loader.nas',
             subDir ~ '/nasal/Config.nas',
-            subDir ~ '/nasal/App.nas',
+            subDir ~ '/nasal/Application.nas',
             subDir ~ '/nasal/Boolean.nas',
+            subDir ~ '/nasal/Dev/DevEnv.nas',
+            subDir ~ '/nasal/Dev/DevMode.nas',
+            subDir ~ '/nasal/Dev/DevMultiKeyCmd.nas',
+            subDir ~ '/nasal/Dev/DevReloadMenu.nas',
+            subDir ~ '/nasal/Dev/Log.nas',
             subDir ~ '/nasal/Utils/FGVersion.nas',
         ];
 
@@ -181,23 +186,13 @@ var Loader = {
         foreach (var file; files) {
             me._excluded.set(file, nil);
         }
-
-        if (isvec(Config.excludedFiles)) {
-            foreach (var file; Config.excludedFiles) {
-                me._excluded.set(file, nil);
-            }
-        }
     },
 
     #
     # @return void
     #
     _excludedByHookFunc: func {
-        if (!g_isHook('filesExcludedFromLoading')) {
-            return;
-        }
-
-        var excludedFiles = Hooks.filesExcludedFromLoading();
+        var excludedFiles = Application.callHook('filesExcludedFromLoading', []);
 
         if (isvec(excludedFiles)) {
             foreach (var file; excludedFiles) {
