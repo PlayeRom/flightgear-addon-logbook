@@ -9,7 +9,7 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
-io.include('framework/nasal/App.nas');
+io.include('framework/nasal/Application.nas');
 
 #
 # Global object of Settings.
@@ -44,7 +44,51 @@ var main = func(addon) {
     # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
     addon.createStorageDir();
 
-    App.load(addon, 'logbookAddon');
+    Application
+        .hookFilesExcludedFromLoading(func {
+            var excluded = [
+                # Framework files I don't use
+                '/framework/Canvas/BaseDialogs/TransientDialog.nas',
+                '/framework/Utils/Message.nas',
+            ];
+
+            if (g_FGVersion.greaterThanOrEqual('2024.1.1')) {
+                return excluded ~ [
+                    '/nasal/Storage/CSV/Storage.nas',
+                    '/nasal/Storage/CSV/Recovery.nas',
+                    '/nasal/Canvas/CSV/SettingsDialog.nas',
+                ];
+            }
+
+            return excluded ~ [
+                '/nasal/Storage/SQLite/DB.nas',
+                '/nasal/Storage/SQLite/Migrations/MigrationBase.nas',
+                '/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas',
+                '/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas',
+                '/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas',
+                '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas',
+                '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas',
+                '/nasal/Storage/SQLite/Migration.nas',
+                '/nasal/Storage/SQLite/Storage.nas',
+                '/nasal/Storage/SQLite/Recovery.nas',
+                '/nasal/Storage/SQLite/Exporter.nas',
+                '/nasal/Canvas/SQLite/SettingsDialog.nas',
+            ];
+        })
+        .hookOnInit(func {
+            g_Settings = Settings.new();
+            g_Sound    = Sound.new();
+        })
+        .hookOnInitCanvas(func {
+            g_Logbook = Logbook.new();
+        })
+        .hookExcludedMenuNamesForEnabled(func {
+            return {
+                'logbook-addon-main-dialog':,
+                'logbook-addon-export-csv':, # <- this will be enabled only on FG version >= 2024
+            };
+        })
+        .create(addon, 'logbookAddon');
 };
 
 #
@@ -64,105 +108,18 @@ var main = func(addon) {
 # @return void
 #
 var unload = func(addon) {
-    App.unload();
-};
+    Log.print('unload');
+    Application.unload();
 
-#
-# This class defines a set of callback functions that the framework will invoke
-# at specific points during the add-on's lifecycle. Add-on authors implement
-# these functions to provide custom behavior, but the framework itself handles
-# when and how they are called.
-#
-# The Hooks object acts purely as a container for these functions. It does not
-# implement any framework logic itself — it is the add-on's responsibility to
-# provide meaningful implementations.
-#
-# All of these methods are optional and can be removed entirely from the code
-# if they are not needed.
-#
-var Hooks = {
-    #
-    # Return vector of Nasal files excluded from loading. Files must be specified with a path relative to the add-on's
-    # root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if
-    # you don't use a certain Nasal file, but you also don't want to remove it from your project.
-    #
-    # @return vector
-    #
-    filesExcludedFromLoading: func {
-        var excluded = [
-            # Framework files I don't use
-            '/framework/Canvas/BaseDialogs/TransientDialog.nas',
-            '/framework/Utils/Message.nas',
-        ];
+    if (g_Logbook != nil) {
+        g_Logbook.del();
+    }
 
-        if (g_FGVersion.greaterThanOrEqual('2024.1.1')) {
-            return excluded ~ [
-                '/nasal/Storage/CSV/Storage.nas',
-                '/nasal/Storage/CSV/Recovery.nas',
-                '/nasal/Canvas/CSV/SettingsDialog.nas',
-            ];
-        }
+    if (g_Sound != nil) {
+        g_Sound.del();
+    }
 
-        return excluded ~ [
-            '/nasal/Storage/SQLite/DB.nas',
-            '/nasal/Storage/SQLite/Migrations/MigrationBase.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_10_30_08_44_CreateMigrationsTable.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_10_30_13_01_CreateLogbooksTable.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_04_11_53_AddSimTimeColumns.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_42_AddSpeedColumns.nas',
-            '/nasal/Storage/SQLite/Migrations/M2024_11_06_22_50_CreateTrackersTable.nas',
-            '/nasal/Storage/SQLite/Migration.nas',
-            '/nasal/Storage/SQLite/Storage.nas',
-            '/nasal/Storage/SQLite/Recovery.nas',
-            '/nasal/Storage/SQLite/Exporter.nas',
-            '/nasal/Canvas/SQLite/SettingsDialog.nas',
-        ];
-    },
-
-    #
-    # Create non-Canvas objects here.
-    #
-    onInit: func {
-        g_Settings = Settings.new();
-        g_Sound    = Sound.new();
-    },
-
-    #
-    # Create Canvas objects here.
-    #
-    onInitCanvas: func {
-        g_Logbook = Logbook.new();
-    },
-
-    #
-    # Remove all objects here.
-    #
-    onUninit: func {
-        if (g_Logbook != nil) {
-            g_Logbook.del();
-        }
-
-        if (g_Sound != nil) {
-            g_Sound.del();
-        }
-
-        if (g_Settings != nil) {
-            g_Settings.del();
-        }
-    },
-
-    #
-    # For the menu with 'name', which is disabled while the Canvas is loading,
-    # you can specify here the names of the menu items that should not be enabled
-    # automatically, but you can decide in your code when to enable them again,
-    # using gui.menuEnable().
-    #
-    # @return hash  Key as menu name from addon-menubar-items.xml, value whatever.
-    #
-    excludedMenuNamesForEnabled: func {
-        return {
-            'logbook-addon-main-dialog':,
-            'logbook-addon-export-csv':, # <- this will be enabled only on FG version >= 2024
-        };
-    },
+    if (g_Settings != nil) {
+        g_Settings.del();
+    }
 };
