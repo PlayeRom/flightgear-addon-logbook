@@ -10,7 +10,7 @@
 #
 
 #
-# UtilsExtended static methods.
+# A class that extends Utils from the framework.
 #
 var UtilsExtended = {
     parents: [Utils],
