@@ -48,7 +48,7 @@ For more convenient development, this add-on recognizes an `.env` file, where yo
 
 The add-on recognizes the following variables in the `.env` file:
 
-1. `DEV_MODE` which takes the values `​​true` or `false` (or `1`/`0`). Setting this variable to `true` will enable possibility to use `RELOAD_MENU` and `RELOAD_MULTIKEY_CMD` variable.
+1. `DEV_MODE` which takes the values `​​true` or `false` (or `1`/`0`). Setting this variable to `true` will enable possibility to use `RELOAD_MENU` and `RELOAD_MULTIKEY_CMD` variable and will set the global variable `g_isDevMode` to `true`.
 2. `RELOAD_MENU` which takes the values `​​true` or `false` (or `1`/`0`). Setting this variable to `true` will add a "Dev Reload" item to the add-on's menu. This menu is used to reload all of the add-on's Nasal code.
 3. `RELOAD_MULTIKEY_CMD` is using to set multi-key command to reload the add-on's Nasal code. As default `:Yarlo`.
 4. `MY_LOG_LEVEL` – here you can specify the logging level for logs added using the `Log.print()` method. Possible values: `LOG_ALERT`, `LOG_WARN`, `LOG_INFO`, `LOG_DEBUG` or `LOG_BULK`. If you set, for example, `LOG_INFO`, then logs using `Log.print()` will be logged with this flag, which means that to see them you need to run the simulator with the log level at the same level or higher: `--log-level=info`.
