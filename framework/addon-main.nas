@@ -33,7 +33,7 @@ io.include('nasal/Application.nas');
 var main = func(addon) {
     logprint(LOG_INFO, addon.name, ' Add-on initialized from path ', addon.basePath);
 
-    Config.useVersionCheck.byMetaData = 1;
+    Config.useVersionCheck.byMetaData = true;
 
     Application
         .hookFilesExcludedFromLoading(func {
@@ -42,10 +42,10 @@ var main = func(addon) {
             ];
         })
         .hookOnInit(func {
-            # TODO: crate non-Canvas objects here if needed...
+            # TODO: create non-Canvas objects here if needed...
         })
         .hookOnInitCanvas(func {
-            # TODO: crate Canvas objects here if needed...
+            # TODO: create Canvas objects here if needed...
         })
         .hookExcludedMenuNamesForEnabled(func {
             return {

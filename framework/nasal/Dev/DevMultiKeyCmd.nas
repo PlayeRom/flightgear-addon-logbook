@@ -95,8 +95,6 @@ var DevMultiKeyCmd = {
             return nil;
         }
 
-        Log.alert('DevMultiKeyCmd, adding multi-key: ', sequence);
-
         var path = '/input/keyboard/multikey';
 
         for (var i = 0; i < size(sequence); i += 1) {
@@ -107,6 +105,8 @@ var DevMultiKeyCmd = {
         if (withExit) {
             setprop(path ~ '/exit', '');
         }
+
+        Log.alertSuccess('DevMultiKeyCmd, added multi-key: ', sequence);
 
         me._isReloadNeeded = true;
 
@@ -120,23 +120,23 @@ var DevMultiKeyCmd = {
     # @return string|nil  Return validated sequence string or nil if invalid.
     #
     _validateSequence: func(sequence) {
-        if (sequence == nil or size(sequence) == 0) {
+        if (sequence == nil or !isstr(sequence) or size(sequence) == 0) {
             return nil;
         }
 
         sequence = me._removeColon(sequence);
         if (size(sequence) < 3) {
-            Log.alert('DevReloadMultiKey, sequence "', sequence, '" must be at least 3 characters long');
+            Log.alertError('DevMultiKeyCmd, sequence "', sequence, '" must be at least 3 characters long');
             return nil;
         }
 
         if (string.isdigit(sequence[0])) {
-            Log.alert('DevReloadMultiKey, sequence "', sequence, '" cannot start with a number');
+            Log.alertError('DevMultiKeyCmd, sequence "', sequence, '" cannot start with a number');
             return nil;
         }
 
         if (!me._isAlphanumeric(sequence)) {
-            Log.alert('DevReloadMultiKey, sequence "', sequence, '" must be alphanumeric');
+            Log.alertError('DevMultiKeyCmd, sequence "', sequence, '" must be alphanumeric');
             return nil;
         }
 

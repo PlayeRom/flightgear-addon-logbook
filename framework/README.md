@@ -90,7 +90,7 @@ During development, it's very useful feature is possibility to restart Nasal add
 
 To solve this, this framework implemented a mechanism inspired by other frameworks – an `.env` file for local configuration that isn't added to the repository (the `.env` file should be listed in `.gitignore` file). If you create an `/.env` file (copy `/framework/.env.example` as a starting point), you can set the variable `DEV_MODE=true` and `RELOAD_MENU=true`. This will automatically and programmatically add a **Dev Reload** menu item, allowing you to reload the add-on's Nasal files without restarting the simulator.
 
-You can also use the multi-key command (default `:Yarfr`) to restart the Nasal files of the add-on, which is defined in the `/.env` file as `RELOAD_MULTIKEY_CMD="Yarfr"`. Of course, you should change the keys to your own. The framework adopts the notation `Y`, as in FlightGear this key means "Development", then `a` from "addons", `r` from "reload", and at least two keys from the name of the add-on. By default, `fr` is taken from the name "Framework", but you should change it to the name of your add-on.
+You can also use the multi-key command (default `:Yarfr`) to restart the Nasal files of the add-on, which is defined in the `/.env` file as `RELOAD_MULTIKEY_CMD="Yarfr"`. Of course, you should change the keys to your own. The framework adopts the notation `Y`, as in FlightGear this key means "Development", then `a` from "add-ons", `r` from "reload", and at least two keys from the name of the add-on. By default, `fr` is taken from the name "Framework", but you should change it to the name of your add-on.
 
 Please note that when entering a multi-key command, suggestions do not work.
 
@@ -151,7 +151,7 @@ var AboutDialog = {
             ],
         };
 
-        # Crate your stuff here ...
+        # Create your stuff here ...
         # Dialog already has a canvas.VBoxLayout prepared for adding more elements to the dialog:
         # obj._vbox.addItem(...);
 
@@ -199,7 +199,7 @@ var AboutDialog = {
         # Enable correct handling of window positioning in the center of the screen.
         call(PersistentDialog.setPositionOnCenter, [], obj.parents[1]);
 
-        # Crate your stuff here ...
+        # Create your stuff here ...
         # Dialog already has a canvas.VBoxLayout prepared for adding more elements to the dialog:
         # obj._vbox.addItem(...);
 
@@ -301,7 +301,7 @@ The namespace into which the add-on's additional Nasal files will be loaded it w
 Application.create(addon, 'yourAddon');
 ```
 
-Here, of course, change the name `yourAddon` to something that reflects your addon and is unique to the entire FlightGear project. Now, in the `/addon-menubar-items.xml` file, you can refer to the add-on variables like this: `yourAddon.g_AboutDialog.show();`, which greatly simplifies the code.
+Here, of course, change the name `yourAddon` to something that reflects your add-on and is unique to the entire FlightGear project. Now, in the `/addon-menubar-items.xml` file, you can refer to the add-on variables like this: `yourAddon.g_AboutDialog.show();`, which greatly simplifies the code.
 
 So the framework loads Nasal files into `__addon[your-addon-id]__`, which means it does not create additional namespaces, keeping everything in one place.
 
@@ -329,7 +329,7 @@ The framework provides the following global variables that you can use in your a
 
 ### `g_Addon`
 
-Object of `addons.Addon` ghost, here is everything about your addon.
+Object of `addons.Addon` ghost, here is everything about your add-on.
 
 ### `g_FGVersion`
 
