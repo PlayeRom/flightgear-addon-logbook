@@ -88,6 +88,11 @@ calcFunc(func () {
 if (condition) {
     x = 0;
 }
+
+if (condition) {
+    x = 0;
+    str = '';
+}
 ```
 
 ❌ Incorrect:
@@ -157,6 +162,47 @@ var calc = func(
 };
 ```
 
+
+## Avoid `()` for `func` when the function has no parameters
+
+✅ Correct:
+
+```nasal
+var funcName = func {
+    # function body...
+};
+
+var funcName = func(param) {
+    # function body...
+};
+```
+
+❌ Incorrect:
+
+```nasal
+var funcName = func() {
+    # function body...
+};
+```
+
+## Prefer `true` and `false` over `1` and `0`
+
+In older versions of FlightGear (earlier than 2024.1.1), to specify `true` or `false` in Nasal, you had to use `1` or `0`, which made it difficult to quickly distinguish between bool and int types. Since FlightGear 2024.1.1, Nasal supports the `true` and `false` keywords. For older versions, this framework defines global `true` and `false` variables, essentially the following:
+
+1. Always use `true` and `false` in the code if a variable is to be boolean, in any version of FlightGear.
+2. For FlightGear older than 2024.1.1, use `1` and `0` only for default values ​​in parameters, because here you cannot use a variable:
+    ```nasal
+    # Only for FG < 2024.1.1
+    var myFunc = func(flag = 0) {
+        # ...
+    };
+
+    # For FG >= 2024.1.1
+    var myFunc = func(flag = false) {
+        # ...
+    };
+    ```
+
 ## Comments Guidelines
 
 ### Function Comments
@@ -166,7 +212,7 @@ Insert a comment block before each function
 Each function parameter describe in the following format:
 
 ```nasal
-# @param type name Description.
+# @param  type  name  Description.
 ```
 
 The type is especially important to avoid ambiguity. If the type can be `string`, or any number, use `scalar`. If there can be multiple types, separate them with `|`, e.g., `vector|nil`. If the type can be any type, use `mixed`. If you don't know the type of a parameter, you can check it using the `typeof(variable)` method, which return string with type name.
@@ -174,7 +220,7 @@ The type is especially important to avoid ambiguity. If the type can be `string`
 The return value of each function describe in the following format:
 
 ```nasal
-# @return type Description.
+# @return type  Description.
 ```
 
 The type is particularly important to avoid confusion, especially since in Nasal the function returns a value even if you don't use `return`. If you intend for the function to return nothing or it's not important, write the type `void`.

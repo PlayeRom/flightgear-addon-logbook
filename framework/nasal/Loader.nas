@@ -23,6 +23,12 @@ var Loader = {
             parents: [Loader],
         };
 
+        obj._frameworkDir = obj._getFrameworkSubDir();
+        obj._subDir = obj._frameworkDir;
+        if (obj._subDir != '') {
+            obj._subDir = '/' ~ obj._subDir;
+        }
+
         # List of files that should not be loaded.
         obj._excluded = std.Hash.new();
 
@@ -70,7 +76,7 @@ var Loader = {
 
             if (level == 0 and !(
                        string.imatch(entry, 'nasal')
-                    or string.imatch(entry, 'framework')
+                    or string.imatch(entry, me._frameworkDir)
                 )
             ) {
                 # At level 0 we are only interested in the 'nasal' and 'framework/nasal' directories.
@@ -110,16 +116,21 @@ var Loader = {
     },
 
     #
-    # Return `/framework` dir if Framework is located inside `/framework`,
+    # Return `framework` dir if Framework is located inside `/framework`,
     # which means it is used by a specific add-on and not the Framework itself.
+    # If the launch is from the Framework itself, it returns an empty string.
     #
     # @return string
     #
     _getFrameworkSubDir: func {
         var path = caller(0)[2];
 
-        if (string.imatch(path, g_Addon.basePath ~ '/framework/*')) {
-            return '/framework';
+        path = substr(path, size(g_Addon.basePath) + 1); # +1 for skip `/`
+        # Now a path = 'framework/nasal/Loader.nas' or 'nasal/Loader.nas'
+
+        var parts = split('/', path);
+        if (size(parts) >= 3) {
+            return parts[0];
         }
 
         return '';
@@ -132,21 +143,19 @@ var Loader = {
     # @return void
     #
     _excludedPermanent: func {
-        var subDir = me._getFrameworkSubDir();
-
         var excludedFiles = [
             '/addon-main.nas',
-            subDir ~ '/addon-main.nas', # It may repeat, but it doesn't matter, it will be there once in the hash
-            subDir ~ '/nasal/Loader.nas',
-            subDir ~ '/nasal/Config.nas',
-            subDir ~ '/nasal/Application.nas',
-            subDir ~ '/nasal/Boolean.nas',
-            subDir ~ '/nasal/Dev/DevEnv.nas',
-            subDir ~ '/nasal/Dev/DevMode.nas',
-            subDir ~ '/nasal/Dev/DevMultiKeyCmd.nas',
-            subDir ~ '/nasal/Dev/DevReloadMenu.nas',
-            subDir ~ '/nasal/Dev/Log.nas',
-            subDir ~ '/nasal/Utils/FGVersion.nas',
+            me._subDir ~ '/addon-main.nas', # It may repeat, but it doesn't matter, it will be there once in the hash
+            me._subDir ~ '/nasal/Loader.nas',
+            me._subDir ~ '/nasal/Config.nas',
+            me._subDir ~ '/nasal/Application.nas',
+            me._subDir ~ '/nasal/Boolean.nas',
+            me._subDir ~ '/nasal/Dev/DevEnv.nas',
+            me._subDir ~ '/nasal/Dev/DevMode.nas',
+            me._subDir ~ '/nasal/Dev/DevMultiKeyCmd.nas',
+            me._subDir ~ '/nasal/Dev/DevReloadMenu.nas',
+            me._subDir ~ '/nasal/Dev/Log.nas',
+            me._subDir ~ '/nasal/Utils/FGVersion.nas',
         ];
 
         foreach (var file; excludedFiles) {
@@ -158,29 +167,27 @@ var Loader = {
     # @return void
     #
     _excludedByConfig: func {
-        var subDir = me._getFrameworkSubDir();
-
         var files = [];
 
         if (!Config.dev.useEnvFile) {
             files ~= [
-                subDir ~ '/nasal/Dev/DevEnv.nas',
-                subDir ~ '/nasal/Dev/DevReloadMenu.nas',
-                subDir ~ '/nasal/Dev/DevReloadMultiKey.nas',
+                me._subDir ~ '/nasal/Dev/DevEnv.nas',
+                me._subDir ~ '/nasal/Dev/DevReloadMenu.nas',
+                me._subDir ~ '/nasal/Dev/DevReloadMultiKey.nas',
             ];
         }
 
         if (!Config.useVersionCheck.byGitTag) {
             files ~= [
-                subDir ~ '/nasal/VersionCheck/GitTagVersionChecker.nas',
-                subDir ~ '/nasal/VersionCheck/Base/JsonVersionChecker.nas',
+                me._subDir ~ '/nasal/VersionCheck/GitTagVersionChecker.nas',
+                me._subDir ~ '/nasal/VersionCheck/Base/JsonVersionChecker.nas',
             ];
         }
 
         if (!Config.useVersionCheck.byMetaData) {
             files ~= [
-                subDir ~ '/nasal/VersionCheck/MetaDataVersionChecker.nas',
-                subDir ~ '/nasal/VersionCheck/Base/XmlVersionChecker.nas',
+                me._subDir ~ '/nasal/VersionCheck/MetaDataVersionChecker.nas',
+                me._subDir ~ '/nasal/VersionCheck/Base/XmlVersionChecker.nas',
             ];
         }
 
