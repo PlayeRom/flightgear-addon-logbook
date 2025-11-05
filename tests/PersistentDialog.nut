@@ -11,22 +11,14 @@
 
 # Unit tests for `/nasal/Canvas/BaseDialogs/PersistentDialog.nas`
 
-io.include('TestHelper.nut');
-
 var setUp = func {
-    # Get add-on namespace:
-    var namespace = globals[getAddonNamespaceName()];
+    var namespace = globals['__addon[org.flightgear.addons.framework]__'];
 };
 
 var tearDown = func {
 };
 
 var test_callChildMethodByParent = func {
-    if (!defined('namespace')) {
-        unitTest.assert(0);
-        return;
-    }
-
     var TestDialog = {
         new: func {
             var obj = {

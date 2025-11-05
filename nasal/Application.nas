@@ -77,7 +77,6 @@ var Application = {
     # @param  func  callback
     # @return hash
     #
-    #
     hookExcludedMenuNamesForEnabled: func(callback) {
         me.excludedMenuNamesForEnabled = callback;
         return me;

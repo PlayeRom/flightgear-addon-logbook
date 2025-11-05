@@ -11,22 +11,14 @@
 
 # Unit tests for `/nasal/Utils/Utils.nas`
 
-io.include('TestHelper.nut');
-
 var setUp = func {
-    # Get add-on namespace:
-    var namespace = globals[getAddonNamespaceName()];
+    var namespace = globals['__addon[org.flightgear.addons.framework]__'];
 };
 
 var tearDown = func {
 };
 
 var test_urlEncode = func {
-    if (!defined('namespace')) {
-        unitTest.assert(0);
-        return;
-    }
-
     unitTest.assert_equal(namespace.Utils.urlEncode('HelloWorld'), 'HelloWorld');
     unitTest.assert_equal(namespace.Utils.urlEncode('Hello World'), 'Hello%20World');
     unitTest.assert_equal(namespace.Utils.urlEncode('a+b=c'), 'a%2Bb%3Dc');
@@ -40,10 +32,6 @@ var test_urlEncode = func {
 };
 
 var test_tryCatch = func {
-    if (!defined('namespace')) {
-        unitTest.assert(0);
-        return;
-    }
 
     var result = namespace.Utils.tryCatch(func typeof(noneExistObject));
     unitTest.assert_equal(result, 0);
