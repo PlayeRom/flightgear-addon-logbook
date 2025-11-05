@@ -7,26 +7,30 @@ The `/framework` directory belongs to a separate [FG Add-on Framework](https://g
 
 ### Adding Framework project to `/framework` directory (once only)
 
+Assuming you are installing version `v1.0.0` (change to another version if you wish).
+
 ```bash
 git remote add framework git@github.com:PlayeRom/flightgear-addon-framework.git
-git subtree add --prefix=framework framework main --squash
+git subtree add --prefix=framework framework v1.0.0 --squash
 ```
 
 **Note**: `--prefix` must be `framework`.
 
 ### Update Framework...
 
+Assuming you are updating to `v1.0.1`, change this version to yours.
+
 #### ...with auto commit
 
 ```bash
-git subtree pull --prefix=framework framework main --squash -m "Update framework"
+git subtree pull --prefix=framework framework v1.0.1 --squash -m "Update framework"
 ```
 
 #### ...manually
 
 ```bash
-git fetch framework main
-git merge -s subtree --squash framework/main --allow-unrelated-histories
+git fetch framework v1.0.1
+git merge -s subtree --squash FETCH_HEAD --allow-unrelated-histories
 git diff
 ```
 
@@ -40,6 +44,17 @@ or cancel changes:
 
 ```bash
 git checkout -- framework
+```
+
+Alternatively with a local tag:
+
+```bash
+git fetch framework v1.0.1
+git tag framework-v1.0.1 FETCH_HEAD
+git merge -s subtree --squash framework-v1.0.1 --allow-unrelated-histories
+git diff
+git commit -m "Update framework"
+git tag -d framework-v1.0.1
 ```
 
 ## The `.env` file
