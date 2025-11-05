@@ -502,7 +502,7 @@ var Storage = {
     #
     editData: func(rowIndex, columnName, value) {
         if (rowIndex == nil or columnName == nil or value == nil) {
-            Log.print("cannot save edited row");
+            Log.error("cannot save edited row");
             return false;
         }
 
@@ -511,13 +511,13 @@ var Storage = {
         }
 
         if (rowIndex < 0 or rowIndex >= me._allData.size()) {
-            Log.print("cannot save edited row, index out of range");
+            Log.error("cannot save edited row, index out of range");
             return false;
         }
 
         var columnIndex = me._columns.getColumnIndexByName(columnName);
         if (columnIndex == nil) {
-            Log.print("cannot save edited row, columnName ", columnName, " not found");
+            Log.error("cannot save edited row, columnName ", columnName, " not found");
             return false;
         }
 
@@ -681,7 +681,7 @@ var Storage = {
     #
     getLogData: func(index) {
         if (g_isThreadPending) {
-            Log.alert("getLogData in g_isThreadPending = true, return nil");
+            Log.alertWarning("getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
@@ -690,7 +690,7 @@ var Storage = {
         }
 
         if (index == nil or index < 0 or index >= me._allData.size()) {
-            Log.alert("getLogData, index(", index, ") out of range, return nil");
+            Log.alertError("getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
 
@@ -706,7 +706,7 @@ var Storage = {
     #
     deleteLog: func(index) {
         if (index < 0 or index >= me._allData.size()) {
-            Log.print("index out of range in deleteLog");
+            Log.error("index out of range in deleteLog");
             return false;
         }
 
@@ -770,7 +770,7 @@ var Storage = {
     # @return bool
     #
     addTrackerItem: func(logbookId, data) {
-        Log.print("CSV version doesn't support tracker");
+        Log.warning("CSV version doesn't support tracker");
 
         return false;
     },

@@ -387,7 +387,7 @@ var Logbook = {
 
         me._isLoggingStarted = true;
 
-        Log.alert("takeoff confirmed");
+        Log.alertSuccess("takeoff confirmed");
 
         me._recovery.start(Callback.new(me._recoveryCallback, me));
 
@@ -438,7 +438,7 @@ var Logbook = {
 
         if (landed) {
             if (me._crashDetector.isOrientationOK()) {
-                Log.alert("landing confirmed");
+                Log.alertSuccess("landing confirmed");
 
                 me._logData.setLanding();
 
@@ -465,7 +465,7 @@ var Logbook = {
         me._logData.setMaxMach(me._flight.getMaxMach());
 
         if (crashed) {
-            Log.alert("crash detected");
+            Log.alertSuccess("crash detected");
             me._logData.setCrash();
 
             me._onGround = true;

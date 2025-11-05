@@ -576,7 +576,7 @@ var Storage = {
     #
     editData: func(logbookId, columnName, value) {
         if (logbookId == nil or columnName == nil or value == nil) {
-            Log.print("cannot save edited row");
+            Log.error("cannot save edited row");
             return false;
         }
 
@@ -650,7 +650,7 @@ var Storage = {
     #
     getLogData: func(logbookId) {
         if (g_isThreadPending) {
-            Log.alert("getLogData in g_isThreadPending = true, return nil");
+            Log.alertWarning("getLogData in g_isThreadPending = true, return nil");
             return nil;
         }
 
@@ -659,14 +659,14 @@ var Storage = {
         }
 
         if (logbookId == nil) {
-            Log.alert("getLogData, index(", index, ") out of range, return nil");
+            Log.alertError("getLogData, index(", index, ") out of range, return nil");
             return nil;
         }
 
         var query = sprintf("SELECT * FROM %s WHERE id = ?", Storage.TABLE_LOGBOOKS);
         var rows = DB.exec(query, logbookId);
         if (size(rows) == 0) {
-            Log.alert("getLogData, logbookId(", logbookId, ") out of range, return nil");
+            Log.alertError("getLogData, logbookId(", logbookId, ") out of range, return nil");
             return nil;
         }
 
@@ -697,7 +697,7 @@ var Storage = {
     #
     deleteLogQuiet: func(logbookId) {
         if (logbookId == nil or logbookId < 0) {
-            Log.print("ID out of range in deleteLog");
+            Log.error("ID out of range in deleteLog");
             return false;
         }
 
