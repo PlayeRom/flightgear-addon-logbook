@@ -54,7 +54,7 @@ var Loader = {
 
             var fullRelPath = relPath ~ '/' ~ entry;
             if (me._excluded.contains(fullRelPath)) {
-                Log.printYellow('Level: ', level, '. namespace: ', namespace, ' excluded -> ', fullRelPath);
+                Log.warning('Level: ', level, '. namespace: ', namespace, ' excluded -> ', fullRelPath);
                 continue;
             }
 
@@ -62,8 +62,9 @@ var Loader = {
             me._fullPath.append(entry);
 
             if (me._fullPath.isFile() and me._fullPath.lower_extension == 'nas') {
-                Log.printGreen('Level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
-                io.load_nasal(me._fullPath.realpath, namespace);
+                if (io.load_nasal(me._fullPath.realpath, namespace)) {
+                    Log.success('Level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
+                }
                 continue;
             }
 

@@ -42,7 +42,9 @@ var Message = {
     #
     _display: func(message, type) {
         # Print to console
-        Log.alert(message);
+        type == 'error'
+            ? Log.alertError(message)
+            : Log.alertSuccess(message);
 
         # Read the message by speech synthesizer
         setprop('/sim/sound/voices/ai-plane', message);

@@ -66,7 +66,7 @@ var GitTagVersionChecker = {
 
         # GitHub returns a single object with the latest release, where we find the `tag_name` field.
         if (!contains(json, 'tag_name')) {
-            Log.print("GitTagVersionChecker failed, the JSON doesn't contain `tag_name` key.");
+            Log.error("GitTagVersionChecker failed, the JSON doesn't contain `tag_name` key.");
             return;
         }
 

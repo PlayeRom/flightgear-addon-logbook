@@ -38,7 +38,7 @@ var JsonVersionChecker = {
     #
     checkLastVersion: func {
         if (me._url == nil) {
-            Log.print('JsonVersionChecker, URL is not set');
+            Log.error('JsonVersionChecker, URL is not set');
             return;
         }
 
@@ -74,7 +74,7 @@ var JsonVersionChecker = {
 
         if (size(compilationErrors)) {
             foreach (var error; compilationErrors) {
-                Log.print(error);
+                Log.error(error);
             }
             return nil;
         }
@@ -84,7 +84,7 @@ var JsonVersionChecker = {
 
         if (size(runtimeErrors)) {
             foreach (var error; runtimeErrors) {
-                Log.print(error);
+                Log.error(error);
             }
             return nil;
         }

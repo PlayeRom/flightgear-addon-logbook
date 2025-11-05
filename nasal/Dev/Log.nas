@@ -38,23 +38,33 @@ var Log = {
     },
 
     #
-    # Print success log (in green color) with MY_LOG_LEVEL.
-    #
-    # @param  vector  msgs...  List of texts.
-    # @return void
-    #
-    success: func(msgs...) {
-        me._green(msgs);
-    },
-
-    #
     # Print error log (in red color) with MY_LOG_LEVEL.
     #
     # @param  vector  msgs...  List of texts.
     # @return void
     #
     error: func(msgs...) {
-        me._red(msgs);
+        me._red(MY_LOG_LEVEL, msgs);
+    },
+
+    #
+    # Print success log (in green color) with MY_LOG_LEVEL.
+    #
+    # @param  vector  msgs...  List of texts.
+    # @return void
+    #
+    success: func(msgs...) {
+        me._green(MY_LOG_LEVEL, msgs);
+    },
+
+    #
+    # Print error log (in yellow color) with MY_LOG_LEVEL.
+    #
+    # @param  vector  msgs...  List of texts.
+    # @return void
+    #
+    warning: func(msgs...) {
+        me._yellow(MY_LOG_LEVEL, msgs);
     },
 
     #
@@ -64,7 +74,7 @@ var Log = {
     # @return void
     #
     printRed: func(msgs...) {
-        me._red(msgs);
+        me._red(MY_LOG_LEVEL, msgs);
     },
 
     #
@@ -74,7 +84,7 @@ var Log = {
     # @return void
     #
     printGreen: func(msgs...) {
-        me._green(msgs);
+        me._green(MY_LOG_LEVEL, msgs);
     },
 
     #
@@ -84,7 +94,7 @@ var Log = {
     # @return void
     #
     printYellow: func(msgs...) {
-        me._yellow(msgs);
+        me._yellow(MY_LOG_LEVEL, msgs);
     },
 
     #
@@ -98,6 +108,81 @@ var Log = {
     },
 
     #
+    # Print error log (in red color) with LOG_ALERT level.
+    #
+    # @param  vector  msgs...  List of texts.
+    # @return void
+    #
+    alertError: func(msgs...) {
+        me._red(LOG_ALERT, msgs);
+    },
+
+    #
+    # Print success log (in green color) with LOG_ALERT level.
+    #
+    # @param  vector  msgs...  List of texts.
+    # @return void
+    #
+    alertSuccess: func(msgs...) {
+        me._green(LOG_ALERT, msgs);
+    },
+
+    #
+    # Print error log (in yellow color) with LOG_ALERT level.
+    #
+    # @param  vector  msgs...  List of texts.
+    # @return void
+    #
+    alertWarning: func(msgs...) {
+        me._yellow(LOG_ALERT, msgs);
+    },
+
+    #
+    # Print log message in red color.
+    #
+    # @param  int  level  Log level.
+    # @param  vector  msgs
+    # @return void
+    #
+    _red: func(level, msgs) {
+        me._logColor(level, msgs, me._RED);
+    },
+
+    #
+    # Print log message in green color.
+    #
+    # @param  int  level  Log level.
+    # @param  vector  msgs
+    # @return void
+    #
+    _green: func(level, msgs) {
+        me._logColor(level, msgs, me._GREEN);
+    },
+
+    #
+    # Print log message in yellow color.
+    #
+    # @param  int  level  Log level.
+    # @param  vector  msgs
+    # @return void
+    #
+    _yellow: func(level, msgs) {
+        me._logColor(level, msgs, me._YELLOW);
+    },
+
+    #
+    # Print log message with given color.
+    #
+    # @param  int  level  Log level.
+    # @param  vector  msgs
+    # @param  string  color
+    # @return void
+    #
+    _logColor: func(level, msgs, color) {
+        logprint(level, globals.string.color(color, me._getFullMessage(msgs)));
+    },
+
+    #
     # Get full log message.
     #
     # @param  vector  msgs
@@ -105,36 +190,6 @@ var Log = {
     #
     _getFullMessage: func(msgs) {
         return g_Addon.name ~ ' ----- ' ~ me._join(msgs);
-    },
-
-    #
-    # Print log message in red color.
-    #
-    # @param  vector  msgs
-    # @return void
-    #
-    _red: func(msgs) {
-        logprint(MY_LOG_LEVEL, globals.string.color(me._RED, me._getFullMessage(msgs)));
-    },
-
-    #
-    # Print log message in green color.
-    #
-    # @param  vector  msgs
-    # @return void
-    #
-    _green: func(msgs) {
-        logprint(MY_LOG_LEVEL, globals.string.color(me._GREEN, me._getFullMessage(msgs)));
-    },
-
-    #
-    # Print log message in yellow color.
-    #
-    # @param  vector  msgs
-    # @return void
-    #
-    _yellow: func(msgs) {
-        logprint(MY_LOG_LEVEL, globals.string.color(me._YELLOW, me._getFullMessage(msgs)));
     },
 
     #

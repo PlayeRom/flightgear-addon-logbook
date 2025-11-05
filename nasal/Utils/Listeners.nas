@@ -91,7 +91,7 @@ var Listeners = {
                     break;
                 }
 
-                Log.print(error);
+                Log.error(error);
             }
         }
 

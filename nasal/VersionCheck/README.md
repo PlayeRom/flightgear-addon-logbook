@@ -62,7 +62,7 @@ Examples from the smallest version to the largest:
 
 ## Version notation for git tags
 
-The git tag assigned to releases should be the same as the add-on version. However, tag versions may be additionally marked with the prefix `v.` or `v`, for example: `v.1.2.5` or `v1.2.5`.
+The git tag assigned to releases should be the same as the add-on version. However, git tag versions may be additionally marked with the prefix `v.` or `v`. For example if your version of add-on is `1.2.5`, you can name the git tag as `v.1.2.5` or `v1.2.5`.
 
 ## Class diagram
 
@@ -95,7 +95,7 @@ The `GitTagVersionChecker` class inherit from `JsonVersionChecker` because it co
 
 If you need your own implementation for downloading a file, simply add a new class such as `MetaDataVersionChecker` or `GitTagVersionChecker`, where you specify the URL to the resource and implement a callback function that receives the downloaded resource and finally calls `me.checkVersion()`.
 
-## How do I notify the user about a new version?
+## How to notify the user about a new version?
 
 1. Make sure you have set the repository URL in the `<code-repository>` tag in the `/addon-metadata.xml` file.
 
@@ -103,7 +103,7 @@ If you need your own implementation for downloading a file, simply add a new cla
     * `Config.useVersionCheck.byMetaData = true;` or
     * `Config.useVersionCheck.byGitTag = true;`.
 
-3. In the class created globally in `bootInit` or `bootInitCanvas` function, where you want to inform the user about a new version, e.g. in the `AboutDialog` (inheriting from the `PersistentDialog` class), register a callback that will be called if a newer version is available. For example in the `AboutDialog.new()` method, add:
+3. In the class created globally in `hookOnInit` or `hookOnInitCanvas` function, where you want to inform the user about a new version, e.g. in the `AboutDialog` (inheriting from the `PersistentDialog` class), register a callback that will be called if a newer version is available. For example in the `AboutDialog.new()` method, add:
 
     ```nasal
     new: func {

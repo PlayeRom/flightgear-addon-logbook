@@ -54,7 +54,7 @@ var XmlVersionChecker = {
     #
     checkLastVersion: func {
         if (me._url == nil) {
-            Log.print('XmlVersionChecker, URL is not set');
+            Log.error('XmlVersionChecker, URL is not set');
             return;
         }
 
