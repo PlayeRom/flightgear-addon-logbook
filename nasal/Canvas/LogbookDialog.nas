@@ -412,21 +412,10 @@ var LogbookDialog = {
             text = "Land.";
         }
 
-        if (me._filters.isApplied(columnName)) {
-            return text ~ "*";
-        }
-
-        if (columnName == Columns.INSTRUMENT) {
-            return "Instr.";
-        }
-
-        if (columnName == Columns.MULTIPLAYER) {
-            return "Multip.";
-        }
-
-        if (columnName == Columns.MAX_GS_KT) {
-            return "Max GS";
-        }
+        if (me._filters.isApplied(columnName)) return text ~ "*";
+        if (columnName == Columns.INSTRUMENT)  return "Instr.";
+        if (columnName == Columns.MULTIPLAYER) return "Multip.";
+        if (columnName == Columns.MAX_GS_KT)   return "Max GS";
 
         return text;
     },

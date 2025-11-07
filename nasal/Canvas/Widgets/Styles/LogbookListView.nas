@@ -498,9 +498,9 @@ DefaultStyle.widgets["logbook-list-view"] = {
     _getMonoCharWidth: func() {
         # Unfortunately, the more characters, the more pixels per character, even though the font is mono.
         # The following calculations are for a string with 12 characters.
-        #    if (me._fontSize == 12) return 7;   # 7.0625
-        # elsif (me._fontSize == 14) return 8.2; # 8.2395
-        # elsif (me._fontSize == 16) return 9.4; # 9.4166
+        # if (me._fontSize == 12) return 7;   # 7.0625
+        # if (me._fontSize == 14) return 8.2; # 8.2395
+        # if (me._fontSize == 16) return 9.4; # 9.4166
 
         return 0.588525 * me._fontSize + 0.000183;
     },
@@ -659,9 +659,9 @@ DefaultStyle.widgets["logbook-list-view"] = {
     # @return int
     #
     _getTextYOffset: func() {
-           if (me._fontSize == 12) return 16;
-        elsif (me._fontSize == 14) return 17;
-        elsif (me._fontSize == 16) return 18;
+        if (me._fontSize == 12) return 16;
+        if (me._fontSize == 14) return 17;
+        if (me._fontSize == 16) return 18;
 
         return 0;
     },

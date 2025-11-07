@@ -414,7 +414,9 @@ gui.widgets.FlightProfile = {
         if (direction == 1 and me._zoom < me.getMaxZoomLevel()) {
             me._zoom *= 2;
             return true;
-        } elsif (direction == -1 and me._zoom > gui.widgets.FlightProfile.ZOOM_MIN) {
+        }
+
+        if (direction == -1 and me._zoom > gui.widgets.FlightProfile.ZOOM_MIN) {
             me._zoom /= 2;
             return true;
         }

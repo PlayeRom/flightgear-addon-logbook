@@ -207,8 +207,8 @@ var SettingsDialog = {
 
             var getDateTimeDisplay = func(item) {
                 if (item != nil) {
-                       if (item._text == "UTC time in simulator")   return Settings.DATE_TIME_SIM_UTC;
-                    elsif (item._text == "Local time in simulator") return Settings.DATE_TIME_SIM_LOC;
+                    if (item._text == "UTC time in simulator")   return Settings.DATE_TIME_SIM_UTC;
+                    if (item._text == "Local time in simulator") return Settings.DATE_TIME_SIM_LOC;
                 }
 
                 return Settings.DATE_TIME_REAL;
@@ -286,7 +286,8 @@ var SettingsDialog = {
         vBoxLayout.addItem(me._drawLogItemsPerPage());
 
         vBoxLayout.addItem(me._widgetScroll.getLabel(
-            'The "Optimize database" button will defragment the database file, which will speed up database operations and reduce its size on the disk.',
+            'The "Optimize database" button will defragment the database file, '
+            'which will speed up database operations and reduce its size on the disk.',
             true,
         ));
 

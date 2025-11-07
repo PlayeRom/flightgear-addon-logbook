@@ -111,9 +111,9 @@ var Settings = {
     _logItemsValidate: func(value) {
         value = int(value);
 
-           if (value == nil or value == "")    return Settings.MAX_LOG_ITEMS;
-        elsif (value < Settings.MIN_LOG_ITEMS) return Settings.MIN_LOG_ITEMS;
-        elsif (value > Settings.MAX_LOG_ITEMS) return Settings.MAX_LOG_ITEMS;
+        if (value == nil or value == "")    return Settings.MAX_LOG_ITEMS;
+        if (value < Settings.MIN_LOG_ITEMS) return Settings.MIN_LOG_ITEMS;
+        if (value > Settings.MAX_LOG_ITEMS) return Settings.MAX_LOG_ITEMS;
 
         return value;
     },

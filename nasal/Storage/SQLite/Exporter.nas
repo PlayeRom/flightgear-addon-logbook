@@ -184,21 +184,22 @@ var Exporter = {
     # @return string  Human column name.
     #
     _columnNameToHuman: func(columnName) {
-           if (columnName == "id")           return 'ID';
-        elsif (columnName == "logbook_id")   return '"Logbook ID"';
-        elsif (columnName == "timestamp")    return 'Timestamp';
-        elsif (columnName == "lat")          return 'Latitude';
-        elsif (columnName == "lon")          return 'Longitude';
-        elsif (columnName == "alt_m")        return '"Altitude (meters)"';
-        elsif (columnName == "elevation_m")  return '"Elevation (meters)"';
-        elsif (columnName == "distance")     return '"Distance (NM)"';
-        elsif (columnName == "heading_true") return '"True heading (deg)"';
-        elsif (columnName == "heading_mag")  return '"Magnetic heading (deg)"';
-        elsif (columnName == "groundspeed")  return '"Groundspeed (kt)"';
-        elsif (columnName == "airspeed")     return '"Airspeed (kt)"';
-        elsif (columnName == "pitch")        return '"Pitch (deg)"';
-        elsif (columnName == "wind_heading") return '"Wind heading (deg)"';
-        elsif (columnName == "wind_speed")   return '"Wind speed (kt)"';
-        else                                 return '?';
+        if (columnName == "id")           return 'ID';
+        if (columnName == "logbook_id")   return '"Logbook ID"';
+        if (columnName == "timestamp")    return 'Timestamp';
+        if (columnName == "lat")          return 'Latitude';
+        if (columnName == "lon")          return 'Longitude';
+        if (columnName == "alt_m")        return '"Altitude (meters)"';
+        if (columnName == "elevation_m")  return '"Elevation (meters)"';
+        if (columnName == "distance")     return '"Distance (NM)"';
+        if (columnName == "heading_true") return '"True heading (deg)"';
+        if (columnName == "heading_mag")  return '"Magnetic heading (deg)"';
+        if (columnName == "groundspeed")  return '"Groundspeed (kt)"';
+        if (columnName == "airspeed")     return '"Airspeed (kt)"';
+        if (columnName == "pitch")        return '"Pitch (deg)"';
+        if (columnName == "wind_heading") return '"Wind heading (deg)"';
+        if (columnName == "wind_speed")   return '"Wind speed (kt)"';
+
+        return '?';
     },
 };

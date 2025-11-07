@@ -585,13 +585,9 @@ var LogData = {
     # @return string|double|int
     #
     _formatData: func(columnName) {
-        if (columnName == Columns.LANDING) {
-            return me.printLanding();
-        }
-        elsif (columnName == Columns.CRASH) {
-            return me.printCrash();
-        }
-        elsif (columnName == Columns.DAY
+        if (columnName == Columns.LANDING) return me.printLanding();
+        if (columnName == Columns.CRASH)   return me.printCrash();
+        if (columnName == Columns.DAY
             or columnName == Columns.NIGHT
             or columnName == Columns.INSTRUMENT
             or columnName == Columns.MULTIPLAYER
@@ -602,15 +598,9 @@ var LogData = {
         ) {
             return sprintf("%.02f", me[columnName]);
         }
-        elsif (columnName == Columns.MAX_ALT) {
-            return sprintf("%.0f",  me.max_alt);
-        }
-        elsif (columnName == Columns.MAX_GS_KT) {
-            return sprintf("%.0f",  me.max_groundspeed_kt);
-        }
-        elsif (columnName == Columns.MAX_MACH) {
-            return sprintf("%.02f",  me.max_mach);
-        }
+        if (columnName == Columns.MAX_ALT)   return sprintf("%.0f",  me.max_alt);
+        if (columnName == Columns.MAX_GS_KT) return sprintf("%.0f",  me.max_groundspeed_kt);
+        if (columnName == Columns.MAX_MACH)  return sprintf("%.02f", me.max_mach);
 
         return me[columnName];
     },
@@ -622,17 +612,17 @@ var LogData = {
     # @return string|nil
     #
     getFilterValueByColumnName: func(columnName) {
-           if (columnName == Columns.DATE)         return me._getRealYear();
-        elsif (columnName == Columns.SIM_UTC_DATE) return me._getSimUtcYear();
-        elsif (columnName == Columns.SIM_LOC_DATE) return me._getSimLocalYear();
-        elsif (columnName == Columns.AIRCRAFT)     return me.aircraft;
-        elsif (columnName == Columns.VARIANT)      return me.variant;
-        elsif (columnName == Columns.AC_TYPE)      return me.aircraft_type;
-        elsif (columnName == Columns.CALLSIGN)     return me.callsign;
-        elsif (columnName == Columns.FROM)         return me.from;
-        elsif (columnName == Columns.TO)           return me.to;
-        elsif (columnName == Columns.LANDING)      return me.printLanding();
-        elsif (columnName == Columns.CRASH)        return me.printCrash();
+        if (columnName == Columns.DATE)         return me._getRealYear();
+        if (columnName == Columns.SIM_UTC_DATE) return me._getSimUtcYear();
+        if (columnName == Columns.SIM_LOC_DATE) return me._getSimLocalYear();
+        if (columnName == Columns.AIRCRAFT)     return me.aircraft;
+        if (columnName == Columns.VARIANT)      return me.variant;
+        if (columnName == Columns.AC_TYPE)      return me.aircraft_type;
+        if (columnName == Columns.CALLSIGN)     return me.callsign;
+        if (columnName == Columns.FROM)         return me.from;
+        if (columnName == Columns.TO)           return me.to;
+        if (columnName == Columns.LANDING)      return me.printLanding();
+        if (columnName == Columns.CRASH)        return me.printCrash();
 
         return nil;
     },

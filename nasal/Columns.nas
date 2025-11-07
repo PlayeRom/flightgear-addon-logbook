@@ -227,8 +227,8 @@ var Columns = {
     getColumnDate: func() {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
 
-           if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_DATE;
-        elsif (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_DATE;
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_DATE;
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_DATE;
 
         return Columns.DATE;
     },
@@ -241,8 +241,8 @@ var Columns = {
     getColumnTime: func() {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
 
-           if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_TIME;
-        elsif (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_TIME;
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_TIME;
+        if (dataTimeDisplay == Settings.DATE_TIME_SIM_LOC) return Columns.SIM_LOC_TIME;
 
         return Columns.TIME;
     },
@@ -275,10 +275,10 @@ var Columns = {
     # @return bool|nil
     #
     _isColumnVisible: func(colName, dataTimeDisplay, columnsVisible) {
-           if (me._isColNameEq(colName, Columns.DATE,         Columns.TIME))         return dataTimeDisplay == Settings.DATE_TIME_REAL;
-        elsif (me._isColNameEq(colName, Columns.SIM_UTC_DATE, Columns.SIM_UTC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
-        elsif (me._isColNameEq(colName, Columns.SIM_LOC_DATE, Columns.SIM_LOC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
-        elsif (contains(columnsVisible, colName))                                    return columnsVisible[colName];
+        if (me._isColNameEq(colName, Columns.DATE,         Columns.TIME))         return dataTimeDisplay == Settings.DATE_TIME_REAL;
+        if (me._isColNameEq(colName, Columns.SIM_UTC_DATE, Columns.SIM_UTC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_UTC;
+        if (me._isColNameEq(colName, Columns.SIM_LOC_DATE, Columns.SIM_LOC_TIME)) return dataTimeDisplay == Settings.DATE_TIME_SIM_LOC;
+        if (contains(columnsVisible, colName))                                    return columnsVisible[colName];
 
         return nil;
     },
