@@ -44,6 +44,8 @@ var main = func(addon) {
     # Create $FG_HOME/Export/Addons/org.flightgear.addons.logbook directory
     addon.createStorageDir();
 
+    Config.useVersionCheck.byGitTag = true;
+
     Application
         .hookFilesExcludedFromLoading(func {
             var excluded = [

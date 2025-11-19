@@ -53,7 +53,7 @@ var LogbookDialog = {
         var obj = {
             parents : [
                 LogbookDialog,
-                StylePersistentDialog.new(windowWidth, windowHeight, "Logbook"),
+                StylePersistentDialog.new(windowWidth, windowHeight, me._getStandardTitle()),
             ],
             _storage : storage,
             _filters : filters,
@@ -118,6 +118,8 @@ var LogbookDialog = {
 
         obj._listeners = Listeners.new();
         obj._setListeners();
+
+        g_VersionChecker.registerCallback(Callback.new(obj._newVersionAvailable, obj));
 
         return obj;
     },
@@ -723,5 +725,26 @@ var LogbookDialog = {
         me.selectedRecordId = id;
         me._listView.removeHighlightingRow();
         me._listView.setHighlightingRow(index, me._style.SELECTED_BAR);
+    },
+
+    #
+    # Get window title.
+    #
+    # @return string
+    #
+    _getStandardTitle: func {
+        return g_Addon.name ~ " " ~ g_Addon.version.str();
+    },
+
+    #
+    # Callback called when a new version of add-on is detected.
+    #
+    # @param  string  newVersion
+    # @return void
+    #
+    _newVersionAvailable: func(newVersion) {
+        var title = sprintf("%s (new version %s is available)", me._getStandardTitle(), newVersion);
+
+        me._window.set("title", title);
     },
 };
