@@ -35,7 +35,6 @@ var test_listeners = func {
             nodeValue.setValue(node.getValue());
             unitTest.assert_equal(nodeValue.getValue(), 2);
         },
-        # type: namespace.Listeners.ON_CHANGE_ONLY,
     );
 
     unitTest.assert_equal(listeners.size(), 1);
@@ -43,6 +42,30 @@ var test_listeners = func {
     nodeListen.setValue(2);
 
     listeners.clear();
+
+    nodeListen.setValue(3);
+    unitTest.assert_equal(nodeValue.getValue(), 2);
+};
+
+var test_singleRunListeners = func {
+    var listeners = namespace.Listeners.new();
+
+    unitTest.assert_equal(listeners.size(), 0);
+
+    var handler = listeners.add(
+        node: nodeListen,
+        code: func(node) {
+            listeners.remove(handler);
+            nodeValue.setValue(node.getValue());
+            unitTest.assert_equal(nodeValue.getValue(), 2);
+        },
+    );
+
+    unitTest.assert_equal(listeners.size(), 1);
+
+    nodeListen.setValue(2);
+
+    # Now the listener is removed by listeners.remove(handler);
 
     nodeListen.setValue(3);
     unitTest.assert_equal(nodeValue.getValue(), 2);

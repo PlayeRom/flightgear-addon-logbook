@@ -8,25 +8,25 @@ This is a Framework project containing a set of classes and mechanisms to help c
 1. [Features in brief](#features-in-brief)
 2. [How to install](#how-to-install)
 3. [How to use it](#how-to-use-it)
-4. [Application Hooks](#application-hooks)
-5. [Reload add-on and `.env` file](#reload-add-on-and-env-file)
-6. [Canvas Dialog](#canvas-dialog)
+    1. [Application Hooks](#application-hooks)
+4. [Reload add-on and `.env` file](#reload-add-on-and-env-file)
+5. [Canvas Dialog](#canvas-dialog)
     1. [`PersistentDialog` Class](#persistentdialog-class)
     2. [Minimal example of creating a Transient dialog](#minimal-example-of-creating-a-transient-dialog)
     3. [Minimal example of creating a Persistent dialog](#minimal-example-of-creating-a-persistent-dialog)
     4. [Deferring Canvas loading](#deferring-canvas-loading)
-7. [Autoloader of Nasal files](#autoloader-of-nasal-files)
-8. [Namespaces](#namespaces)
-9. [Version Checker](#version-checker)
+6. [Autoloader of Nasal files](#autoloader-of-nasal-files)
+7. [Namespaces](#namespaces)
+8. [Version Checker](#version-checker)
     1. [Method 1. MetaDataVersionChecker](#method-1-metadataversionchecker)
     2. [Method 2. GitTagVersionChecker](#method-2-gittagversionchecker)
     3. [Version notation for add-on](#version-notation-for-add-on)
     4. [Version notation for git tags](#version-notation-for-git-tags)
     5. [Class diagram](#class-diagram)
     6. [How to notify the user about a new version?](#how-to-notify-the-user-about-a-new-version)
-10. [Framework Config](#framework-config)
-11. [Global Variables](#global-variables)
-12. [Class Diagram](#class-diagram-of-framework)
+9. [Framework Config](#framework-config)
+10. [Global Variables](#global-variables)
+11. [Class Diagram](#class-diagram-of-framework)
 
 ## Features in brief
 
@@ -58,15 +58,17 @@ your-addon/
 It's recommended using Git and its subtree for this purpose, which will allow you to automatically update the Framework. Assuming your add-on also uses Git, to do this, run:
 
 ```bash
-git subtree add --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash
+git subtree add --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git v1.0.0 --squash
 ```
+
+Change `v1.0.0` to the version you want to download.
 
 This will automatically create a `/framework` subdirectory in your directory with all the files.
 
-Then, to update the Framework, for example, from the `main` branch, simply run:
+Then, to update the Framework, for example, for the version `v.1.0.1`, simply run:
 
 ```bash
-git subtree pull --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git main --squash -m "Update framework"
+git subtree pull --prefix=framework git@github.com:PlayeRom/flightgear-addon-framework.git v1.0.1 --squash -m "Update framework"
 ```
 
 The directory does not have to be called `framework`, you can use any other name, but it cannot be `nasal` and you can't create more nested directories.
@@ -77,20 +79,33 @@ Alternatively, you can also download [Canvas Skeleton](https://github.com/PlayeR
 
 Assuming the Framework project is in the `/framework` directory, copy the contents of this framework's `/framework/addon-main.nas` file and paste it into your add-on's `/addon-main.nas` file and make the following modifications:
 
-1. Replace the entry `io.include('nasal/Application.nas');` with `io.include('framework/nasal/Application.nas');`.
-2. In the `.gitignore` file, add a line with the `.env` entry.
+1. Modify the entry `io.include('nasal/Application.nas');` by adding the directory where you placed the Framework, e.g.: `io.include('framework/nasal/Application.nas');`.
+2. Use the appropriate hooks (see [Application hooks](#application-hooks)).
+3. Additionally in the `.gitignore` file, add a line with the `.env` entry.
 
-## Application Hooks
+### Application Hooks
 
 Now your `/addon-main.nas` file (your add-on's, not the framework's) should contain a `main` function where is using `Application` class with some hooks functions to fill in. Each hook function is optional, and if you don't need one, you can remove it entirely. If necessary, the `/framework/addon-main.nas` file will contain the entire template from which you can copy.
 
-1. `hookFilesExcludedFromLoading` ─ here you can specify vector as a list of Nasal files to be excluded from loading (by default the framework automatically loads almost everything). Files must be specified with a path relative to the add-on's root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if you don't use a certain Nasal file, but you also don't want to remove it from your project.
+#### `hookFilesExcludedFromLoading`
 
-2. `hookOnInit` ─ this function will be called by the framework upon initialization. Here, you can instantiate your objects, but not those related to Canvas. This could be, for example, some logic in your add-on.
+Here you can specify vector as a list of Nasal files to be excluded from loading (by default the framework automatically loads almost everything). Files must be specified with a path relative to the add-on's root directory and must start with `/` (where `/` represents the add-on's root directory). This can be useful if you don't use a certain Nasal file, but you also don't want to remove it from your project.
 
-3. `hookOnInitCanvas` ─ this function will be called by the framework when it's time to initialize the Canvas objects ─ this will happen 3 seconds after `hookOnInit()`. Here you can instantiate your windows in Canvas.
+#### `hookOnInit`
 
-4. `hookExcludedMenuNamesForEnabled` ─ a very specific function to keep the given menu items disabled after loading the Canvas (see [Deferring Canvas loading](#deferring-canvas-loading)).
+This function will be called by the framework upon initialization. Here, you can instantiate your objects, but not those related to Canvas. This could be, for example, some logic in your add-on.
+
+#### `hookOnInitCanvas`
+
+This function will be called by the framework when it's time to initialize the Canvas objects ─ this will happen 3 seconds after `hookOnInit()`. Here you can instantiate your windows in Canvas.
+
+#### `hookExcludedMenuNamesForEnabled`
+
+A very specific function to keep the given menu items disabled after loading the Canvas (see [Deferring Canvas loading](#deferring-canvas-loading)).
+
+#### `unload`
+
+The `/addon-main.nas` file may also contain an `unload` function, which is run by FlightGear when reloading the add-on's Nasal files. For this restart to be successful, you should free all resources you created in `hookOnInit` or `hookOnInitCanvas` here.
 
 ## Reload add-on and `.env` file
 
@@ -479,3 +494,12 @@ By default, it's set to LOG_INFO, so to see the logs from `Log.print()`, you'd h
 ## Class Diagram of Framework
 
 ![alt Class Diagram](docs/class-diagram.png "Class Diagram")
+
+## Add-ons using this Framework
+
+1. [Canvas Skeleton](https://github.com/PlayeRom/flightgear-addon-canvas-skeleton)
+2. [Logbook](https://github.com/PlayeRom/flightgear-addon-logbook)
+3. [Which Runway](https://github.com/PlayeRom/flightgear-addon-which-runway)
+4. [Aerotow Everywhere](https://github.com/PlayeRom/flightgear-addon-aerotow-everywhere)
+5. [Nasal Namespace Browser](https://github.com/PlayeRom/flightgear-addon-nasal-namespace-browser)
+6. [Add-on Menu Aggregator](https://github.com/PlayeRom/flightgear-addon-menu-aggregator)
