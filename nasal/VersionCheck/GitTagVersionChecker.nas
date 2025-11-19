@@ -44,7 +44,9 @@ var GitTagVersionChecker = {
 
         if (domain == 'github.com') {
             return 'https://api.github.com/repos/' ~ user ~ '/' ~ repo ~ '/releases/latest';
-        } elsif (domain == 'gitlab.com') {
+        }
+
+        if (domain == 'gitlab.com') {
             var project = Utils.urlEncode(user ~ '/' ~ repo);
             return 'https://gitlab.com/api/v4/projects/' ~ project ~ '/releases/permalink/latest';
         }

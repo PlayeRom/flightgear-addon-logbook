@@ -73,6 +73,19 @@ var Listeners = {
     },
 
     #
+    # Remove listener by given handler.
+    #
+    # @param  int  Listener handler.
+    # @return void
+    #
+    remove: func(handler) {
+        if (me._listeners.contains(handler)) {
+            removelistener(handler);
+            me._listeners.remove(handler);
+        }
+    },
+
+    #
     # Remove all listeners added to me._listeners vector.
     #
     # @return void

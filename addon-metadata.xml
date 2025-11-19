@@ -22,7 +22,7 @@
     <addon>
         <identifier type="string">org.flightgear.addons.framework</identifier>
         <name type="string">Framework</name>
-        <version type="string">1.0.0</version>
+        <version type="string">1.1.0</version>
 
         <authors>
             <author>

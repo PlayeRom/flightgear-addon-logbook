@@ -75,13 +75,11 @@ var FGVersion = {
     # @return ghost
     #
     _getVersionObj: func(version) {
-        if (me._usedVersions.contains(version)) {
-            return me._usedVersions.get(version);
+        if (!me._usedVersions.contains(version)) {
+            var versionObj = addons.AddonVersion.new(version);
+            me._usedVersions.set(version, versionObj);
         }
 
-        var versionObj = addons.AddonVersion.new(version);
-        me._usedVersions.set(version, versionObj);
-
-        return versionObj;
+        return me._usedVersions.get(version);
     },
 };

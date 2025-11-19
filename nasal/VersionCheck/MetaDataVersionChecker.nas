@@ -42,10 +42,10 @@ var MetaDataVersionChecker = {
     _getUrl: func {
         var (domain, user, repo) = me.getUserAndRepoNames();
 
-           if (domain == 'github.com')      return 'https://raw.githubusercontent.com/' ~ user ~ '/' ~ repo ~ '/HEAD/addon-metadata.xml';
-        elsif (domain == 'gitlab.com')      return 'https://gitlab.com/' ~ user ~ '/' ~ repo ~ '/-/raw/HEAD/addon-metadata.xml';
-        elsif (domain == 'sourceforge.net') return 'https://sourceforge.net/p/' ~ repo ~ '/addon-metadata.xml?format=raw';
-        elsif (domain == 'fgaddon')         return 'https://sourceforge.net/p/flightgear/fgaddon/HEAD/tree/trunk/Addons/' ~ repo ~ '/addon-metadata.xml?format=raw';
+        if (domain == 'github.com')      return 'https://raw.githubusercontent.com/' ~ user ~ '/' ~ repo ~ '/HEAD/addon-metadata.xml';
+        if (domain == 'gitlab.com')      return 'https://gitlab.com/' ~ user ~ '/' ~ repo ~ '/-/raw/HEAD/addon-metadata.xml';
+        if (domain == 'sourceforge.net') return 'https://sourceforge.net/p/' ~ repo ~ '/addon-metadata.xml?format=raw';
+        if (domain == 'fgaddon')         return 'https://sourceforge.net/p/flightgear/fgaddon/HEAD/tree/trunk/Addons/' ~ repo ~ '/addon-metadata.xml?format=raw';
 
         # TODO: add support for more repos if needed.
 

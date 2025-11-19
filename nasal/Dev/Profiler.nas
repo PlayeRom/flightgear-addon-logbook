@@ -34,23 +34,23 @@ var Profiler = {
     #
     # Stop profiler and log result.
     #
-    # @return double  Measurement time in seconds.
+    # @return double  Measurement time in milliseconds.
     #
     stop: func {
         var count = me._stack.size();
 
         if (count == 0) {
-            Log.print('profiler time = ? seconds. FIRST RUN start() METHOD.');
-            return 0;
+            Log.warning('profiler time = ? seconds. FIRST RUN start() METHOD.');
+            return -1;
         }
 
         var item = me._stack.pop(count - 1);
 
-        var time = systime() - item.startTime;
+        var ms = (systime() - item.startTime) * 1000;
 
-        Log.print('profiler time = ', (time * 1000), ' ms. ', item.message);
+        Log.print('profiler time = ', ms, ' ms. ', item.message);
 
-        return time;
+        return ms;
     },
 
     #
