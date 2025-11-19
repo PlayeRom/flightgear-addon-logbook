@@ -67,7 +67,7 @@ var ConfirmationDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -99,7 +99,7 @@ var ConfirmationDialog = {
     #
     # @return void
     #
-    _actionPositive: func() {
+    _actionPositive: func {
         g_Sound.play('delete');
 
         if (me._parentObj == nil) {
@@ -121,7 +121,7 @@ var ConfirmationDialog = {
     #
     # @return void
     #
-    _actionNegative: func() {
+    _actionNegative: func {
         call(PersistentDialog.hide, [], me);
     },
 };

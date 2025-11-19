@@ -18,7 +18,7 @@ var Sound = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Sound] };
 
         # Unfortunately, reading wav from $FG_ROOT does not work:
@@ -49,7 +49,7 @@ var Sound = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
     },
 
     #

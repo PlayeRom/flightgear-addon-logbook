@@ -38,7 +38,7 @@ var DB = {
     #
     # @return void
     #
-    close: func() {
+    close: func {
         if (DB._handler != nil) {
             sqlite.close(DB._handler);
             DB._handler = nil;
@@ -61,7 +61,7 @@ var DB = {
     # @param  args  First argument must be a query, next optional values.
     # @return vector
     #
-    exec: func() {
+    exec: func {
         return call(sqlite.exec, [DB._handler] ~ arg);
     },
 

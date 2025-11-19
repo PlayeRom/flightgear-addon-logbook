@@ -35,7 +35,7 @@ var Settings = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Settings] };
 
         obj._pathToSettingsProp = g_Addon.node.getPath() ~ "/addon-devel/settings";
@@ -79,7 +79,7 @@ var Settings = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         #
     },
 
@@ -88,7 +88,7 @@ var Settings = {
     #
     # @return int
     #
-    getLogItemsPerPage: func() {
+    getLogItemsPerPage: func {
         return me._itemsPerPageNode.getIntValue();
     },
 
@@ -121,7 +121,7 @@ var Settings = {
     #
     # @return bool
     #
-    isDarkStyle: func() {
+    isDarkStyle: func {
         return me._darkModeNode.getBoolValue();
     },
 
@@ -154,7 +154,7 @@ var Settings = {
     #
     # @return bool
     #
-    isRealTimeDuration: func() {
+    isRealTimeDuration: func {
         return me._realTimeNode.getBoolValue();
     },
 
@@ -171,7 +171,7 @@ var Settings = {
     #
     # @return bool
     #
-    isSoundEnabled: func() {
+    isSoundEnabled: func {
         return me._soundEnabledNode.getBoolValue();
     },
 
@@ -193,7 +193,7 @@ var Settings = {
     #
     # @return string
     #
-    getDateTimeDisplay: func() {
+    getDateTimeDisplay: func {
         return me._dateTimeDisplayNode.getValue();
     },
 
@@ -222,7 +222,7 @@ var Settings = {
     #
     # @return hash
     #
-    getColumnsVisible: func() {
+    getColumnsVisible: func {
         var columnsVisibleNode = me._settingsNode.getNode("columns-visible");
 
         var hash = {};
@@ -249,7 +249,7 @@ var Settings = {
     #
     # @return double
     #
-    getTrackerIntervalSec: func() {
+    getTrackerIntervalSec: func {
         return me._trackerIntervalSecNode.getDoubleValue();
     },
 
@@ -284,7 +284,7 @@ var Settings = {
     #
     # @return string
     #
-    getMapProvider: func() {
+    getMapProvider: func {
         return me._mapProviderNode.getValue();
     },
 

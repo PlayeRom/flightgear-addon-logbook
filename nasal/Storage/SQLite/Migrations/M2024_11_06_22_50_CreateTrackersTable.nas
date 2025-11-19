@@ -15,7 +15,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents : [
                 M2024_11_06_22_50_CreateTrackersTable,
@@ -29,7 +29,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # @return void
     #
-    up: func() {
+    up: func {
         me._createTrackersTable();
     },
 
@@ -38,7 +38,7 @@ var M2024_11_06_22_50_CreateTrackersTable = {
     #
     # @return void
     #
-    _createTrackersTable: func() {
+    _createTrackersTable: func {
         var columns = [
             { name: "id",           type: "INTEGER PRIMARY KEY" },
             { name: "logbook_id",   type: "INTEGER" },

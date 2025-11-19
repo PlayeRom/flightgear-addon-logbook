@@ -307,7 +307,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    setFontSizeSmall: func() {
+    setFontSizeSmall: func {
         me._view.setFontSize(model: me, fontSize: 12);
         return me;
     },
@@ -315,7 +315,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    setFontSizeMedium: func() {
+    setFontSizeMedium: func {
         me._view.setFontSize(model: me, fontSize: 14);
         return me;
     },
@@ -323,7 +323,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    setFontSizeLarge: func() {
+    setFontSizeLarge: func {
         me._view.setFontSize(model: me, fontSize: 16);
         return me;
     },
@@ -407,7 +407,7 @@ gui.widgets.LogbookList = {
     #
     # @return int|nil
     #
-    getHighlightingRow: func() {
+    getHighlightingRow: func {
         return me._highlightingRowIndex;
     },
 
@@ -416,7 +416,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    removeHighlightingRow: func() {
+    removeHighlightingRow: func {
         if (me._highlightingRowIndex != nil) {
             me._view.removeHighlightingRow(me);
             me._highlightingRowIndex = nil;
@@ -431,7 +431,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    enableLoading: func() {
+    enableLoading: func {
         me._isLoading = 1;
         me._view.reDrawContent(me);
         return me;
@@ -442,7 +442,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    disableLoading: func() {
+    disableLoading: func {
         me._isLoading = 0;
         me._view.reDrawContent(me);
         return me;
@@ -451,7 +451,7 @@ gui.widgets.LogbookList = {
     #
     # @return bool
     #
-    isLoading: func() {
+    isLoading: func {
         return me._isLoading;
     },
 
@@ -461,7 +461,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    useTextMaxWidth: func() {
+    useTextMaxWidth: func {
         me._isUseTextMaxWidth = 1;
         return me;
     },
@@ -472,7 +472,7 @@ gui.widgets.LogbookList = {
     #
     # @return ghost
     #
-    useOptimizeRow: func() {
+    useOptimizeRow: func {
         me._isOptimizeRow = 1;
         return me;
     },

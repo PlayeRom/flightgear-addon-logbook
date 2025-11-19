@@ -29,7 +29,7 @@ var Exporter = {
     #
     # Destructor
     #
-    del: func() {
+    del: func {
         #
     },
 
@@ -38,7 +38,7 @@ var Exporter = {
     #
     # @return void
     #
-    exportToCsv: func() {
+    exportToCsv: func {
         thread.newthread(func {
             var (logbook, tracker) = me._getCsvFileNames();
 
@@ -54,7 +54,7 @@ var Exporter = {
     #
     # @return vector  First file name for logbook table, second for tracker.
     #
-    _getCsvFileNames: func() {
+    _getCsvFileNames: func {
         var year   = getprop("/sim/time/real/year");
         var month  = getprop("/sim/time/real/month");
         var day    = getprop("/sim/time/real/day");

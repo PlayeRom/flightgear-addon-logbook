@@ -47,7 +47,7 @@ var Recovery = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me.stop();
     },
 
@@ -65,7 +65,7 @@ var Recovery = {
     #
     # @return void
     #
-    stop: func() {
+    stop: func {
         me._timer.stop();
     },
 
@@ -74,7 +74,7 @@ var Recovery = {
     #
     # @return void
     #
-    _update: func() {
+    _update: func {
         me._callback.invoke();
     },
 
@@ -95,7 +95,7 @@ var Recovery = {
     #
     # @return void
     #
-    clear: func() {
+    clear: func {
         var file = io.open(me._filePath, "w");
         io.close(file);
     },
@@ -105,7 +105,7 @@ var Recovery = {
     #
     # @return nil
     #
-    getLogbookId: func() {
+    getLogbookId: func {
         return nil;
     },
 
@@ -115,7 +115,7 @@ var Recovery = {
     #
     # @return void
     #
-    _restore: func() {
+    _restore: func {
         if (Utils.fileExists(me._filePath)) {
             var file = io.open(me._filePath, "r");
             var line = io.readln(file);

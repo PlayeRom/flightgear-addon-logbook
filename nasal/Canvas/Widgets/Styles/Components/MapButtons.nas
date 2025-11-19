@@ -18,7 +18,7 @@ var MapButtons = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents     : [MapButtons],
             _SIZE       : 32,  # button/image size in pixels
@@ -56,7 +56,7 @@ var MapButtons = {
                     me._POS_Y + ((me._SIZE + me._MARGIN) * i),
                 );
 
-            func() {
+            func {
                 var index = i;
                 me._setEvents(model, me._buttons[index], index);
             }();

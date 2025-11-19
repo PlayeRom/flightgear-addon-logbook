@@ -310,7 +310,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
             me._createRow(model, item, x, y);
 
             # TODO: event listeners should be move to model
-            func() {
+            func {
                 var innerIndex = index;
                 me._itemElements[innerIndex].group.addEventListener("mouseenter", func {
                     if (model._highlightingRowIndex != innerIndex) {
@@ -495,7 +495,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
     #
     # @return double
     #
-    _getMonoCharWidth: func() {
+    _getMonoCharWidth: func {
         # Unfortunately, the more characters, the more pixels per character, even though the font is mono.
         # The following calculations are for a string with 12 characters.
         # if (me._fontSize == 12) return 7;   # 7.0625
@@ -658,7 +658,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
     #
     # @return int
     #
-    _getTextYOffset: func() {
+    _getTextYOffset: func {
         if (me._fontSize == 12) return 16;
         if (me._fontSize == 14) return 17;
         if (me._fontSize == 16) return 18;
@@ -679,7 +679,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
     #
     # @return ghost
     #
-    _deleteElements: func() {
+    _deleteElements: func {
         if (me._loadingText != nil) {
             me._loadingText.del();
             me._loadingText = nil;

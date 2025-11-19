@@ -18,37 +18,37 @@ var Migration = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Migration] };
 
         obj._migrations = [
             {
                 name    : "M2024_10_30_08_44_CreateMigrationsTable",
-                function: func() {
+                function: func {
                     M2024_10_30_08_44_CreateMigrationsTable.new().up();
                 },
             },
             {
                 name    : "M2024_10_30_13_01_CreateLogbooksTable",
-                function: func() {
+                function: func {
                     M2024_10_30_13_01_CreateLogbooksTable.new().up();
                 },
             },
             {
                 name    : "M2024_11_04_11_53_AddSimTimeColumns",
-                function: func() {
+                function: func {
                     M2024_11_04_11_53_AddSimTimeColumns.new().up();
                 },
             },
             {
                 name    : "M2024_11_06_22_42_AddSpeedColumns",
-                function: func() {
+                function: func {
                     M2024_11_06_22_42_AddSpeedColumns.new().up();
                 },
             },
             {
                 name    : "M2024_11_06_22_50_CreateTrackersTable",
-                function: func() {
+                function: func {
                     M2024_11_06_22_50_CreateTrackersTable.new().up();
                 },
             }
@@ -68,7 +68,7 @@ var Migration = {
     #
     # @return void
     #
-    migrate: func() {
+    migrate: func {
         foreach (var migration; me._migrations) {
             if (!me._isMigrationExists(migration.name)) {
                 Log.alert("call migration: ", migration.name);
@@ -106,7 +106,7 @@ var Migration = {
     #
     # @return bool  True if the `migrations` table already exists.
     #
-    _isMigrationsTableExists: func() {
+    _isMigrationsTableExists: func {
         if (me._isMigrationsTable) {
             return true;
         }

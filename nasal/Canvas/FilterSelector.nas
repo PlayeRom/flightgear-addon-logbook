@@ -77,7 +77,7 @@ var FilterSelector = {
     # @return void
     # @override StylePersistentDialog
     #
-    del: func() {
+    del: func {
         call(StylePersistentDialog.del, [], me);
     },
 
@@ -87,7 +87,7 @@ var FilterSelector = {
     # @return void
     # @override StylePersistentDialog
     #
-    hide: func() {
+    hide: func {
         call(StylePersistentDialog.hide, [], me);
     },
 
@@ -97,7 +97,7 @@ var FilterSelector = {
     # @return void
     # @override StylePersistentDialog
     #
-    show: func() {
+    show: func {
         me._recalculateWindowHeight();
 
         call(StylePersistentDialog.show, [], me);
@@ -165,7 +165,7 @@ var FilterSelector = {
     #
     # @return void
     #
-    _recalculateWindowHeight: func() {
+    _recalculateWindowHeight: func {
         var count = me._items.size() + 1 + me.SEPARATOR_H_MULTIPLIER; # +1 for title bar
 
         var windowHeight = int(count * canvas.DefaultStyle.widgets["logbook-list-view"].ITEM_HEIGHT);
@@ -231,7 +231,7 @@ var FilterSelector = {
     #
     # @return void
     #
-    _drawContent: func() {
+    _drawContent: func {
         me._vbox.clear();
 
         var margins = {
@@ -254,7 +254,7 @@ var FilterSelector = {
     #
     # @return void
     #
-    _drawScrollable: func() {
+    _drawScrollable: func {
         var vBoxLayout = canvas.VBoxLayout.new();
 
         me._listView = canvas.gui.widgets.LogbookList.new(me._scrollContent)

@@ -101,7 +101,7 @@ var StylePersistentDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -111,7 +111,7 @@ var StylePersistentDialog = {
     # @return void
     # @override PersistentDialog
     #
-    show: func() {
+    show: func {
         call(PersistentDialog.show, [], me);
     },
 
@@ -121,7 +121,7 @@ var StylePersistentDialog = {
     # @return void
     # @override PersistentDialog
     #
-    hide: func() {
+    hide: func {
         call(PersistentDialog.hide, [], me);
     },
 
@@ -130,7 +130,7 @@ var StylePersistentDialog = {
     #
     # @return hash
     #
-    getStyle: func() {
+    getStyle: func {
         return StylePersistentDialog._STYLES;
     },
 
@@ -139,7 +139,7 @@ var StylePersistentDialog = {
     #
     # @return void
     #
-    toggleBgImage: func() {
+    toggleBgImage: func {
         me._style.NAME == "dark"
             ? me._bgImage.hide()
             : me._bgImage.show();

@@ -94,7 +94,7 @@ var DetailsDialog = {
     # @return void
     # @override StylePersistentDialog
     #
-    del: func() {
+    del: func {
         if (me._flightAnalysisDialog != nil) {
             me._flightAnalysisDialog.del();
             me._flightAnalysisDialog = nil;
@@ -109,21 +109,21 @@ var DetailsDialog = {
     #
     # @return ghost  LogbookList widget.
     #
-    getListView: func() {
+    getListView: func {
         return me._listView;
     },
 
     #
     # @return hash  InputDialog object.
     #
-    getInputDialog: func() {
+    getInputDialog: func {
         return me._inputDialog;
     },
 
     #
     # @return void
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var buttonBox = canvas.HBoxLayout.new();
 
         var btnClose = me._widget.getButton("Close", func me.hide(), 75);
@@ -191,7 +191,7 @@ var DetailsDialog = {
     #
     # @return ghost  LogbookList widget.
     #
-    _setListViewStyle: func() {
+    _setListViewStyle: func {
         return me._listView
             .setColorText(me._style.TEXT_COLOR)
             .setColorBackground(me._style.LIST_BG)
@@ -238,7 +238,7 @@ var DetailsDialog = {
     # @return void
     # @override StylePersistentDialog
     #
-    hide: func() {
+    hide: func {
         if (me._parent != nil) {
             # Remove highlighted row in LogbookDialog
             me._parent.getListView().removeHighlightingRow();
@@ -302,7 +302,7 @@ var DetailsDialog = {
     #
     # @return void
     #
-    reload: func() {
+    reload: func {
         if (me._logbookId == nil) {
             return;
         }

@@ -78,7 +78,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    setOpenStreetMap: func() {
+    setOpenStreetMap: func {
         me._makeUrl  = string.compileTemplate('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
         me._makePath = string.compileTemplate(me._mapsBase ~ '/osm-cache/{z}/{x}/{y}.png');
         me._colorFill = [1.0, 1.0, 1.0, 0.7];
@@ -90,7 +90,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    setOpenTopoMap: func() {
+    setOpenTopoMap: func {
         me._makeUrl  = string.compileTemplate('https://tile.opentopomap.org/{z}/{x}/{y}.png');
         me._makePath = string.compileTemplate(me._mapsBase ~ '/opentopomap-cache/{z}/{x}/{y}.png');
         me._colorFill = [1.0, 1.0, 1.0, 0.5];
@@ -160,7 +160,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    hardUpdateView: func() {
+    hardUpdateView: func {
         me._view.reDrawContent(me);
     },
 
@@ -179,14 +179,14 @@ gui.widgets.FlightMap = {
     #
     # @return int
     #
-    getTrackLastIndex: func() {
+    getTrackLastIndex: func {
         return me._trackItemsSize - 1;
     },
 
     #
     # @return int
     #
-    getTrackItemsSize: func() {
+    getTrackItemsSize: func {
         return me._trackItemsSize;
     },
 
@@ -195,7 +195,7 @@ gui.widgets.FlightMap = {
     #
     # @return hash
     #
-    getCurrentTrackItem: func() {
+    getCurrentTrackItem: func {
         return me.getTrackItemByPosition(me._position);
     },
 
@@ -213,7 +213,7 @@ gui.widgets.FlightMap = {
     #
     # @return ghost
     #
-    zoomIn: func() {
+    zoomIn: func {
         me._changeZoom(direction: 1);
 
         me._view.updateTiles(me);
@@ -226,7 +226,7 @@ gui.widgets.FlightMap = {
     #
     # @return ghost
     #
-    zoomOut: func() {
+    zoomOut: func {
         me._changeZoom(direction: -1);
 
         me._view.updateTiles(me);
@@ -252,7 +252,7 @@ gui.widgets.FlightMap = {
     #
     # @return ghost
     #
-    goStartTrack: func() {
+    goStartTrack: func {
         me._position = 0;
 
         me._view.updateTiles(me);
@@ -265,7 +265,7 @@ gui.widgets.FlightMap = {
     #
     # @return ghost
     #
-    goEndTrack: func() {
+    goEndTrack: func {
         me._position = me.getTrackLastIndex();
 
         me._view.updateTiles(me);
@@ -327,7 +327,7 @@ gui.widgets.FlightMap = {
     #
     # @return int  Index position of me_tractItems vector
     #
-    getTrackPosition: func() {
+    getTrackPosition: func {
         return me._position;
     },
 
@@ -336,7 +336,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    _protectMinPosition: func() {
+    _protectMinPosition: func {
         if (me._position < 0) {
             me._position = 0;
         }
@@ -347,7 +347,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    _protectMaxPosition: func() {
+    _protectMaxPosition: func {
         var lastRowsIndex = me.getTrackLastIndex();
         if (me._position > lastRowsIndex) {
             me._position = lastRowsIndex;
@@ -359,7 +359,7 @@ gui.widgets.FlightMap = {
     #
     # @return int  Map zoom level
     #
-    getZoomLevel: func() {
+    getZoomLevel: func {
         return me._zoom;
     },
 
@@ -382,7 +382,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    _updatePosition: func() {
+    _updatePosition: func {
         if (me._callbackPos != nil) {
             call(me._callbackPos, [me._position], me._objCallbackPos);
         }
@@ -407,7 +407,7 @@ gui.widgets.FlightMap = {
     #
     # @return void
     #
-    _updateZoom: func() {
+    _updateZoom: func {
         if (me._callbackZoom != nil) {
             call(me._callbackZoom, [], me._objCallbackZoom);
         }

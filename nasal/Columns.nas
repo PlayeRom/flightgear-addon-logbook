@@ -50,7 +50,7 @@ var Columns = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Columns] };
 
         obj._isUsingSQLite = Utils.isUsingSQLite();
@@ -131,14 +131,14 @@ var Columns = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         #
     },
 
     #
     # @return vector  Vector with all columns
     #
-    getAll: func() {
+    getAll: func {
         return me._allColumns;
     },
 
@@ -147,7 +147,7 @@ var Columns = {
     #
     # @return int
     #
-    getSumWidth: func() {
+    getSumWidth: func {
         var sum = 0;
 
         foreach (var columnItem; me._allColumns) {
@@ -224,7 +224,7 @@ var Columns = {
     #
     # @return string
     #
-    getColumnDate: func() {
+    getColumnDate: func {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
 
         if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_DATE;
@@ -238,7 +238,7 @@ var Columns = {
     #
     # @return string
     #
-    getColumnTime: func() {
+    getColumnTime: func {
         var dataTimeDisplay = g_Settings.getDateTimeDisplay();
 
         if (dataTimeDisplay == Settings.DATE_TIME_SIM_UTC) return Columns.SIM_UTC_TIME;
@@ -252,7 +252,7 @@ var Columns = {
     #
     # @return void
     #
-    updateColumnsVisible: func() {
+    updateColumnsVisible: func {
         if (!me._isUsingSQLite) {
             return;
         }

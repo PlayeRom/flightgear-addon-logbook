@@ -175,7 +175,7 @@ gui.widgets.FlightProfile = {
     #
     # @return void
     #
-    hardUpdateView: func() {
+    hardUpdateView: func {
         me._view.reDrawContent(me);
     },
 
@@ -194,14 +194,14 @@ gui.widgets.FlightProfile = {
     #
     # @return int
     #
-    getTrackLastIndex: func() {
+    getTrackLastIndex: func {
         return me._trackItemsSize - 1;
     },
 
     #
     # @return int
     #
-    getTrackItemsSize: func() {
+    getTrackItemsSize: func {
         return me._trackItemsSize;
     },
 
@@ -210,7 +210,7 @@ gui.widgets.FlightProfile = {
     #
     # @return hash
     #
-    getCurrentTrackItem: func() {
+    getCurrentTrackItem: func {
         return me.getTrackItemByPosition(me._position);
     },
 
@@ -228,7 +228,7 @@ gui.widgets.FlightProfile = {
     #
     # @return ghost
     #
-    goStartTrack: func() {
+    goStartTrack: func {
         me._position = 0;
 
         me._view.updateAircraftPosition(me);
@@ -241,7 +241,7 @@ gui.widgets.FlightProfile = {
     #
     # @return ghost
     #
-    goEndTrack: func() {
+    goEndTrack: func {
         me._position = me.getTrackLastIndex();
 
         me._view.updateAircraftPosition(me);
@@ -303,7 +303,7 @@ gui.widgets.FlightProfile = {
     #
     # @return int  Index position of me_tractItems vector
     #
-    getTrackPosition: func() {
+    getTrackPosition: func {
         return me._position;
     },
 
@@ -312,7 +312,7 @@ gui.widgets.FlightProfile = {
     #
     # @return void
     #
-    _protectMinPosition: func() {
+    _protectMinPosition: func {
         if (me._position < 0) {
             me._position = 0;
         }
@@ -323,7 +323,7 @@ gui.widgets.FlightProfile = {
     #
     # @return void
     #
-    _protectMaxPosition: func() {
+    _protectMaxPosition: func {
         var lastRowsIndex = me.getTrackLastIndex();
         if (me._position > lastRowsIndex) {
             me._position = lastRowsIndex;
@@ -348,7 +348,7 @@ gui.widgets.FlightProfile = {
     #
     # @return void
     #
-    _updatePosition: func() {
+    _updatePosition: func {
         if (me._callbackPos != nil) {
             call(me._callbackPos, [me._position], me._objCallbackPos);
         }
@@ -367,14 +367,14 @@ gui.widgets.FlightProfile = {
     #
     # @return bool  Return true if draw mode is "time"
     #
-    isDrawModeTime: func() {
+    isDrawModeTime: func {
         return me._drawMode == gui.widgets.FlightProfile.DRAW_MODE_TIMESTAMP;
     },
 
     #
     # @return bool  Return true if draw mode is "distance"
     #
-    isDrawModeDistance: func() {
+    isDrawModeDistance: func {
         return me._drawMode == gui.widgets.FlightProfile.DRAW_MODE_DISTANCE;
     },
 
@@ -383,7 +383,7 @@ gui.widgets.FlightProfile = {
     #
     # @return ghost
     #
-    zoomIn: func() {
+    zoomIn: func {
         if (me._changeZoom(direction: 1)) {
             me._view.reDrawContent(me);
         }
@@ -396,7 +396,7 @@ gui.widgets.FlightProfile = {
     #
     # @return ghost
     #
-    zoomOut: func() {
+    zoomOut: func {
         if (me._changeZoom(direction: -1)) {
             me._view.reDrawContent(me);
         }
@@ -429,7 +429,7 @@ gui.widgets.FlightProfile = {
     #
     # @return int  Profile zoom level
     #
-    getZoomLevel: func() {
+    getZoomLevel: func {
         return me._zoom;
     },
 
@@ -438,7 +438,7 @@ gui.widgets.FlightProfile = {
     #
     # @return int  Max zoom level
     #
-    getMaxZoomLevel: func() {
+    getMaxZoomLevel: func {
         return me._view.getMaxZoomLevel();
     },
 
@@ -461,7 +461,7 @@ gui.widgets.FlightProfile = {
     #
     # @return void
     #
-    _updateZoom: func() {
+    _updateZoom: func {
         if (me._callbackZoom != nil) {
             call(me._callbackZoom, [], me._objCallbackZoom);
         }

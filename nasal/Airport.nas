@@ -18,7 +18,7 @@ var Airport = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return { parents: [Airport] };
     },
 
@@ -42,7 +42,7 @@ var Airport = {
     #
     # @return hash|nil  Hash with distanceM (in meters) to the nearest airport as icao, or nil if none.
     #
-    _getNearestAirportDistanceM: func() {
+    _getNearestAirportDistanceM: func {
         var nearestAirport = airportinfo();
         if (nearestAirport != nil) {
             var aircraftCoord = geo.aircraft_position();

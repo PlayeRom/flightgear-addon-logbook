@@ -60,7 +60,7 @@ var Storage = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me._exporter.del();
         DB.close();
     },
@@ -68,7 +68,7 @@ var Storage = {
     #
     # @return string  Full path to sqlite file.
     #
-    _getPathToFile: func() {
+    _getPathToFile: func {
         return g_Addon.storagePath ~ "/" ~ Storage.LOGBOOK_FILE;
     },
 
@@ -77,7 +77,7 @@ var Storage = {
     #
     # @return void
     #
-    exportToCsv: func() {
+    exportToCsv: func {
         me._exporter.exportToCsv();
     },
 
@@ -274,7 +274,7 @@ var Storage = {
     #
     # @return void
     #
-    loadAllData: func() {
+    loadAllData: func {
         me._loadAllFilters();
 
         # Enable Logbook menu because we have a data
@@ -288,7 +288,7 @@ var Storage = {
     #
     # @return void
     #
-    _loadAllFilters: func() {
+    _loadAllFilters: func {
         me._filters.clear();
 
         me._updateFilterData(me._columns.getColumnDate());
@@ -420,7 +420,7 @@ var Storage = {
     #
     # @return string
     #
-    _getWhereQueryFilters: func() {
+    _getWhereQueryFilters: func {
         var where = "";
         foreach (var filterData; me._filters.appliedFilters.vector) {
             where ~= (size(where) == 0)
@@ -445,7 +445,7 @@ var Storage = {
     #
     # @return string
     #
-    _getSelectLoadDataRange: func() {
+    _getSelectLoadDataRange: func {
         var select = "`id`";
 
         foreach (var columnItem; me._columns.getAll()) {
@@ -629,7 +629,7 @@ var Storage = {
     #
     # @return int
     #
-    getTotalLines: func() {
+    getTotalLines: func {
         # Build where from filters
         var where = me._getWhereQueryFilters();
 
@@ -757,7 +757,7 @@ var Storage = {
     #
     # @return bool
     #
-    vacuumSQLite: func() {
+    vacuumSQLite: func {
         var rows = DB.exec("VACUUM;");
         return typeof(rows) == 'vector' and size(rows) == 0;
     },

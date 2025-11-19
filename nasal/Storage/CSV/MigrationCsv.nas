@@ -18,7 +18,7 @@ var MigrationCsv = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return { parents: [MigrationCsv] };
     },
 
@@ -63,7 +63,7 @@ var MigrationCsv = {
     migrateToFileVersion_2: func(oldFilePath, newFilePath) {
         # Add extra column "Type" (as aircraft type) after "Aircraft" column.
 
-        me._migrate(oldFilePath, newFilePath, func() {
+        me._migrate(oldFilePath, newFilePath, func {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~
@@ -113,7 +113,7 @@ var MigrationCsv = {
     migrateToFileVersion_3: func(oldFilePath, newFilePath) {
         # Add extra column "Variant" (as aircraft variant) after "Aircraft" column.
 
-        me._migrate(oldFilePath, newFilePath, func() {
+        me._migrate(oldFilePath, newFilePath, func {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~
@@ -165,7 +165,7 @@ var MigrationCsv = {
     migrateToFileVersion_4: func(oldFilePath, newFilePath) {
         # Rename "Landings" to "Landing", add quotes for "Aircraft" column.
 
-        me._migrate(oldFilePath, newFilePath, func() {
+        me._migrate(oldFilePath, newFilePath, func {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~
@@ -217,7 +217,7 @@ var MigrationCsv = {
     migrateToFileVersion_5: func(oldFilePath, newFilePath) {
         # Add new columns for multiplayer durations.
 
-        me._migrate(oldFilePath, newFilePath, func() {
+        me._migrate(oldFilePath, newFilePath, func {
             return 'Date,' ~
                    'Time,' ~
                    'Aircraft,' ~

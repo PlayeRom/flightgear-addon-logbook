@@ -19,7 +19,7 @@ var ZoomFractions = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents: [ZoomFractions],
 
@@ -177,7 +177,7 @@ var ZoomFractions = {
     #
     # @return int
     #
-    getFirstFractionPosition: func() {
+    getFirstFractionPosition: func {
         if (me._firstFractionPosition == nil) {
             return 0;
         }
@@ -277,7 +277,7 @@ var ZoomFractions = {
     #
     # @return int
     #
-    getFractionIndex: func() {
+    getFractionIndex: func {
         return me._fractionIndex;
     },
 
@@ -286,7 +286,7 @@ var ZoomFractions = {
     #
     # @return int
     #
-    getMaxZoomLevel: func() {
+    getMaxZoomLevel: func {
         return me._maxZoomLevel;
     },
 
@@ -295,7 +295,7 @@ var ZoomFractions = {
     #
     # @return void
     #
-    setToRecreate: func() {
+    setToRecreate: func {
         me._isCreated = 0;
     },
 };

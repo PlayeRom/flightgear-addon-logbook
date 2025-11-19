@@ -46,7 +46,7 @@ var Recovery = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me.stop();
     },
 
@@ -66,7 +66,7 @@ var Recovery = {
     #
     # @return void
     #
-    stop: func() {
+    stop: func {
         me._timer.stop();
     },
 
@@ -75,7 +75,7 @@ var Recovery = {
     #
     # @return void
     #
-    _update: func() {
+    _update: func {
         me._callback.invoke();
     },
 
@@ -106,7 +106,7 @@ var Recovery = {
     #
     # @return void
     #
-    clear: func() {
+    clear: func {
         me._logbookId = nil;
         me._inserted = false;
     },
@@ -114,7 +114,7 @@ var Recovery = {
     #
     # @return int|nil
     #
-    getLogbookId: func() {
+    getLogbookId: func {
         return me._logbookId;
     },
 };

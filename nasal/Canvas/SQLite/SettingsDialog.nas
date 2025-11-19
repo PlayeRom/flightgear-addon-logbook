@@ -72,7 +72,7 @@ var SettingsDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -82,7 +82,7 @@ var SettingsDialog = {
     # @return void
     # @override PersistentDialog
     #
-    show: func() {
+    show: func {
         g_Sound.play('paper');
 
         me._dateTimeDisplay = g_Settings.getDateTimeDisplay();
@@ -101,7 +101,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _loadColumnsVisible: func() {
+    _loadColumnsVisible: func {
         me._columnsVisible = {};
 
         foreach (var columnItem; me._columns.getAll()) {
@@ -114,7 +114,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _save: func() {
+    _save: func {
         # Set values to Settings object
         g_Settings.setDateTimeDisplay(me._dateTimeDisplay);
         g_Settings.setSoundEnabled(me._soundOption);
@@ -134,7 +134,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawContent: func() {
+    _drawContent: func {
         me._vbox.clear();
 
         var margins = {
@@ -161,7 +161,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawScrollable: func() {
+    _drawScrollable: func {
         me._hBoxLayout = canvas.HBoxLayout.new();
 
         var vBoxLayout = canvas.VBoxLayout.new();
@@ -243,7 +243,7 @@ var SettingsDialog = {
     #
     # @return ghost  canvas.VBoxLayout
     #
-    _drawMapProvider: func() {
+    _drawMapProvider: func {
         var hBoxLayout = canvas.HBoxLayout.new();
 
         hBoxLayout.addItem(me._widgetScroll.getLabel("Map provider"));
@@ -310,7 +310,7 @@ var SettingsDialog = {
     #
     # @return ghost  canvas.VBoxLayout
     #
-    _drawLogItemsPerPage: func() {
+    _drawLogItemsPerPage: func {
         var items = [
             { label:  "5", value:  5 },
             { label: "10", value: 10 },
@@ -337,7 +337,7 @@ var SettingsDialog = {
     #
     # @return ghost  canvas.VBoxLayout
     #
-    _drawColumnsVisible: func() {
+    _drawColumnsVisible: func {
         var vBoxLayout = canvas.VBoxLayout.new();
 
         vBoxLayout.addItem(me._widgetScroll.getLabel("Columns to display in the Logbook view", true));
@@ -370,7 +370,7 @@ var SettingsDialog = {
                 .setEnabled(!isDisabled);
 
             if (!isDisabled) {
-                func() {
+                func {
                     var columnName = columnItem.name;
                     checkbox.listen("toggled", func(e) {
                         me._columnsVisible[columnName] = e.detail.checked;
@@ -389,7 +389,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var btnSave   = me._widgetGroup.getButton("OK", func me._save(), 65);
         var btnCancel = me._widgetGroup.getButton("Cancel", func me.hide(), 65);
 

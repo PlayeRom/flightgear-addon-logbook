@@ -15,7 +15,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents : [
                 M2024_10_30_08_44_CreateMigrationsTable,
@@ -29,7 +29,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     #
     # @return void
     #
-    up: func() {
+    up: func {
         me._createMigrationsTable();
     },
 
@@ -38,7 +38,7 @@ var M2024_10_30_08_44_CreateMigrationsTable = {
     #
     # @return void
     #
-    _createMigrationsTable: func() {
+    _createMigrationsTable: func {
         var columns = [
             { name: "id",        type: "INTEGER PRIMARY KEY" },
             { name: "migration", type: "TEXT" },

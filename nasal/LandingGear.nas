@@ -23,7 +23,7 @@ var LandingGear = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [LandingGear] };
 
         obj._gearIndexes = std.Vector.new();
@@ -86,7 +86,7 @@ var LandingGear = {
     #
     # @return bool  Return true if gears have been loaded from the hints
     #
-    _recognizeGearsByAddonHints: func() {
+    _recognizeGearsByAddonHints: func {
         if (me._addonHintsNode != nil) {
             # We use landing-gear hints directly from the model.
             foreach (var landingGearIdx; me._addonHintsNode.getChildren("landing-gear-idx")) {
@@ -235,7 +235,7 @@ var LandingGear = {
     #
     # @return bool  Return true if drag force detected.
     #
-    _isFloatsDragOnWater: func() {
+    _isFloatsDragOnWater: func {
         var fDragLbs = getprop("/fdm/jsbsim/hydro/fdrag-lbs");
         return fDragLbs != nil and fDragLbs > 0;
     },
@@ -243,7 +243,7 @@ var LandingGear = {
     #
     # @return void
     #
-    _resetLandingWithNoGearRecognized: func() {
+    _resetLandingWithNoGearRecognized: func {
         me._landingAmount = 0;
         me._landingCountSec = 0;
     },
@@ -268,7 +268,7 @@ var LandingGear = {
     #
     # @return bool  Return true when center gear up is blocked and we will land on 3 gears.
     #
-    _isMD11CenterGearUp: func() {
+    _isMD11CenterGearUp: func {
         return getprop("/controls/gear/center-gear-up") or false;
     },
 };

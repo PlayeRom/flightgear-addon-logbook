@@ -78,7 +78,7 @@ var FlightAnalysisDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         me._playTimer.stop();
 
         call(PersistentDialog.del, [], me);
@@ -90,7 +90,7 @@ var FlightAnalysisDialog = {
     # @return void
     # @override PersistentDialog
     #
-    show: func() {
+    show: func {
         g_Sound.play('paper');
 
         me.setMapProvider(g_Settings.getMapProvider());
@@ -109,7 +109,7 @@ var FlightAnalysisDialog = {
     # @return void
     # @override PersistentDialog
     #
-    hide: func() {
+    hide: func {
         me._playTimer.stop();
 
         call(PersistentDialog.hide, [], me);
@@ -162,7 +162,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    hardUpdateView: func() {
+    hardUpdateView: func {
         me._mapView.hardUpdateView();
         me._profileView.hardUpdateView();
 
@@ -174,7 +174,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    softUpdateView: func() {
+    softUpdateView: func {
         me._mapView.softUpdateView();
         me._profileView.hardUpdateView();
 
@@ -186,7 +186,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _drawContent: func() {
+    _drawContent: func {
         var hBoxLayout = canvas.HBoxLayout.new();
 
         hBoxLayout.addSpacing(me.PADDING);
@@ -213,7 +213,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _updateLabelValues: func() {
+    _updateLabelValues: func {
         if (me._mapView.getTrackItemsSize() <= 0) {
             return;
         }
@@ -235,7 +235,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _zoomIn: func() {
+    _zoomIn: func {
         if (me._liveUpdateMode) {
             return;
         }
@@ -249,7 +249,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _zoomOut: func() {
+    _zoomOut: func {
         if (me._liveUpdateMode) {
             return;
         }
@@ -263,7 +263,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _updateAfterZoom: func() {
+    _updateAfterZoom: func {
         var zoom = me._profileView.getZoomLevel();
 
         me._labelZoom.setText("Zoom " ~ zoom ~ "x");
@@ -283,7 +283,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _goStartTrack: func() {
+    _goStartTrack: func {
         me._mapView.goStartTrack();
         me._profileView.goStartTrack();
 
@@ -295,7 +295,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    goEndTrack: func() {
+    goEndTrack: func {
         me._mapView.goEndTrack();
         me._profileView.goEndTrack();
 
@@ -333,7 +333,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _updateAfterChangePosition: func() {
+    _updateAfterChangePosition: func {
         var lastRowsIndex = me._mapView.getTrackLastIndex();
         var position = me._mapView.getTrackPosition();
 
@@ -367,7 +367,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _mapViewUpdateZoom: func() {
+    _mapViewUpdateZoom: func {
         # nothing here
     },
 
@@ -376,7 +376,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _profileViewUpdateZoom: func() {
+    _profileViewUpdateZoom: func {
         me._updateAfterZoom();
     },
 
@@ -397,7 +397,7 @@ var FlightAnalysisDialog = {
     #
     # @return ghost  HBoxLayout object with button.
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var buttonBox = canvas.HBoxLayout.new();
 
         me._labelZoom      = me._widget.getLabel("Zoom " ~ me._mapView.getZoomLevel());
@@ -450,7 +450,7 @@ var FlightAnalysisDialog = {
     #
     # @return ghost  Canvas object depend of FG version.
     #
-    _drawSpeedSelector: func() {
+    _drawSpeedSelector: func {
         if (me._isFG2024Version) {
             var label = me._widget.getLabel("Speed");
 
@@ -485,7 +485,7 @@ var FlightAnalysisDialog = {
     #
     # @return ghost  Canvas object depend of FG version.
     #
-    _drawProfileModeSelector: func() {
+    _drawProfileModeSelector: func {
         if (me._isFG2024Version) {
             var buttonBox = canvas.HBoxLayout.new();
 
@@ -526,7 +526,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _togglePlay: func() {
+    _togglePlay: func {
         if (me._playTimer.isRunning) {
             me._playTimer.stop();
             me._btnPlay.setText("Play");
@@ -543,7 +543,7 @@ var FlightAnalysisDialog = {
     #
     # @return void
     #
-    _onPlayUpdate: func() {
+    _onPlayUpdate: func {
         var position = me._mapView.getTrackPosition();
         if (position < me._mapView.getTrackLastIndex()) {
             me._goNextTrack();

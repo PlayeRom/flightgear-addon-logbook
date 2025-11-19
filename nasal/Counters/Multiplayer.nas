@@ -18,11 +18,11 @@ var Multiplayer = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [
             Multiplayer,
             BaseCounter.new(
-                func()               { obj._onResetCounters(); },
+                func               { obj._onResetCounters(); },
                 func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
@@ -41,7 +41,7 @@ var Multiplayer = {
     #
     # @return void
     #
-    _onResetCounters: func() {
+    _onResetCounters: func {
         me._multiplayerCounter = 0;
         me._swiftCounter       = 0;
     },
@@ -67,7 +67,7 @@ var Multiplayer = {
     #
     # @return bool
     #
-    _isMultiplayerOnline: func() {
+    _isMultiplayerOnline: func {
         if (me._propMultiplayer == nil) {
             me._propMultiplayer = props.globals.getNode("/sim/multiplay/online");
         }
@@ -80,7 +80,7 @@ var Multiplayer = {
     #
     # @return bool
     #
-    _isSwiftOnline: func() {
+    _isSwiftOnline: func {
         if (me._propSwift == nil) {
             me._propSwift = props.globals.getNode("/sim/swift/serverRunning");
         }
@@ -93,7 +93,7 @@ var Multiplayer = {
     #
     # @return double
     #
-    getMultiplayerHours: func() {
+    getMultiplayerHours: func {
         return me._multiplayerCounter / 3600;
     },
 
@@ -102,7 +102,7 @@ var Multiplayer = {
     #
     # @return double
     #
-    getSwiftHours: func() {
+    getSwiftHours: func {
         return me._swiftCounter / 3600;
     },
 };

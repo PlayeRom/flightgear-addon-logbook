@@ -52,7 +52,7 @@ var CrashDetector = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me._timerGForce.stop();
     },
 
@@ -140,7 +140,7 @@ var CrashDetector = {
     #
     # @return bool
     #
-    isOrientationOK: func() {
+    isOrientationOK: func {
         return  math.abs(getprop("/orientation/roll-deg"))  < 30
             and math.abs(getprop("/orientation/pitch-deg")) < 30;
     },
@@ -150,7 +150,7 @@ var CrashDetector = {
     #
     # @return bool
     #
-    _isC172PBrokenGear: func() {
+    _isC172PBrokenGear: func {
         var node = props.globals.getNode("/fdm/jsbsim/gear");
         if (node != nil) {
             foreach (var gear; node.getChildren("unit")) {
@@ -169,7 +169,7 @@ var CrashDetector = {
     #
     # @return bool
     #
-    _isC172PBrokenWing: func() {
+    _isC172PBrokenWing: func {
         if (me._propWingLeft == nil or me._propWingRight == nil) {
             return false;
         }
@@ -183,7 +183,7 @@ var CrashDetector = {
     #
     # @return bool
     #
-    _isSimCrashedFlag: func() {
+    _isSimCrashedFlag: func {
         return getprop("/sim/crashed") or false;
     },
 
@@ -192,7 +192,7 @@ var CrashDetector = {
     #
     # @return bool
     #
-    _isB707Crashed: func() {
+    _isB707Crashed: func {
         return getprop("/b707/crashed") or false;
     },
 
@@ -213,7 +213,7 @@ var CrashDetector = {
     #
     # @return void
     #
-    stopGForce: func() {
+    stopGForce: func {
         if (me._timerGForce.isRunning) {
             me._timerGForce.stop();
         }
@@ -222,7 +222,7 @@ var CrashDetector = {
     #
     # @return bool  Return true if G-Force in the last 12 seconds exceeds 3.0 g
     #
-    _isGForceAbnormal: func() {
+    _isGForceAbnormal: func {
         foreach (var valueZeroBase; me._lastGForces.vector) {
             if (valueZeroBase > 2.0) {
                 return true;
@@ -237,7 +237,7 @@ var CrashDetector = {
     #
     # @return void
     #
-    _gForceCallback: func() {
+    _gForceCallback: func {
         var zeroBase = math.abs(me._propGForce.getValue() - 1.0);
         me._lastGForces.append(zeroBase);
         if (me._lastGForces.size() > me._maxGForceSize) {

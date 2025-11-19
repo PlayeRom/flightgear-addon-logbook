@@ -23,7 +23,7 @@ var FlightAnalysis = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [FlightAnalysis] };
 
         obj._callback = nil;
@@ -51,7 +51,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me.stop();
 
         if (me._flightAnalysisDlg != nil) {
@@ -64,7 +64,7 @@ var FlightAnalysis = {
     #
     # @return double
     #
-    _getInitialIntervalSec: func() {
+    _getInitialIntervalSec: func {
         var settingsValue = g_Settings.getTrackerIntervalSec();
         if (me._isAutoInterval(settingsValue)) {
             return me._getAutoIntervalSec();
@@ -87,7 +87,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    updateIntervalSec: func() {
+    updateIntervalSec: func {
         if (!me._isAutoInterval(g_Settings.getTrackerIntervalSec())) {
             # User set fixed interval value, so don't change it
             return;
@@ -106,7 +106,7 @@ var FlightAnalysis = {
     #
     # @return double
     #
-    _getAutoIntervalSec: func() {
+    _getAutoIntervalSec: func {
         if (math.abs(me._rollDegNode.getValue()) > 5.0
             or me._altAglFtNode.getValue() <= 2000.0
         ) {
@@ -137,7 +137,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    stop: func() {
+    stop: func {
         me._timer.stop();
     },
 
@@ -146,7 +146,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    clear: func() {
+    clear: func {
         me._currentFlightData.clear();
         me._currentFlightMaxAlt = 0.0;
         me._lastElapsedTime = me._mpClockSecNode.getValue();
@@ -158,7 +158,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    _update: func() {
+    _update: func {
         var data = me._callback.invoke();
         if (data == nil) {
             return;
@@ -193,7 +193,7 @@ var FlightAnalysis = {
     #
     # @return void
     #
-    showDialog: func() {
+    showDialog: func {
         var firstRun = me._flightAnalysisDlg == nil;
         if (firstRun) {
             me._flightAnalysisDlg = FlightAnalysisDialog.new(title: "Current Flight Analysis", liveUpdateMode: true);

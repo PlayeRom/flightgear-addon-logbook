@@ -18,7 +18,7 @@ var FlightPathMap = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents              : [FlightPathMap],
             _FLIGHT_LINE_WIDTH   : 2,
@@ -297,7 +297,7 @@ var FlightPathMap = {
     #
     # @return vector
     #
-    getPointsToDraw: func() {
+    getPointsToDraw: func {
         return me._pointsToDraw.vector;
     },
 };

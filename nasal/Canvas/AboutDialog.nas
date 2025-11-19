@@ -25,7 +25,7 @@ var AboutDialog = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = {
             parents: [
                 AboutDialog,
@@ -54,7 +54,7 @@ var AboutDialog = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -156,7 +156,7 @@ var AboutDialog = {
     #
     # @return ghost  HBoxLayout object with button.
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var btnClose = me._widget.getButton("Close", func me.hide(), 75);
 
         var hBox = canvas.HBoxLayout.new();

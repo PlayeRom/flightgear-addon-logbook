@@ -85,7 +85,7 @@ var Storage = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         #
     },
 
@@ -102,7 +102,7 @@ var Storage = {
     #
     # @return void
     #
-    _resetTotals: func() {
+    _resetTotals: func {
         foreach (var columnItem; me._columns.getAll()) {
             if (columnItem.totals != nil) {
                 columnItem.totalVal = 0;
@@ -113,7 +113,7 @@ var Storage = {
     #
     # @return  bool  Return true if migration was done.
     #
-    _migrateVersion: func() {
+    _migrateVersion: func {
         var migrationCsv = MigrationCsv.new();
 
         var olderReleases = [
@@ -185,7 +185,7 @@ var Storage = {
     #
     # @return void
     #
-    _saveHeaders: func() {
+    _saveHeaders: func {
         if (!Utils.fileExists(me._filePath)) {
             if (!me._migrateVersion()) {
                 var file = io.open(me._filePath, "a");
@@ -198,7 +198,7 @@ var Storage = {
     #
     # @return string
     #
-    _getHeaderLine: func() {
+    _getHeaderLine: func {
         return 'Date,' ~
                'Time,' ~
                'Aircraft,' ~
@@ -279,14 +279,14 @@ var Storage = {
     #
     # @return void
     #
-    loadAllData: func() {
+    loadAllData: func {
         thread.newthread(func { me._loadAllData(); });
     },
 
     #
     # @return void
     #
-    _loadAllData: func() {
+    _loadAllData: func {
         me._allData.clear();
         me._cachedData.clear();
         me._filters.clear();
@@ -439,7 +439,7 @@ var Storage = {
     #
     # @return void
     #
-    _loadDataRangeThreadFinish: func() {
+    _loadDataRangeThreadFinish: func {
         # Pass result to callback function
         me._callback.invoke(me._loadedData.vector, me._withHeaders);
     },
@@ -449,7 +449,7 @@ var Storage = {
     #
     # @return void
     #
-    getTotalsRow: func() {
+    getTotalsRow: func {
         var totalsData = [];
         var setTotalsLabel = false;
 
@@ -565,7 +565,7 @@ var Storage = {
     #
     # @return void
     #
-    _editThreadFinish: func() {
+    _editThreadFinish: func {
         gui.popupTip("The change has been saved!");
 
         # Get signal to reload data
@@ -669,7 +669,7 @@ var Storage = {
     #
     # @return int
     #
-    getTotalLines: func() {
+    getTotalLines: func {
         return me._totalLines;
     },
 
@@ -735,7 +735,7 @@ var Storage = {
     #
     # @return void
     #
-    _deleteThreadFinish: func() {
+    _deleteThreadFinish: func {
         gui.popupTip("The log has been deleted!");
 
         # Get signal to reload data
@@ -758,7 +758,7 @@ var Storage = {
     #
     # @return void
     #
-    exportToCsv: func() {
+    exportToCsv: func {
         gui.popupTip("This option is available only for FlightGear 2024.1 and later");
     },
 

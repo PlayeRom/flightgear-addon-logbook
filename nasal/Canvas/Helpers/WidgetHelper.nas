@@ -146,7 +146,7 @@ var WidgetHelper = {
     #
     # @return ghost  HorizontalRule widget.
     #
-    getHorizontalRule: func() {
+    getHorizontalRule: func {
         return canvas.gui.widgets.HorizontalRule.new(me._context, canvas.style, {});
     },
 };

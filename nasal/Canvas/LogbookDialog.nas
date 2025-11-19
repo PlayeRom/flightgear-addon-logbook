@@ -129,7 +129,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _setListeners: func() {
+    _setListeners: func {
         # User clicked delete entry
         me._listeners.add(
             node: me._addonNodePath ~ "/addon-devel/action-delete-entry",
@@ -206,7 +206,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _reloadLogbookListenerCallback: func() {
+    _reloadLogbookListenerCallback: func {
         if (getprop(me._addonNodePath ~ "/addon-devel/logbook-entry-deleted")) {
             # User deleted entry
 
@@ -235,7 +235,7 @@ var LogbookDialog = {
     # @return void
     # @override StylePersistentDialog
     #
-    del: func() {
+    del: func {
         me._listeners.del();
         me._detailsDialog.del();
         me._filterSelector.del();
@@ -251,7 +251,7 @@ var LogbookDialog = {
     # @return void
     # @override StylePersistentDialog
     #
-    show: func() {
+    show: func {
         if (g_isThreadPending) {
             return;
         }
@@ -271,7 +271,7 @@ var LogbookDialog = {
     # @return void
     # @override StylePersistentDialog
     #
-    hide: func() {
+    hide: func {
         me._filterSelector.hide();
         me._detailsDialog.hide();
 
@@ -281,7 +281,7 @@ var LogbookDialog = {
     #
     # @return ghost  LogbookList widget.
     #
-    getListView: func() {
+    getListView: func {
         return me._listView;
     },
 
@@ -290,7 +290,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _drawHeaders: func() {
+    _drawHeaders: func {
         me._headersContent = me._group.createChild("group");
         me._headersContent.setTranslation(0, 0);
         me._headersContent
@@ -307,7 +307,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _reDrawHeadersContent: func() {
+    _reDrawHeadersContent: func {
         me._headersContent.removeAllChildren();
 
         var x = canvas.DefaultStyle.widgets["logbook-list-view"].PADDING * 2;
@@ -442,7 +442,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         me._setPaging();
 
         var btnSettings = me._widget.getButton("≡", 26, func me._logbook.showSettingDialog());
@@ -472,7 +472,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _toggleStyle: func() {
+    _toggleStyle: func {
         if (g_isThreadPending) {
             return;
         }
@@ -504,7 +504,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _setListViewStyle: func() {
+    _setListViewStyle: func {
         me._listView
             .setColorText(me._style.TEXT_COLOR)
             .setColorBackground(me._style.LIST_BG)
@@ -514,7 +514,7 @@ var LogbookDialog = {
     #
     # @return string
     #
-    _getOppositeStyleName: func() {
+    _getOppositeStyleName: func {
         return me._style.NAME == "dark"
             ? me.getStyle().light.NAME
             : me.getStyle().dark.NAME;
@@ -525,7 +525,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _first: func() {
+    _first: func {
         if (g_isThreadPending) {
             return;
         }
@@ -545,7 +545,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _prev: func() {
+    _prev: func {
         if (g_isThreadPending) {
             return;
         }
@@ -565,7 +565,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _next: func() {
+    _next: func {
         if (g_isThreadPending) {
             return;
         }
@@ -585,7 +585,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _last: func() {
+    _last: func {
         if (g_isThreadPending) {
             return;
         }
@@ -657,7 +657,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _handleSelectedRowAfterReloadData: func() {
+    _handleSelectedRowAfterReloadData: func {
         # Check if the selected row should still be selected.
         var highlightedIndex = me._listView.getHighlightingRow();
         if (   highlightedIndex == nil
@@ -685,7 +685,7 @@ var LogbookDialog = {
     #
     # @return void
     #
-    _setPaging: func() {
+    _setPaging: func {
         var curPage = (me._startIndex / me._itemsPerPage) + 1;
         var maxPages = math.ceil(me._storage.getTotalLines() / me._itemsPerPage) or 1;
         me._labelPaging.setText(sprintf("%d / %d (%d items)", curPage, maxPages, me._storage.getTotalLines()));

@@ -19,7 +19,7 @@ var Thread = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Thread] };
 
         obj._isPending = false;
@@ -35,7 +35,7 @@ var Thread = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me._timer.stop();
     },
 
@@ -70,7 +70,7 @@ var Thread = {
     #
     # @return void
     #
-    _checkEnd: func() {
+    _checkEnd: func {
         if (me._isPending) {
             # Still working, skip it
             return;

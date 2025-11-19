@@ -82,7 +82,7 @@ var InputDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         me._filterSelector.del();
 
         call(PersistentDialog.del, [], me);
@@ -135,7 +135,7 @@ var InputDialog = {
     # @return void
     # @Override PersistentDialog
     #
-    hide: func() {
+    hide: func {
         if (me._parent != nil) {
             # Remove highlighted row in LogbookDialog
             me._parent.getListView().removeHighlightingRow();
@@ -160,14 +160,14 @@ var InputDialog = {
     #
     # @return hash  FilterSelector object.
     #
-    getFilterSelector: func() {
+    getFilterSelector: func {
         return me._filterSelector;
     },
 
     #
     # @return void
     #
-    _actionTypeSelect: func() {
+    _actionTypeSelect: func {
         me._filterSelector
             .setItems(items: AircraftType.getVector(), withDefaultAll: false)
             .setColumnName(Columns.AC_TYPE)
@@ -194,7 +194,7 @@ var InputDialog = {
     #
     # @return void
     #
-    _actionSave: func() {
+    _actionSave: func {
         var value = me._lineEdit.text();
         if (value == nil) {
             value = "";
@@ -227,7 +227,7 @@ var InputDialog = {
     #
     # @return void
     #
-    _actionCancel: func() {
+    _actionCancel: func {
         me.hide();
 
         # Set property redraw-details for remove selected bar

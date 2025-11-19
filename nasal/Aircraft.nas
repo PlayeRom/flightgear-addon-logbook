@@ -18,7 +18,7 @@ var Aircraft = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return { parents: [Aircraft] };
     },
 
@@ -27,7 +27,7 @@ var Aircraft = {
     #
     # @return string
     #
-    getAircraftPrimary: func() {
+    getAircraftPrimary: func {
         var dirSplit = split("/", utf8.substr(getprop("/sim/aircraft-dir"), 0));
         var length = size(dirSplit);
         if (length > 0) {
@@ -42,7 +42,7 @@ var Aircraft = {
     #
     # @return string
     #
-    getAircraftId: func() {
+    getAircraftId: func {
         # When "/sim/aircraft" exists, this property contains the correct ID.
         # This is a case that can occur when an aircraft has multiple variants.
         var aircraft = me._removeHangarName(getprop("/sim/aircraft"));

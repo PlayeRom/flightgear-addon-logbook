@@ -15,7 +15,7 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents : [
                 M2024_11_06_22_42_AddSpeedColumns,
@@ -29,7 +29,7 @@ var M2024_11_06_22_42_AddSpeedColumns = {
     #
     # @return void
     #
-    up: func() {
+    up: func {
         me.addColumnToTable(Storage.TABLE_LOGBOOKS, "max_groundspeed_kt", "REAL", "0.0");
         me.addColumnToTable(Storage.TABLE_LOGBOOKS, "max_mach", "REAL", "0.0");
     },

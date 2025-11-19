@@ -24,11 +24,11 @@ var Environment = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [
             Environment,
             BaseCounter.new(
-                func()               { obj._onResetCounters(); },
+                func               { obj._onResetCounters(); },
                 func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
@@ -53,7 +53,7 @@ var Environment = {
     #
     # @return string
     #
-    getRealDateString: func() {
+    getRealDateString: func {
         return sprintf(
             "%d-%02d-%02d",
             getprop("/sim/time/real/year"),
@@ -67,7 +67,7 @@ var Environment = {
     #
     # @return string
     #
-    getRealTimeString: func() {
+    getRealTimeString: func {
         return sprintf(
             "%02d:%02d",
             getprop("/sim/time/real/hour"),
@@ -80,7 +80,7 @@ var Environment = {
     #
     # @return string
     #
-    getSimUtcDateString: func() {
+    getSimUtcDateString: func {
         var year  = getprop("/sim/time/utc/year");
         var month = getprop("/sim/time/utc/month");
         var day   = getprop("/sim/time/utc/day");
@@ -93,7 +93,7 @@ var Environment = {
     #
     # @return string
     #
-    getSimUtcTimeString: func() {
+    getSimUtcTimeString: func {
         return sprintf(
             "%02d:%02d",
             getprop("/sim/time/utc/hour"),
@@ -106,7 +106,7 @@ var Environment = {
     #
     # @return string
     #
-    getSimLocalDateString: func() {
+    getSimLocalDateString: func {
         return me._getLocalDate();
     },
 
@@ -115,7 +115,7 @@ var Environment = {
     #
     # @return string
     #
-    getSimLocalTimeString: func() {
+    getSimLocalTimeString: func {
         return utf8.substr(getprop("/sim/time/local-time-string"), 0, 5);
     },
 
@@ -124,7 +124,7 @@ var Environment = {
     #
     # @return string
     #
-    _getLocalDate: func() {
+    _getLocalDate: func {
         # Get sim UTC date
         var year  = int(getprop("/sim/time/utc/year"));
         var month = int(getprop("/sim/time/utc/month"));
@@ -213,7 +213,7 @@ var Environment = {
     #
     # @return void
     #
-    _onResetCounters: func() {
+    _onResetCounters: func {
         me._dayCounter        = 0;
         me._nightCounter      = 0;
         me._instrumentCounter = 0;
@@ -240,7 +240,7 @@ var Environment = {
     #
     # @return bool
     #
-    _isNight: func() {
+    _isNight: func {
         return me._propSunAngleRad.getValue() > Environment.SUN_ANG_NIGHT_THRESHOLD;
     },
 
@@ -249,7 +249,7 @@ var Environment = {
     #
     # @return bool
     #
-    _isIMC: func() {
+    _isIMC: func {
         return me._propGroundVisiM.getValue()    < Environment.MINIMUM_VFR_VISIBILITY
             or me._propEffectiveVisiM.getValue() < Environment.MINIMUM_VFR_VISIBILITY;
     },
@@ -259,7 +259,7 @@ var Environment = {
     #
     # @return double
     #
-    getDayHours: func() {
+    getDayHours: func {
         return me._dayCounter / 3600;
     },
 
@@ -268,7 +268,7 @@ var Environment = {
     #
     # @return double
     #
-    getNightHours: func() {
+    getNightHours: func {
         return me._nightCounter / 3600;
     },
 
@@ -277,7 +277,7 @@ var Environment = {
     #
     # @return double
     #
-    getInstrumentHours: func() {
+    getInstrumentHours: func {
         return me._instrumentCounter / 3600;
     },
 
@@ -286,7 +286,7 @@ var Environment = {
     #
     # @return double
     #
-    getWindHeading: func() {
+    getWindHeading: func {
         return me._propWindHeading.getDoubleValue();
     },
 
@@ -295,7 +295,7 @@ var Environment = {
     #
     # @return double
     #
-    getWindSpeed: func() {
+    getWindSpeed: func {
         return me._propWindSpeed.getDoubleValue();
     },
 };

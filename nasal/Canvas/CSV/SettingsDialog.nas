@@ -65,7 +65,7 @@ var SettingsDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -75,7 +75,7 @@ var SettingsDialog = {
     # @return void
     # @override PersistentDialog
     #
-    show: func() {
+    show: func {
         g_Sound.play('paper');
 
         me._soundOption = g_Settings.isSoundEnabled();
@@ -90,7 +90,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _save: func() {
+    _save: func {
         # Set values to Settings object
         g_Settings.setSoundEnabled(me._soundOption);
         g_Settings.setLogItemsPerPage(me._lineEditItemsPerPage.text());
@@ -105,7 +105,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawContent: func() {
+    _drawContent: func {
         me._vbox.clear();
 
         var margins = {
@@ -132,7 +132,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawScrollable: func() {
+    _drawScrollable: func {
         var vBoxLayout = canvas.VBoxLayout.new();
         me._drawMiscellaneousOptions(vBoxLayout);
         vBoxLayout.addStretch(1);
@@ -186,7 +186,7 @@ var SettingsDialog = {
     #
     # @return void
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var btnSave   = me._widgetGroup.getButton("OK", func me._save(), 65);
         var btnCancel = me._widgetGroup.getButton("Cancel", func me.hide(), 65);
 

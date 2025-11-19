@@ -27,7 +27,7 @@ var HelpDialog = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [
             HelpDialog,
             PersistentDialog.new(
@@ -78,7 +78,7 @@ var HelpDialog = {
     # @return void
     # @override PersistentDialog
     #
-    del: func() {
+    del: func {
         call(PersistentDialog.del, [], me);
     },
 
@@ -132,7 +132,7 @@ var HelpDialog = {
     #
     # @return void
     #
-    _drawBottomBar: func() {
+    _drawBottomBar: func {
         var btnAddonDir = me._widget.getButton("Open Storage Folder", 200, func {
             Utils.openBrowser({ path: g_Addon.storagePath });
         });
@@ -153,7 +153,7 @@ var HelpDialog = {
     #
     # @return void
     #
-    _keyActions: func() {
+    _keyActions: func {
         me._window.addEventListener("keydown", func(event) {
                if (event.key == "Up"     or event.key == "Down")     me._handleScrollKey(true,  event.key == "Up");
             elsif (event.key == "PageUp" or event.key == "PageDown") me._handleScrollKey(false, event.key == "PageUp");

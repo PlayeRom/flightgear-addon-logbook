@@ -15,7 +15,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents : [
                 M2024_11_04_11_53_AddSimTimeColumns,
@@ -29,7 +29,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # @return void
     #
-    up: func() {
+    up: func {
         me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_utc_date');
         me.addColumnToTable(Storage.TABLE_LOGBOOKS, 'sim_utc_time');
 
@@ -44,7 +44,7 @@ var M2024_11_04_11_53_AddSimTimeColumns = {
     #
     # @return void
     #
-    _copyFromReal: func() {
+    _copyFromReal: func {
         var querySelect = sprintf("SELECT `id`, `date`, `time` FROM %s", Storage.TABLE_LOGBOOKS);
         var rows = DB.exec(querySelect);
 

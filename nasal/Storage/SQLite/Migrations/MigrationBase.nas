@@ -18,7 +18,7 @@ var MigrationBase = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return { parents: [MigrationBase] };
     },
 

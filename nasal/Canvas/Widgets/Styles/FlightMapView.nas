@@ -338,7 +338,7 @@ DefaultStyle.widgets["flight-map-view"] = {
     #
     # @return void
     #
-    _resetTileBoundaries: func() {
+    _resetTileBoundaries: func {
         me._tileBoundaries.min.x = 0;
         me._tileBoundaries.min.y = 0;
         me._tileBoundaries.max.x = 0;

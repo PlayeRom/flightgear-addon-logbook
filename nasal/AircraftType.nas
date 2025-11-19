@@ -37,7 +37,7 @@ var AircraftType = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [AircraftType] };
 
         obj._tagsNode = props.globals.getNode("/sim/tags");
@@ -61,7 +61,7 @@ var AircraftType = {
     #
     # @return string
     #
-    getType: func() {
+    getType: func {
         var type = me._getTypeByTags();
         if (type != AircraftType.OTHERS) {
             return type;
@@ -75,7 +75,7 @@ var AircraftType = {
     #
     # @return string
     #
-    _getTypeByTags: func() {
+    _getTypeByTags: func {
         if (me._tagsNode == nil) {
             # No tags, nothing to check
             return AircraftType.OTHERS;
@@ -190,7 +190,7 @@ var AircraftType = {
     #
     # @return string
     #
-    _manualSelection: func() {
+    _manualSelection: func {
         var aircraftId = Aircraft.getAircraftId();
 
         if (substr(aircraftId, 0, 5) == "ask21" # ask21, ask21mi, ask21-jsb, ask21mi-jsb
@@ -220,7 +220,7 @@ var AircraftType = {
     #
     # @return vector
     #
-    getVector: func() {
+    getVector: func {
         return [
             AircraftType.AIRLINER,
             AircraftType.BALLOON,

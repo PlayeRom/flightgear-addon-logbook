@@ -97,7 +97,7 @@ var LogData = {
     #
     # @return string
     #
-    _getRealYear: func() {
+    _getRealYear: func {
         return substr(me.date, 0, 4);
     },
 
@@ -106,7 +106,7 @@ var LogData = {
     #
     # @return string
     #
-    _getSimUtcYear: func() {
+    _getSimUtcYear: func {
         return substr(me.sim_utc_date, 0, 4);
     },
 
@@ -115,7 +115,7 @@ var LogData = {
     #
     # @return string
     #
-    _getSimLocalYear: func() {
+    _getSimLocalYear: func {
         return substr(me.sim_local_date, 0, 4);
     },
 
@@ -267,7 +267,7 @@ var LogData = {
     #
     # @return hash
     #
-    setLanding: func() {
+    setLanding: func {
         me.landing = true;
         Log.print("setLanding = 1");
 
@@ -279,7 +279,7 @@ var LogData = {
     #
     # @return string
     #
-    printLanding: func() {
+    printLanding: func {
         return me.landing ? "1" : "";
     },
 
@@ -288,7 +288,7 @@ var LogData = {
     #
     # @return hash
     #
-    setCrash: func() {
+    setCrash: func {
         me.crash = true;
         Log.print("setCrash = 1");
 
@@ -300,7 +300,7 @@ var LogData = {
     #
     # @return string
     #
-    printCrash: func() {
+    printCrash: func {
         return me.crash ? "1" : "";
     },
 
@@ -376,7 +376,7 @@ var LogData = {
     #
     # @return hash
     #
-    setDuration: func() {
+    setDuration: func {
         me.duration = me.day + me.night;
         Log.print("setDuration = ", me.duration);
 
@@ -632,7 +632,7 @@ var LogData = {
     #
     # @return hash  LogData object
     #
-    getClone: func() {
+    getClone: func {
         return LogData.new(
             me.date,
             me.time,

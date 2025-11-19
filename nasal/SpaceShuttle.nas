@@ -20,7 +20,7 @@ var SpaceShuttle = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [SpaceShuttle] };
 
         obj._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
@@ -38,7 +38,7 @@ var SpaceShuttle = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me._listeners.del();
     },
 
@@ -47,7 +47,7 @@ var SpaceShuttle = {
     #
     # @return void
     #
-    _setListeners: func() {
+    _setListeners: func {
         if (me._preLaunch) {
             Log.print("SpaceShuttle preLaunch = ", me._preLaunch);
             me._listeners.add(
@@ -69,14 +69,14 @@ var SpaceShuttle = {
     #
     # @return bool
     #
-    isPreLaunch: func() {
+    isPreLaunch: func {
         return me._preLaunch;
     },
 
     #
     # @return bool
     #
-    isLiftOff: func() {
+    isLiftOff: func {
         if (me._ignition) {
             me._ignition = false;
             me._launched = true; # mark that we launched shuttle
@@ -91,7 +91,7 @@ var SpaceShuttle = {
     #
     # @return bool
     #
-    isLaunched: func() {
+    isLaunched: func {
         return me._launched;
     },
 
@@ -100,7 +100,7 @@ var SpaceShuttle = {
     #
     # @return bool
     #
-    isCrashed: func() {
+    isCrashed: func {
         return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false)
             or me._isGearBroken();
     },
@@ -110,7 +110,7 @@ var SpaceShuttle = {
     #
     # @return bool
     #
-    _isGearBroken: func() {
+    _isGearBroken: func {
         return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0
             or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0
             or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0

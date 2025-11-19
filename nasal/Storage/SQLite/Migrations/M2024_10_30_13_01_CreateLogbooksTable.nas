@@ -15,7 +15,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents : [
                 M2024_10_30_13_01_CreateLogbooksTable,
@@ -29,7 +29,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # @return void
     #
-    up: func() {
+    up: func {
         me._migrateCsvToLatestVersion();
         me._createLogbooksTable();
         me._importCsvToDb();
@@ -40,7 +40,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # @return void
     #
-    _migrateCsvToLatestVersion: func() {
+    _migrateCsvToLatestVersion: func {
         var migrationCsv = MigrationCsv.new();
 
         var olderReleases = [
@@ -104,7 +104,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # @return void
     #
-    _createLogbooksTable: func() {
+    _createLogbooksTable: func {
         var columns = [
             { name: "id",            type: "INTEGER PRIMARY KEY" },
             { name: "date",          type: "TEXT" },
@@ -137,7 +137,7 @@ var M2024_10_30_13_01_CreateLogbooksTable = {
     #
     # @return void
     #
-    _importCsvToDb: func() {
+    _importCsvToDb: func {
         var csvFile = me._getPathToCsvFile(Storage.CSV_FILE_VERSION);
         if (!Utils.fileExists(csvFile)) {
             Log.error('importCsvToDb failed, file "', csvFile, '" does not exist');

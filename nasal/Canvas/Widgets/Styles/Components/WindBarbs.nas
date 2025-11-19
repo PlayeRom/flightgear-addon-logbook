@@ -18,7 +18,7 @@ var WindBarbs = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [WindBarbs] };
 
         obj._LENGTH          = 50;
@@ -38,7 +38,7 @@ var WindBarbs = {
     #
     # @return vector
     #
-    _createBarbRules: func() {
+    _createBarbRules: func {
         return [
             { speed:   1, barbs: [] },                       #  1-2  kt: no barb
             { speed:   2, barbs: [5] },                      #  2-7  kt: 1 short

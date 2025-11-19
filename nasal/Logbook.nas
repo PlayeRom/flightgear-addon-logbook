@@ -24,7 +24,7 @@ var Logbook = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Logbook] };
 
         # Auxiliary variables
@@ -76,7 +76,7 @@ var Logbook = {
     #
     # @return void
     #
-    del: func() {
+    del: func {
         me._listeners.del();
         me._mainTimer.stop();
         me._crashDetector.del();
@@ -93,7 +93,7 @@ var Logbook = {
     #
     # @return void
     #
-    _setListeners: func() {
+    _setListeners: func {
         me._listeners.add(
             node: "/sim/signals/fdm-initialized",
             code: func(node) {
@@ -180,7 +180,7 @@ var Logbook = {
     #
     # @return string  ICAO code or empty
     #
-    _getStartAirport: func() {
+    _getStartAirport: func {
         # Try to get nearest airport
         var maxDistance = me._spaceShuttle.isLaunched()
             ? 9000  # Max distance to 9 km, needed by Space Shuttle started from Launch Pad 39A
@@ -194,7 +194,7 @@ var Logbook = {
     #
     # @return void
     #
-    _initLogbook: func() {
+    _initLogbook: func {
         me._aircraftPrimary = me._aircraft.getAircraftPrimary();
         me._aircraftId      = me._aircraft.getAircraftId();
         me._aircraftType    = AircraftType.new().getType();
@@ -222,7 +222,7 @@ var Logbook = {
     #
     # @return void
     #
-    _initAltAglThreshold: func() {
+    _initAltAglThreshold: func {
         me._initAltAglFt = me._onGround
             ? (me._propAltAglFt.getValue() + Logbook.ALT_AGL_FT_THRESHOLD)
             : Logbook.ALT_AGL_FT_THRESHOLD;
@@ -233,7 +233,7 @@ var Logbook = {
     #
     # @return void
     #
-    _update: func() {
+    _update: func {
         if (me._isSimPaused or me._isReplayMode) {
             me._crashDetector.stopGForce();
             return;
@@ -315,7 +315,7 @@ var Logbook = {
     #
     # @return void
     #
-    _preStartLogging: func() {
+    _preStartLogging: func {
         me._createLogData();
 
         # Set data for flight analysis as a first track point
@@ -327,7 +327,7 @@ var Logbook = {
     #
     # @return void
     #
-    _cancelPreStartLogging: func() {
+    _cancelPreStartLogging: func {
         me._logData = nil;
         me._firstTrackPoint = nil;
     },
@@ -337,7 +337,7 @@ var Logbook = {
     #
     # @return void
     #
-    _createLogData: func() {
+    _createLogData: func {
         if (me._logData != nil) {
             # Log.print("_startLogging: invalid state, it's trying to run start again without stop.");
             return;
@@ -379,7 +379,7 @@ var Logbook = {
     #
     # @return void
     #
-    _startLogging: func() {
+    _startLogging: func {
         if (me._aircraft.isUfo(me._aircraftId)) {
             # We don't log UFO, FG Video Assistant
             return;
@@ -503,7 +503,7 @@ var Logbook = {
     #
     # @return void
     #
-    _recoveryCallback: func() {
+    _recoveryCallback: func {
         if (me._logData == nil) {
             return;
         }
@@ -574,7 +574,7 @@ var Logbook = {
     #
     # @return hash
     #
-    _updateFlightAnalysisData: func() {
+    _updateFlightAnalysisData: func {
         if (me._isSimPaused or me._isReplayMode) {
             # Don't save track when paused or watching replay
             return nil;
@@ -618,7 +618,7 @@ var Logbook = {
     #
     # @return void
     #
-    showLogbookDialog: func() {
+    showLogbookDialog: func {
         me._logbookDialog.show();
     },
 
@@ -627,7 +627,7 @@ var Logbook = {
     #
     # @return void
     #
-    showHelpDialog: func() {
+    showHelpDialog: func {
         me._logbookDialog.helpDialog.show();
     },
 
@@ -636,7 +636,7 @@ var Logbook = {
     #
     # @return void
     #
-    showAboutDialog: func() {
+    showAboutDialog: func {
         me._logbookDialog.aboutDialog.show();
     },
 
@@ -645,7 +645,7 @@ var Logbook = {
     #
     # @return void
     #
-    showSettingDialog: func() {
+    showSettingDialog: func {
         me._settingsDialog.show();
     },
 
@@ -654,7 +654,7 @@ var Logbook = {
     #
     # @return void
     #
-    exportToCsv: func() {
+    exportToCsv: func {
         me._storage.exportToCsv();
     },
 
@@ -663,7 +663,7 @@ var Logbook = {
     #
     # @return bool
     #
-    vacuumSQLite: func() {
+    vacuumSQLite: func {
         me._storage.vacuumSQLite();
     },
 
@@ -672,7 +672,7 @@ var Logbook = {
     #
     # @return void
     #
-    resetLogbookDialog: func() {
+    resetLogbookDialog: func {
         me._logbookDialog.del();
         me._logbookDialog = LogbookDialog.new(me._storage, me._filters, me._columns, me);
         me.showLogbookDialog();
@@ -683,7 +683,7 @@ var Logbook = {
     #
     # @return void
     #
-    showCurrentFlightAnalysisDialog: func() {
+    showCurrentFlightAnalysisDialog: func {
         me._flightAnalysis.showDialog();
     },
 };

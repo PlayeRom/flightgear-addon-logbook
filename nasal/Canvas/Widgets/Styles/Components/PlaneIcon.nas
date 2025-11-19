@@ -18,7 +18,7 @@ var PlaneIcon = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         return {
             parents: [PlaneIcon],
             _svgImg: nil,
@@ -83,7 +83,7 @@ var PlaneIcon = {
     #
     # @return double
     #
-    getWidth: func() {
+    getWidth: func {
         return me._width;
     },
 };

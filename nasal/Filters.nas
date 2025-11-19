@@ -18,7 +18,7 @@ var Filters = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [Filters] };
 
         # Filter data for each column by which we can filter, loaded in Storage.loadAllData
@@ -52,7 +52,7 @@ var Filters = {
     #
     # @return void
     #
-    clear: func() {
+    clear: func {
         foreach (var key; keys(me.data)) {
             me.data[key].clear();
         }
@@ -79,7 +79,7 @@ var Filters = {
     #
     # @return void
     #
-    sort: func() {
+    sort: func {
         foreach (var columnName; keys(me.data)) {
             if (me.data[columnName].size() > 1) {
                 me.data[columnName].vector = sort(me.data[columnName].vector, string.icmp);

@@ -18,11 +18,11 @@ var Flight = {
     #
     # @return hash
     #
-    new: func() {
+    new: func {
         var obj = { parents: [
             Flight,
             BaseCounter.new(
-                func()               { obj._onResetCounters(); },
+                func               { obj._onResetCounters(); },
                 func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
@@ -52,7 +52,7 @@ var Flight = {
     #
     # @return void
     #
-    _onResetCounters: func() {
+    _onResetCounters: func {
         me._maxAlt   = 0.0;
         me._maxGSKt  = 0.0;
         me._maxMach  = 0.0;
@@ -91,7 +91,7 @@ var Flight = {
     #
     # @return double
     #
-    getMaxAlt: func() {
+    getMaxAlt: func {
         return me._maxAlt;
     },
 
@@ -100,7 +100,7 @@ var Flight = {
     #
     # @return double
     #
-    getMaxGroundspeedKt: func() {
+    getMaxGroundspeedKt: func {
         return me._maxGSKt;
     },
 
@@ -109,7 +109,7 @@ var Flight = {
     #
     # @return double
     #
-    getGroundspeedKt: func() {
+    getGroundspeedKt: func {
         return me._propGSKt.getValue();
     },
 
@@ -118,7 +118,7 @@ var Flight = {
     #
     # @return double
     #
-    getAirspeedKt: func() {
+    getAirspeedKt: func {
         return me._propASKt.getValue();
     },
 
@@ -127,7 +127,7 @@ var Flight = {
     #
     # @return double
     #
-    getMaxMach: func() {
+    getMaxMach: func {
         return me._maxMach;
     },
 
@@ -136,7 +136,7 @@ var Flight = {
     #
     # @return double
     #
-    getHeadingTrue: func() {
+    getHeadingTrue: func {
         return me._propHdgTrue.getValue();
     },
 
@@ -145,7 +145,7 @@ var Flight = {
     #
     # @return double
     #
-    getHeadingMag: func() {
+    getHeadingMag: func {
         return me._propHdgMag.getValue();
     },
 
@@ -154,7 +154,7 @@ var Flight = {
     #
     # @return double
     #
-    getPitch: func() {
+    getPitch: func {
         return me._propPitch.getValue();
     },
 
@@ -163,7 +163,7 @@ var Flight = {
     #
     # @return void
     #
-    setStartFuel: func() {
+    setStartFuel: func {
         me._startFuel = me._propFuel.getValue();
     },
 
@@ -172,7 +172,7 @@ var Flight = {
     #
     # @return double
     #
-    getFuel: func() {
+    getFuel: func {
         var currentFuel = me._propFuel.getValue();
         return math.abs(me._startFuel - currentFuel);
     },
@@ -182,7 +182,7 @@ var Flight = {
     #
     # @return void
     #
-    setStartOdometer: func() {
+    setStartOdometer: func {
         me._startOdometer = me._propOdometer.getValue();
     },
 
@@ -191,7 +191,7 @@ var Flight = {
     #
     # @return double
     #
-    getFullDistance: func() {
+    getFullDistance: func {
         return me._propOdometer.getValue();
     },
 
@@ -200,7 +200,7 @@ var Flight = {
     #
     # @return double
     #
-    getFlyDistance: func() {
+    getFlyDistance: func {
         return me.getFullDistance() - me._startOdometer;
     },
 };

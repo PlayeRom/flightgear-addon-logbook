@@ -470,7 +470,7 @@ DefaultStyle.widgets["flight-profile-view"] = {
     #
     # @return int
     #
-    getMaxZoomLevel: func() {
+    getMaxZoomLevel: func {
         return me._zoomFractions.getMaxZoomLevel();
     },
 
@@ -479,7 +479,7 @@ DefaultStyle.widgets["flight-profile-view"] = {
     #
     # @return void
     #
-    setZoomFractionToRecreate: func() {
+    setZoomFractionToRecreate: func {
         me._zoomFractions.setToRecreate();
     },
 };

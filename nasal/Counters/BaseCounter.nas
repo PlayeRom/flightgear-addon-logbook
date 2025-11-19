@@ -43,7 +43,7 @@ var BaseCounter = {
     #
     # @return void
     #
-    resetCounters: func() {
+    resetCounters: func {
         if (me._onResetCountersCallback != nil) {
             me._onResetCountersCallback();
         }
@@ -57,7 +57,7 @@ var BaseCounter = {
     #
     # @return void
     #
-    update: func() {
+    update: func {
         if (!me._isRunning) {
             return;
         }
@@ -81,7 +81,7 @@ var BaseCounter = {
     #
     # @return double
     #
-    _getElapsedSec: func() {
+    _getElapsedSec: func {
         return me._propElapsedSec.getValue();
     },
 
