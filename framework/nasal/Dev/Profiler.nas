@@ -21,7 +21,7 @@ var Profiler = {
     #
     # Start profiler.
     #
-    # @param  string  message  Extra context message.
+    # @param  string|nil  message  Extra context message or nil if none.
     # @return void
     #
     start: func(message = nil) {

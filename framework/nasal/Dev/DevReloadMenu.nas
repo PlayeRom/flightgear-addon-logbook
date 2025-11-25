@@ -9,6 +9,8 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
+Log.success('Loaded by include -> /nasal/Dev/DevReloadMenu');
+
 #
 # A class that adds a "Dev Reload" item to the add-on menu to reload the add-on's Nasal code.
 # This is for development purposes only.

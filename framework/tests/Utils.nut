@@ -32,7 +32,6 @@ var test_urlEncode = func {
 };
 
 var test_tryCatch = func {
-
     var result = namespace.Utils.tryCatch(func typeof(noneExistObject));
     unitTest.assert_equal(result, 0);
 

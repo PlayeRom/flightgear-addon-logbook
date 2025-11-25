@@ -14,13 +14,13 @@
 #
 var Message = {
     #
-    # Display given message as OK.
+    # Display given message as success.
     #
     # @param  string  msgs  The text message to display on the screen and read by speech synthesizer.
     # @return void
     #
     success: func(msgs...) {
-        me._display(string.join('', msgs), 'ok');
+        me._display(string.join('', msgs), 'success');
     },
 
     #
@@ -37,7 +37,7 @@ var Message = {
     # Display given message.
     #
     # @param  string  message  The text message to display on the screen and read by speech synthesizer.
-    # @param  string  type  The type of message. It can take values as 'ok' or 'error'.
+    # @param  string  type  The type of message. It can take values as 'success' or 'error'.
     # @return void
     #
     _display: func(message, type) {
