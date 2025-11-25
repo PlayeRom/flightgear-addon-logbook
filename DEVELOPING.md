@@ -23,8 +23,10 @@ Assuming you are updating to `v1.0.1`, change this version to yours.
 #### ...with auto commit
 
 ```bash
-git subtree pull --prefix=framework framework v1.0.1 --squash -m "Update framework"
+git subtree pull --prefix=framework framework v1.0.1 --squash -m "Update framework to v1.0.1"
 ```
+
+If you get the error: `fatal: working tree has modifications. Cannot add.` even though you have no changes, run `git fetch framework` first.
 
 #### ...manually
 
