@@ -19,8 +19,8 @@ var VersionChecker = {
     # @return hash
     #
     make: func {
-           if (Config.useVersionCheck.byMetaData) return MetaDataVersionChecker.new();
-        elsif (Config.useVersionCheck.byGitTag)   return GitTagVersionChecker.new();
+        if (Config.useVersionCheck.byMetaData) return MetaDataVersionChecker.new();
+        if (Config.useVersionCheck.byGitTag)   return GitTagVersionChecker.new();
 
         # If version checking is disabled, the base class is returned to avoid
         # having to check whether `g_VersionChecker` is set.
@@ -127,7 +127,7 @@ var VersionChecker = {
     # https://gitlab.com/user-name/repo-name
     #
     # @param  string|nil  repositoryUrl  If not provided then addons.Addon.codeRepositoryUrl will be used.
-    # @return vector  Repo domain, user and repository names or empty strings when failed.
+    # @return vector  Repository domain, user and repository names or empty strings when failed.
     #
     getUserAndRepoNames: func(repositoryUrl = nil) {
         # remove '/' on the end if exists

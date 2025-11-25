@@ -11,11 +11,12 @@
 
 #
 # Framework configuration.
-# Change the following options as needed in your `main` function in `/addon-main.nas` file.
+# Change the following options as needed in your `main` function in `/addon-main.nas` file
+# before using Application class.
 #
 var Config = {
     #
-    # Options related to checking for a newer version of the add-on. Only one `enabled` flag should be set to `true`,
+    # Options related to checking for a newer version of the add-on. Only one flag should be set to `true`,
     # or none at all. For information on how version checking works, see "Version Checker" section in `README.md` file.
     # These settings also ensure that files from the `/nasal/VersionCheck/` directory that are not needed will
     # not be loaded when the simulator is started.
@@ -39,7 +40,7 @@ var Config = {
 
         #
         # Set to `true` if you want to check for a newer version by checking your repository's git tags, where tag
-        # is the version number, e.g. "1.2.5" or "v.1.2.5". Only GitHub and GitLab are supported.
+        # is the version number, e.g. "1.2.5" or "v1.2.5". Only GitHub and GitLab are supported.
         # Example: Config.useVersionCheck.byGitTag = true;
         #
         byGitTag: false,

@@ -17,10 +17,10 @@ var Utils = {
     # Open URL or path in the system browser or file explorer.
     #
     # @param  hash  params  Parameters for open-browser command, can be 'path' or 'url'.
-    # @return void
+    # @return bool
     #
     openBrowser: func(params) {
-        fgcommand('open-browser', props.Node.new(params));
+        return fgcommand('open-browser', props.Node.new(params));
     },
 
     #

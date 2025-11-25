@@ -9,6 +9,8 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
+Log.alertSuccess('Loaded by include -> /nasal/Dev/DevEnv');
+
 #
 # Class for handle .env file.
 # This is for development purposes only.
@@ -125,14 +127,14 @@ var DevEnv = {
         value = me._removeQuotes(value);
         var valueUc = string.uc(value);
 
-           if (valueUc == 'TRUE')      return true;
-        elsif (valueUc == 'FALSE')     return false;
-        elsif (isnum(valueUc))         return num(valueUc);
-        elsif (valueUc == 'LOG_ALERT') return LOG_ALERT;
-        elsif (valueUc == 'LOG_WARN')  return LOG_WARN;
-        elsif (valueUc == 'LOG_INFO')  return LOG_INFO;
-        elsif (valueUc == 'LOG_DEBUG') return LOG_DEBUG;
-        elsif (valueUc == 'LOG_BULK')  return LOG_BULK;
+        if (valueUc == 'TRUE')      return true;
+        if (valueUc == 'FALSE')     return false;
+        if (isnum(valueUc))         return num(valueUc);
+        if (valueUc == 'LOG_ALERT') return LOG_ALERT;
+        if (valueUc == 'LOG_WARN')  return LOG_WARN;
+        if (valueUc == 'LOG_INFO')  return LOG_INFO;
+        if (valueUc == 'LOG_DEBUG') return LOG_DEBUG;
+        if (valueUc == 'LOG_BULK')  return LOG_BULK;
         # TODO: add more conversion here if needed
 
         return value; # return string as default
@@ -145,11 +147,13 @@ var DevEnv = {
     # @return string
     #
     _removeQuotes: func(value) {
-        if (size(value) >= 2
+        var length = size(value);
+
+        if (length >= 2
             and value[0] == `"`
             and value[-1] == `"`
         ) {
-            return substr(value, 1, size(value) - 2);
+            return substr(value, 1, length - 2);
         }
 
         return value;

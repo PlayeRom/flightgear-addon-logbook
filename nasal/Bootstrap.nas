@@ -65,7 +65,7 @@ var Bootstrap = {
         var menu = MenuStateHandler.new();
         menu.toggleItems(false);
 
-        Timer.singleShot(3, func {
+        Timer.singleShot(Application.getInitCanvasDelay(), func {
             callback();
 
             # Enable menu items responsible for launching persistent dialogs.

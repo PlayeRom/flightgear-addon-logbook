@@ -283,7 +283,7 @@ Of course, for simpler cases, you can also solve this differently, for example, 
 
 ## Autoloader of Nasal files
 
-If you add new `.nas` files to the project, you don't need to modify anything – `/framework/nasal/Loader.nas` will automatically detect and load them when the add-on restarts. However, keep in mind:
+If you add new `.nas` files to the project, you don't need to modify anything – `/framework/nasal/AutoLoader.nas` will automatically detect and load them when the add-on restarts. However, keep in mind:
 
 1. Other Nasal files can be placed in the root of your add-ons `/` or in a `/nasal` subdirectory.
 2. Any additional subdirectories for Nasal must be located inside `/nasal` directory.

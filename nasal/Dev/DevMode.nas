@@ -10,9 +10,6 @@
 #
 
 io.include('Log.nas');
-io.include('DevEnv.nas');
-io.include('DevMultiKeyCmd.nas');
-io.include('DevReloadMenu.nas');
 
 #
 # Global flag to enable dev mode. You can use this flag to condition on heavier logging that shouldn't be  executed for
@@ -34,6 +31,8 @@ var DevMode = {
         if (!Config.dev.useEnvFile) {
             return;
         }
+
+        io.include('DevEnv.nas');
 
         var env = DevEnv.new();
 
@@ -63,6 +62,8 @@ var DevMode = {
     # @return void
     #
     _setReloadMenu: func(env) {
+        io.include('DevReloadMenu.nas');
+
         var reloadMenu = DevReloadMenu.new();
 
         env.getBoolValue('RELOAD_MENU')
@@ -75,6 +76,8 @@ var DevMode = {
     # @return void
     #
     _setMultiKeyCommands: func(env) {
+        io.include('DevMultiKeyCmd.nas');
+
         DevMultiKeyCmd.new()
             .addReloadAddon(env.getValue('RELOAD_MULTIKEY_CMD'))
             .addRunTests(env.getValue('TEST_MULTIKEY_CMD'))

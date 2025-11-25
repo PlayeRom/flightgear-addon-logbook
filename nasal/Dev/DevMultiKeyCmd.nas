@@ -9,6 +9,8 @@
 # under the GNU Public License v3 (GPLv3)
 #
 
+Log.success('Loaded by include -> /nasal/Dev/DevMultiKeyCmd');
+
 #
 # A class for adding multi-key commands.
 # This is for development purposes only.

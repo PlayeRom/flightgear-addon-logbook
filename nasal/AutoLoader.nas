@@ -12,7 +12,7 @@
 #
 # A class for automatically loading Nasal files.
 #
-var Loader = {
+var AutoLoader = {
     #
     # Constructor.
     #
@@ -20,7 +20,7 @@ var Loader = {
     #
     new: func {
         var obj = {
-            parents: [Loader],
+            parents: [AutoLoader],
         };
 
         obj._frameworkDir = obj._getFrameworkSubDir();
@@ -60,7 +60,7 @@ var Loader = {
 
             var fullRelPath = relPath ~ '/' ~ entry;
             if (me._excluded.contains(fullRelPath)) {
-                Log.warning('Level: ', level, '. namespace: ', namespace, ' excluded -> ', fullRelPath);
+                Log.warning('AutoLoader excluded - level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
                 continue;
             }
 
@@ -69,12 +69,13 @@ var Loader = {
 
             if (me._fullPath.isFile() and me._fullPath.lower_extension == 'nas') {
                 if (io.load_nasal(me._fullPath.realpath, namespace)) {
-                    Log.success('Level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
+                    Log.success('AutoLoader loaded   - level: ', level, '. namespace: ', namespace, ' -> ', fullRelPath);
                 }
                 continue;
             }
 
-            if (level == 0 and !(
+            if (level == 0
+                and !(
                        string.imatch(entry, 'nasal')
                     or string.imatch(entry, me._frameworkDir)
                 )
@@ -126,7 +127,7 @@ var Loader = {
         var path = caller(0)[2];
 
         path = substr(path, size(g_Addon.basePath) + 1); # +1 for skip `/`
-        # Now a path = 'framework/nasal/Loader.nas' or 'nasal/Loader.nas'
+        # Now a path = 'framework/nasal/AutoLoader.nas' or 'nasal/AutoLoader.nas'
 
         var parts = split('/', path);
         if (size(parts) >= 3) {
@@ -146,16 +147,16 @@ var Loader = {
         var excludedFiles = [
             '/addon-main.nas',
             me._subDir ~ '/addon-main.nas', # It may repeat, but it doesn't matter, it will be there once in the hash
-            me._subDir ~ '/nasal/Loader.nas',
-            me._subDir ~ '/nasal/Config.nas',
-            me._subDir ~ '/nasal/Application.nas',
-            me._subDir ~ '/nasal/Boolean.nas',
-            me._subDir ~ '/nasal/Dev/DevEnv.nas',
-            me._subDir ~ '/nasal/Dev/DevMode.nas',
-            me._subDir ~ '/nasal/Dev/DevMultiKeyCmd.nas',
-            me._subDir ~ '/nasal/Dev/DevReloadMenu.nas',
-            me._subDir ~ '/nasal/Dev/Log.nas',
-            me._subDir ~ '/nasal/Utils/FGVersion.nas',
+            me._subDir ~ '/nasal/Application.nas',        # Included in addon-main.nas
+            me._subDir ~ '/nasal/AutoLoader.nas',         # Included in Application.nas
+            me._subDir ~ '/nasal/Boolean.nas',            # Included in Application.nas
+            me._subDir ~ '/nasal/Config.nas',             # Included in Application.nas
+            me._subDir ~ '/nasal/Dev/DevMode.nas',        # Included in Application.nas
+            me._subDir ~ '/nasal/Dev/DevEnv.nas',         # Included in DevMode.nas if needed
+            me._subDir ~ '/nasal/Dev/DevMultiKeyCmd.nas', # Included in DevMode.nas if needed
+            me._subDir ~ '/nasal/Dev/DevReloadMenu.nas',  # Included in DevMode.nas if needed
+            me._subDir ~ '/nasal/Dev/Log.nas',            # Included in DevMode.nas
+            me._subDir ~ '/nasal/Utils/FGVersion.nas',    # Included in Application.nas
         ];
 
         foreach (var file; excludedFiles) {
@@ -168,14 +169,6 @@ var Loader = {
     #
     _excludedByConfig: func {
         var files = [];
-
-        if (!Config.dev.useEnvFile) {
-            files ~= [
-                me._subDir ~ '/nasal/Dev/DevEnv.nas',
-                me._subDir ~ '/nasal/Dev/DevReloadMenu.nas',
-                me._subDir ~ '/nasal/Dev/DevReloadMultiKey.nas',
-            ];
-        }
 
         if (!Config.useVersionCheck.byGitTag) {
             files ~= [
