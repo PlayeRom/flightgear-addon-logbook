@@ -290,7 +290,7 @@ var FlightPathMap = {
     #
     _latToY: func(lat, zoom) {
         var scale = gui.widgets.FlightMap.TILE_SIZE * math.pow(2, zoom);
-        var sinLat = math.sin(lat * math.pi / 180);
+        var sinLat = math.sin(lat * globals.D2R);
         return (0.5 - math.ln((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) * scale;
     },
 

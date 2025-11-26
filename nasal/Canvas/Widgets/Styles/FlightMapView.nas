@@ -290,7 +290,7 @@ DefaultStyle.widgets["flight-map-view"] = {
 
         var scale = math.pow(2, model._zoom);
 
-        var latRad = lat * math.pi / 180;
+        var latRad = lat * globals.D2R;
         var mercatorY = math.ln(math.tan(latRad) + 1 / math.cos(latRad));
 
         var offset = {
