@@ -16,7 +16,7 @@ var ComboBoxHelper = {
     #
     # Create ComboBox widget.
     #
-    # @param  ghost  context
+    # @param  hash  context
     # @param  vector  items  Vector of hashes, each hash with `label` and `value` field.
     # @param  int|int  width
     # @param  int|int  height

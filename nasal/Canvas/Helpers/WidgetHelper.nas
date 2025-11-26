@@ -16,7 +16,7 @@ var WidgetHelper = {
     #
     # Constructor.
     #
-    # @param  ghost|nil  context  Canvas parent.
+    # @param  hash|nil  context  Canvas parent.
     # @return void
     #
     new: func(context = nil) {
@@ -29,7 +29,7 @@ var WidgetHelper = {
     },
 
     #
-    # @param  ghost  context  Canvas parent.
+    # @param  hash  context  Canvas parent.
     # @return void
     #
     setContext: func(context) {
