@@ -31,7 +31,7 @@ var FlightPathMap = {
     #
     # Create path object
     #
-    # @param  ghost  context
+    # @param  hash  context
     # @return void
     #
     create: func(context) {
@@ -113,7 +113,7 @@ var FlightPathMap = {
     # @param  ghost  model  FlightMap model object
     # @param  hash  centerTileOffset
     # @param  hash  tileBoundaries
-    # @return ghost  Path element
+    # @return void
     #
     _drawFullFlightPath: func(model, centerTileOffset, tileBoundaries) {
         # me._flightPath.reset();

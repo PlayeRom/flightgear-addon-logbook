@@ -30,7 +30,7 @@ var PlaneIcon = {
     #
     # Create SVG plane image
     #
-    # @param  ghost  context
+    # @param  hash  context
     # @param  string  file
     # @return void
     #

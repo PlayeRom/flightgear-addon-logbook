@@ -16,7 +16,7 @@ DefaultStyle.widgets["flight-info-view"] = {
     #
     # Constructor
     #
-    # @param  ghost  parent
+    # @param  hash  parent
     # @param  hash  cfg
     # @return void
     #

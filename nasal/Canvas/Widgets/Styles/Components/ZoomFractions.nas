@@ -189,7 +189,7 @@ var ZoomFractions = {
     # Set range of points to draw according to zoom level
     #
     # @param  ghost  model  FlightProfile model
-    # @param  ghost  view  FlightProfile view
+    # @param  hash  view  FlightProfile view
     # @return void
     #
     setRangeOfPointsToDraw: func(model, view) {

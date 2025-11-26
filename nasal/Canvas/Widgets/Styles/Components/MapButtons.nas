@@ -45,7 +45,7 @@ var MapButtons = {
     # Create buttons on the map
     #
     # @param  ghost  model  FlightMap model object
-    # @param  ghost  context  Canvas context on which button will be drawn
+    # @param  hash  context  Canvas context on which button will be drawn
     # @return void
     #
     create: func(model, context) {
@@ -66,7 +66,7 @@ var MapButtons = {
     #
     # Crate single button
     #
-    # @param  ghost  context  Canvas context on which button will be drawn
+    # @param  hash  context  Canvas context on which button will be drawn
     # @param  string  file  File name with path
     # @return ghost  Image element
     #

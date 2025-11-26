@@ -75,7 +75,7 @@ var WindBarbs = {
     },
 
     #
-    # @param  ghost  context
+    # @param  hash  context
     # @return void
     #
     create: func(context) {
