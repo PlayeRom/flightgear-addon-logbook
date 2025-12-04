@@ -53,17 +53,6 @@ var UtilsExtended = {
     },
 
     #
-    # Check if the given string contains a space
-    #
-    # @param  string  text
-    # @return bool
-    #
-    isSpace: func(text) {
-        var parts = split(' ', text);
-        return size(parts) > 1;
-    },
-
-    #
     # Convert decimal hours to hours:minutes:seconds, e.g. 1.5 -> 1:30
     #
     # @param  double|string  decimalHours

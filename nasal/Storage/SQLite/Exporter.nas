@@ -85,7 +85,7 @@ var Exporter = {
                 headersRow ~= ",";
             }
 
-            headersRow ~= Utils.isSpace(columnItem.header)
+            headersRow ~= me._isSpace(columnItem.header)
                 ? '"' ~ columnItem.header ~ '"'
                 :       columnItem.header;
         }
@@ -131,6 +131,16 @@ var Exporter = {
         }
 
         io.close(file);
+    },
+
+    #
+    # Return true if given string contains a space.
+    #
+    # @param  string  text
+    # @return bool
+    #
+    _isSpace: func(text) {
+        return find(' ', text) > -1;
     },
 
     #
