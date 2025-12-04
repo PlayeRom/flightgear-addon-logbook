@@ -759,6 +759,6 @@ var Storage = {
     #
     vacuumSQLite: func {
         var rows = DB.exec("VACUUM;");
-        return typeof(rows) == 'vector' and size(rows) == 0;
+        return isvec(rows) and size(rows) == 0;
     },
 };

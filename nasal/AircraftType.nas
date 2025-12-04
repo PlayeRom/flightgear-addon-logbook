@@ -165,7 +165,7 @@ var AircraftType = {
                 continue;
             }
 
-            if (typeof(rule.value) == "vector") {
+            if (isvec(rule.value)) {
                 foreach (var subRule; rule.value) {
                     if (contains(me._tags, subRule.tag)) {
                         return subRule.value;

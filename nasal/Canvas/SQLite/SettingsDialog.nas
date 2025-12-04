@@ -201,7 +201,7 @@ var SettingsDialog = {
 
             # In the dev version of the FG, the getCheckedRadio() method has been changed to getCheckedRadioButton().
             # TODO: Remove the check and only use getCheckedRadioButton when version 2024 becomes obsolete.
-            var checkedRadio = Utils.tryCatch(func { typeof(radioGroup.getCheckedRadioButton) == "func"; }, [])
+            var checkedRadio = Utils.tryCatch(func typeof(radioGroup.getCheckedRadioButton), [])
                 ? radioGroup.getCheckedRadioButton()
                 : radioGroup.getCheckedRadio();
 

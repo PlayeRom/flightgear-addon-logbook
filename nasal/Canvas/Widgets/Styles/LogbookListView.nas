@@ -96,7 +96,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.elem) == "vector") {
+            if (isvec(hash.elem)) {
                 foreach (var elem; hash.elem) {
                     if (elem.getType() == "text") {
                         elem.setColor(color);
@@ -159,7 +159,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.elem) == "vector") {
+            if (isvec(hash.elem)) {
                 foreach (var elem; hash.elem) {
                     if (elem.getType() == "text") {
                         elem.setFontSize(fontSize);
@@ -191,7 +191,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.elem) == "vector") {
+            if (isvec(hash.elem)) {
                 foreach (var elem; hash.elem) {
                     if (elem.getType() == "text") {
                         elem.setFont(font);
@@ -691,7 +691,7 @@ DefaultStyle.widgets["logbook-list-view"] = {
         }
 
         foreach (var hash; me._itemElements) {
-            if (typeof(hash.elem) == "vector") {
+            if (isvec(hash.elem)) {
                 foreach (var elem; hash.elem) {
                     elem.del();
                 }
