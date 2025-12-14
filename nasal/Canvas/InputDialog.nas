@@ -173,7 +173,7 @@ var InputDialog = {
             .setColumnName(Columns.AC_TYPE)
             .setPosition(
                 getprop("/devices/status/mice/mouse/x") or 0,
-                getprop("/devices/status/mice/mouse/y") or 0
+                getprop("/devices/status/mice/mouse/y") or 0,
             )
             .setTitle("Select aircraft type")
             .setCallback(Callback.new(me._filterSelectorCallback, me))

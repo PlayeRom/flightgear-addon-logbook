@@ -23,6 +23,11 @@ var SpaceShuttle = {
     new: func {
         var obj = { parents: [SpaceShuttle] };
 
+        obj._propDestroyed     = props.globals.getNode("/fdm/jsbsim/systems/failures/shuttle-destroyed");
+        obj._propGearNoseCond  = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition");
+        obj._propGearLeftCond  = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition");
+        obj._propGearRightCond = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition");
+
         obj._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
         obj._ignition = false;
         obj._launched = false;
@@ -101,8 +106,16 @@ var SpaceShuttle = {
     # @return bool
     #
     isCrashed: func {
-        return (getprop("/fdm/jsbsim/systems/failures/shuttle-destroyed") or false)
-            or me._isGearBroken();
+        return me._isDestroyed() or me._isGearBroken();
+    },
+
+    #
+    # Return true if the Shuttle crashed.
+    #
+    # @return bool
+    #
+    _isDestroyed: func {
+        return me._propDestroyed != nil and me._propDestroyed.getBoolValue();
     },
 
     #
@@ -111,8 +124,8 @@ var SpaceShuttle = {
     # @return bool
     #
     _isGearBroken: func {
-        return getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition") == 0
-            or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition") == 0
-            or getprop("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition") == 0
+        return (me._propGearNoseCond  != nil and me._propGearNoseCond.getValue()  == 0)
+            or (me._propGearLeftCond  != nil and me._propGearLeftCond.getValue()  == 0)
+            or (me._propGearRightCond != nil and me._propGearRightCond.getValue() == 0);
     },
 };

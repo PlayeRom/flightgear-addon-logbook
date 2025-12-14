@@ -32,7 +32,10 @@ var LandingGear = {
         obj._landingCountSec = 0;
         obj._landingAmount = 0;
 
-        obj._addonHintsNode = props.globals.getNode(g_Addon.node.getPath() ~ "/hints");
+        obj._addonHintsNode    = props.globals.getNode(g_Addon.node.getPath() ~ "/hints");
+        obj._nodeHydroDragLbs  = props.globals.getNode("/fdm/jsbsim/hydro/fdrag-lbs");
+        obj._nodeMd11CtrGearUp = props.globals.getNode("/controls/gear/center-gear-up");
+        obj._nodeGearDown      = props.globals.getNode("/controls/gear/gear-down");
 
         return obj;
     },
@@ -150,7 +153,7 @@ var LandingGear = {
         foreach (var index; me._gearIndexes.vector) {
             if (index == LandingGear.GEAR_FLOATS) {
                 # Check whether gear down
-                if (!onGround and getprop("/controls/gear/gear-down")) {
+                if (!onGround and me._nodeGearDown != nil and me._nodeGearDown.getBoolValue()) {
                     # Probably the amphibian took off on floats and it's now landing on wheels
                     counters = me._checkWowWithNoGearRecognized(counters);
                 }
@@ -163,6 +166,7 @@ var LandingGear = {
             }
             else {
                 # Log.print("checkWow index = ", index);
+                # The "/gear/gear[" ~ index ~ "]/wow" return bool
                 getprop("/gear/gear[" ~ index ~ "]/wow")
                     ? (counters.onGroundGearCounter += 1)
                     : (counters.inAirGearCounter += 1);
@@ -236,8 +240,7 @@ var LandingGear = {
     # @return bool  Return true if drag force detected.
     #
     _isFloatsDragOnWater: func {
-        var fDragLbs = getprop("/fdm/jsbsim/hydro/fdrag-lbs");
-        return fDragLbs != nil and fDragLbs > 0;
+        return me._nodeHydroDragLbs != nil and me._nodeHydroDragLbs.getValue() > 0;
     },
 
     #
@@ -269,6 +272,6 @@ var LandingGear = {
     # @return bool  Return true when center gear up is blocked and we will land on 3 gears.
     #
     _isMD11CenterGearUp: func {
-        return getprop("/controls/gear/center-gear-up") or false;
+        return me._nodeMd11CtrGearUp != nil and me._nodeMd11CtrGearUp.getBoolValue();
     },
 };

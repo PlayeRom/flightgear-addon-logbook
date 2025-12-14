@@ -45,6 +45,21 @@ var Environment = {
         obj._propWindHeading    = props.globals.getNode("/environment/wind-from-heading-deg");
         obj._propWindSpeed      = props.globals.getNode("/environment/wind-speed-kt");
 
+        obj._propRealTimeYear   = props.globals.getNode("/sim/time/real/year");
+        obj._propRealTimeMonth  = props.globals.getNode("/sim/time/real/month");
+        obj._propRealTimeDay    = props.globals.getNode("/sim/time/real/day");
+        obj._propRealTimeHour   = props.globals.getNode("/sim/time/real/hour");
+        obj._propRealTimeMinute = props.globals.getNode("/sim/time/real/minute");
+
+        obj._propUtcTimeYear    = props.globals.getNode("/sim/time/utc/year");
+        obj._propUtcTimeMonth   = props.globals.getNode("/sim/time/utc/month");
+        obj._propUtcTimeDay     = props.globals.getNode("/sim/time/utc/day");
+        obj._propUtcTimeHour    = props.globals.getNode("/sim/time/utc/hour");
+        obj._propUtcTimeMinute  = props.globals.getNode("/sim/time/utc/minute");
+
+        obj._propLocalTimeString = props.globals.getNode("/sim/time/local-time-string");
+        obj._nodeLocalOffsetTime = props.globals.getNode("/sim/time/local-offset");
+
         return obj;
     },
 
@@ -56,9 +71,9 @@ var Environment = {
     getRealDateString: func {
         return sprintf(
             "%d-%02d-%02d",
-            getprop("/sim/time/real/year"),
-            getprop("/sim/time/real/month"),
-            getprop("/sim/time/real/day")
+            me._propRealTimeYear.getValue(),
+            me._propRealTimeMonth.getValue(),
+            me._propRealTimeDay.getValue(),
         );
     },
 
@@ -70,8 +85,8 @@ var Environment = {
     getRealTimeString: func {
         return sprintf(
             "%02d:%02d",
-            getprop("/sim/time/real/hour"),
-            getprop("/sim/time/real/minute")
+            me._propRealTimeHour.getValue(),
+            me._propRealTimeMinute.getValue(),
         );
     },
 
@@ -81,11 +96,12 @@ var Environment = {
     # @return string
     #
     getSimUtcDateString: func {
-        var year  = getprop("/sim/time/utc/year");
-        var month = getprop("/sim/time/utc/month");
-        var day   = getprop("/sim/time/utc/day");
-
-        return sprintf("%d-%02d-%02d", year, month, day);
+        return sprintf(
+            "%d-%02d-%02d",
+            me._propUtcTimeYear.getValue(),
+            me._propUtcTimeMonth.getValue(),
+            me._propUtcTimeDay.getValue(),
+        );
     },
 
     #
@@ -96,8 +112,8 @@ var Environment = {
     getSimUtcTimeString: func {
         return sprintf(
             "%02d:%02d",
-            getprop("/sim/time/utc/hour"),
-            getprop("/sim/time/utc/minute")
+            me._propUtcTimeHour.getValue(),
+            me._propUtcTimeMinute.getValue(),
         );
     },
 
@@ -116,7 +132,7 @@ var Environment = {
     # @return string
     #
     getSimLocalTimeString: func {
-        return utf8.substr(getprop("/sim/time/local-time-string"), 0, 5);
+        return utf8.substr(me._propLocalTimeString.getValue(), 0, 5);
     },
 
     #
@@ -126,16 +142,16 @@ var Environment = {
     #
     _getLocalDate: func {
         # Get sim UTC date
-        var year  = int(getprop("/sim/time/utc/year"));
-        var month = int(getprop("/sim/time/utc/month"));
-        var day   = int(getprop("/sim/time/utc/day"));
+        var year  = int(me._propUtcTimeYear.getValue());
+        var month = int(me._propUtcTimeMonth.getValue());
+        var day   = int(me._propUtcTimeDay.getValue());
 
         # Get sim UTC time
-        var hour   = int(getprop("/sim/time/utc/hour"));
-        var minute = int(getprop("/sim/time/utc/minute"));
+        var hour   = int(me._propUtcTimeHour.getValue());
+        var minute = int(me._propUtcTimeMinute.getValue());
 
         # Convert offset from seconds to total minutes
-        var localOffset =  num(getprop("/sim/time/local-offset"));
+        var localOffset =  num(me._nodeLocalOffsetTime.getValue());
         var offsetMinutes = localOffset / 60;
 
         # Calculate total minutes from midnight UTC, applying the local offset

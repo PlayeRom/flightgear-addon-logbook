@@ -34,8 +34,14 @@ var CrashDetector = {
         obj._lastAircraftAltAgl = nil;
         obj._crashCounter = 0;
 
-        obj._propWingLeft  = props.globals.getNode("/fdm/jsbsim/wing-damage/left-wing");
-        obj._propWingRight = props.globals.getNode("/fdm/jsbsim/wing-damage/right-wing");
+        obj._propWingLeft    = props.globals.getNode("/fdm/jsbsim/wing-damage/left-wing");
+        obj._propWingRight   = props.globals.getNode("/fdm/jsbsim/wing-damage/right-wing");
+        obj._propAltAglFt    = props.globals.getNode("/position/altitude-agl-ft");
+        obj._propRollDeg     = props.globals.getNode("/orientation/roll-deg");
+        obj._propPitchDeg    = props.globals.getNode("/orientation/pitch-deg");
+        obj._propJsbSimGear  = props.globals.getNode("/fdm/jsbsim/gear");
+        obj._propSimCrashed  = props.globals.getNode("/sim/crashed");
+        obj._propB707Crashed = props.globals.getNode("/b707/crashed");
 
         obj._propGForce = props.globals.getNode("/accelerations/pilot-gdamped");
         obj._lastGForces = std.Vector.new();
@@ -120,7 +126,7 @@ var CrashDetector = {
             and me._lastAircraftAltAgl != nil
             and sprintf("%.5f", aircraftCoord.lat()) == sprintf("%.5f", me._lastAircraftCoord.lat())
             and sprintf("%.5f", aircraftCoord.lon()) == sprintf("%.5f", me._lastAircraftCoord.lon())
-            and sprintf("%.2f", getprop("/position/altitude-agl-ft")) == sprintf("%.2f", me._lastAircraftAltAgl)
+            and sprintf("%.2f", me._propAltAglFt.getValue()) == sprintf("%.2f", me._lastAircraftAltAgl)
         ) {
             # The position and altitude relative to the ground is exactly the same,
             # I assume that even an outstanding helicopter pilot in hover makes a tiny difference :)
@@ -129,7 +135,7 @@ var CrashDetector = {
 
         # Update last position
         me._lastAircraftCoord = aircraftCoord;
-        me._lastAircraftAltAgl = getprop("/position/altitude-agl-ft");
+        me._lastAircraftAltAgl = me._propAltAglFt.getValue();
         me._crashCounter = 0;
 
         return false;
@@ -141,8 +147,8 @@ var CrashDetector = {
     # @return bool
     #
     isOrientationOK: func {
-        return  math.abs(getprop("/orientation/roll-deg"))  < 30
-            and math.abs(getprop("/orientation/pitch-deg")) < 30;
+        return  math.abs(me._propRollDeg.getValue())  < 30
+            and math.abs(me._propPitchDeg.getValue()) < 30;
     },
 
     #
@@ -151,9 +157,8 @@ var CrashDetector = {
     # @return bool
     #
     _isC172PBrokenGear: func {
-        var node = props.globals.getNode("/fdm/jsbsim/gear");
-        if (node != nil) {
-            foreach (var gear; node.getChildren("unit")) {
+        if (me._propJsbSimGear != nil) {
+            foreach (var gear; me._propJsbSimGear.getChildren("unit")) {
                 var broken = gear.getChild("broken");
                 if (broken != nil and broken.getValue()) {
                     return true;
@@ -170,12 +175,8 @@ var CrashDetector = {
     # @return bool
     #
     _isC172PBrokenWing: func {
-        if (me._propWingLeft == nil or me._propWingRight == nil) {
-            return false;
-        }
-
-        return me._propWingLeft.getValue()  >= 1.0
-            or me._propWingRight.getValue() >= 1.0;
+        return (me._propWingLeft  != nil and me._propWingLeft.getValue()  >= 1.0)
+            or (me._propWingRight != nil and me._propWingRight.getValue() >= 1.0);
     },
 
     #
@@ -184,7 +185,7 @@ var CrashDetector = {
     # @return bool
     #
     _isSimCrashedFlag: func {
-        return getprop("/sim/crashed") or false;
+        return me._propSimCrashed != nil and me._propSimCrashed.getBoolValue();
     },
 
     #
@@ -193,7 +194,7 @@ var CrashDetector = {
     # @return bool
     #
     _isB707Crashed: func {
-        return getprop("/b707/crashed") or false;
+        return me._propB707Crashed != nil and me._propB707Crashed.getBoolValue();
     },
 
     #
