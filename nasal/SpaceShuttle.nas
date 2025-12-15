@@ -27,8 +27,8 @@ var SpaceShuttle = {
         obj._propGearNoseCond  = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-nose-condition");
         obj._propGearLeftCond  = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-left-condition");
         obj._propGearRightCond = props.globals.getNode("/fdm/jsbsim/systems/failures/gear/gearstrut-right-condition");
+        obj._propPreLaunch     = props.globals.getNode("/sim/config/shuttle/prelaunch-flag");
 
-        obj._preLaunch = getprop("/sim/config/shuttle/prelaunch-flag") or false;
         obj._ignition = false;
         obj._launched = false;
 
@@ -53,13 +53,12 @@ var SpaceShuttle = {
     # @return void
     #
     _setListeners: func {
-        if (me._preLaunch) {
-            Log.print("SpaceShuttle preLaunch = ", me._preLaunch);
+        if (me.isPreLaunch()) {
+            Log.print("SpaceShuttle preLaunch = ", me._propPreLaunch.getBoolValue());
             me._listeners.add(
-                node: "/sim/config/shuttle/prelaunch-flag",
+                node: me._propPreLaunch,
                 code: func(node) {
-                    me._preLaunch = node.getValue();
-                    if (!me._preLaunch) {
+                    if (!node.getBoolValue()) {
                         # ignition
                         me._ignition = true;
                         Log.print("SpaceShuttle ignition = ", me._ignition);
@@ -75,7 +74,7 @@ var SpaceShuttle = {
     # @return bool
     #
     isPreLaunch: func {
-        return me._preLaunch;
+        return me._propPreLaunch != nil and me._propPreLaunch.getBoolValue();
     },
 
     #
