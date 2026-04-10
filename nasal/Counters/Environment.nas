@@ -28,7 +28,7 @@ var Environment = {
         var obj = { parents: [
             Environment,
             BaseCounter.new(
-                func               { obj._onResetCounters(); },
+                func                 { obj._onResetCounters(); },
                 func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };

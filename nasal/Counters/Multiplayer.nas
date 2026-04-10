@@ -22,7 +22,7 @@ var Multiplayer = {
         var obj = { parents: [
             Multiplayer,
             BaseCounter.new(
-                func               { obj._onResetCounters(); },
+                func                 { obj._onResetCounters(); },
                 func(diffElapsedSec) { obj._onUpdate(diffElapsedSec); }
             ),
         ] };
