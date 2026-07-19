@@ -156,7 +156,7 @@ var Filters = {
             foreach (var columnName; keys(me.data)) {
                 if (filterData.isMatch(columnName, logData.getFilterValueByColumnName(columnName))) {
                     matchCounter += 1;
-                    continue;
+                    break;
                 }
             }
         }
